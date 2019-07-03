@@ -12,7 +12,8 @@ const typeToTitle = {
   'delete': 'Delete Documents',
   'approve': 'Approve Documents',
   'project': 'Assign Project',
-  'jurisdiction': 'Assign Jurisdiction'
+  'jurisdiction': 'Assign Jurisdiction',
+  'removeproject': 'Remove Project'
 }
 
 /*
@@ -41,7 +42,8 @@ export const BulkModal = props => {
     open,
     buttonInfo,
     onConfirmAction,
-    ownerList
+    ownerList,
+    searching
   } = props
   
   const cancelButton = {
@@ -66,6 +68,8 @@ export const BulkModal = props => {
   const genMessage = (bulkType) => {
     if (['project', 'jurisdiction'].includes(bulkType)) {
       return `Do you want to assign this ${bulkType} to other users' documents?`
+    } else if (bulkType === 'removeproject') {
+      return `Do you want to remove this ${typeToTitle[bulkType]} from other users' documents?`
     } else {
       return `Do you want to ${bulkType} other users' documents?`
     }
@@ -84,27 +88,28 @@ export const BulkModal = props => {
           height: 250
         }}>
         <FlexGrid container flex justify="space-between">
-          {['project', 'jurisdiction'].includes(bulkType) &&
+          {['project', 'jurisdiction', 'removeproject'].includes(bulkType) &&
           <FlexGrid container type="row" align="center" padding="0 0 20px">
             <Icon style={{ paddingRight: 8 }}>
               {bulkType === 'jurisdiction' ? 'account_balance' : 'dvr'}
             </Icon>
             <Autocomplete
               suggestions={suggestions}
-              handleGetSuggestions={val => onGetSuggestions(bulkType, val)}
-              handleClearSuggestions={() => onClearSuggestions(bulkType)}
+              handleGetSuggestions={val => onGetSuggestions(bulkType.includes('project') ? 'project' : bulkType, val)}
+              handleClearSuggestions={() => onClearSuggestions(bulkType.includes('project') ? 'project' : bulkType)}
+              isSearching={searching}
               inputProps={{
                 value: searchValue,
                 onChange: (e, { newValue }) => {
                   e.target.value === undefined
-                    ? onSearchValueChange(bulkType, newValue.name)
-                    : onSearchValueChange(bulkType, e.target.value)
+                    ? onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, newValue.name)
+                    : onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, e.target.value)
                 },
-                id: `${bulkType}-name`
+                id: `${bulkType.includes('project') ? 'project' : bulkType}-name`
               }}
-              handleSuggestionSelected={onSuggestionSelected(bulkType)}
+              handleSuggestionSelected={onSuggestionSelected(bulkType.includes('project') ? 'project' : bulkType)}
               InputProps={{
-                placeholder: `Search ${bulkType}s`,
+                placeholder: `Search ${bulkType.includes('project') ? 'project' : bulkType}s`,
                 fullWidth: true
               }}
             />
@@ -147,12 +152,13 @@ BulkModal.propTypes = {
   onGetSuggestions: PropTypes.func,
   onSearchValueChange: PropTypes.func,
   onSuggestionSelected: PropTypes.func,
-  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve']),
+  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve', 'removeproject']),
   docCount: PropTypes.number,
   onCloseModal: PropTypes.func,
   onConfirmAction: PropTypes.func,
   buttonInfo: PropTypes.object,
-  ownerList: PropTypes.array
+  ownerList: PropTypes.array,
+  searching: PropTypes.bool
 }
 
 export default BulkModal

@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { normalize, searchUtils } from 'utils'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   jurisdictions: { byId: {}, allIds: [] },
   visibleJurisdictions: [],
   searchValue: '',
@@ -17,7 +17,8 @@ const INITIAL_STATE = {
     values: {
       name: ''
     }
-  }
+  },
+  searching: false
 }
 
 /**
@@ -133,7 +134,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.SET_JURISDICTION_SUGGESTIONS:
       return {
         ...state,
-        suggestions: action.payload
+        suggestions: action.payload,
+        searching: false
       }
 
     case types.ON_CLEAR_SUGGESTIONS:
@@ -153,7 +155,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
             ...state.form.values,
             name: action.jurisdiction.name
           }
-        }
+        },
+        searching: false
       }
 
     case types.CLEAR_JURISDICTIONS:
@@ -248,6 +251,11 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.SEARCH_JURISDICTION_LIST:
+      return {
+        ...state,
+        searching: true
+      }
+      
     case types.DELETE_JURISDICTION_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:

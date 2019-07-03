@@ -202,6 +202,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_UPDATE_REQUEST:
+    case types.BULK_REMOVE_PROJECT_REQUEST:
       return {
         ...state,
         bulkOperationInProgress: true

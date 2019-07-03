@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
 import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
-import SimpleInput from 'components/SimpleInput'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import MenuItem from '@material-ui/core/MenuItem/MenuItem'
-import Icon from 'components/Icon'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { CircularLoader, Icon, SimpleInput } from 'components'
 
 /**
  * Classes passed to Autosuggest
@@ -101,7 +100,7 @@ const getSuggestionValue = suggestion => suggestion
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   const matches = match(suggestion.name, query)
   const parts = parse(suggestion.name, matches)
-
+  
   return (
     <MenuItem selected={isHighlighted} component="div" style={{ height: 'auto', whiteSpace: 'unset' }}>
       <div>
@@ -138,9 +137,10 @@ export const Autocomplete = props => {
     getSuggestionValue,
     showSearchIcon,
     theme,
-    suggestionType
+    suggestionType,
+    isSearching
   } = props
-
+  
   /**
    * Determines if the suggestions should be rendered. Only renders if the input length >= 3
    * @param value
@@ -170,17 +170,16 @@ export const Autocomplete = props => {
       renderInputComponent={renderInput}
       inputProps={{
         TextFieldProps: InputProps,
-        InputProps: showSearchIcon
-          ? {
-            style: { 'alignItems': 'center' },
-            endAdornment: (
-              <InputAdornment
-                style={{ marginTop: 0, height: 24 }}
-                position="end"
-                disableTypography><Icon color={theme.palette.greyText}>search</Icon>
-              </InputAdornment>
-            )
-          } : {},
+        InputProps: (isSearching || showSearchIcon) ? {
+          style: { 'alignItems': 'center' },
+          endAdornment: (
+            <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
+              {isSearching &&
+              <CircularLoader style={{ height: 20, width: 20 }} thickness={4} color="primary" type="indeterminate" />}
+              {!isSearching && showSearchIcon && <Icon color={theme.palette.greyText}>search</Icon>}
+            </InputAdornment>
+          )
+        } : {},
         ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
@@ -246,14 +245,19 @@ Autocomplete.propTypes = {
   theme: PropTypes.object,
   /**
    *  suggestion type
-  */
-  suggestionType: PropTypes.string
+   */
+  suggestionType: PropTypes.string,
+  /**
+   * Is searching
+   */
+  isSearching: PropTypes.bool
 }
 
 Autocomplete.defaultProps = {
   renderSuggestion: renderSuggestion,
   getSuggestionValue: getSuggestionValue,
-  showSearchIcon: false
+  showSearchIcon: false,
+  isSearching: false
 }
 
 export default withStyles(classes, { withTheme: true })(Autocomplete)
