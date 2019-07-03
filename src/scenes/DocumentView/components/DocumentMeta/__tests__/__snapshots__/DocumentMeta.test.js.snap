@@ -141,6 +141,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
               "minWidth": 180,
             }
           }
+          fullWidth={true}
           id="selectedDocStatus"
           input={
             Object {
@@ -323,7 +324,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         circular={false}
         container={true}
         flex={true}
-        justify="space-between"
+        justify="flex-end"
         padding={0}
         raised={false}
         style={
@@ -333,20 +334,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         }
         type="row"
       >
-        <WithTheme(Button)
-          aria-label="Delete the current document"
-          color="accent"
-          onClick={[Function]}
-          raised={false}
-          style={
-            Object {
-              "backgroundColor": "transparent",
-              "paddingLeft": 0,
-              "textTransform": "none",
-            }
-          }
-          value="Delete Document"
-        />
         <WithTheme(Button)
           color="accent"
           onClick={[Function]}
@@ -619,98 +606,42 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         />
       </FlexGrid>
     </FlexGrid>
-    <WithStyles(Modal)
-      hideOverflow={false}
-      maxWidth="md"
-      onClose={[Function]}
+    <ProJurSearch
+      buttonInfo={
+        Object {
+          "disabled": true,
+          "inProgress": undefined,
+        }
+      }
+      onClearSuggestions={[Function]}
+      onCloseModal={[Function]}
+      onConfirmAction={[Function]}
+      onGetSuggestions={[Function]}
+      onMouseDown={[Function]}
+      onSearchValueChange={[Function]}
+      onSuggestionSelected={[Function]}
       open={false}
-    >
-      <ModalTitle
-        title="Assign Project"
-      />
-      <WithStyles(Divider) />
-      <ModalContent
-        style={
+      searchType=""
+      suggestions={
+        Array [
           Object {
-            "display": "flex",
-            "flexDirection": "column",
-            "height": 275,
-            "paddingTop": 24,
-            "width": 500,
-          }
-        }
-      >
-        <ProJurSearch
-          jurisdictionSuggestions={
-            Array [
-              Object {
-                "id": 2932,
-              },
-              Object {
-                "id": 25332,
-              },
-              Object {
-                "id": 1,
-              },
-              Object {
-                "id": 2,
-              },
-              Object {
-                "id": 3,
-              },
-            ]
-          }
-          onClearSuggestions={[Function]}
-          onGetSuggestions={[Function]}
-          onMouseDown={[Function]}
-          onSearchValueChange={[Function]}
-          onSuggestionSelected={[Function]}
-          projectSuggestions={
-            Array [
-              Object {
-                "id": 1,
-              },
-              Object {
-                "id": 2,
-              },
-              Object {
-                "id": 4,
-              },
-              Object {
-                "id": 5,
-              },
-            ]
-          }
-          showJurSearch={false}
-          showProjectError={false}
-        />
-      </ModalContent>
-      <WithStyles(Divider) />
-      <WithStyles(ModalActions)
-        actions={
-          Array [
-            Object {
-              "onClick": [Function],
-              "otherProps": Object {
-                "aria-label": "Close modal",
-              },
-              "preferred": true,
-              "type": "button",
-              "value": "Cancel",
-            },
-            Object {
-              "disabled": undefined,
-              "onClick": [Function],
-              "otherProps": Object {
-                "aria-label": "Update",
-              },
-              "type": "button",
-              "value": "Update",
-            },
-          ]
-        }
-      />
-    </WithStyles(Modal)>
+            "id": 2932,
+          },
+          Object {
+            "id": 25332,
+          },
+          Object {
+            "id": 1,
+          },
+          Object {
+            "id": 2,
+          },
+          Object {
+            "id": 3,
+          },
+        ]
+      }
+    />
   </FlexGrid>
 </Fragment>
 `;

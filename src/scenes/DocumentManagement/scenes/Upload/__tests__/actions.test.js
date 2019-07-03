@@ -1,20 +1,13 @@
 import actions, { types } from '../actions'
 
 describe('Document management - Upload action creators', () => {
-  test('should create an action to upload documents', () => {
-    const formData = new FormData()
-    formData.append('userId', 1)
-    formData.append('userFirstName', 'test')
-    formData.append('userLastName', 'user')
-    formData.append('files', [{ name: 'blah' }])
-
+  test('should create an action to start uploading documents', () => {
     const expectedAction = {
-      type: types.UPLOAD_DOCUMENTS_REQUEST,
-      selectedDocsFormData: formData,
+      type: types.UPLOAD_DOCUMENTS_START,
       selectedDocs: [{ name: 'blah' }]
     }
 
-    expect(actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])).toEqual(expectedAction)
+    expect(actions.uploadDocumentsStart([{ name: 'blah' }])).toEqual(expectedAction)
   })
 
   test('should create an action to update a document property', () => {

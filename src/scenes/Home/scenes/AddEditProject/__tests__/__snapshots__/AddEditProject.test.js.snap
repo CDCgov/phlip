@@ -30,16 +30,26 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     }
     asyncValidate={[Function]}
     form="projectForm"
+    formStyle={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
     handleSubmit={[Function]}
-    height="400px"
     initialValues={Object {}}
+    maxWidth="lg"
+    onClose={[Function]}
     open={true}
-    width="600px"
+    style={
+      Object {
+        "height": "90%",
+        "width": "80%",
+      }
+    }
   >
     <ModalTitle
-      closeButton={false}
-      onCloseForm={[Function]}
-      onEditForm={[Function]}
       title="Create New Project"
     />
     <WithStyles(Divider) />
@@ -68,6 +78,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
           name="name"
           placeholder="Enter Project Name"
           required={true}
+          shrinkLabel={true}
           validate={[Function]}
         />
         <DetailRow
@@ -90,12 +101,66 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             ]
           }
           required={true}
+          shrinkLabel={false}
           style={
             Object {
               "display": "flex",
             }
           }
         />
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
+          flex={false}
+          justify="stretch"
+          padding="0 0 25px"
+          raised={false}
+          style={Object {}}
+          type="column"
+        >
+          <FlexGrid
+            align="center"
+            circular={false}
+            container={true}
+            flex={false}
+            justify="stretch"
+            padding={0}
+            raised={false}
+            style={Object {}}
+            type="row"
+          >
+            <WithStyles(InputLabel)
+              style={
+                Object {
+                  "marginRight": 5,
+                }
+              }
+            >
+              Project Users
+            </WithStyles(InputLabel)>
+            <IconButton
+              color="primary"
+              disabled={false}
+              iconSize={18}
+              onClick={[Function]}
+              tooltipText="Add User"
+            >
+              person_add
+            </IconButton>
+          </FlexGrid>
+          <FlexGrid
+            align="stretch"
+            circular={false}
+            container={true}
+            flex={false}
+            justify="stretch"
+            padding={0}
+            raised={false}
+            style={Object {}}
+            type="column"
+          />
+        </FlexGrid>
       </FlexGrid>
     </ModalContent>
     <WithStyles(ModalActions)

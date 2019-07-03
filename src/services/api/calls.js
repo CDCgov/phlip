@@ -66,6 +66,11 @@ let apiCalls = [
     path: () => '/users'
   },
   {
+    name: 'searchUserList',
+    method: 'get',
+    path: () => '/users'
+  },
+  {
     name: 'addUser',
     method: 'post',
     path: () => '/users'

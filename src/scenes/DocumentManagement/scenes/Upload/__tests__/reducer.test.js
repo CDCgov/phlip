@@ -1,6 +1,7 @@
 import { INITIAL_STATE, uploadReducer as reducer } from '../reducer'
 import { types } from '../actions'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
+import { selectedDocs } from 'utils/testData/upload'
 
 const initial = INITIAL_STATE
 
@@ -14,14 +15,10 @@ describe('Document Management - Upload reducer tests', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
   
-  describe('UPLOAD_DOCUMENTS_REQUEST', () => {
-    const fd = new FormData()
-    fd.append('files', [{ name: 'Doc 1' }, { name: 'Doc 2' }])
-    
+  describe('UPLOAD_DOCUMENTS_START', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_REQUEST,
-      selectedDocs: [{ name: 'Doc 1' }, { name: 'Doc 2' }],
-      selectedDocsFormData: fd
+      type: types.UPLOAD_DOCUMENTS_START,
+      selectedDocs: [{ name: 'Doc 1' }, { name: 'Doc 2' }]
     }
     
     const currentState = getState()
@@ -34,57 +31,139 @@ describe('Document Management - Upload reducer tests', () => {
     test('should set state.goBack to false', () => {
       expect(updatedState.goBack).toEqual(false)
     })
+    
+    test('should clear out uploading percentage', () => {
+      expect(updatedState.uploadProgress.index).toEqual(0)
+    })
+    
+    test('should set total documents length to length of documents', () => {
+      expect(updatedState.uploadProgress.total).toEqual(2)
+    })
+    
+    test('should reset failures', () => {
+      expect(updatedState.uploadProgress.failures).toEqual(0)
+    })
+    
+    test('should reset percentage upload to 0', () => {
+      expect(updatedState.uploadProgress.percentage).toEqual(0)
+    })
   })
   
-  describe('UPLOAD_DOCUMENTS_SUCCESS', () => {
+  describe('UPLOAD_ONE_DOC_COMPLETE', () => {
+    test('should increase current index by 1', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: false }
+      }
+      
+      const currentState = getState({ uploadProgress: { index: 3 } })
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.index).toEqual(4)
+    })
+    
+    test('should update percentage with new percentage', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: true }
+      }
+  
+      const currentState = getState({ uploadProgress: { index: 4, total: 10, percentage: 40, failures: 1 } })
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.percentage).toEqual(50)
+    })
+    
+    test('should update failure count if the document failed to upload', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: true }
+      }
+      
+      const currentState = getState({ uploadProgress: { index: 4, total: 10, percentage: 40, failures: 1 } })
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.failures).toEqual(2)
+    })
+  })
+  
+  describe('UPLOAD_DOCUMENTS_FINISH_SUCCESS', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_SUCCESS
+      type: types.UPLOAD_DOCUMENTS_FINISH_SUCCESS
     }
     
     const currentState = getState({
       selectedDocs: [{ name: 'Doc1' }, { name: 'Doc2' }]
     })
     
-    const updatedState = reducer(currentState, action)
+    const state = reducer(currentState, action)
     
     test('should empty state.selectedDocs', () => {
-      expect(updatedState.selectedDocs).toEqual([])
+      expect(state.selectedDocs).toEqual([])
     })
     
-    test('should set state.uploading to false', () => {
-      expect(updatedState.uploading).toEqual(false)
-    })
-    
-    test('should set state.goBack to true', () => {
-      expect(updatedState.goBack).toEqual(true)
+    test('should set percentage complete to 100', () => {
+      expect(state.uploadProgress.percentage).toEqual(100)
     })
   })
   
-  describe('UPLOAD_DOCUMENTS_FAIL', () => {
+  describe('UPLOAD_DOCUMENTS_FINISH_WITH_FAILS', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_FAIL,
-      payload: { error: 'This is an error' }
+      type: types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS,
+      payload: { error: 'This is an error', failed: ['Doc1', 'Doc3'] }
     }
     
     const currentState = getState({
-      selectedDocs: [{ name: 'Doc1' }, { name: 'Doc2' }]
+      selectedDocs: [{ name: { value: 'Doc1' } }, { name: { value: 'Doc2' } }, { name: { value: 'Doc3' } }]
     })
     
-    const updatedState = reducer(currentState, action)
+    const state = reducer(currentState, action)
     
-    test('should NOT empty state.selectedDocs', () => {
-      expect(updatedState.selectedDocs).toEqual([
-        { name: 'Doc1' },
-        { name: 'Doc2' }
+    test('should set selected docs to only the failed documents', () => {
+      expect(state.selectedDocs).toEqual([
+        { name: { value: 'Doc1' }, hasError: true },
+        { name: { value: 'Doc3' }, hasError: true }
       ])
     })
     
-    test('should set state.uploading to false', () => {
-      expect(updatedState.uploading).toEqual(false)
+    test('should set state.requestError to the error in action.payload', () => {
+      expect(state.requestError).toEqual('This is an error')
     })
     
-    test('should set state.requestError to the error in action.payload', () => {
-      expect(updatedState.requestError).toEqual('This is an error')
+    test('should set upload percentage to 100', () => {
+      expect(state.uploadProgress.percentage).toEqual(100)
+    })
+  })
+  
+  describe('ACKNOWLEDGE_UPLOAD_FAILURES', () => {
+    const action = {
+      type: types.ACKNOWLEDGE_UPLOAD_FAILURES
+    }
+    
+    const currentState = getState({
+      uploading: true,
+      uploadProgress: {
+        index: 7,
+        total: 7,
+        failures: true
+      },
+      requestError: 'blep'
+    })
+    
+    const state = reducer(currentState, action)
+    
+    test('should reset the request error', () => {
+      expect(state.requestError).toEqual(null)
+    })
+    
+    test('should reset uploading', () => {
+      expect(state.uploading).toEqual(false)
+    })
+    
+    test('should reset upload progress', () => {
+      expect(state.uploadProgress).toEqual({
+        index: 0,
+        failures: 0,
+        total: 0,
+        percentage: 0
+      })
     })
   })
   
@@ -195,6 +274,22 @@ describe('Document Management - Upload reducer tests', () => {
     
     test('should set that an info request in progress', () => {
       expect(state.infoRequestInProgress).toEqual(true)
+    })
+  })
+  
+  describe('EXTRACT_INFO_FAIL', () => {
+    const action = { type: types.EXTRACT_INFO_FAIL }
+    const currentState = getState({
+      infoRequestInProgress: true
+    })
+    const state = reducer(currentState, action)
+    
+    test('should show an error to the user', () => {
+      expect(state.requestError).toEqual('We couldn\'t extract the metadata from Excel sheet. Please try again later.')
+    })
+    
+    test('should indicate the request has finished', () => {
+      expect(state.infoRequestInProgress).toEqual(false)
     })
   })
   
@@ -379,6 +474,26 @@ describe('Document Management - Upload reducer tests', () => {
         { name: 'doc4' }
       ])
     })
+    
+    test('should set if the documents have been verified', () => {
+      const action = {
+        type: types.REMOVE_DOC,
+        index: 2
+      }
+      
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc1' },
+          { name: 'doc2' },
+          { name: 'doc3' },
+          { name: 'doc4' }
+        ],
+        hasVerified: true
+      })
+      
+      const state = reducer(currentState, action)
+      expect(state.hasVerified).toEqual(true)
+    })
   })
   
   describe('TOGGLE_ROW_EDIT_MODE', () => {
@@ -404,24 +519,38 @@ describe('Document Management - Upload reducer tests', () => {
   })
   
   describe('CLOSE_ALERT', () => {
+    const action = {
+      type: types.CLOSE_ALERT
+    }
+  
+    const currentState = getState({
+      alert: {
+        open: true,
+        text: 'alert text',
+        title: 'alert title',
+        type: 'blerp'
+      },
+      selectedDocs,
+      invalidFiles: [
+        { name: 'Children and Minors Motor Vehicles Communication.pdf' },
+        { name: 'North Carolina Register, Aug. 2018.pdf' }
+      ]
+    })
+  
+    const updatedState = reducer(currentState, action)
+    
     test('should reset state.alertOpen, state.alertText and state.alertTitle', () => {
-      const action = {
-        type: types.CLOSE_ALERT
-      }
-      
-      const currentState = getState({
-        alert: {
-          open: true,
-          text: 'alert text',
-          title: 'alert title',
-          type: 'blerp'
-        }
-      })
-      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.open).toEqual(false)
       expect(updatedState.alert.title).toEqual('')
       expect(updatedState.alert.text).toEqual('')
       expect(updatedState.alert.type).toEqual('basic')
+    })
+    
+    test('should clear out invalid documents from the list', () => {
+      expect(updatedState.selectedDocs).toEqual([
+        selectedDocs[2],
+        selectedDocs[3]
+      ])
     })
   })
   
@@ -434,22 +563,30 @@ describe('Document Management - Upload reducer tests', () => {
     }
     
     const currentState = getState()
-    const updatedState = reducer(currentState, action)
     
     test('should set state.alert.open to true', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.open).toEqual(true)
     })
     
     test('should set state.alert.title to action.title', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.title).toEqual('alert title')
     })
     
     test('should set state.alert.text to action.text', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.text).toEqual('alert text')
     })
     
     test('should set state.alert.type to action.alertType', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.type).toEqual('invalidFiles')
+    })
+    
+    test('should set title to empty if none in action', () => {
+      const updatedState = reducer(currentState, { ...action, title: undefined })
+      expect(updatedState.alert.title).toEqual('')
     })
   })
   
@@ -595,6 +732,42 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
+  describe('INVALID_FILES_FOUND', () => {
+    const action = {
+      type: types.INVALID_FILES_FOUND,
+      invalidFiles: [{ name: 'inv' }, { name: 'belp' }],
+      title: 'Invalid Files Found',
+      text: 'invalid files found'
+    }
+    
+    const currentState = getState({
+      uploading: true,
+      hasVerified: true
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set that files haven\'t been verified', () => {
+      expect(state.hasVerified).toEqual(false)
+    })
+    
+    test('should set uploading has stopped', () => {
+      expect(state.uploading).toEqual(false)
+    })
+    
+    test('should set invalid files', () => {
+      expect(state.invalidFiles).toEqual([{ name: 'inv' }, { name: 'belp' }])
+    })
+    
+    test('should open alert', () => {
+      expect(state.alert).toEqual({
+        open: true,
+        title: 'Invalid Files Found',
+        text: 'invalid files found',
+        type: 'files'
+      })
+    })
+  })
+  
   describe('CLEAR_SELECTED_FILES', () => {
     const action = {
       type: types.CLEAR_SELECTED_FILES
@@ -722,5 +895,22 @@ describe('Document Management - Upload reducer tests', () => {
         expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(true)
       }
     )
+    
+    test('should just return current jurisdictions if the search value isn\'t empty', () => {
+      const action = {
+        type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+        value: 'blep'
+      }
+      
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } },
+          { name: 'doc 2', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } }
+        ]
+      })
+      
+      const updatedState = reducer(currentState, action)
+      expect(updatedState).toEqual(currentState)
+    })
   })
 })

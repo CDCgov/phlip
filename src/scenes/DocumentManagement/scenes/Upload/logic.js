@@ -88,33 +88,34 @@ const reg = input => {
  * @param action
  * @param dispatch
  * @param state
+ * @param user
  * @returns {Promise<any>}
  */
-const upload = (docApi, action, dispatch, state) => {
+const upload = (docApi, action, dispatch, state, user) => {
+  let failed = []
   return new Promise(async (resolve, reject) => {
-    try {
-      const docs = await docApi.upload(action.selectedDocsFormData)
-      let jurList = ''
-      action.jurisdictions.forEach(jur => {
-        jurList = `${jurList}|${jur.name}`
-        dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
-      })
+    for (const [index, doc] of action.selectedDocs.entries()) {
+      const { file, ...otherProps } = doc
+      const formData = new FormData()
+      formData.append('userId', user.id)
+      formData.append('userFirstName', user.firstName)
+      formData.append('userLastName', user.lastName)
+      formData.append('files', file, doc.name)
+      formData.append('metadata', JSON.stringify({ [doc.name]: otherProps }))
       
-      const documents = docs.files.map(doc => {
-        const { content, ...otherDocProps } = doc
-        return {
-          ...otherDocProps,
-          projectList: `${state.projectSuggestions.selectedSuggestion.name}`,
-          jurisdictionList: jurList
-        }
-      })
+      let docProps = {}, uploadFail = false
       
-      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
-      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
-      resolve()
-    } catch (err) {
-      reject(err)
+      try {
+        const uploadedDoc = await docApi.upload(formData)
+        const { content, ...otherDocProps } = uploadedDoc.files[0]
+        docProps = { ...otherDocProps, uploadedByName: `${user.firstName} ${user.lastName}` }
+      } catch (err) {
+        failed.push(doc.name)
+        uploadFail = true
+      }
+      dispatch({ type: types.UPLOAD_ONE_DOC_COMPLETE, payload: { doc: docProps, index, failed: uploadFail } })
     }
+    resolve({ failed })
   })
 }
 
@@ -270,32 +271,23 @@ export const getFileType = doc => {
 
 /**
  * check for duplicated documents that selected for upload
- * @param selectedDocs
+ * @param uploadDocs
+ * @param documents
  * @returns {Promise<any>}
  */
-export const checkDocsDup = (uploadDocs,getState) => {
-  const masterDocs = getState().scenes.docManage.main.list.documents.byId // get master list of docs
+export const checkDocsDup = (uploadDocs, documents) => {
   let matchedDocs = []
-  let matchedName = []
-  // extract list of name for first round check and also reduce the number of rows for sub sequence tests
-  let nameList = uploadDocs.map(doc => {
-    return doc.name
-  })
-  for (let el of Object.keys(masterDocs)) {
-    let nameMatchIdx = nameList.indexOf(masterDocs[el].name)
-    if (nameMatchIdx !== -1) { // matched one of the doc's name
-      matchedName.push(el)
-    }
-  }
-  uploadDocs.map(doc => {
-    for (let el of matchedName) {
-      if (
-        (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
-            (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
-        matchedDocs.push(masterDocs[el])
+  
+  for (const doc of Object.values(documents)) {
+    const matchedName = uploadDocs.find(upDoc => upDoc.name === doc.name)
+    if (matchedName !== undefined) {
+      if (doc.jurisdictions.indexOf(matchedName.jurisdictions[0]) !== -1 &&
+        doc.projects.indexOf(matchedName.projects[0]) !== -1) {
+        matchedDocs.push(matchedName)
       }
     }
-  })
+  }
+  
   return matchedDocs
 }
 
@@ -344,7 +336,7 @@ const mergeInfoWithDocsLogic = createLogic({
  * Logic for handling when the user clicks 'upload' in the modal. Verifies that there are no errors on upload
  */
 const uploadRequestLogic = createLogic({
-  type: types.UPLOAD_DOCUMENTS_REQUEST,
+  type: types.UPLOAD_DOCUMENTS_START,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.docManage.upload
     const selectedProject = state.projectSuggestions.selectedSuggestion
@@ -360,22 +352,21 @@ const uploadRequestLogic = createLogic({
       })
     } else if (Object.keys(selectedJurisdiction).length === 0) {
       const noJurs = state.list.selectedDocs.filter(doc => {
-        if (!jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
+        
+        if (doc.jurisdictions.value.hasOwnProperty('id') && !jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
           jurs[doc.jurisdictions.value.id] = doc.jurisdictions.value
         }
-        return doc.jurisdictions.value.name.length === 0
+        
+        return !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id
       })
-      const noJurIds = state.list.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') ||
-        !doc.jurisdictions.value.id)
-      if (noJurs.length === 0 && noJurIds.length === 0) {
+      
+      if (noJurs.length === 0) {
         allow({ ...action, jurisdictions: Object.values(jurs) })
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
-          error: noJurs.length > 0
-            ? 'You must select a jurisdiction from the drop-down list.'
-            : 'You must select a jurisdiction from the autocomplete list for each document.',
-          invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
+          error: 'You must select a jurisdiction from the drop-down list at the top to apply to all files or select a jurisdiction from the drop-down list for each file.',
+          invalidDocs: noJurs
         })
       }
     } else {
@@ -385,30 +376,29 @@ const uploadRequestLogic = createLogic({
   
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
-    let anyDuplicates = []
-    try {
-      if (getState().scenes.docManage.upload.list.hasVerified === false) {
-        //anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
-        anyDuplicates = checkDocsDup(action.selectedDocs,getState)
-        if (anyDuplicates.length > 0) {
-          dispatch({
-            type: types.VERIFY_RETURN_DUPLICATE_FILES,
-            payload: anyDuplicates
-          })
-        } else {
-          await upload(docApi, action, dispatch, state)
-        }
-        done()
-      } else {
-        await upload(docApi, action, dispatch, state)
-        done()
-      }
-    } catch (err) {
+    const user = getState().data.user.currentUser
+    const anyDuplicates = checkDocsDup(action.selectedDocs, getState().scenes.docManage.main.list.documents.byId)
+    if (!state.list.hasVerified && anyDuplicates.length > 0) {
       dispatch({
-        type: types.UPLOAD_DOCUMENTS_FAIL,
-        payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
+        type: types.VERIFY_RETURN_DUPLICATE_FILES,
+        payload: anyDuplicates
       })
       done()
+    } else {
+      const { failed } = await upload(docApi, action, dispatch, state, user)
+      
+      action.jurisdictions.forEach(jur => dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur }))
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
+      if (failed.length > 0) {
+        dispatch({
+          type: types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS,
+          payload: { error: 'We couldn\'t upload the documents. Please try again later.', failed }
+        })
+        done()
+      } else {
+        dispatch({ type: types.UPLOAD_DOCUMENTS_FINISH_SUCCESS })
+        done()
+      }
     }
   }
 })

@@ -10,6 +10,7 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import { Download } from 'mdi-material-ui'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -29,10 +30,6 @@ export class Upload extends Component {
      * If the uploading request is in progress
      */
     uploading: PropTypes.bool,
-    /**
-     * If the verifying request is in progress
-     */
-    verifying: PropTypes.bool,
     /**
      * Alert information
      */
@@ -58,21 +55,74 @@ export class Upload extends Component {
      * Redux actions
      */
     actions: PropTypes.object,
+    /**
+     * From withFormAlert HOC
+     */
     onSubmitError: PropTypes.func,
+    /**
+     * Whether or not to close the modal and go back
+     */
     goBack: PropTypes.bool,
+    /**
+     * Whether or not extracting info in progress
+     */
     infoRequestInProgress: PropTypes.bool,
+    /**
+     * Browser history
+     */
     history: PropTypes.object,
+    /**
+     * Whether or not an excel sheet has been selected
+     */
     infoSheetSelected: PropTypes.bool,
+    /**
+     * Selected global jurisdiction if any
+     */
     selectedJurisdiction: PropTypes.object,
+    /**
+     * Selected global project if any
+     */
     selectedProject: PropTypes.object,
+    /**
+     * List of autocomplete jurisdiction suggestions
+     */
     jurisdictionSuggestions: PropTypes.array,
+    /**
+     * List of autocomplete project suggestions
+     */
     projectSuggestions: PropTypes.array,
+    /**
+     * Search value for jurisdiction autocomplete
+     */
     jurisdictionSearchValue: PropTypes.string,
+    /**
+     * Search value for project autocomplete
+     */
     projectSearchValue: PropTypes.string,
+    /**
+     * Whether or not the app is searching projects
+     */
+    searchingProjects: PropTypes.bool,
+    /**
+     * Whether or not the app is searching jurisdictions
+     */
+    searchingJurisdictions: PropTypes.bool,
+    /**
+     * Null or true if the no project error should be shown
+     */
     noProjectError: PropTypes.any,
+    /**
+     * Actual excel file data if any
+     */
     infoSheet: PropTypes.object,
+    /**
+     * List of invalid files the user tried to upload
+     */
     invalidFiles: PropTypes.array,
-    title: PropTypes.string
+    /**
+     * Progress for uploading
+     */
+    uploadProgress: PropTypes.object
   }
   
   constructor(props, context) {
@@ -80,7 +130,6 @@ export class Upload extends Component {
     
     this.state = {
       alertActions: [],
-      showLoadingAlert: false,
       closeButton: {}
     }
   }
@@ -91,72 +140,17 @@ export class Upload extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.uploading && !this.props.uploading) {
-      if (this.props.requestError !== null) {
-        this.props.onSubmitError(this.props.requestError)
-      } else if (this.props.goBack) {
-        this.goBack()
-      }
-    }
+    const { infoRequestInProgress, requestError, onSubmitError } = this.props
     
-    if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      if (!prevProps.infoRequestInProgress && this.props.infoRequestInProgress) {
-        this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
-      } else {
-        if (this.props.requestError !== null) {
-          this.props.onSubmitError(this.props.requestError)
-        }
-        this.setState({
-          showLoadingAlert: false
-        })
-        clearTimeout(this.loadingAlertTimeout)
-      }
-    }
-    
-    if (prevProps.uploading !== this.props.uploading) {
-      if (!prevProps.uploading && this.props.uploading) {
-        this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
-      } else {
-        this.setState({
-          showLoadingAlert: false
-        })
-        clearTimeout(this.loadingAlertTimeout)
+    if (prevProps.infoRequestInProgress && !infoRequestInProgress) {
+      if (requestError !== null) {
+        onSubmitError(requestError)
       }
     }
   }
   
   componentWillUnmount() {
     document.title = this.prevTitle
-    clearTimeout(this.loadingAlertTimeout)
-  }
-  
-  /**
-   * Determines whether or not the 'processing' alert should be shown
-   */
-  showInfoLoadingAlert = () => {
-    if (!this.props.infoRequestInProgress) {
-      clearTimeout(this.loadingAlertTimeout)
-      this.setState({
-        showLoadingAlert: false
-      })
-    } else {
-      this.setState({
-        showLoadingAlert: true
-      })
-    }
-  }
-  
-  showUploadLoadingAlert = () => {
-    if (!this.props.uploading) {
-      clearTimeout(this.loadingAlertTimeout)
-      this.setState({
-        showLoadingAlert: false
-      })
-    } else {
-      this.setState({
-        showLoadingAlert: true
-      })
-    }
   }
   
   /**
@@ -172,18 +166,27 @@ export class Upload extends Component {
    * @public
    */
   onCloseModal = () => {
-    if (this.props.selectedDocs.length > 0) {
-      this.setState({
-        alertActions: [
-          {
-            value: 'Continue',
-            type: 'button',
-            otherProps: { 'aria-label': 'Continue', 'id': 'uploadCloseContBtn' },
-            onClick: this.goBack
-          }
-        ],
-        closeButton: { value: 'Cancel' }
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost. Do you want to continue?', 'Warning', 'basic'))
+    const { selectedDocs, actions } = this.props
+    
+    if (selectedDocs.length > 0) {
+      this.setState(
+        {
+          alertActions: [
+            {
+              value: 'Continue',
+              type: 'button',
+              otherProps: { 'aria-label': 'Continue', 'id': 'uploadCloseContBtn' },
+              onClick: this.goBack
+            }
+          ],
+          closeButton: { value: 'Cancel' }
+        },
+        () => actions.openAlert(
+          'Your unsaved changes will be lost. Do you want to continue?',
+          'Warning',
+          'basic'
+        )
+      )
     } else {
       this.goBack()
     }
@@ -215,9 +218,11 @@ export class Upload extends Component {
    * @param e
    */
   addFilesToList = e => {
-    if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
-      this.props.actions.openAlert(
-        `The number of files selected for upload has exceeds the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
+    const { selectedDocs, maxFileCount, actions, infoSheetSelected } = this.props
+    
+    if (e.target.files.length + selectedDocs.length > maxFileCount) {
+      actions.openAlert(
+        `The number of files selected for upload has exceeds the limit of ${maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
         'Maximum Number of Files Exceeded',
         'basic'
       )
@@ -236,46 +241,41 @@ export class Upload extends Component {
         })
       })
       
-      if (this.props.infoSheetSelected) {
-        this.props.actions.setInfoRequestProgress()
-        this.props.actions.mergeInfoWithDocs(files)
+      if (infoSheetSelected) {
+        actions.setInfoRequestProgress()
+        actions.mergeInfoWithDocs(files)
       } else {
-        this.props.actions.addSelectedDocs(files)
+        actions.addSelectedDocs(files)
       }
       
-      this.props.actions.verifyFiles(files)
+      actions.verifyFiles(files)
     }
   }
   
   /**
-   * Creates a formData object to send to api to upload documents
+   * Creates an object with all of the files to send to redux
    */
   onUploadFiles = () => {
-    let fd = { files: [] }, md = {}, sd = []
-    const formData = new FormData()
-    formData.append('userId', this.props.user.id)
-    formData.append('userFirstName', this.props.user.firstName)
-    formData.append('userLastName', this.props.user.lastName)
+    const { selectedDocs, selectedJurisdiction, selectedProject, actions } = this.props
+    let md = {}, sd = []
     
-    this.props.selectedDocs.map(doc => {
-      const { file, ...otherProps } = doc
-      formData.append('files', file.value, doc.name.value)
-      md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
+    selectedDocs.map(doc => {
+      md[doc.name.value] = Object.keys(doc).reduce((obj, prop) => {
         return {
           ...obj,
-          [prop]: otherProps[prop].value
+          [prop]: doc[prop].value
         }
       }, {})
-      md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
-        ? [this.props.selectedJurisdiction.id]
-        : [otherProps.jurisdictions.value.id]
-      md[doc.name.value].projects = [this.props.selectedProject.id]
-      fd.files = [...fd.files, file]
+      
+      md[doc.name.value].jurisdictions = selectedJurisdiction.id
+        ? [selectedJurisdiction.id]
+        : [doc.jurisdictions.value.id]
+      
+      md[doc.name.value].projects = [selectedProject.id]
       sd = [...sd, md[doc.name.value]]
     })
     
-    formData.append('metadata', JSON.stringify(md))
-    this.props.actions.uploadDocumentsRequest(formData, sd)
+    actions.uploadDocumentsStart(sd)
   }
   
   /**
@@ -298,8 +298,9 @@ export class Upload extends Component {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       if (suggestionType === 'project') {
-        searchString === ''?this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id,30):
-          this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        searchString === ''
+          ? this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id, 30)
+          : this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
       } else {
         this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
       }
@@ -315,12 +316,21 @@ export class Upload extends Component {
       : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
   }
   
+  /**
+   * Handles search value changes for autocomplete projects and jurisdictions
+   * @param suggestionType
+   * @param value
+   */
   handleSearchValueChange = (suggestionType, value) => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
       : this.props.actions.projectAutocomplete.updateSearchValue(value)
   }
   
+  /**
+   * Clears autocomplete suggestions for jurisdictions or projects
+   * @param suggestionType
+   */
   handleClearSuggestions = suggestionType => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
@@ -351,30 +361,43 @@ export class Upload extends Component {
   getButtonText = text => {
     return (
       <>
-        {text}{this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
+        {text}
+        {this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
       </>
     )
   }
+  
   /**
    * Check if the mouse click event valid for this component.  if not valid, ignore event
    * @param e
    */
-
   onMouseDown = e => {
-    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+    if (['react-autowhatever-1', 'jurisdiction-form'].includes(e.target.id)) {
       e.preventDefault()
+    }
+  }
+  
+  /**
+   * Handles closing the upload progress alert
+   */
+  closeUploadingAlert = () => {
+    const { uploadProgress, actions } = this.props
+    
+    if (uploadProgress.failures > 0) {
+      actions.acknowledgeUploadFailures()
+    } else {
+      this.goBack()
     }
   }
   
   render() {
     const {
-      selectedDocs, uploading, actions, invalidFiles, alert,
-      projectSearchValue, projectSuggestions, jurisdictionSearchValue,
-      jurisdictionSuggestions, noProjectError,
-      infoSheetSelected, infoSheet
+      selectedDocs, uploading, actions, invalidFiles, alert, projectSearchValue, projectSuggestions, infoSheet,
+      jurisdictionSearchValue, jurisdictionSuggestions, noProjectError, infoSheetSelected, uploadProgress,
+      infoRequestInProgress, searchingJurisdictions, searchingProjects
     } = this.props
     
-    const { alertActions, showLoadingAlert, closeButton } = this.state
+    const { alertActions, closeButton } = this.state
     
     const modalCloseButton = {
       value: 'Close',
@@ -435,13 +458,52 @@ export class Upload extends Component {
             })}
           </FlexGrid>}
         </Alert>}
-        {showLoadingAlert &&
-        <Alert open={showLoadingAlert} hideClose>
-          <FlexGrid container align="center">
-            <CircularLoader type="indeterminate" />
-            <span style={{ paddingTop: 20 }}>
-              {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple of minutes...
-            </span>
+        
+        {(uploading || infoRequestInProgress) &&
+        <Alert
+          open={(uploading || infoRequestInProgress)}
+          hideClose={uploadProgress.percentage < 100}
+          onCloseAlert={this.closeUploadingAlert}
+          title={infoRequestInProgress
+            ? 'Processing...'
+            : uploadProgress.percentage === 100 ? uploadProgress.failures > 0
+              ? 'Error'
+              : 'Success' : 'Uploading...'}
+          closeButton={{ value: 'Dismiss' }}>
+          <FlexGrid container style={{ width: 550 }}>
+            {!uploading && <FlexGrid container align="center">
+              <Typography variant="body1" style={{ paddingBottom: 30 }}>
+                {'Processing document... This could take a couple of minutes...'}
+              </Typography>
+              <CircularLoader type="indeterminate" />
+            </FlexGrid>}
+            {uploading && <FlexGrid container style={{ paddingBottom: 30 }}>
+              <Typography
+                variant="body1"
+                style={{
+                  paddingBottom: uploadProgress.percentage === 100 && uploadProgress.failures > 0
+                    ? 15
+                    : 3
+                }}>
+                {uploadProgress.percentage === 100
+                  ? uploadProgress.failures === 0
+                    ? 'All documents successfully uploaded!'
+                    : 'Some of the documents failed to upload. They are still present in the list if you wish to retry.'
+                  : `Uploading document: ${uploadProgress.index + 1}`
+                }
+              </Typography>
+              <Typography
+                variant="body1"
+                style={{ paddingBottom: 3 }}>{`Total document count: ${uploadProgress.total}`}</Typography>
+              <Typography variant="body1" style={{ paddingBottom: 30 }}>
+                {uploadProgress.failures > 0 && `Errors: ${uploadProgress.failures}`}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={uploadProgress.percentage}
+                style={{ width: '100%', borderRadius: 6, height: 8 }}
+              />
+            </FlexGrid>}
           </FlexGrid>
         </Alert>}
         <FlexGrid container type="row" align="center">
@@ -458,6 +520,8 @@ export class Upload extends Component {
                   onSearchValueChange={this.handleSearchValueChange}
                   onSuggestionSelected={this.handleSuggestionSelected}
                   jurisdictionSearchValue={jurisdictionSearchValue}
+                  searchingJurisdictions={searchingJurisdictions}
+                  searchingProjects={searchingProjects}
                   projectSearchValue={projectSearchValue}
                   showProjectError={noProjectError === true}
                   showJurSearch={infoSheetSelected === false}
@@ -535,13 +599,16 @@ const mapStateToProps = state => {
     jurisdictionSearchValue: uploadState.jurisdictionSuggestions.searchValue,
     selectedJurisdiction: uploadState.jurisdictionSuggestions.selectedSuggestion,
     selectedProject: uploadState.projectSuggestions.selectedSuggestion,
+    searchingProjects: uploadState.projectSuggestions.searching,
+    searchingJurisdictions: uploadState.jurisdictionSuggestions.searching,
     noProjectError: uploadState.list.noProjectError,
     isReduxForm: false,
     user: state.data.user.currentUser,
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    maxFileCount: uploadState.maxFileCount || 20
+    maxFileCount: uploadState.maxFileCount || 20,
+    uploadProgress: uploadState.list.uploadProgress
   }
 }
 

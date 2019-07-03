@@ -1,12 +1,8 @@
-/**
- * This is all of the redux-logic for the CodingScheme scene.
- */
-
 import { createLogic } from 'redux-logic'
 import addEditQuestionLogic from './scenes/AddEditQuestion/logic'
 import { removeNodeAtPath } from 'react-sortable-tree'
 import { questionsToOutline, getNodeKey } from 'scenes/CodingScheme/reducer'
-import * as types from './actionTypes'
+import { types } from './actions'
 
 /**
  * Sends a request to the API to get the coding scheme for project ID: action.id. Also gets the lock information if any

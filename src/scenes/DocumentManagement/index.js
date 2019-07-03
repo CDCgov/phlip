@@ -101,7 +101,19 @@ export class DocumentManagement extends Component {
     /**
      * Whether there is an error we need to show as a page error
      */
-    pageError: PropTypes.string
+    pageError: PropTypes.string,
+    /**
+     * Current user role
+     */
+    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder']),
+    /**
+     * Whether or not the app is searching projects
+     */
+    searchingProjects: PropTypes.bool,
+    /**
+     * Whether or not the app is searching jurisdictions
+     */
+    searchingJurisdictions: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -202,23 +214,47 @@ export class DocumentManagement extends Component {
   handleBulkConfirm = () => {
     const { bulkActionType } = this.state
     const { actions, selectedProject, selectedJurisdiction, checkedDocs } = this.props
-    
-    if (bulkActionType === 'delete') {
-      actions.handleBulkDelete(checkedDocs)
-    } else {
-      let updateData = {}
-      if (bulkActionType === 'approve') {
-        updateData = {
-          updateType: 'status'
+    switch (bulkActionType) {
+      case 'delete' :
+        actions.handleBulkDelete(checkedDocs)
+        break
+      case 'removeproject':
+        let projectMeta = {
+          id: selectedProject.id
         }
-      } else {
-        updateData = {
-          updateType: `${bulkActionType}s`,
-          updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+        actions.handleBulkProjectRemove(projectMeta, checkedDocs)
+        break
+      default:
+        let updateData = {}
+        if (bulkActionType === 'approve') {
+          updateData = {
+            updateType: 'status'
+          }
+        } else {
+          updateData = {
+            updateType: `${bulkActionType}s`,
+            updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+          }
         }
-      }
-      actions.handleBulkUpdate(updateData, checkedDocs)
+        actions.handleBulkUpdate(updateData, checkedDocs)
     }
+    
+    // if (bulkActionType === 'delete') {
+    //   actions.handleBulkDelete(checkedDocs)
+    // } else {
+    //   let updateData = {}
+    //   if (bulkActionType === 'approve') {
+    //     updateData = {
+    //       updateType: 'status'
+    //     }
+    //   } else {
+    //     updateData = {
+    //       updateType: `${bulkActionType}s`,
+    //       updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+    //     }
+    //   }
+    //   actions.handleBulkUpdate(updateData, checkedDocs)
+    // }
   }
   
   /**
@@ -267,6 +303,7 @@ export class DocumentManagement extends Component {
         info.disabled = checkedCount === 0
         break
       case 'project':
+      case 'removeproject' :
         info.disabled = Object.keys(selectedProject).length === 0 || checkedCount === 0
         break
       case 'jurisdiction':
@@ -282,16 +319,17 @@ export class DocumentManagement extends Component {
   
   render() {
     const {
-      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount,
+      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, searchingProjects,
       actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner
+      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, userRole, searchingJurisdictions
     } = this.props
     
     const { bulkActionType, showModal } = this.state
     
     const suggestionProps = {
-      suggestions: bulkActionType === 'project' ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: bulkActionType === 'project' ? projectSearchValue : jurisdictionSearchValue
+      suggestions: bulkActionType.includes('project') ? projectSuggestions : jurisdictionSuggestions,
+      searchValue: bulkActionType.includes('project') ? projectSearchValue : jurisdictionSearchValue,
+      searching: bulkActionType.includes('project') ? searchingProjects : searchingJurisdictions
     }
     
     return (
@@ -326,6 +364,7 @@ export class DocumentManagement extends Component {
               allSelected={allSelected}
               page={page}
               rowsPerPage={rowsPerPage}
+              userRole={userRole}
               onBulkAction={this.handleBulkAction}
               allowDropdown={checkedCount > 0}
               sortBy={sortBy}
@@ -389,7 +428,10 @@ const mapStateToProps = state => {
     projectSearchValue: docManage.projectSuggestions.searchValue,
     jurisdictionSuggestions: docManage.jurisdictionSuggestions.suggestions,
     jurisdictionSearchValue: docManage.jurisdictionSuggestions.searchValue,
-    selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion
+    selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
+    searchingProjects: docManage.projectSuggestions.searching,
+    searchingJurisdictions: docManage.jurisdictionSuggestions.searching,
+    userRole: state.data.user.currentUser.role
   }
 }
 

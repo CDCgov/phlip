@@ -15,11 +15,17 @@ import {
   CircularLoader,
   Button,
   Alert,
-  FlexGrid
+  FlexGrid,
+  Autocomplete,
+  IconButton,
+  Icon,
+  Tooltip
 } from 'components'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
+import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
+import Switch from '@material-ui/core/Switch'
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -67,9 +73,9 @@ export class AddEditProject extends Component {
      */
     onCloseModal: PropTypes.func,
     /**
-     * The role of the current user
+     * The current user logged in
      */
-    userRole: PropTypes.string,
+    currentUser: PropTypes.object,
     /**
      * Form error if any that occurred when manipulating the form
      */
@@ -83,49 +89,70 @@ export class AddEditProject extends Component {
      */
     onSubmitError: PropTypes.func,
     /**
-     * title of the page
+     * Submitting status
      */
-    title: PropTypes.string
+    submitting: PropTypes.bool,
+    /**
+     * User search suggestions
+     */
+    userSuggestions: PropTypes.array,
+    /**
+     * User search value
+     */
+    userSearchValue: PropTypes.string,
+    /**
+     * New users
+     */
+    users: PropTypes.array,
+    /**
+     * Passed in from withFormAlert HOC
+     */
+    openConfirmAlert: PropTypes.func,
+    /**
+     * Whether or not a request for toggling lock is in progress
+     */
+    togglingLock: PropTypes.bool,
+    /**
+     * Project being edited
+     */
+    project: PropTypes.object
   }
   
   constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: this.props.location.state.directEditMode || !this.projectDefined,
-      submitting: false,
-      typeToDelete: '',
-      projectToDelete: {},
       alertOpen: false,
       alertInfo: {
         title: '',
         text: ''
       },
-      showModal: false
+      addUserEnabled: false,
+      hoveredUser: null
     }
   }
   
-  /**
-   * update page title using props after component loaded
-   */
   componentDidMount() {
+    const { actions, currentUser } = this.props
     this.prevTitle = document.title
+    
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
+      actions.initProject(this.projectDefined)
     } else {
       document.title = `PHLIP - Add Project`
+      actions.initProject({ projectUsers: [currentUser], createdById: currentUser.userId })
     }
   }
   
-  componentDidUpdate() {
-    if (this.state.submitting === true) {
-      if (this.props.formError !== null) {
-        this.setState({
-          submitting: false
-        })
-        this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack) {
-        this.props.history.push('/home')
+  componentDidUpdate(prevProps) {
+    const { formError, onSubmitError, history, goBack, submitting, togglingLock } = this.props
+    
+    if ((prevProps.submitting && !submitting) || (prevProps.togglingLock && !togglingLock)) {
+      if (formError !== null) {
+        onSubmitError(formError)
+      } else if (goBack) {
+        history.push('/home')
       }
     }
   }
@@ -135,22 +162,13 @@ export class AddEditProject extends Component {
   }
   
   /**
-   *
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
-   *
    * @public
    */
   onCancel = () => {
-    this.props.formActions.reset('projectForm')
-    if (this.props.location.state.directEditMode) {
-      this.props.history.push('/home')
-    } else {
-      return this.state.edit
-        ? this.projectDefined
-          ? this.setState({ edit: !this.state.edit })
-          : this.props.history.push('/home')
-        : this.props.history.push('/home')
-    }
+    const { formActions, history } = this.props
+    formActions.reset('projectForm')
+    history.push('/home')
   }
   
   /**
@@ -160,13 +178,11 @@ export class AddEditProject extends Component {
    * @param {Object} values
    */
   handleSubmit = values => {
-    this.setState({
-      submitting: true
-    })
+    const { actions } = this.props
     
     this.projectDefined
-      ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
-      : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
+      ? actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
+      : actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
   }
   
   /**
@@ -185,8 +201,14 @@ export class AddEditProject extends Component {
    * @param {Object} values
    */
   validateProjectName = values => {
+    const { projects } = this.props
+    
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-    const names = this.props.projects.map(project => project.name.toLowerCase())
+    const projectsWoCurrent = this.projectDefined
+      ? projects.filter(project => project.id !== this.projectDefined.id)
+      : projects
+    
+    const names = projectsWoCurrent.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
       if (names.includes(values.name.toLowerCase()) &&
         !(this.projectDefined && this.projectDefined.name === values.name)) {
@@ -202,59 +224,27 @@ export class AddEditProject extends Component {
    * @param {*} value
    * @returns {String}
    */
-  required = value => (
-    value ? undefined : 'Required'
-  )
+  required = value => value ? undefined : 'Required'
   
   /**
-   * Sets the form to edit mode
-   * @public
+   * Gets button text adds a spinner if a saving is happening
+   * @param text
+   * @returns {*}
    */
-  onEditForm = () => {
-    this.setState({
-      edit: !this.state.edit
-    })
-  }
-  
-  /**
-   * Determines the modal title depending on whether it's add / edit / view
-   *
-   * @public
-   * @returns {String}
-   */
-  getModalTitle = () => this.projectDefined
-    ? this.state.edit
-      ? 'Edit Project'
-      : 'Project Details'
-    : 'Create New Project'
-  
-  /**
-   * Formats dates in form to locale date string
-   *
-   * @public
-   * @param {*} value
-   * @param {String} name
-   * @returns {String}
-   */
-  formatDate = (value, name) => new Date(value).toLocaleDateString()
-  
   getButtonText = text => {
-    if (this.state.submitting) {
-      return (
-        <>
-          {text}
-          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
-        </>
-      )
-    } else {
-      return <>{text}</>
-    }
+    return (
+      <>
+        {text}
+        {this.props.submitting && <CircularLoader size={15} style={{ marginLeft: 10 }} />}
+      </>
+    )
   }
   
+  /**
+   * Shows a modal asking user to confirm deletion of project
+   */
   handleShowDeleteConfirm = () => {
     this.setState({
-      typeToDelete: 'Project',
-      [`projectToDelete`]: this.projectDefined.id,
       alertOpen: true,
       alertInfo: {
         title: 'Warning',
@@ -263,53 +253,151 @@ export class AddEditProject extends Component {
     })
   }
   
+  /*
+   * Handles when the user confirms deletion of project
+   */
   handleDeleteConfirm = () => {
     this.onCancel()
     this.props.actions.deleteProjectRequest(this.projectDefined.id)
   }
   
+  /**
+   * Handles when the user confirms cancels deletion of project
+   */
   onCancelDelete = () => {
     this.setState({
       alertOpen: false,
-      alertInfo: {},
-      typeToDelete: ''
+      alertInfo: {}
     })
   }
   
+  /**
+   * Closes an alert on the page
+   */
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
   
+  /**
+   * Search user list for adding a user
+   * @param value
+   */
+  onUsersFetchRequest = ({ value }) => {
+    this.props.actions.searchUserList(value)
+  }
+  
+  /**
+   * When a user was selected
+   * @param event
+   * @param suggestionValue
+   */
+  onUserSelected = (event, { suggestionValue }) => {
+    this.props.actions.onUserSelected(suggestionValue)
+    this.setState({
+      addUserEnabled: false
+    })
+  }
+  
+  /**
+   * User changed their search value
+   * @param event
+   */
+  onUserSuggestionChange = event => {
+    this.props.actions.onSuggestionValueChanged(event.target.value)
+  }
+  
+  /**
+   * Clears suggestion list
+   */
+  onClearUserSuggestions = () => {
+    this.props.actions.onClearSuggestions()
+  }
+  
+  /**
+   * Removes a user from the list
+   * @returns {*}
+   */
+  removeUser = index => () => {
+    this.props.actions.removeUserFromList(index)
+  }
+  
+  /**
+   * Changes background color when user hovers over a user in the list
+   * @param index
+   */
+  onHoverUser = index => () => {
+    const { hoveredUser } = this.state
+    const { project } = this.props
+    
+    if (project.status !== 2) {
+      this.setState({
+        hoveredUser: hoveredUser === index ? null : index
+      })
+    }
+  }
+  
+  /**
+   * Checks whether there have been updates to the users list; if not delegates it to the form alert
+   */
+  onCloseModal = () => {
+    const { users, onCloseModal, openConfirmAlert } = this.props
+    
+    if (this.projectDefined) {
+      if (users.length !== this.projectDefined.projectUsers.length) {
+        openConfirmAlert()
+      } else {
+        onCloseModal()
+      }
+    } else if (users.length > 1) {
+      openConfirmAlert()
+    } else {
+      onCloseModal()
+    }
+  }
+  
+  /**
+   * Enables the add user field
+   * @returns {*}
+   */
+  onEnabledAddUser = () => {
+    this.setState({
+      addUserEnabled: true
+    })
+  }
+  
+  /**
+   * Handles locking / unlocking a project
+   */
+  handleToggleLock = () => {
+    const { actions, project } = this.props
+    
+    if (project.status === 2) {
+      actions.unlockProjectRequest(project, 1)
+    } else {
+      actions.lockProjectRequest(project, 2)
+    }
+  }
+  
   render() {
-    const editAction = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+    const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
+    const { currentUser, location, submitting, userSuggestions, userSearchValue, users, project } = this.props
+    
+    const isLocked = project.status === 2
+    const actions = [
+      { value: 'Cancel', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
       {
-        value: 'Edit',
-        onClick: this.onEditForm,
-        disabled: this.props.userRole === 'Coder',
-        type: 'button',
-        otherProps: { 'aria-label': 'Edit this project' }
+        value: this.projectDefined
+          ? this.getButtonText('Save')
+          : this.getButtonText('Create'),
+        type: 'submit',
+        disabled: submitting || isLocked,
+        otherProps: { 'aria-label': 'Save form' }
       }
     ]
-    
-    const actions = this.projectDefined && !this.state.edit
-      ? editAction
-      : [
-        { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
-        {
-          value: this.projectDefined
-            ? this.getButtonText('Save')
-            : this.getButtonText('Create'),
-          type: 'submit',
-          disabled: this.state.submitting === true,
-          otherProps: { 'aria-label': 'Save form' }
-        }
-      ]
     
     const options = [
       { value: 1, label: 'Legal Scan' },
       { value: 2, label: 'Policy Surveillance' }
-      //{ value: 3, label: 'Environmental Scan' }
     ]
     
     const alertActions = [
@@ -320,36 +408,68 @@ export class AddEditProject extends Component {
       }
     ]
     
+    let modalButtons = undefined
+    const LockButton = (
+      <Button color="primary" onClick={this.handleToggleLock}>
+        {isLocked ? 'Unlock' : 'Lock'}
+      </Button>
+    )
+    
+    if (this.projectDefined) {
+      if (currentUser.role === 'Admin') {
+        modalButtons = (
+          <>
+            {/*<span style={{ marginRight: 10 }}>{LockButton}</span>*/}
+            <Button
+              color={isLocked ? `rgba(0, 0, 0, 0.12)` : 'error'}
+              disabled={isLocked}
+              onClick={this.handleShowDeleteConfirm}>
+              Delete
+            </Button>
+          </>
+        )
+      } else {
+        modalButtons = LockButton
+      }
+    }
+    
     return (
       <>
-        <Alert
-          open={this.state.alertOpen}
-          actions={alertActions}
-          onCloseAlert={this.onCancelDelete}
-          title={this.state.alertInfo.title}>
-          <Typography variant="body1">
-            {this.state.alertInfo.text}
-          </Typography>
+        <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
+          <Typography variant="body1">{alertInfo.text}</Typography>
         </Alert>
         <FormModal
           form="projectForm"
           handleSubmit={this.handleSubmit}
           asyncValidate={this.validateProjectName}
           asyncBlurFields={['name']}
-          onClose={this.props.onCloseModal}
-          initialValues={this.props.location.state.projectDefined || {}}
-          width="600px"
-          height="400px">
+          onClose={this.onCloseModal}
+          maxWidth="lg"
+          style={{ height: '90%', width: '80%' }}
+          formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+          initialValues={location.state.projectDefined || {}}>
           <ModalTitle
-            title={this.getModalTitle()}
-            closeButton={!!this.projectDefined}
-            onEditForm={this.onEditForm}
-            onCloseForm={this.onCancel}
-            buttons={(this.projectDefined && this.props.userRole === 'Admin')
-              ? <Button
-                color="accent"
-                onClick={() => this.handleShowDeleteConfirm()}>Delete</Button>
-              : undefined}
+            title={this.projectDefined
+              ? (
+                <FlexGrid container type="row" align="center" flex>
+                  {!isLocked ? 'Edit Project' : 'Project Locked'}
+                  <Tooltip title={isLocked ? 'Unlock Project' : 'Lock Project'}>
+                    <FlexGrid container type="row" align="center" style={{ height: 36, marginLeft: 10 }}>
+                      <Switch
+                        checked={isLocked}
+                        style={{ height: 36 }}
+                        onChange={this.handleToggleLock}
+                        value="status"
+                      />
+                      <Icon style={{ marginTop: -5, marginLeft: -10 }} color={isLocked ? 'error' : '#757575'} size={35}>
+                        {isLocked ? 'lock' : 'lock_open'}
+                      </Icon>
+                    </FlexGrid>
+                  </Tooltip>
+                </FlexGrid>
+              )
+              : 'Create New Project'}
+            buttons={modalButtons}
           />
           <Divider />
           <ModalContent>
@@ -360,9 +480,10 @@ export class AddEditProject extends Component {
                 label="Project Name"
                 validate={this.required}
                 placeholder="Enter Project Name"
+                disabled={isLocked}
                 fullWidth
-                required={this.projectDefined ? this.state.edit : true}
-                disabled={!this.state.edit}
+                required
+                shrinkLabel
               />
               <DetailRow
                 name="type"
@@ -371,27 +492,87 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
-                required={this.projectDefined ? this.state.edit : true}
+                disabled={isLocked}
+                shrinkLabel={false}
+                required
                 style={{ display: 'flex' }}
-                disabled={!this.state.edit}
               />
-              {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled
-                label="Created By"
-                name="createdBy"
-              />}
-              {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled
-                label="Created Date"
-                name="dateCreated"
-                format={this.formatDate}
-                style={{ paddingBottom: 0 }}
-              />
-              }
+              <FlexGrid container padding="0 0 25px">
+                <FlexGrid container type="row" align="center">
+                  <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
+                  {!isLocked && <IconButton
+                    iconSize={18}
+                    color="primary"
+                    onClick={this.onEnabledAddUser}
+                    tooltipText="Add User">
+                    person_add
+                  </IconButton>}
+                </FlexGrid>
+                {addUserEnabled && <Autocomplete
+                  name="name"
+                  suggestions={userSuggestions}
+                  handleGetSuggestions={this.onUsersFetchRequest}
+                  handleClearSuggestions={this.onClearUserSuggestions}
+                  InputProps={{
+                    placeholder: 'Search for user by name'
+                  }}
+                  inputProps={{
+                    value: userSearchValue,
+                    onChange: this.onUserSuggestionChange,
+                    id: 'add-user-name'
+                  }}
+                  handleSuggestionSelected={this.onUserSelected}
+                />}
+                <FlexGrid container>
+                  {users.length > 0 && users.map((user, i) => {
+                    const isCreator = this.projectDefined
+                      ? user.userId === this.projectDefined.createdById
+                      : user.userId === currentUser.userId
+                    const userName = `${user.firstName} ${user.lastName}`
+                    const hovered = i === hoveredUser
+  
+                    return (
+                      <FlexGrid
+                        key={`project-user-${i}`}
+                        container
+                        type="row"
+                        padding="6px 6px 6px 0"
+                        align="center"
+                        onMouseEnter={this.onHoverUser(i)}
+                        onMouseLeave={this.onHoverUser(i)}
+                        style={{
+                          borderBottom: (users.length > 1 && i !== users.length - 1)
+                            ? `1px solid rgba(197, 197, 197, 0.42)`
+                            : '',
+                          backgroundColor: hovered ? '#f1f1f1' : 'white'
+                        }}>
+                        <FlexGrid container type="row" align="center" flex>
+                          <Typography
+                            style={{
+                              color: !isLocked
+                                ? 'black'
+                                : `rgba(0, 0, 0, 0.54)`
+                            }}>
+                            {userName}
+                          </Typography>
+                          <Typography variant="caption" style={{ margin: '0 10px' }}>
+                            ({isCreator ? 'Creator' : user.role})
+                          </Typography>
+                        </FlexGrid>
+                        {(!isCreator && currentUser.id !== user.userId)
+                        && hovered
+                        && <IconButton
+                          onClick={this.removeUser(i)}
+                          color="#757575"
+                          iconSize={16}
+                          tooltipText={`Remove ${userName}`}>
+                          delete
+                        </IconButton>}
+                      </FlexGrid>
+                    )
+                  })}
+                </FlexGrid>
+              </FlexGrid>
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
@@ -402,17 +583,27 @@ export class AddEditProject extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  projects: Object.values(state.data.projects.byId) || [],
-  form: state.form.projectForm || {},
-  formName: 'projectForm',
-  userRole: state.data.user.currentUser.role || '',
-  formError: state.scenes.home.addEditProject.formError || null,
-  goBack: state.scenes.home.addEditProject.goBack || false
-})
+const mapStateToProps = state => {
+  const addEditState = state.scenes.home.addEditProject
+  
+  return {
+    projects: Object.values(state.data.projects.byId) || [],
+    project: addEditState.project || {},
+    form: state.form.projectForm || {},
+    formName: 'projectForm',
+    currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
+    formError: addEditState.formError,
+    goBack: addEditState.goBack,
+    submitting: addEditState.submitting,
+    userSearchValue: addEditState.userSearchValue,
+    userSuggestions: addEditState.userSuggestions,
+    users: addEditState.project.users,
+    togglingLock: addEditState.togglingLock
+  }
+}
 
 /* istanbul ignore next */
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })

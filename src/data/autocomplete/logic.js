@@ -3,6 +3,7 @@ import { types } from './actions'
 
 const getJurisdictionSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
+  latest: true,
   async process({ action, api }, dispatch, done) {
     try {
       const jurisdictions = await api.searchJurisdictionList({}, {
@@ -27,6 +28,7 @@ const getJurisdictionSuggestionsLogic = createLogic({
 
 const getProjectSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
+  latest: true,
   async process({ api, action }, dispatch, done) {
     try {
       let projects = await api.searchProjectList({}, {
@@ -47,7 +49,6 @@ const getProjectsByUserLogic = createLogic({
   type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
     try {
-      // let projects = await api.getProjects({}, {
       let projects = await api.searchProjectListByUser({}, {
         params: {
           userId: action.userId,

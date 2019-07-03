@@ -160,7 +160,12 @@ const getDocLogic = createLogic({
   type: types.GET_DOCUMENTS_REQUEST,
   async process({ getState, docApi, api }, dispatch, done) {
     try {
-      let documents = await docApi.getDocs()
+      const user = getState().data.user.currentUser
+      const allIds = getState().data.projects.allIds
+      let listParam = allIds.length === 0 ? 'projects[]=' : ''
+      allIds.forEach((id, i) => listParam = `${listParam}projects[]=${id}${i === allIds.length - 1 ? '' : '&'}`)
+      
+      let documents = await docApi.getDocs({}, {}, user.role !== 'Admin' ? listParam : '')
       documents = documents.map(document => ({
         ...document,
         uploadedByName: `${document.uploadedBy.firstName} ${document.uploadedBy.lastName}`
@@ -301,6 +306,33 @@ const cleanDocProjectLogic = createLogic({
   }
 })
 
+/**
+ * Send request to the doc-manage-backend to remove the projectId from list of documents
+ * when succeed, remove all references to project id from redux store
+ */
+const bulkRemoveProjectLogic = createLogic({
+  type: types.BULK_REMOVE_PROJECT_REQUEST,
+  async process({ getState, docApi, action }, dispatch, done) {
+    let projectMeta = action.projectMeta
+    let selectedDocs = action.selectedDocs
+    try {
+      await docApi.cleanProject({ 'docIds': selectedDocs }, {}, { 'projectId': projectMeta.id })
+      let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
+      selectedDocs.forEach(docKey => {
+        const index = cleannedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
+        if (index !== -1) { // found matching projectId
+          cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
+        }
+      })
+      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: cleannedDocs })
+      done()
+    } catch (e) {
+      dispatch({ type: types.BULK_UPDATE_FAIL, payload: 'We couldn\'t update the documents.' })
+    }
+    done()
+  }
+})
+
 export default [
   getDocLogic,
   pageRowChageLogic,
@@ -308,5 +340,6 @@ export default [
   bulkUpdateLogic,
   bulkDeleteLogic,
   cleanDocProjectLogic,
+  bulkRemoveProjectLogic,
   ...uploadLogic
 ]

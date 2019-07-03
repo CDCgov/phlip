@@ -14,7 +14,7 @@ const ProdLoginForm = ({ pivError }) => (
     </FlexGrid>
     <FlexGrid container type="row" flex padding="20px 0 0" justify="center">
       <FlexGrid padding={16}>
-        <Button href={APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
+        <Button href={APP_SAML_REQUEST_URL} type="button" color="secondary" value="PIV Login" />
       </FlexGrid>
     </FlexGrid>
     {pivError && <Typography color="error" align="center">{pivError}</Typography>}

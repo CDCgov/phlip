@@ -15,16 +15,29 @@ import AnnotationControls from '../AnnotationControls'
 import CodingValidationAvatar from '../CodingValidationAvatar'
 import { CheckboxBlankOutline, CheckboxMarked, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui'
 
+/* istanbul ignore next */
 const styles = theme => ({
   checked: {
     color: theme.palette.secondary.main
   }
 })
 
+/**
+ * Whether or not choice id is the enabled answer choice
+ * @param enabledAnswer
+ * @param annotationMode
+ * @returns {function(*): boolean}
+ */
 export const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => choiceId => {
   return annotationMode ? (enabledAnswer === choiceId) : false
 }
 
+/**
+ * Checks if there are any annotations for a question
+ * @param coderQuestions
+ * @param hasAnnotations
+ * @returns {*|boolean}
+ */
 export const checkForAnnotations = (coderQuestions, hasAnnotations) => {
   let total = 0
   coderQuestions.forEach(q => {
@@ -157,6 +170,7 @@ export const SelectionControlQuestion = props => {
                   schemeAnswerId={choice.id}
                   pinciteValue={userAnswers.answers[choice.id].pincite}
                   handleChangePincite={onChangePincite}
+                  disabled={disableAll}
                 />}
               </FlexGrid>
               <FlexGrid
@@ -169,7 +183,7 @@ export const SelectionControlQuestion = props => {
                 <AnnotationControls
                   onToggleViewAnnotations={onToggleViewAnnotations}
                   onToggleAnnotationMode={onToggleAnnotationMode}
-                  annoModeButtonDisabled={!isAnswered}
+                  annoModeButtonDisabled={!isAnswered || disableAll}
                   viewButtonDisabled={isValidation
                     ? !checkForAnnotations(answerList, userHasAnnotations)
                     : !userHasAnnotations

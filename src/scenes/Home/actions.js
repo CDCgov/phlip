@@ -1,4 +1,5 @@
 import makeActionCreator from 'utils/makeActionCreator'
+import { types as addEditTypes } from './scenes/AddEditProject/actions'
 
 export const types = {
   GET_PROJECTS_SUCCESS: 'GET_PROJECTS_SUCCESS',
@@ -7,15 +8,6 @@ export const types = {
   GET_PROJECT_USERS_REQUEST: 'GET_PROJECT_USERS_REQUEST',
   GET_PROJECT_USERS_FAIL: 'GET_PROJECT_USERS_FAIL',
   GET_PROJECT_USERS_SUCCESS: 'GET_PROJECT_USERS_SUCCESS',
-  UPDATE_PROJECT_REQUEST: 'UPDATE_PROJECT_REQUEST',
-  UPDATE_PROJECT_SUCCESS: 'UPDATE_PROJECT_SUCCESS',
-  UPDATE_PROJECT_FAIL: 'UPDATE_PROJECT_FAIL',
-  ADD_PROJECT_SUCCESS: 'ADD_PROJECT_SUCCESS',
-  ADD_PROJECT_REQUEST: 'ADD_PROJECT_REQUEST',
-  ADD_PROJECT_FAIL: 'ADD_PROJECT_FAIL',
-  DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
-  DELETE_PROJECT_REQUEST: 'DELETE_PROJECT_REQUEST',
-  DELETE_PROJECT_FAIL: 'DELETE_PROJECT_FAIL',
   TOGGLE_BOOKMARK: 'TOGGLE_BOOKMARK',
   TOGGLE_BOOKMARK_SUCCESS: 'TOGGLE_BOOKMARK_SUCCESS',
   SORT_PROJECTS: 'SORT_PROJECTS',
@@ -36,7 +28,9 @@ export const types = {
   CLEAR_PROJECT_TO_EXPORT: 'CLEAR_PROJECT_TO_EXPORT',
   DISMISS_API_ERROR: 'DISMISS_API_ERROR',
   UPDATE_VISIBLE_PROJECTS: 'UPDATE_VISIBLE_PROJECTS',
-  REMOVE_PROJECT: 'REMOVE_PROJECT'
+  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  TOGGLE_PROJECT: 'TOGGLE_PROJECT',
+  ...addEditTypes
 }
 
 export default {
@@ -57,5 +51,6 @@ export default {
   exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType'),
   clearProjectToExport: makeActionCreator(types.CLEAR_PROJECT_TO_EXPORT),
   dismissApiError: makeActionCreator(types.DISMISS_API_ERROR, 'errorName'),
-  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy')
+  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
+  toggleProject: makeActionCreator(types.TOGGLE_PROJECT, 'projectId')
 }

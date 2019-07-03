@@ -20,12 +20,10 @@ CircularLoader.propTypes = {
    * Type of loader: determinate, indeterminate
    */
   type: PropTypes.string,
-
   /**
    * Color of the spinning loader ring
    */
   color: PropTypes.string,
-
   /**
    * Thickness of spinner
    */

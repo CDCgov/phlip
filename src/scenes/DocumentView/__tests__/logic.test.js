@@ -21,7 +21,9 @@ describe('DocumentView logic', () => {
       initialState: {
         scenes: {
           docView: {
-            ...state
+            meta: {
+              ...state
+            }
           }
         }
       },
@@ -118,6 +120,7 @@ describe('DocumentView logic', () => {
         done()
       })
     })
+    
     test('should send a request to delete document and dispatch DELETE_DOCUMENT_FAIL on failed', done => {
       mock.onDelete('/docs/5').reply(500)
 

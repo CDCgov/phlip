@@ -16,10 +16,10 @@ export const Header = props => {
       type="row"
       align="center"
       justify="space-between"
-      padding="15px 20px"
+      padding={`15px 20px 15px ${empty ? 20 : 0}px`}
       style={{ minHeight: 36, height: 36 }}>
       <FlexGrid container type="row" align="center" padding="0 5 0 0">
-        <IconButton iconSize={24} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
+        <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
         <Typography variant="title" style={{ fontWeight: 500, paddingRight: 10, paddingLeft: 8 }}>
           {pageTitle}
         </Typography>

@@ -4,7 +4,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
 <FlexGrid
   align="stretch"
   circular={false}
-  className="undefined"
   container={true}
   flex={true}
   justify="stretch"
@@ -16,7 +15,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       "flexWrap": "nowrap",
       "height": "100%",
       "overflow": "hidden",
-      "position": "relative",
       "width": "100%",
     }
   }
@@ -176,17 +174,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
         <FlexGrid
           align="stretch"
           circular={false}
-          container={false}
-          flex={false}
-          justify="stretch"
-          padding={0}
-          raised={false}
-          style={Object {}}
-          type="column"
-        />
-        <FlexGrid
-          align="stretch"
-          circular={false}
           container={true}
           flex={true}
           justify="stretch"
@@ -196,7 +183,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             Object {
               "minHeight": 500,
               "overflow": "auto",
-              "padding": "1px 15px 20px 15px",
+              "padding": "1px 15px 20px 3px",
             }
           }
           type="row"
@@ -251,9 +238,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             handleStyles={
               Object {
                 "left": Object {
-                  "bottom": "50%",
+                  "bottom": "51.25%",
                   "height": "fit-content",
-                  "left": -4,
+                  "left": 0,
                   "top": "unset",
                   "width": "fit-content",
                 },
@@ -284,9 +271,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
               raised={false}
               style={
                 Object {
-                  "maxWidth": 15,
-                  "minWidth": 15,
-                  "width": 15,
+                  "maxWidth": 17,
+                  "minWidth": 17,
+                  "width": 17,
                 }
               }
               type="column"

@@ -4,6 +4,7 @@ import {
   default as searchActions,
   types as searchTypes
 } from './components/SearchBox/actions'
+import { types as uploadTypes } from './scenes/Upload/actions'
 
 export const types = {
   GET_DOCUMENTS_REQUEST: 'GET_DOCUMENTS_REQUEST',
@@ -13,7 +14,6 @@ export const types = {
   ON_SELECT_ONE_FILE: 'ON_SELECT_ONE_FILE',
   ON_PAGE_CHANGE: 'ON_PAGE_CHANGE',
   ON_ROWS_CHANGE: 'ON_ROWS_CHANGE',
-  UPLOAD_DOCUMENTS_SUCCESS: 'UPLOAD_DOCUMENTS_SUCCESS',
   FLUSH_STATE: 'FLUSH_STATE',
   BULK_UPDATE_REQUEST: 'BULK_UPDATE_REQUEST',
   BULK_UPDATE_SUCCESS: 'BULK_UPDATE_SUCCESS',
@@ -28,7 +28,10 @@ export const types = {
   CLEAN_PROJECT_LIST_REQUEST: 'CLEAN_PROJECT_LIST_REQUEST',
   CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
   CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
-  ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE'
+  ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE',
+  BULK_REMOVE_PROJECT_REQUEST: 'BULK_REMOVE_PROJECT_REQUEST',
+  ...searchTypes,
+  ...uploadTypes
 }
 
 export default {
@@ -44,7 +47,8 @@ export default {
   handleSearchValueChange: searchActions.updateSearchValue,
   handleFormValueChange: searchActions.updateFormValue,
   cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST, 'projectMeta'),
-  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE, 'id')
+  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE, 'id'),
+  handleBulkProjectRemove: makeActionCreator(types.BULK_REMOVE_PROJECT_REQUEST, 'projectMeta', 'selectedDocs')
 }
 
 export const projectAutocomplete = {

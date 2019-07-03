@@ -24,24 +24,32 @@ export class DocumentView extends Component {
 
   constructor(props, context) {
     super(props, context)
-
   }
 
   componentDidMount() {
-    document.title = `PHLIP - ${this.props.location.state.document.name} - View`
-    this.props.actions.initState(this.props.location.state.document)
-    this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
+    const { actions, location } = this.props
+    
+    document.title = `PHLIP - ${location.state.document.name} - View`
+    actions.initState(location.state.document)
+    actions.getDocumentContentsRequest(location.state.document._id)
   }
 
   componentWillUnmount() {
     this.props.actions.clearDocument()
   }
-
+  
+  /**
+   * Goes back to document management list
+   */
   onGoBack = () => {
     this.props.history.push('/docs')
   }
 
   render() {
+    const {
+      document, documentRequestInProgress, documentUpdateInProgress, documentDeleteError, documentDeleteInProgress
+    } = this.props
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
@@ -51,15 +59,15 @@ export class DocumentView extends Component {
           projectName=""
         />
         <FlexGrid container type="row" flex style={{ height: '100%' }}>
-          <DocumentContents loading={this.props.documentRequestInProgress} id='docContainer' />
+          <DocumentContents loading={documentRequestInProgress} id='docContainer' />
           <FlexGrid style={{ flexBasis: '2%' }} />
           <FlexGrid container type="column" style={{ flexBasis: '25%', flex: '1 1 25%' }} id = 'docMeta'>
             <DocumentMeta
-              document={this.props.document}
-              loading={this.props.documentRequestInProgress}
-              updating={this.props.documentUpdateInProgress}
-              documentDeleteError={this.props.documentDeleteError}
-              documentDeleteInProgress={this.props.documentDeleteInProgress}
+              document={document}
+              loading={documentRequestInProgress}
+              updating={documentUpdateInProgress}
+              documentDeleteError={documentDeleteError}
+              documentDeleteInProgress={documentDeleteInProgress}
               goBack={this.onGoBack}
             />
           </FlexGrid>
@@ -71,12 +79,14 @@ export class DocumentView extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = state => {
+  const docState = state.scenes.docView.meta
+  
   return {
-    document: state.scenes.docView.document,
-    documentRequestInProgress: state.scenes.docView.documentRequestInProgress,
-    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress,
-    documentDeleteInProgress: state.scenes.docView.documentDeleteInProgress,
-    documentDeleteError: state.scenes.docView.documentDeleteError
+    document: docState.document,
+    documentRequestInProgress: docState.documentRequestInProgress,
+    documentUpdatingInProgress: docState.documentUpdateInProgress,
+    documentDeleteInProgress: docState.documentDeleteInProgress,
+    documentDeleteError: docState.documentDeleteError
   }
 }
 

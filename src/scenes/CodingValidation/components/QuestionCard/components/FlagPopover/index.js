@@ -22,6 +22,12 @@ const getFlagText = (color, text, disabled) => (
   </FlexGrid>
 )
 
+/**
+ * Checks to see if the current user is the one who saved the red flag on the question (if it exists)
+ * @param questionFlags
+ * @param user
+ * @returns {*}
+ */
 const checkForRedFlag = (questionFlags, user) => questionFlags.filter(flag => flag.raisedBy.userId === user.id)
 
 export class FlagPopover extends Component {
@@ -291,7 +297,7 @@ export class FlagPopover extends Component {
                   <TableRow>
                     <TableCell padding="checkbox" style={{ width: '30%' }}>Raised By</TableCell>
                     <TableCell padding="checkbox" style={{ width: '60%' }}>Notes</TableCell>
-                    {questionFlags[0].raisedBy.userId === user.id &&
+                    {(questionFlags[0].raisedBy.userId === user.id && !disableAll) &&
                     <TableCell padding="checkbox" style={{ width: '10%' }}>Edit</TableCell>}
                   </TableRow>
                 </TableHead>
@@ -306,7 +312,7 @@ export class FlagPopover extends Component {
                         style={{ maxWidth: 300, wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
                         {flag.notes}
                       </TableCell>
-                      {flag.raisedBy.userId === user.id &&
+                      {(flag.raisedBy.userId === user.id && !disableAll) &&
                       <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
                         <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton>
                       </TableCell>}
@@ -327,6 +333,7 @@ export class FlagPopover extends Component {
                   error={helperText !== ''}
                   label="Notes"
                   required
+                  disabled={disableAll}
                   helperText={helperText}
                   placeholder="Enter Notes"
                   multiline={false}
@@ -346,6 +353,7 @@ export class FlagPopover extends Component {
                 onClick={this.onSaveRedPopover}
                 raised={false}
                 color="accent"
+                disabled={disableAll}
                 value="Save"
               />}
             </FlexGrid>

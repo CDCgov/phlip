@@ -7,7 +7,7 @@ exports[`CodingValidation scene -- Header component should render correctly 1`] 
   container={true}
   flex={false}
   justify="space-between"
-  padding="15px 20px"
+  padding="15px 20px 15px 0px"
   raised={false}
   style={
     Object {
@@ -32,7 +32,7 @@ exports[`CodingValidation scene -- Header component should render correctly 1`] 
       aria-label="Go back"
       color="black"
       disabled={false}
-      iconSize={24}
+      iconSize={30}
       tooltipText=""
     >
       arrow_back

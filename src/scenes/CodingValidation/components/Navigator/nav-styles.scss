@@ -1,12 +1,14 @@
 .navContainer {
   display: flex;
-  flex: 1;
-  padding-right: 10px;
+  flex: 1 1 auto;
   outline: none;
   overflow: hidden;
 }
 
 .navScroll {
+  overflow: auto !important;
+  height: 100% !important;
+
   &::-webkit-scrollbar {
     width: 9px;
     border-radius: 10px;

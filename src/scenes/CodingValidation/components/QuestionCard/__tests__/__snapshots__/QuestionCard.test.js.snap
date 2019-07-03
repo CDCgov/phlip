@@ -27,11 +27,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         },
       ]
     }
-    closeButton={
-      Object {
-        "value": "Cancel",
-      }
-    }
+    closeButton={Object {}}
     hideClose={false}
     onCloseAlert={[Function]}
     open={false}

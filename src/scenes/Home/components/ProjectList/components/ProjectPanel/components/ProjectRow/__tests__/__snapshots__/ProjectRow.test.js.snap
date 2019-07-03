@@ -24,11 +24,7 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
     justify="stretch"
     padding="0 0 0 24px"
     raised={false}
-    style={
-      Object {
-        "width": "24px",
-      }
-    }
+    style={Object {}}
     type="row"
   >
     <IconButton
