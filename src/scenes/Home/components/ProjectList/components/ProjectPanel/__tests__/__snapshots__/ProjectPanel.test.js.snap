@@ -10,7 +10,11 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
     justify="stretch"
     padding={0}
     raised={false}
-    style={Object {}}
+    style={
+      Object {
+        "backgroundColor": "white",
+      }
+    }
     type="column"
   >
     <FlexGrid
@@ -181,7 +185,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   aria-label="Edit Project PROJECT"
                   color="secondary"
                   disabled={false}
-                  iconSize={22}
+                  iconSize={24}
                   id="edit-project-2"
                   tooltipText="Edit Project Details"
                 >
@@ -584,7 +588,11 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
     justify="stretch"
     padding={0}
     raised={false}
-    style={Object {}}
+    style={
+      Object {
+        "backgroundColor": "white",
+      }
+    }
     type="column"
   >
     <FlexGrid
@@ -747,7 +755,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                   aria-label="Edit Project PROJECT"
                   color="secondary"
                   disabled={false}
-                  iconSize={22}
+                  iconSize={24}
                   id="edit-project-2"
                   tooltipText="Edit Project Details"
                 >

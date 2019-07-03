@@ -18,12 +18,14 @@ import {
   FlexGrid,
   Autocomplete,
   IconButton,
-  Icon
+  Icon,
+  Tooltip
 } from 'components'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
+import Switch from '@material-ui/core/Switch'
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -380,6 +382,7 @@ export class AddEditProject extends Component {
     const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
     const { currentUser, location, submitting, userSuggestions, userSearchValue, users, project } = this.props
     
+    const isLocked = project.status === 2
     const actions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
       {
@@ -387,7 +390,7 @@ export class AddEditProject extends Component {
           ? this.getButtonText('Save')
           : this.getButtonText('Create'),
         type: 'submit',
-        disabled: submitting || project.status === 2,
+        disabled: submitting || isLocked,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -408,7 +411,7 @@ export class AddEditProject extends Component {
     let modalButtons = undefined
     const LockButton = (
       <Button color="primary" onClick={this.handleToggleLock}>
-        {project.status === 2 ? 'Unlock' : 'Lock'}
+        {isLocked ? 'Unlock' : 'Lock'}
       </Button>
     )
     
@@ -416,10 +419,10 @@ export class AddEditProject extends Component {
       if (currentUser.role === 'Admin') {
         modalButtons = (
           <>
-            <span style={{ marginRight: 10 }}>{LockButton}</span>
+            {/*<span style={{ marginRight: 10 }}>{LockButton}</span>*/}
             <Button
-              color={project.status === 2 ? `rgba(0, 0, 0, 0.12)` : 'error'}
-              disabled={project.status === 2}
+              color={isLocked ? `rgba(0, 0, 0, 0.12)` : 'error'}
+              disabled={isLocked}
               onClick={this.handleShowDeleteConfirm}>
               Delete
             </Button>
@@ -447,9 +450,24 @@ export class AddEditProject extends Component {
           initialValues={location.state.projectDefined || {}}>
           <ModalTitle
             title={this.projectDefined
-              ? project.status === 1
-                ? 'Edit Project'
-                : <>Project Locked<Icon color="error" style={{ marginLeft: 8 }}>lock</Icon></>
+              ? (
+                <FlexGrid container type="row" align="center" flex>
+                  {!isLocked ? 'Edit Project' : 'Project Locked'}
+                  <Tooltip title={isLocked ? 'Unlock Project' : 'Lock Project'}>
+                    <FlexGrid container type="row" align="center" style={{ height: 36, marginLeft: 10 }}>
+                      <Switch
+                        checked={isLocked}
+                        style={{ height: 36 }}
+                        onChange={this.handleToggleLock}
+                        value="status"
+                      />
+                      <Icon style={{ marginTop: -5, marginLeft: -10 }} color={isLocked ? 'error' : '#757575'} size={35}>
+                        {isLocked ? 'lock' : 'lock_open'}
+                      </Icon>
+                    </FlexGrid>
+                  </Tooltip>
+                </FlexGrid>
+              )
               : 'Create New Project'}
             buttons={modalButtons}
           />
@@ -462,7 +480,7 @@ export class AddEditProject extends Component {
                 label="Project Name"
                 validate={this.required}
                 placeholder="Enter Project Name"
-                disabled={project.status === 2}
+                disabled={isLocked}
                 fullWidth
                 required
                 shrinkLabel
@@ -474,7 +492,7 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
-                disabled={project.status === 2}
+                disabled={isLocked}
                 shrinkLabel={false}
                 required
                 style={{ display: 'flex' }}
@@ -482,7 +500,7 @@ export class AddEditProject extends Component {
               <FlexGrid container padding="0 0 25px">
                 <FlexGrid container type="row" align="center">
                   <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
-                  {project.status !== 2 && <IconButton
+                  {!isLocked && <IconButton
                     iconSize={18}
                     color="primary"
                     onClick={this.onEnabledAddUser}
@@ -531,7 +549,7 @@ export class AddEditProject extends Component {
                         <FlexGrid container type="row" align="center" flex>
                           <Typography
                             style={{
-                              color: project.status !== 2
+                              color: !isLocked
                                 ? 'black'
                                 : `rgba(0, 0, 0, 0.54)`
                             }}>

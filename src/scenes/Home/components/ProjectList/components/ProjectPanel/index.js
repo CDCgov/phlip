@@ -242,7 +242,7 @@ export class ProjectPanel extends Component {
                       {isLocked && isCoder && <Icon>lock</Icon>}
                       {isLocked && !isCoder && <IconButton
                         color="secondary"
-                        iconSize={22}
+                        iconSize={24}
                         id={`unlock-project-${project.id}`}
                         tooltipText="Unlock Project"
                         aria-label={`Unlock Project ${project.name}`}
@@ -251,7 +251,7 @@ export class ProjectPanel extends Component {
                       </IconButton>}
                       {!isCoder && !isLocked && <IconButton
                         color="secondary"
-                        iconSize={22}
+                        iconSize={24}
                         id={`edit-project-${project.id}`}
                         tooltipText="Edit Project Details"
                         aria-label={`Edit Project ${project.name}`}
