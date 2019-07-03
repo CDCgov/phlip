@@ -206,23 +206,47 @@ export class DocumentManagement extends Component {
   handleBulkConfirm = () => {
     const { bulkActionType } = this.state
     const { actions, selectedProject, selectedJurisdiction, checkedDocs } = this.props
-    
-    if (bulkActionType === 'delete') {
-      actions.handleBulkDelete(checkedDocs)
-    } else {
-      let updateData = {}
-      if (bulkActionType === 'approve') {
-        updateData = {
-          updateType: 'status'
+    switch (bulkActionType) {
+      case 'delete' :
+        actions.handleBulkDelete(checkedDocs)
+        break
+      case 'removeproject':
+        let projectMeta = {
+          id: selectedProject.id
         }
-      } else {
-        updateData = {
-          updateType: `${bulkActionType}s`,
-          updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+        actions.handleBulkProjectRemove(projectMeta, checkedDocs)
+        break
+      default:
+        let updateData = {}
+        if (bulkActionType === 'approve') {
+          updateData = {
+            updateType: 'status'
+          }
+        } else {
+          updateData = {
+            updateType: `${bulkActionType}s`,
+            updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+          }
         }
-      }
-      actions.handleBulkUpdate(updateData, checkedDocs)
+        actions.handleBulkUpdate(updateData, checkedDocs)
     }
+
+    // if (bulkActionType === 'delete') {
+    //   actions.handleBulkDelete(checkedDocs)
+    // } else {
+    //   let updateData = {}
+    //   if (bulkActionType === 'approve') {
+    //     updateData = {
+    //       updateType: 'status'
+    //     }
+    //   } else {
+    //     updateData = {
+    //       updateType: `${bulkActionType}s`,
+    //       updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
+    //     }
+    //   }
+    //   actions.handleBulkUpdate(updateData, checkedDocs)
+    // }
   }
   
   /**
@@ -271,6 +295,7 @@ export class DocumentManagement extends Component {
         info.disabled = checkedCount === 0
         break
       case 'project':
+      case 'removeproject' :
         info.disabled = Object.keys(selectedProject).length === 0 || checkedCount === 0
         break
       case 'jurisdiction':
@@ -294,8 +319,8 @@ export class DocumentManagement extends Component {
     const { bulkActionType, showModal } = this.state
     
     const suggestionProps = {
-      suggestions: bulkActionType === 'project' ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: bulkActionType === 'project' ? projectSearchValue : jurisdictionSearchValue
+      suggestions: bulkActionType.includes('project') ? projectSuggestions : jurisdictionSuggestions,
+      searchValue: bulkActionType.includes('project') ? projectSearchValue : jurisdictionSearchValue
     }
     
     return (
