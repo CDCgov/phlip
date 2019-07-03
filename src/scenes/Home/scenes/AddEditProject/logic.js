@@ -36,9 +36,9 @@ export const updateProjectLogic = createLogic({
     try {
       const updatedProject = await api.updateProject(action.project, {}, { projectId: action.project.id })
       dispatch({ type: types.UPDATE_PROJECT_SUCCESS })
+      await handleUserImages(updatedProject.projectUsers, getState().data.user.byId, dispatch, api)
       dispatch({ type: projectTypes.UPDATE_PROJECT, payload: updatedProject })
       dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: {} })
-      await handleUserImages(updatedProject.projectUsers, getState().data.user.byId, dispatch, api)
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_FAIL,
