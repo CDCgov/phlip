@@ -147,14 +147,14 @@ describe('Home scene - AddEditProject logic', () => {
     
     test('should update the project at the global level', done => {
       store.whenComplete(() => {
-        expect(store.actions[2]).toEqual({ type: projectTypes.UPDATE_PROJECT, payload: project })
+        expect(store.actions[4]).toEqual({ type: projectTypes.UPDATE_PROJECT, payload: project })
         done()
       })
     })
     
     test('should update visible projects', done => {
       store.whenComplete(() => {
-        expect(store.actions[3]).toEqual({
+        expect(store.actions[5]).toEqual({
           type: types.UPDATE_VISIBLE_PROJECTS, payload: {}
         })
         done()
