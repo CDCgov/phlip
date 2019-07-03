@@ -128,7 +128,12 @@ export const updateUserId = createLogic({
     const users = getState().scenes.home.addEditProject.project.users.map(user => user.userId)
     next({
       ...action,
-      project: { ...action.project, userId: getState().data.user.currentUser.id, users }
+      project: {
+        ...action.project,
+        userId: getState().data.user.currentUser.id,
+        users,
+        status: getState().scenes.home.addEditProject.project.status
+      }
     })
   }
 })
