@@ -184,11 +184,11 @@ exports[`Main scene should render correctly 1`] = `
     />
     <Route
       component={[Function]}
-      path="/project/:projectId/coding-scheme/add"
+      path="/project/:id/coding-scheme/add"
     />
     <Route
       component={[Function]}
-      path="/project/:projectId/coding-scheme/:id"
+      path="/project/:id/coding-scheme/edit/:questionId"
     />
     <Route
       component={[Function]}

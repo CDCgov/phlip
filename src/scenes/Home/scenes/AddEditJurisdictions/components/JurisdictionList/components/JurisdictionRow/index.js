@@ -6,7 +6,17 @@ import IconButton from 'components/IconButton'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
 
-export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
+/**
+ * Table row for a jurisdiction
+ * @param jurisdiction
+ * @param id
+ * @param onDelete
+ * @param projectId
+ * @param disableAll
+ * @returns {*}
+ * @constructor
+ */
+export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId, disableAll }) => {
   return (
     <TableRow key={`jurisdiction-${id}`}>
       <TableCell key={`${id}-segment-name`} id={`${id}-segment-name`}>
@@ -18,7 +28,7 @@ export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
       <TableCell key={`${id}-segment-end-date`} id={`${id}-segment-end-date`}>
         {new Date(jurisdiction.endDate).toLocaleDateString()}
       </TableCell>
-      <TableCell key={`${id}-edit`} id={`${id}-edit`}>
+      {!disableAll && <TableCell key={`${id}-edit`} id={`${id}-edit`}>
         <TextLink
           to={{
             pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`,
@@ -26,10 +36,10 @@ export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
           }}>
           <IconButton color="accent">mode_edit</IconButton>
         </TextLink>
-      </TableCell>
-      <TableCell key={`${id}-delete`} id={`${id}-delete`}>
+      </TableCell>}
+      {!disableAll && <TableCell key={`${id}-delete`} id={`${id}-delete`}>
         <IconButton onClick={() => onDelete(id, jurisdiction.name)} color="accent">delete</IconButton>
-      </TableCell>
+      </TableCell>}
     </TableRow>
   )
 }
@@ -38,9 +48,11 @@ JurisdictionRow.propTypes = {
   jurisdiction: PropTypes.object,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onDelete: PropTypes.func,
-  projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  disableAll: PropTypes.bool
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdictions.byId[ownProps.id]
 })

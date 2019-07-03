@@ -7,7 +7,17 @@ import { Route, Link } from 'react-router-dom'
 import actions from './actions'
 import Scheme from './components/Scheme'
 import AddEditQuestion from './scenes/AddEditQuestion'
-import { ApiErrorAlert, ApiErrorView, FlexGrid, Icon, Alert, withTracking, PageHeader, Button } from 'components'
+import {
+  ApiErrorAlert,
+  ApiErrorView,
+  FlexGrid,
+  Icon,
+  Alert,
+  withTracking,
+  PageHeader,
+  Button,
+  withProjectLocked
+} from 'components'
 
 /**
  * Coding Scheme screen main component, rendered when the user clicks 'Edit' under the Coding Scheme table header. This
@@ -79,7 +89,12 @@ export class CodingScheme extends Component {
     /**
      *  current logged in user
      */
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    /**
+     * Whether or not the project has been finalized (locked) by an admin or coordinator. Different from being 'checked
+     * out'
+     */
+    projectLocked: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -235,9 +250,7 @@ export class CodingScheme extends Component {
    *  release the lock when user click on release lock button
    */
   overrideLock = () => {
-    this.props.actions.unlockCodingSchemeRequest(this.props.projectId, this.props.lockInfo.userId) // unlock using the
-    // id of the user
-    // who locked it
+    this.props.actions.unlockCodingSchemeRequest(this.props.projectId, this.props.lockInfo.userId)
     this.onCloseLockedAlert()
   }
   
@@ -283,10 +296,14 @@ export class CodingScheme extends Component {
   }
   
   render() {
-    /**
-     * Actions for the 'Go Back' alert modal
-     * @type {*[]}
-     */
+    const {
+      projectLocked, currentUser, alertError, lockedAlert, lockInfo, projectName, projectId, lockedByCurrentUser,
+      questions, hasLock, schemeError, empty, actions, outline, flatQuestions
+    } = this.props
+    
+    const { goBackAlertOpen, deleteQuestionAlertOpen } = this.state
+    
+    // Actions for the 'Go Back' alert modal
     const alertActions = [
       {
         value: 'Check in',
@@ -295,18 +312,17 @@ export class CodingScheme extends Component {
         preferred: true
       }
     ]
-    /**
-     *  add a release lock if the user was an admin
-     */
+    
+    // add a release lock if the user is an admin
     let lockedAlertAction = []
-    if (this.props.currentUser.role === 'Admin') {
+    if (currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
     
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <Alert
-          open={this.state.goBackAlertOpen}
+          open={goBackAlertOpen}
           onCloseAlert={this.onCloseGoBackAlert}
           title="You have checked out the coding scheme."
           actions={alertActions}>
@@ -315,7 +331,7 @@ export class CodingScheme extends Component {
           </Typography>
         </Alert>
         <Alert
-          open={this.state.deleteQuestionAlertOpen}
+          open={deleteQuestionAlertOpen}
           title="Warning"
           onCloseAlert={this.onCloseDeleteQuestionAlert}
           actions={this.deleteAlertActions}>
@@ -323,52 +339,47 @@ export class CodingScheme extends Component {
             You will permanently delete this question, and all related questions and coded answers from the coding scheme. Do you want to continue?
           </Typography>
         </Alert>
-        <ApiErrorAlert
-          content={this.props.alertError}
-          open={this.props.alertError !== ''}
-          onCloseAlert={this.onCloseAlert}
-        />
+        <ApiErrorAlert content={alertError} open={alertError !== ''} onCloseAlert={this.onCloseAlert} />
         <Alert
           onCloseAlert={this.onCloseLockedAlert}
           actions={lockedAlertAction}
           closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
-          open={this.props.lockedAlert !== null}
+          open={lockedAlert !== null}
           title={
             <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
               The Coding Scheme is checked out.
             </>
           }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is editing the coding scheme. You are unable to edit until they save their changes.
-            {this.props.currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session.'}
+            {`${lockInfo.firstName} ${lockInfo.lastName} `} is editing the coding scheme. You are unable to edit until they save their changes.
+            {currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session.'}
           </Typography>
         </Alert>
         <PageHeader
-          projectName={this.props.projectName}
-          projectId={this.props.projectId}
+          projectName={projectName}
+          projectId={projectId}
           pageTitle="Coding Scheme"
           protocolButton
           onBackButtonClick={this.onGoBack}
           checkoutButton={{
             isLink: false,
-            text: this.props.lockedByCurrentUser ? 'Check in' : 'Check out',
+            text: lockedByCurrentUser ? 'Check in' : 'Check out',
             props: {
-              onClick: this.props.lockedByCurrentUser
+              onClick: lockedByCurrentUser
                 ? this.handleUnlockCodingScheme
                 : this.handleLockCodingScheme
             },
-            show: this.props.questions.length > 0 ||
-              (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
+            show: (questions.length > 0 || (questions.length === 0 && lockedByCurrentUser)) && !projectLocked
           }}
           otherButton={{
             isLink: true,
             text: 'Add New Question',
-            path: `/project/${this.props.projectId}/coding-scheme/add`,
+            path: `/project/${projectId}/coding-scheme/add`,
             state: { questionDefined: null, canModify: true, modal: true },
             props: {
               'aria-label': 'Add new question to coding scheme'
             },
-            show: this.props.questions.length > 0 && (this.props.hasLock && this.props.lockedByCurrentUser)
+            show: questions.length > 0 && (hasLock && lockedByCurrentUser) && !projectLocked
           }}
         />
         <FlexGrid
@@ -378,35 +389,29 @@ export class CodingScheme extends Component {
           style={{
             backgroundColor: '#f5f5f5',
             paddingTop: 25,
-            marginLeft: (this.props.schemeError || this.props.empty) ? 0 : -30
+            marginLeft: (schemeError || empty) ? 0 : -30
           }}>
-          {this.props.schemeError !== null
-            ? <ApiErrorView error={this.props.schemeError} />
-            : this.props.empty
+          {schemeError !== null
+            ? <ApiErrorView error={schemeError} />
+            : empty
               ? this.renderGetStarted()
               : <Scheme
-                questions={this.props.questions}
+                questions={questions}
                 handleQuestionTreeChange={this.handleQuestionTreeChange}
                 handleQuestionNodeMove={this.handleQuestionNodeMove}
-                handleHoverOnQuestion={this.props.actions.toggleHover}
+                handleHoverOnQuestion={actions.toggleHover}
                 handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
-                disableHover={this.props.actions.disableHover}
-                enableHover={this.props.actions.enableHover}
-                projectId={this.props.projectId}
-                outline={this.props.outline}
-                flatQuestions={this.props.flatQuestions}
-                lockedByCurrentUser={this.props.lockedByCurrentUser}
-                hasLock={this.props.hasLock}
+                disableHover={actions.disableHover}
+                enableHover={actions.enableHover}
+                projectId={projectId}
+                outline={outline}
+                flatQuestions={flatQuestions}
+                lockedByCurrentUser={lockedByCurrentUser}
+                hasLock={hasLock}
               />}
         </FlexGrid>
-        <Route
-          path="/project/:projectId/coding-scheme/add"
-          component={AddEditQuestion}
-        />
-        <Route
-          path="/project/:projectId/coding-scheme/edit/:id"
-          component={AddEditQuestion}
-        />
+        <Route path="/project/:id/coding-scheme/add" component={AddEditQuestion} />
+        <Route path="/project/:id/coding-scheme/edit/:questionId" component={AddEditQuestion} />
       </FlexGrid>
     )
   }
@@ -431,6 +436,9 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 /* istanbul ignore next */
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingScheme, 'Coding Scheme'))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withProjectLocked(withTracking(CodingScheme, 'Coding Scheme')))

@@ -9,7 +9,7 @@ import Navigator from './components/Navigator'
 import DocumentList from './components/DocumentList'
 import actions from './actions'
 import {
-  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
+  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid, withProjectLocked
 } from 'components'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import Resizable from 're-resizable'
@@ -50,7 +50,12 @@ export class CodingValidation extends Component {
     classes: PropTypes.object,
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
-    match: PropTypes.object
+    match: PropTypes.object,
+    /**
+     * Whether or not the project has been finalized (locked) by an admin or coordinator. Different from being 'checked
+     * out'
+     */
+    projectLocked: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -605,7 +610,7 @@ export class CodingValidation extends Component {
     const {
       showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       questionOrder, isSchemeEmpty, schemeError, areJurisdictionsEmpty, saveFlagErrorContent,
-      getRequestInProgress, user, currentIndex, showNextButton, question, project
+      getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
     } = this.props
     
     const {
@@ -651,7 +656,8 @@ export class CodingValidation extends Component {
           content={getQuestionErrors}
           onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
         />
-        {showNav && <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.onQuestionSelectedInNav} />}
+        {showNav &&
+        <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.onQuestionSelectedInNav} />}
         <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             project={project}
@@ -703,6 +709,7 @@ export class CodingValidation extends Component {
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
                           currentIndex={currentIndex}
+                          disableAll={projectLocked}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}
                           totalLength={questionOrder.length}
@@ -806,4 +813,4 @@ const mapStateToProps = (state, ownProps) => {
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
-export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingValidation))
+export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(withTracking(CodingValidation)))
