@@ -20,8 +20,7 @@ const logoutLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     logout()
     if (APP_IS_SAML_ENABLED === '1') {
-      console.log(persistor)
-      samsLogout(api)
+      samsLogout()
     }
 
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
@@ -31,7 +30,7 @@ const logoutLogic = createLogic({
   }
 })
 
-const samsLogout = async (api) => {
+const samsLogout = async () => {
 
   const user = getCookie('user').trim()
   let parsedUser = JSON.parse(user.substring(1,user.length-1))

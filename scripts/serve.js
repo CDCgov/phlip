@@ -29,8 +29,6 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
-let samlSrcLogout = 'https://auth-stg.cdc.gov'
-
 if (IS_HTTPS) {
   httpsOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
@@ -82,10 +80,10 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
     scriptSrc: [
       '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
-      '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov',samlSrcLogout
+      '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
     ],
     objectSrc: ['\'self\''],
-    connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, 'www.google-analytics.com',samlSrcLogout,'https://wisz-sams-eig01.cdc.gov'],
+    connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, 'www.google-analytics.com'],
     imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
     fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
   },
@@ -138,22 +136,21 @@ if (IS_SAML_ENABLED) {
     }
   )
 
-}
-
-// Starting point for logout
-app.get('/logout',(req, res) => {
-  const samlStrategy = passport._strategy('saml')
-  const samlProfile = {
-    user : {
-      nameID: req.query.nameID,
-      nameIDFormat: req.query.nameIDFormat,
-      sessionIndex: req.query.sessionIndex
+  // Starting point for logout
+  app.get('/logout',(req, res) => {
+    const samlStrategy = passport._strategy('saml')
+    const samlProfile = {
+      user : {
+        nameID: req.query.nameID,
+        nameIDFormat: req.query.nameIDFormat,
+        sessionIndex: req.query.sessionIndex
+      }
     }
-  }
-  samlStrategy.logout(samlProfile, (err, requestUrl) => {
-    res.send(requestUrl)
+    samlStrategy.logout(samlProfile, (err, requestUrl) => {
+      res.send(requestUrl)
+    })
   })
-})
+}
 
 app.use(express.static('./dist/'))
 app.use('/', express.static('./dist/index.html'))
