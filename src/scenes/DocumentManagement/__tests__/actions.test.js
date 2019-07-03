@@ -58,7 +58,13 @@ describe('Document management actions creators', () => {
       sortBy: 'name',
       sortDirection: 'desc'
     }
-
-    expect(actions.handleSortRequest('name','desc')).toEqual(expectedAction)
+  })
+  test('should create an action to remove a project from selected document', () => {
+    const expectedAction = {
+      type: types.BULK_REMOVE_PROJECT_REQUEST,
+      projectMeta: 1,
+      selectedDocs: [1,2]
+    }
+    expect(actions.handleBulkProjectRemove(1,[1,2])).toEqual(expectedAction)
   })
 })

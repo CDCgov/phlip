@@ -532,7 +532,7 @@ describe('Document Management logic', () => {
   describe('Cleaning Project List', () => {
     test('should remove project id if exist from documents and dispatch CLEAN_PROJECT_SUCCESS on success', done => {
       mock.onPut('/docs/cleanProjectList/5').reply(200, { n: 2, ok: 1 })
-      
+
       const store = setupStore()
       store.dispatch({
         type: types.CLEAN_PROJECT_LIST_REQUEST,
@@ -541,7 +541,7 @@ describe('Document Management logic', () => {
           name: 'Zero Dawn'
         }
       })
-      
+
       store.whenComplete(() => {
         expect(store.actions[1]).toEqual({
           type: types.CLEAN_PROJECT_LIST_SUCCESS,
@@ -554,6 +554,37 @@ describe('Document Management logic', () => {
             5: {
               ...mockDocuments.byId[5],
               projects: [12]
+            }
+          }
+        })
+        done()
+      })
+    })
+  })
+
+  describe('bulk remove Project  from selected docs', () => {
+    test('should remove project id if exist from documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
+      mock.onPut('/docs/cleanProjectList/12').reply(200, { n: 2, ok: 1 })
+
+      const store = setupStore()
+      store.dispatch({
+        type: types.BULK_REMOVE_PROJECT_REQUEST,
+        projectMeta: { id:12 },
+        selectedDocs: [1,2]
+      })
+
+      store.whenComplete(() => {
+        expect(store.actions[1]).toEqual({
+          type: types.BULK_UPDATE_SUCCESS,
+          payload: {
+            ...mockDocuments.byId,
+            1: {
+              ...mockDocuments.byId[1],
+              projects: []
+            },
+            2: {
+              ...mockDocuments.byId[2],
+              projects: [11]
             }
           }
         })
