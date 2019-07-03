@@ -8,8 +8,8 @@ import JurisdictionList from './components/JurisdictionList'
 import actions from './actions'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import { withTheme } from '@material-ui/core/styles'
-import { FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button } from 'components'
+import { FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button, withProjectLocked } from 'components'
+import theme from 'services/theme'
 
 /**
  * Main / entry component for all things jurisdiction. It is a modal that shows a list of all jurisdictions for the
@@ -39,10 +39,6 @@ export class AddEditJurisdictions extends Component {
      */
     actions: PropTypes.object,
     /**
-     * @material-ui/core styles theme
-     */
-    theme: PropTypes.object,
-    /**
      * Whether or not to show the spinning loader when loading the list of jurisdictions
      */
     showJurisdictionLoader: PropTypes.bool,
@@ -61,7 +57,11 @@ export class AddEditJurisdictions extends Component {
     /**
      * Content of error that needs to be shown
      */
-    errorContent: PropTypes.string
+    errorContent: PropTypes.string,
+    /*
+     * If the project is locked (finalized)
+     */
+    projectLocked: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -206,7 +206,8 @@ export class AddEditJurisdictions extends Component {
     ]
     
     const {
-      theme, project, error, searchValue, actions, deleteError, errorContent, showJurisdictionLoader, visibleJurisdictions
+      project, error, searchValue, actions, deleteError, errorContent, showJurisdictionLoader, visibleJurisdictions,
+      projectLocked
     } = this.props
     
     const { confirmDeleteAlertOpen, jurisdictionToDelete, deleteErrorAlertOpen } = this.state
@@ -220,7 +221,7 @@ export class AddEditJurisdictions extends Component {
               <span style={{ color: theme.palette.secondary.main }}>{project.name}</span>
             </Typography>
           }
-          buttons={error === true ? [] : this.getButton()}
+          buttons={(error === true || projectLocked) ? [] : this.getButton()}
           search
           SearchBarProps={{
             searchValue,
@@ -252,6 +253,7 @@ export class AddEditJurisdictions extends Component {
                     jurisdictions={visibleJurisdictions}
                     projectId={project.id}
                     onDelete={this.confirmDelete}
+                    disableAll={projectLocked}
                   />}
             </FlexGrid>
           </FlexGrid>
@@ -290,4 +292,4 @@ const mapDispatchToProps = dispatch => ({
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))
+)(withProjectLocked(withTracking(AddEditJurisdictions, 'Jurisdictions'))))

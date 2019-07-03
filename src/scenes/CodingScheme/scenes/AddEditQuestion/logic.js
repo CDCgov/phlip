@@ -1,5 +1,5 @@
 import { createLogic } from 'redux-logic'
-import * as types from '../../actionTypes'
+import { types } from './actions'
 import * as questionTypes from './constants'
 import { commonHelpers } from 'utils'
 
@@ -7,7 +7,7 @@ import { commonHelpers } from 'utils'
  * Adds a userID to every action so as to not repeat the code in every logic block
  */
 const updateUserIdLogic = createLogic({
-  type: [types.UPDATE_QUESTION_REQUEST],
+  type: types.UPDATE_QUESTION_REQUEST,
   transform({ getState, action }, next) {
     next({
       ...action,

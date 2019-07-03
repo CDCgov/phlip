@@ -18,7 +18,7 @@ let DevLoginForm = ({ handleSubmit, pristine, error, submitting, pivError }) => 
       {pivError && <Typography color="error" align="center">{pivError}</Typography>}
     </FlexGrid>
     <FlexGrid container type="row" flex justify="center" padding={16}>
-      <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
+      <Button type="submit" color="secondary" value="Login" disabled={pristine || submitting} />
     </FlexGrid>
     <Divider />
   </form>

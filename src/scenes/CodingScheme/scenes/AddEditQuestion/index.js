@@ -7,7 +7,7 @@ import { default as formActions } from 'redux-form/lib/actions'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import DropDown from 'components/Dropdown'
-import * as actions from './actions'
+import actions from './actions'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
 import { Field, FieldArray } from 'redux-form'
 import AnswerList from './components/AnswerList'
@@ -75,24 +75,24 @@ export class AddEditQuestion extends Component {
      * Whether or not the protocol is checked out by the current user logged in
      */
     lockedByCurrentUser: PropTypes.bool,
-
+    
     onSubmitError: PropTypes.func,
-
+    
     goBack: PropTypes.bool
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
-
+    
     this.parentDefined = this.props.location.state
       ? this.props.location.state.parentDefined
         ? this.props.location.state.parentDefined
         : null
       : null
-
+    
     this.state = {
       edit: this.questionDefined,
       submitting: false,
@@ -100,21 +100,21 @@ export class AddEditQuestion extends Component {
         ? this.props.location.state.canModify
         : this.props.lockedByCurrentUser
     }
-
+    
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
       includeComment: false,
       isCategoryQuestion: false
     }
-
+    
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
       includeComment: false,
       isCategoryQuestion: false
     }
-
+    
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false,
@@ -128,7 +128,7 @@ export class AddEditQuestion extends Component {
       ? `${document.title} - Edit Question`
       : `${document.title} - Add Question`
   }
-
+  
   componentDidUpdate() {
     if (this.state.submitting) {
       if (this.props.formError !== null) {
@@ -145,7 +145,7 @@ export class AddEditQuestion extends Component {
   componentWillUnmount() {
     document.title = this.prevTitle
   }
-
+  
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -158,7 +158,7 @@ export class AddEditQuestion extends Component {
       return <Fragment>{text}</Fragment>
     }
   }
-
+  
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
    * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
@@ -170,13 +170,13 @@ export class AddEditQuestion extends Component {
     this.setState({
       submitting: true
     })
-
+    
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
       else updatedValues[field] = values[field]
     }
-
+    
     if (values.possibleAnswers) {
       values.possibleAnswers.forEach((answer, i) => {
         if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = {
@@ -186,15 +186,26 @@ export class AddEditQuestion extends Component {
         else updatedValues.possibleAnswers[i] = answer
       })
     }
-
+    
     this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
+      ? this.props.actions.updateQuestionRequest(
+        updatedValues,
+        this.props.projectId,
+        this.questionDefined.id,
+        this.props.location.state.path
+      )
       : this.parentDefined
-        ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+        ? this.props.actions.addChildQuestionRequest(
+          updatedValues,
+          this.props.projectId,
+          this.parentDefined.id,
+          this.parentDefined,
+          this.props.location.state.path
+        )
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
-
+    
   }
-
+  
   /**
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
    *
@@ -204,7 +215,7 @@ export class AddEditQuestion extends Component {
     this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
-
+  
   /**
    * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form
    * action to change form fields and values. Values are kept for questionText and questionHint. If the type of
@@ -236,7 +247,7 @@ export class AddEditQuestion extends Component {
       this.props.formActions.initialize('questionForm', this.defaultForm, true)
     }
   }
-
+  
   /**
    * Validates that all required fields are filled out. This included every available possibleAnswer text field on the
    * form.
@@ -262,10 +273,10 @@ export class AddEditQuestion extends Component {
         errors.possibleAnswers = answersArrayErrors
       }
     }
-
+    
     return errors
   }
-
+  
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
@@ -274,9 +285,9 @@ export class AddEditQuestion extends Component {
       { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
       { value: questionTypes.CATEGORY, label: 'Tabbed' }
     ]
-
+    
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
-
+    
     const actions = [
       {
         value: 'Cancel',
@@ -293,7 +304,7 @@ export class AddEditQuestion extends Component {
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
-
+    
     return (
       <FormModal
         form="questionForm"
@@ -387,15 +398,17 @@ export class AddEditQuestion extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = (state, ownProps) => ({
-  form: state.form.questionForm || {},
-  projectId: ownProps.match.params.projectId,
-  formName: 'questionForm',
-  formError: state.scenes.codingScheme.formError || null,
-  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
-  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
-  goBack: state.scenes.codingScheme.goBack
-})
+const mapStateToProps = (state, ownProps) => {
+  return {
+    form: state.form.questionForm || {},
+    projectId: ownProps.match.params.id,
+    formName: 'questionForm',
+    formError: state.scenes.codingScheme.formError || null,
+    lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
+    hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
+    goBack: state.scenes.codingScheme.goBack
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({

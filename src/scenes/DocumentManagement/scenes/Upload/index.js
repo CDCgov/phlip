@@ -100,6 +100,14 @@ export class Upload extends Component {
      */
     projectSearchValue: PropTypes.string,
     /**
+     * Whether or not the app is searching projects
+     */
+    searchingProjects: PropTypes.bool,
+    /**
+     * Whether or not the app is searching jurisdictions
+     */
+    searchingJurisdictions: PropTypes.bool,
+    /**
      * Null or true if the no project error should be shown
      */
     noProjectError: PropTypes.any,
@@ -386,7 +394,7 @@ export class Upload extends Component {
     const {
       selectedDocs, uploading, actions, invalidFiles, alert, projectSearchValue, projectSuggestions, infoSheet,
       jurisdictionSearchValue, jurisdictionSuggestions, noProjectError, infoSheetSelected, uploadProgress,
-      infoRequestInProgress
+      infoRequestInProgress, searchingJurisdictions, searchingProjects
     } = this.props
     
     const { alertActions, closeButton } = this.state
@@ -512,6 +520,8 @@ export class Upload extends Component {
                   onSearchValueChange={this.handleSearchValueChange}
                   onSuggestionSelected={this.handleSuggestionSelected}
                   jurisdictionSearchValue={jurisdictionSearchValue}
+                  searchingJurisdictions={searchingJurisdictions}
+                  searchingProjects={searchingProjects}
                   projectSearchValue={projectSearchValue}
                   showProjectError={noProjectError === true}
                   showJurSearch={infoSheetSelected === false}
@@ -589,6 +599,8 @@ const mapStateToProps = state => {
     jurisdictionSearchValue: uploadState.jurisdictionSuggestions.searchValue,
     selectedJurisdiction: uploadState.jurisdictionSuggestions.selectedSuggestion,
     selectedProject: uploadState.projectSuggestions.selectedSuggestion,
+    searchingProjects: uploadState.projectSuggestions.searching,
+    searchingJurisdictions: uploadState.jurisdictionSuggestions.searching,
     noProjectError: uploadState.list.noProjectError,
     isReduxForm: false,
     user: state.data.user.currentUser,

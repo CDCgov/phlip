@@ -105,7 +105,15 @@ export class DocumentManagement extends Component {
     /**
      * Current user role
      */
-    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
+    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder']),
+    /**
+     * Whether or not the app is searching projects
+     */
+    searchingProjects: PropTypes.bool,
+    /**
+     * Whether or not the app is searching jurisdictions
+     */
+    searchingJurisdictions: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -230,7 +238,7 @@ export class DocumentManagement extends Component {
         }
         actions.handleBulkUpdate(updateData, checkedDocs)
     }
-
+    
     // if (bulkActionType === 'delete') {
     //   actions.handleBulkDelete(checkedDocs)
     // } else {
@@ -311,16 +319,17 @@ export class DocumentManagement extends Component {
   
   render() {
     const {
-      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount,
+      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, searchingProjects,
       actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, userRole
+      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, userRole, searchingJurisdictions
     } = this.props
     
     const { bulkActionType, showModal } = this.state
     
     const suggestionProps = {
       suggestions: bulkActionType.includes('project') ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: bulkActionType.includes('project') ? projectSearchValue : jurisdictionSearchValue
+      searchValue: bulkActionType.includes('project') ? projectSearchValue : jurisdictionSearchValue,
+      searching: bulkActionType.includes('project') ? searchingProjects : searchingJurisdictions
     }
     
     return (
@@ -420,6 +429,8 @@ const mapStateToProps = state => {
     jurisdictionSuggestions: docManage.jurisdictionSuggestions.suggestions,
     jurisdictionSearchValue: docManage.jurisdictionSuggestions.searchValue,
     selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
+    searchingProjects: docManage.projectSuggestions.searching,
+    searchingJurisdictions: docManage.jurisdictionSuggestions.searching,
     userRole: state.data.user.currentUser.role
   }
 }

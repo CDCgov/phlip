@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import {
   changeNodeAtPath,
   getTreeFromFlatData,

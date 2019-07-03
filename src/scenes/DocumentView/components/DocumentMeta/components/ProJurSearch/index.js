@@ -36,7 +36,8 @@ const ProJurSearch = props => {
     open,
     onCloseModal,
     buttonInfo,
-    onConfirmAction
+    onConfirmAction,
+    searching
   } = props
   
   const cancelButton = {
@@ -86,6 +87,7 @@ const ProJurSearch = props => {
                 placeholder: `Search ${searchType}s`,
                 fullWidth: true
               }}
+              isSearching={searching}
             />
           </FlexGrid>
         </FlexGrid>
@@ -109,7 +111,8 @@ ProJurSearch.propTypes = {
   open: PropTypes.bool,
   onCloseModal: PropTypes.func,
   buttonInfo: PropTypes.object,
-  onConfirmAction: PropTypes.func
+  onConfirmAction: PropTypes.func,
+  searching: PropTypes.bool
 }
 
 export default ProJurSearch

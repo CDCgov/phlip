@@ -40,8 +40,6 @@ const updateDocLogic = createLogic({
     const selectedDoc = getState().scenes.docView.meta.documentForm
     let updatedDoc = {}
     
-    console.log(action)
-    
     try {
       if (['jurisdictions', 'projects'].includes(action.property)) {
         if (action.updateType === 'add') {

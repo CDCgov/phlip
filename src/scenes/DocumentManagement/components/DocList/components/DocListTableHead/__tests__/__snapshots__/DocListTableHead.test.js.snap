@@ -59,6 +59,10 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
               "label": "Approve",
               "value": "approve",
             },
+            Object {
+              "label": "Remove Project",
+              "value": "removeproject",
+            },
           ]
         }
         style={

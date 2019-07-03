@@ -17,12 +17,15 @@ import {
   Alert,
   FlexGrid,
   Autocomplete,
-  IconButton
+  IconButton,
+  Icon,
+  Tooltip
 } from 'components'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
+import Switch from '@material-ui/core/Switch'
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -104,7 +107,15 @@ export class AddEditProject extends Component {
     /**
      * Passed in from withFormAlert HOC
      */
-    openConfirmAlert: PropTypes.func
+    openConfirmAlert: PropTypes.func,
+    /**
+     * Whether or not a request for toggling lock is in progress
+     */
+    togglingLock: PropTypes.bool,
+    /**
+     * Project being edited
+     */
+    project: PropTypes.object
   }
   
   constructor(props, context) {
@@ -127,17 +138,17 @@ export class AddEditProject extends Component {
     
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
-      actions.setCurrentUsers(this.projectDefined.projectUsers, this.projectDefined.createdById)
+      actions.initProject(this.projectDefined)
     } else {
       document.title = `PHLIP - Add Project`
-      actions.setCurrentUsers([currentUser], currentUser.userId)
+      actions.initProject({ projectUsers: [currentUser], createdById: currentUser.userId })
     }
   }
   
   componentDidUpdate(prevProps) {
-    const { formError, onSubmitError, history, goBack, submitting } = this.props
+    const { formError, onSubmitError, history, goBack, submitting, togglingLock } = this.props
     
-    if (prevProps.submitting && !submitting) {
+    if ((prevProps.submitting && !submitting) || (prevProps.togglingLock && !togglingLock)) {
       if (formError !== null) {
         onSubmitError(formError)
       } else if (goBack) {
@@ -214,16 +225,6 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   required = value => value ? undefined : 'Required'
-  
-  /**
-   * Determines the modal title depending on whether it's add / edit / view
-   *
-   * @public
-   * @returns {String}
-   */
-  getModalTitle = () => this.projectDefined
-    ? 'Edit Project'
-    : 'Create New Project'
   
   /**
    * Gets button text adds a spinner if a saving is happening
@@ -326,10 +327,13 @@ export class AddEditProject extends Component {
    */
   onHoverUser = index => () => {
     const { hoveredUser } = this.state
+    const { project } = this.props
     
-    this.setState({
-      hoveredUser: hoveredUser === index ? null : index
-    })
+    if (project.status !== 2) {
+      this.setState({
+        hoveredUser: hoveredUser === index ? null : index
+      })
+    }
   }
   
   /**
@@ -361,10 +365,24 @@ export class AddEditProject extends Component {
     })
   }
   
+  /**
+   * Handles locking / unlocking a project
+   */
+  handleToggleLock = () => {
+    const { actions, project } = this.props
+    
+    if (project.status === 2) {
+      actions.unlockProjectRequest(project, 1)
+    } else {
+      actions.lockProjectRequest(project, 2)
+    }
+  }
+  
   render() {
     const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
-    const { currentUser, location, submitting, userSuggestions, userSearchValue, users } = this.props
+    const { currentUser, location, submitting, userSuggestions, userSearchValue, users, project } = this.props
     
+    const isLocked = project.status === 2
     const actions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
       {
@@ -372,7 +390,7 @@ export class AddEditProject extends Component {
           ? this.getButtonText('Save')
           : this.getButtonText('Create'),
         type: 'submit',
-        disabled: submitting,
+        disabled: submitting || isLocked,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -390,6 +408,31 @@ export class AddEditProject extends Component {
       }
     ]
     
+    let modalButtons = undefined
+    const LockButton = (
+      <Button color="primary" onClick={this.handleToggleLock}>
+        {isLocked ? 'Unlock' : 'Lock'}
+      </Button>
+    )
+    
+    if (this.projectDefined) {
+      if (currentUser.role === 'Admin') {
+        modalButtons = (
+          <>
+            {/*<span style={{ marginRight: 10 }}>{LockButton}</span>*/}
+            <Button
+              color={isLocked ? `rgba(0, 0, 0, 0.12)` : 'error'}
+              disabled={isLocked}
+              onClick={this.handleShowDeleteConfirm}>
+              Delete
+            </Button>
+          </>
+        )
+      } else {
+        modalButtons = LockButton
+      }
+    }
+    
     return (
       <>
         <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
@@ -406,10 +449,27 @@ export class AddEditProject extends Component {
           formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           initialValues={location.state.projectDefined || {}}>
           <ModalTitle
-            title={this.getModalTitle()}
-            buttons={(this.projectDefined && currentUser.role === 'Admin')
-              ? <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
-              : undefined}
+            title={this.projectDefined
+              ? (
+                <FlexGrid container type="row" align="center" flex>
+                  {!isLocked ? 'Edit Project' : 'Project Locked'}
+                  <Tooltip title={isLocked ? 'Unlock Project' : 'Lock Project'}>
+                    <FlexGrid container type="row" align="center" style={{ height: 36, marginLeft: 10 }}>
+                      <Switch
+                        checked={isLocked}
+                        style={{ height: 36 }}
+                        onChange={this.handleToggleLock}
+                        value="status"
+                      />
+                      <Icon style={{ marginTop: -5, marginLeft: -10 }} color={isLocked ? 'error' : '#757575'} size={35}>
+                        {isLocked ? 'lock' : 'lock_open'}
+                      </Icon>
+                    </FlexGrid>
+                  </Tooltip>
+                </FlexGrid>
+              )
+              : 'Create New Project'}
+            buttons={modalButtons}
           />
           <Divider />
           <ModalContent>
@@ -420,9 +480,10 @@ export class AddEditProject extends Component {
                 label="Project Name"
                 validate={this.required}
                 placeholder="Enter Project Name"
+                disabled={isLocked}
                 fullWidth
                 required
-                shrinkLabel={true}
+                shrinkLabel
               />
               <DetailRow
                 name="type"
@@ -431,6 +492,7 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
+                disabled={isLocked}
                 shrinkLabel={false}
                 required
                 style={{ display: 'flex' }}
@@ -438,13 +500,13 @@ export class AddEditProject extends Component {
               <FlexGrid container padding="0 0 25px">
                 <FlexGrid container type="row" align="center">
                   <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
-                  <IconButton
+                  {!isLocked && <IconButton
                     iconSize={18}
                     color="primary"
                     onClick={this.onEnabledAddUser}
                     tooltipText="Add User">
                     person_add
-                  </IconButton>
+                  </IconButton>}
                 </FlexGrid>
                 {addUserEnabled && <Autocomplete
                   name="name"
@@ -485,7 +547,14 @@ export class AddEditProject extends Component {
                           backgroundColor: hovered ? '#f1f1f1' : 'white'
                         }}>
                         <FlexGrid container type="row" align="center" flex>
-                          <Typography>{userName}</Typography>
+                          <Typography
+                            style={{
+                              color: !isLocked
+                                ? 'black'
+                                : `rgba(0, 0, 0, 0.54)`
+                            }}>
+                            {userName}
+                          </Typography>
                           <Typography variant="caption" style={{ margin: '0 10px' }}>
                             ({isCreator ? 'Creator' : user.role})
                           </Typography>
@@ -514,18 +583,24 @@ export class AddEditProject extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  projects: Object.values(state.data.projects.byId) || [],
-  form: state.form.projectForm || {},
-  formName: 'projectForm',
-  currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
-  formError: state.scenes.home.addEditProject.formError,
-  goBack: state.scenes.home.addEditProject.goBack,
-  submitting: state.scenes.home.addEditProject.submitting,
-  userSearchValue: state.scenes.home.addEditProject.userSearchValue || '',
-  userSuggestions: state.scenes.home.addEditProject.userSuggestions || [],
-  users: state.scenes.home.addEditProject.users || []
-})
+const mapStateToProps = state => {
+  const addEditState = state.scenes.home.addEditProject
+  
+  return {
+    projects: Object.values(state.data.projects.byId) || [],
+    project: addEditState.project || {},
+    form: state.form.projectForm || {},
+    formName: 'projectForm',
+    currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
+    formError: addEditState.formError,
+    goBack: addEditState.goBack,
+    submitting: addEditState.submitting,
+    userSearchValue: addEditState.userSearchValue,
+    userSuggestions: addEditState.userSuggestions,
+    users: addEditState.project.users,
+    togglingLock: addEditState.togglingLock
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({

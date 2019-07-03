@@ -16,11 +16,17 @@ export const types = {
   ON_USER_SUGGESTION_SELECTED: 'ON_USER_SUGGESTION_SELECTED',
   SET_USER_SUGGESTIONS: 'SET_USER_SUGGESTIONS',
   REMOVE_USER_FROM_LIST: 'REMOVE_USER_FROM_LIST',
-  SET_CURRENT_USERS: 'SET_CURRENT_USERS',
   REMOVE_PROJECT: 'REMOVE_PROJECT',
   UPDATE_VISIBLE_PROJECTS: 'UPDATE_VISIBLE_PROJECTS',
   UPDATE_PROJECT: 'UPDATE_PROJECT',
-  RESET_FORM_ERROR: 'RESET_FORM_ERROR'
+  RESET_FORM_ERROR: 'RESET_FORM_ERROR',
+  UNLOCK_PROJECT_REQUEST: 'UNLOCK_PROJECT_REQUEST',
+  UNLOCK_PROJECT_SUCCESS: 'UNLOCK_PROJECT_SUCCESS',
+  UNLOCK_PROJECT_FAIL: 'UNLOCK_PROJECT_FAIL',
+  LOCK_PROJECT_REQUEST: 'LOCK_PROJECT_REQUEST',
+  LOCK_PROJECT_SUCCESS: 'LOCK_PROJECT_SUCCESS',
+  LOCK_PROJECT_FAIL: 'LOCK_PROJECT_FAIL',
+  INIT_PROJECT: 'INIT_PROJECT'
 }
 
 export default {
@@ -36,5 +42,7 @@ export default {
   onClearSuggestions: makeActionCreator(types.ON_CLEAR_USER_SUGGESTIONS),
   onUserSelected: makeActionCreator(types.ON_USER_SUGGESTION_SELECTED, 'user'),
   removeUserFromList: makeActionCreator(types.REMOVE_USER_FROM_LIST, 'index'),
-  setCurrentUsers: makeActionCreator(types.SET_CURRENT_USERS, 'users', 'creatorId')
+  lockProjectRequest: makeActionCreator(types.LOCK_PROJECT_REQUEST, 'project', 'status'),
+  unlockProjectRequest: makeActionCreator(types.UNLOCK_PROJECT_REQUEST, 'project', 'status'),
+  initProject: makeActionCreator(types.INIT_PROJECT, 'project')
 }

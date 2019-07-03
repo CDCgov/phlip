@@ -14,7 +14,9 @@ const ProJurSearch = props => {
     onSuggestionSelected,
     showProjectError,
     showJurSearch,
-    onMouseDown
+    onMouseDown,
+    searchingProjects,
+    searchingJurisdictions
   } = props
 
   return (
@@ -44,6 +46,7 @@ const ProJurSearch = props => {
             fullWidth: true,
             error: showProjectError
           }}
+          isSearching={searchingProjects}
           handleSuggestionSelected={onSuggestionSelected('project')}
           suggestionType='project'
         />
@@ -66,6 +69,7 @@ const ProJurSearch = props => {
             },
             id: 'jurisdiction-name'
           }}
+          isSearching={searchingJurisdictions}
           handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
           InputProps={{
             label: 'Jurisdiction',
@@ -91,7 +95,15 @@ ProJurSearch.propTypes = {
   showProjectError: PropTypes.bool,
   onSuggestionSelected: PropTypes.func,
   showJurSearch: PropTypes.bool,
-  onMouseDown: PropTypes.func
+  onMouseDown: PropTypes.func,
+  /**
+   * Whether or not the app is searching projects
+   */
+  searchingProjects: PropTypes.bool,
+  /**
+   * Whether or not the app is searching jurisdictions
+   */
+  searchingJurisdictions: PropTypes.bool
 }
 
 export default ProJurSearch

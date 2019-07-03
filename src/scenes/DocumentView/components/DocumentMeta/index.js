@@ -32,7 +32,15 @@ export class DocumentMeta extends Component {
     /**
      * Current user role
      */
-    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
+    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder']),
+    /**
+     * Whether or not the app is searching projects
+     */
+    searchingProjects: PropTypes.bool,
+    /**
+     * Whether or not the app is searching jurisdictions
+     */
+    searchingJurisdictions: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -339,15 +347,16 @@ export class DocumentMeta extends Component {
   
   render() {
     const {
-      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole,
-      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions
+      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole, searchingProjects,
+      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions
     } = this.props
     
     const { alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, alertType, searchType } = this.state
     
     const suggestionProps = {
       suggestions: searchType === 'project' ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: searchType === 'project' ? projectSearchValue : jurisdictionSearchValue
+      searchValue: searchType === 'project' ? projectSearchValue : jurisdictionSearchValue,
+      searching: searchType === 'project' ? searchingProjects : searchingJurisdictions
     }
     
     const options = [
@@ -637,6 +646,8 @@ const mapStateToProps = state => {
     jurisdictionSearchValue: docState.jurisdictionSuggestions.searchValue,
     selectedProject: docState.projectSuggestions.selectedSuggestion,
     selectedJurisdiction: docState.jurisdictionSuggestions.selectedSuggestion,
+    searchingProjects: docState.projectSuggestions.searching,
+    searchingJurisdictions: docState.jurisdictionSuggestions.searching,
     inEditMode: docState.meta.inEditMode,
     apiErrorInfo: docState.meta.apiErrorInfo,
     apiErrorOpen: docState.meta.apiErrorOpen || false,

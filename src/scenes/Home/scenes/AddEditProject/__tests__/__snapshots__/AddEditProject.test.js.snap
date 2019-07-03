@@ -72,6 +72,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       >
         <DetailRow
           component={[Function]}
+          disabled={false}
           fullWidth={true}
           label="Project Name"
           name="name"
@@ -83,6 +84,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         <DetailRow
           component={[Function]}
           defaultValue={1}
+          disabled={false}
           id="type"
           label="Type"
           name="type"
@@ -173,7 +175,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             "value": "Cancel",
           },
           Object {
-            "disabled": undefined,
+            "disabled": false,
             "otherProps": Object {
               "aria-label": "Save form",
             },
