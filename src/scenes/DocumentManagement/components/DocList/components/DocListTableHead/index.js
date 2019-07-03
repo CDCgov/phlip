@@ -14,7 +14,7 @@ export const DocListTableHead = props => {
     { value: 'project', label: 'Assign Project' },
     { value: 'jurisdiction', label: 'Assign Jurisdiction' },
     { value: 'approve', label: 'Approve' },
-    { value: 'removeproject', label: 'Remove Project' }
+    { value: 'removeproject', label: 'Unassign Project' }
   ]
   
   options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete' }] : options
