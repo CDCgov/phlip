@@ -105,7 +105,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
           text: ''
         }
       }
-      
+    
     case types.TOGGLE_PROJECT:
       return {
         ...state,
@@ -113,7 +113,11 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.FLUSH_STATE:
-      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage, openProject: state.openProject }
+      return {
+        ...INITIAL_STATE,
+        rowsPerPage: state.rowsPerPage,
+        openProject: action.isLogout ? 0 : state.openProject
+      }
     
     case types.GET_PROJECTS_SUCCESS:
     case types.GET_PROJECTS_REQUEST:
