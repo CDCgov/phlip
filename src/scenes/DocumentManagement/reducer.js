@@ -28,7 +28,8 @@ export const INITIAL_STATE = {
   sortDirection: 'desc',
   getDocumentsInProgress: false,
   pageError: '',
-  count: 0
+  count: 0,
+  showAll: false
 }
 
 const mergeName = docObj => ({
@@ -78,6 +79,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         getDocumentsInProgress: false,
         pageError: 'We couldn\'t retrieve the list of documents.'
+      }
+      
+    case types.ON_TOGGLE_ALL_DOCS:
+      return {
+        ...state,
+        showAll: !state.showAll
       }
     
     case types.ON_PAGE_CHANGE:

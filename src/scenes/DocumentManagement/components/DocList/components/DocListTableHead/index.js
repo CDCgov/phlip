@@ -1,39 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Dropdown, Tooltip, TableRow, TableCell, CheckboxLabel } from 'components'
+import { Tooltip, TableRow, TableCell, CheckboxLabel } from 'components'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
 
 /**
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort, userRole } = props
-  
-  let options = [
-    { value: 'bulk', label: 'Actions', disabled: true },
-    { value: 'project', label: 'Assign Project' },
-    { value: 'jurisdiction', label: 'Assign Jurisdiction' },
-    { value: 'approve', label: 'Approve' },
-    { value: 'removeproject', label: 'Remove Project' }
-  ]
-  
-  options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete' }] : options
-  
-  const r1Columns = [
-    {
-      key: 'action',
-      label: <Dropdown
-        options={options}
-        input={{
-          value: 'bulk',
-          onChange: onActionSelected
-        }}
-        SelectDisplayProps={{ style: { paddingBottom: 3, minWidth: 140 } }}
-        style={{ fontSize: 13, color: '#757575', fontWeight: 400 }}
-      />,
-      style: { paddingLeft: 20, paddingRight: 0 }
-    }
-  ]
+  const { onSelectAll, allSelected, sortBy, direction, onRequestSort } = props
   
   const r2Columns = [
     {
@@ -50,49 +24,32 @@ export const DocListTableHead = props => {
   ]
   
   return (
-    <>
-      <TableRow key="bulkAction" style={{ width: '100%' }}>
-        {r1Columns.map((column, i) => {
-          return (
-            <TableCell
-              scope="col"
-              id={column.key}
-              padding={column.padding}
-              key={column.key}
-              colSpan={2}
-              style={{ borderBottom: 'none', width: column.width, ...column.style }}>
-              {column.label}
-            </TableCell>
-          )
-        })}
-      </TableRow>
-      <TableRow key="docTableHeaders" style={{ width: '100%' }}>
-        {r2Columns.map((column, i) => {
-          return (
-            <TableCell
-              key={column.key}
-              id={column.key}
-              padding={column.padding || 'default'}
-              scope="col"
-              style={column.style}>
-              {column.hasSort ? (
-                <Tooltip
-                  text={`Sort by ${column.label}`}
-                  id={`sort-by-${column.key}`}>
-                  <TableSortLabel
-                    active={sortBy === column.key}
-                    style={{ color: 'inherit' }}
-                    direction={direction}
-                    onClick={() => onRequestSort(column.key)}>
-                    {column.label}
-                  </TableSortLabel>
-                </Tooltip>
-              ) : column.label}
-            </TableCell>
-          )
-        })}
-      </TableRow>
-    </>
+    <TableRow key="docTableHeaders" style={{ width: '100%' }}>
+      {r2Columns.map((column, i) => {
+        return (
+          <TableCell
+            key={column.key}
+            id={column.key}
+            padding={column.padding || 'default'}
+            scope="col"
+            style={column.style}>
+            {column.hasSort ? (
+              <Tooltip
+                text={`Sort by ${column.label}`}
+                id={`sort-by-${column.key}`}>
+                <TableSortLabel
+                  active={sortBy === column.key}
+                  style={{ color: 'inherit' }}
+                  direction={direction}
+                  onClick={() => onRequestSort(column.key)}>
+                  {column.label}
+                </TableSortLabel>
+              </Tooltip>
+            ) : column.label}
+          </TableCell>
+        )
+      })}
+    </TableRow>
   )
 }
 
@@ -106,14 +63,6 @@ DocListTableHead.propTypes = {
    */
   allSelected: PropTypes.bool,
   /**
-   * Handles when the user select an action from the dropdown
-   */
-  onActionSelected: PropTypes.func,
-  /**
-   * Handles when the user click on apply button
-   */
-  onActionApply: PropTypes.func,
-  /**
    * Specify the field to be sort
    */
   sortBy: PropTypes.string,
@@ -124,11 +73,7 @@ DocListTableHead.propTypes = {
   /**
    * Specify sort direction
    */
-  onRequestSort: PropTypes.func,
-  /**
-   * Current user role
-   */
-  userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
+  onRequestSort: PropTypes.func
 }
 
 DocListTableHead.defaultProps = {

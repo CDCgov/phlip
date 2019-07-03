@@ -319,9 +319,9 @@ export class DocumentManagement extends Component {
   
   render() {
     const {
-      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, searchingProjects,
-      actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, userRole, searchingJurisdictions
+      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, searchingProjects, showAll,
+      actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue, userRole,
+      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, searchingJurisdictions
     } = this.props
     
     const { bulkActionType, showModal } = this.state
@@ -365,8 +365,10 @@ export class DocumentManagement extends Component {
               page={page}
               rowsPerPage={rowsPerPage}
               userRole={userRole}
+              showAll={showAll}
               onBulkAction={this.handleBulkAction}
               allowDropdown={checkedCount > 0}
+              toggleAllDocs={actions.toggleAllDocs}
               sortBy={sortBy}
               sortDirection={sortDirection}
               handleSortRequest={actions.handleSortRequest}
@@ -431,7 +433,8 @@ const mapStateToProps = state => {
     selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
     searchingProjects: docManage.projectSuggestions.searching,
     searchingJurisdictions: docManage.jurisdictionSuggestions.searching,
-    userRole: state.data.user.currentUser.role
+    userRole: state.data.user.currentUser.role,
+    showAll: docManage.list.showAll
   }
 }
 
