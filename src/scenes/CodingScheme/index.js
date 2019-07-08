@@ -260,37 +260,34 @@ export class CodingScheme extends Component {
    * @returns {*}
    */
   renderGetStarted = () => {
+    const { lockedByCurrentUser, projectId, projectLocked } = this.props
+    
     return (
       <FlexGrid container flex align="center" justify="center">
-        {this.props.lockedByCurrentUser &&
-        <>
-          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, add a question.
-          </Typography>
-          <Button
-            component={Link}
-            to={{
-              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-              state: { questionDefined: null, canModify: true, modal: true }
-            }}
-            value="Add New Question"
-            color="accent"
-            aria-label="Add new question to coding scheme"
-          />
-        </>}
-        {!this.props.lockedByCurrentUser &&
-        <>
-          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, check out the coding scheme for editing.
-          </Typography>
-          <Button
-            value="Check out"
-            color="accent"
-            aria-label="check out coding scheme"
-            onClick={this.handleLockCodingScheme}
-          />
-        </>
-        }
+        <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          {projectLocked && 'This project is locked. No changes can be made to the coding scheme.'}
+          {!projectLocked && lockedByCurrentUser && 'The coding scheme is empty. To get started, add a question.'}
+          {!projectLocked && !lockedByCurrentUser &&
+          'The coding scheme is empty. To get started, check out the coding scheme for editing.'}
+        </Typography>
+        {(!projectLocked && lockedByCurrentUser) &&
+        <Button
+          component={Link}
+          to={{
+            pathname: `/project/${projectId}/coding-scheme/add`,
+            state: { questionDefined: null, canModify: true, modal: true }
+          }}
+          value="Add New Question"
+          color="accent"
+          aria-label="Add new question to coding scheme"
+        />}
+        {(!projectLocked && !lockedByCurrentUser) &&
+        <Button
+          value="Check out"
+          color="accent"
+          aria-label="check out coding scheme"
+          onClick={this.handleLockCodingScheme}
+        />}
       </FlexGrid>
     )
   }

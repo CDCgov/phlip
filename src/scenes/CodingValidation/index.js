@@ -432,12 +432,14 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowGetStartedView = () => {
-    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation } = this.props
+    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation, projectLocked } = this.props
     const noScheme = isSchemeEmpty
     const noJurisdictions = areJurisdictionsEmpty
     
     let startedText = ''
-    if (isValidation) {
+    if (projectLocked) {
+      startedText = 'This project is locked. No changes can be made.'
+    } else if (isValidation) {
       if (noScheme && !noJurisdictions) {
         startedText = 'This project doesn\'t have a coding scheme.'
       } else if (!noScheme && noJurisdictions) {
@@ -456,6 +458,7 @@ export class CodingValidation extends Component {
         startedText = 'You must add jurisdictions and questions to the coding scheme before coding.'
       }
     }
+    
     this.setState({
       startedText
     })
@@ -683,7 +686,7 @@ export class CodingValidation extends Component {
                     ? (
                       <FlexGrid container flex align="center" justify="center" padding={30}>
                         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-                        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
+                        {!projectLocked && <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
                           {(isSchemeEmpty && user.role !== 'Coder') &&
                           <TextLink to={{ pathname: `/project/${project.id}/coding-scheme` }}>
                             <Button value="Create Coding Scheme" color="accent" />
@@ -692,7 +695,7 @@ export class CodingValidation extends Component {
                           <TextLink to={{ pathname: `/project/${project.id}/jurisdictions` }}>
                             <Button value="Add Jurisdictions" color="accent" />
                           </TextLink>}
-                        </FlexGrid>
+                        </FlexGrid>}
                       </FlexGrid>
                     )
                     : (schemeError === null && (
