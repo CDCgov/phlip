@@ -154,7 +154,11 @@ export const Autocomplete = props => {
     }
   }
   
-  const spinnerSize = inputProps.style.fontSize ? inputProps.style.fontSize : 20
+  const spinnerSize = inputProps.style
+    ? inputProps.style.fontSize
+      ? inputProps.style.fontSize
+      : 20
+    : 20
   
   return (
     <Autosuggest
