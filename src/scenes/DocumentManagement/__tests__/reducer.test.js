@@ -29,10 +29,13 @@ describe('Document Management reducer', () => {
     test('should normalize action.payload into the documents object in state', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
-        payload: [
-          { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user' } },
-          { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user' } }
-        ]
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
       }
       
       const currentState = getState()
@@ -42,13 +45,13 @@ describe('Document Management reducer', () => {
         '12345': {
           name: 'Doc 1',
           _id: '12345',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: { firstName: 'test', lastName: 'user', id: 1 },
           uploadedByName: 'test user'
         },
         '54321': {
           name: 'Doc 2',
           _id: '54321',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: { firstName: 'test', lastName: 'user', id: 4 },
           uploadedByName: 'test user'
         }
       })
@@ -56,48 +59,69 @@ describe('Document Management reducer', () => {
       expect(updatedState.documents.allIds).toEqual(['12345', '54321'])
     })
     
-    test('should update documents.visible based on the state.rowsPerPage and state.page properties', () => {
+    test('should only show documents uploaded by current user', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
-        payload: [
-          {
-            name: 'Doc 1',
-            _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          },
-          {
-            name: 'Doc 2',
-            _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          }
-        ]
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
       }
       
-      const currentState = getState({ rowsPerPage: '1' })
+      const currentState = getState({ rowsPerPage: '2' })
       const updatedState = reducer(currentState, action)
       
-      expect(updatedState.documents.visible).toEqual(['12345'])
+      expect(updatedState.documents.visible).toEqual(['54321'])
+    })
+    
+    test('should set user docs', () => {
+      const action = {
+        type: types.GET_DOCUMENTS_SUCCESS,
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
+      }
+      
+      const currentState = getState({ rowsPerPage: '2' })
+      const updatedState = reducer(currentState, action)
+      
+      expect(updatedState.documents.userDocs).toEqual(['54321'])
+    })
+    
+    test('should clear showing all documents', () => {
+      const action = {
+        type: types.GET_DOCUMENTS_SUCCESS,
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
+      }
+      
+      const currentState = getState({ showAll: true })
+      const state = reducer(currentState, action)
+      expect(state.showAll).toEqual(false)
     })
     
     test('should clear checked documents', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
-        payload: [
-          {
-            name: 'Doc 1',
-            _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          },
-          {
-            name: 'Doc 2',
-            _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          }
-        ]
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
       }
       
       const currentState = getState({ documents: { checked: ['09876'] } })
@@ -108,20 +132,13 @@ describe('Document Management reducer', () => {
     test('should handle if state.rowsPerPage === All', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
-        payload: [
-          {
-            name: 'Doc 1',
-            _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          },
-          {
-            name: 'Doc 2',
-            _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
-            uploadedByName: 'test user'
-          }
-        ]
+        payload: {
+          documents: [
+            { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } },
+            { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+          ],
+          userId: 4
+        }
       }
       
       const currentState = getState({
@@ -139,6 +156,46 @@ describe('Document Management reducer', () => {
       const currentState = getState()
       const state = reducer(currentState, action)
       expect(state.pageError).toEqual('We couldn\'t retrieve the list of documents.')
+    })
+  })
+  
+  describe('ON_TOGGLE_ALL_DOCS', () => {
+    test('should show all documents if toggling on', () => {
+      const action = { type: types.ON_TOGGLE_ALL_DOCS, payload: [] }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      
+      expect(state.showAll).toEqual(true)
+    })
+    
+    test('should show all user docs if toggling off', () => {
+      const action = { type: types.ON_TOGGLE_ALL_DOCS, payload: [] }
+      const currentState = getState({ showAll: true })
+      const state = reducer(currentState, action)
+      
+      expect(state.showAll).toEqual(false)
+    })
+    
+    test('should reset to page one of the list', () => {
+      const action = { type: types.ON_TOGGLE_ALL_DOCS, payload: [] }
+      const currentState = getState({ showAll: true, page: 5 })
+      const state = reducer(currentState, action)
+      
+      expect(state.page).toEqual(0)
+    })
+    
+    test('should sort and slice the documents based on user filter', () => {
+      const action = {
+        type: types.ON_TOGGLE_ALL_DOCS,
+        payload: [
+          { name: 'bobo', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user', id: 1 } },
+          { name: 'alice', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user', id: 4 } }
+        ]
+      }
+      const currentState = getState({ showAll: true, sortBy: 'name', sortDirection: 'asc' })
+      const state = reducer(currentState, action)
+      
+      expect(state.documents.visible).toEqual(['54321', '12345'])
     })
   })
   
@@ -325,10 +382,10 @@ describe('Document Management reducer', () => {
           failed: true
         }
       }
-  
+      
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
-  
+      
       expect(updatedState.documents.byId.hasOwnProperty('24')).toEqual(false)
       expect(updatedState.documents.allIds.includes('24')).toEqual(false)
     })
@@ -357,6 +414,29 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
       
       expect(updatedState).toEqual(initial)
+    })
+  })
+  
+  describe('CLOSE_ALERT', () => {
+    const action = { type: types.CLOSE_ALERT }
+    const currentState = getState({
+      apiErrorInfo: {
+        text: 'error',
+        title: 'error'
+      },
+      apiErrorOpen: true
+    })
+    const state = reducer(currentState, action)
+    
+    test('should clear all alert information', () => {
+      expect(state.apiErrorInfo).toEqual({
+        text: '',
+        title: ''
+      })
+    })
+    
+    test('should hide alert', () => {
+      expect(state.apiErrorOpen).toEqual(false)
     })
   })
   
