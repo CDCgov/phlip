@@ -20,7 +20,7 @@ import TableCell from '@material-ui/core/TableCell'
 import moment from 'moment'
 import { Check } from 'mdi-material-ui'
 
-class DocList extends Component {
+export class DocList extends Component {
   columns = [
     {
       key: 'isChecked',
@@ -75,26 +75,28 @@ class DocList extends Component {
     { key: 'status', label: 'Approved', width: 100, flexGrow: 0, flexShrink: 0 }
   ]
   
+  /**
+   * Renders the table header
+   */
   headerRenderer = ({ label, columnIndex, dataKey, sortBy, sortDirection }) => {
     const { allSelected, onSelectAllFiles, handleSortRequest } = this.props
     const inner =
-      columnIndex === 0 ?
-        <CheckboxLabel
+      columnIndex === 0
+        ? <CheckboxLabel
           input={{ value: allSelected, onChange: onSelectAllFiles }}
           labelStyle={{ margin: 0 }}
           style={{ width: 24, height: 24 }}
         />
-        : this.columns[columnIndex].hasSort && sortBy !== null ? (
-          <TableSortLabel
-            active={dataKey === sortBy}
-            style={{ color: 'inherit' }}
-            onClick={() => handleSortRequest(dataKey)}
-            direction={sortDirection.toLowerCase()}>
-            {label}
-          </TableSortLabel>
-        ) : (
-          label
-        )
+        : this.columns[columnIndex].hasSort && sortBy !== null
+          ? (
+            <TableSortLabel
+              active={dataKey === sortBy}
+              style={{ color: 'inherit' }}
+              onClick={() => handleSortRequest(dataKey)}
+              direction={sortDirection.toLowerCase()}>
+              {label}
+            </TableSortLabel>
+          ) : label
     
     return (
       <TableCell
@@ -112,6 +114,13 @@ class DocList extends Component {
     )
   }
   
+  /**
+   * Renders a table row
+   * @param cellData
+   * @param columnIndex
+   * @param rowIndex
+   * @returns {*}
+   */
   cellRenderer = ({ cellData, columnIndex = null, rowIndex }) => {
     const { docs, onSelectOneFile } = this.props
     const doc = docs[rowIndex]
