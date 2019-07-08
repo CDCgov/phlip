@@ -84,7 +84,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         getDocumentsInProgress: false,
         pageError: '',
         page: 0,
-        count: visible.length
+        count: visible.length,
+        showAll: false
       }
     
     case types.GET_DOCUMENTS_FAIL:
