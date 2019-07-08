@@ -13,7 +13,7 @@ const typeToTitle = {
   'approve': 'Approve Documents',
   'project': 'Assign Project',
   'jurisdiction': 'Assign Jurisdiction',
-  'removeproject': 'Remove Project'
+  'removeproject' : 'Unassign Project'
 }
 
 /*

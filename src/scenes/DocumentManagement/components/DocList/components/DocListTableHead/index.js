@@ -9,7 +9,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel'
 export const DocListTableHead = props => {
   const { onSelectAll, allSelected, sortBy, direction, onRequestSort } = props
   
-  const r2Columns = [
+  const columns = [
     {
       key: 'select-all',
       label: <CheckboxLabel input={{ value: allSelected, onChange: onSelectAll }} />,
@@ -25,7 +25,7 @@ export const DocListTableHead = props => {
   
   return (
     <TableRow key="docTableHeaders" style={{ width: '100%' }}>
-      {r2Columns.map((column, i) => {
+      {columns.map((column, i) => {
         return (
           <TableCell
             key={column.key}
