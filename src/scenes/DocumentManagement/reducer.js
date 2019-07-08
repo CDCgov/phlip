@@ -13,7 +13,8 @@ export const INITIAL_STATE = {
     allIds: [],
     visible: [],
     checked: [],
-    matches: []
+    matches: [],
+    userDocs: []
   },
   rowsPerPage: '10',
   page: 0,
@@ -58,34 +59,57 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.GET_DOCUMENTS_SUCCESS:
-      let docs = action.payload.map(mergeName)
+      let docs = action.payload.documents.map(mergeName)
       let obj = arrayToObject(docs, '_id')
+      const userDocs = docs.filter(doc => parseInt(doc.uploadedBy.id) === parseInt(action.payload.userId))
+      const userDocObj = arrayToObject(userDocs, '_id')
+      const visible = sortAndSlice(
+        userDocs,
+        0,
+        state.rowsPerPage,
+        state.sortBy,
+        state.sortDirection
+      )
+      
       return {
         ...state,
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
+          visible,
           checked: [],
-          matches: []
+          matches: [],
+          userDocs: Object.keys(userDocObj)
         },
         getDocumentsInProgress: false,
         pageError: '',
         page: 0,
-        count: Object.keys(obj).length
+        count: visible.length
       }
-      
+    
     case types.GET_DOCUMENTS_FAIL:
       return {
         ...state,
         getDocumentsInProgress: false,
         pageError: 'We couldn\'t retrieve the list of documents.'
       }
-      
+    
     case types.ON_TOGGLE_ALL_DOCS:
       return {
         ...state,
-        showAll: !state.showAll
+        showAll: !state.showAll,
+        documents: {
+          ...state.documents,
+          visible: sortAndSlice(
+            action.payload,
+            0,
+            state.rowsPerPage,
+            state.sortBy,
+            state.sortDirection
+          )
+        },
+        count: action.payload.length,
+        page: 0
       }
     
     case types.ON_PAGE_CHANGE:
@@ -153,7 +177,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
     case uploadTypes.UPLOAD_ONE_DOC_COMPLETE:
       if (!action.payload.failed) {
         obj = { ...state.documents.byId, [action.payload.doc._id]: action.payload.doc }
-  
+        
         return {
           ...state,
           documents: {
