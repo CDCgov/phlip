@@ -320,7 +320,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: action.payload.updatedQuestions,
         outline: action.payload.updatedOutline,
-        empty: false
+        empty: action.payload.updatedQuestions.length === 0
       }
 
     case types.ADD_QUESTION_REQUEST:
