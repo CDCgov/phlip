@@ -46,5 +46,5 @@ export default {
   resetAlertError: makeActionCreatore(types.RESET_ALERT_ERROR),
   closeLockedAlert: makeActionCreatore(types.CLOSE_CODING_SCHEME_LOCK_ALERT),
   deleteQuestionRequest: makeActionCreatore(types.DELETE_QUESTION_REQUEST, 'projectId', 'questionId', 'path'),
-  copyCodingSchemeRequest: makeActionCreatore(types.COPY_CODING_SCHEME_REQUEST, 'projectId')
+  copyCodingSchemeRequest: makeActionCreatore(types.COPY_CODING_SCHEME_REQUEST, 'copyProjectId', 'projectId')
 }

@@ -141,6 +141,11 @@ let apiCalls = [
     path: ({ projectId }) => `/projects/${projectId}/scheme`
   },
   {
+    name: 'getSchemeTree',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}/scheme/tree`
+  },
+  {
     name: 'addQuestion',
     method: 'post',
     path: ({ projectId }) => `/projects/${projectId}/scheme`

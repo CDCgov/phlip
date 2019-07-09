@@ -75,7 +75,15 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
       }
       
       componentWillUnmount() {
-        this.handleClearSuggestions()
+        this.handleClearAll()
+      }
+  
+      /**
+       * Clears suggestions, searching value, spinner
+       */
+      handleClearAll = () => {
+        const actions = this.props[`${type}AutoActions`]
+        actions.clearAll()
       }
       
       /**

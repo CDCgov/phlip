@@ -7,8 +7,6 @@ import {
   addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
-import { combineReducers } from 'redux'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 
 export const INITIAL_STATE = {
   questions: [],
@@ -390,7 +388,4 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default combineReducers({
-  scheme: codingSchemeReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT', '_SCHEME')
-})
+export default codingSchemeReducer

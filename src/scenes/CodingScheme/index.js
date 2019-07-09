@@ -128,6 +128,16 @@ export class CodingScheme extends Component {
     }, 1000)
   }
   
+  componentDidUpdate(prevProps) {
+    const { copying, alertError } = this.props
+    
+    if (prevProps.copying && !copying) {
+      if (!alertError) {
+        this.closeProjectSearch()
+      }
+    }
+  }
+  
   /**
    * Calls a redux action to close any ApiErrorAlert that is open
    * @public
@@ -272,17 +282,19 @@ export class CodingScheme extends Component {
    * Closes project search
    */
   closeProjectSearch = () => {
+    const { projectAutoActions } = this.props
     this.setState({
       projectSearchOpen: false
     })
+    projectAutoActions.clearAll()
   }
   
   /**
    * Handles sending a request to copy coding scheme
    */
   onCopyCodingScheme = () => {
-    const { projectAutocompleteProps, actions } = this.props
-    actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id)
+    const { projectAutocompleteProps, actions, projectId } = this.props
+    actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id, projectId)
   }
   
   /**
@@ -512,7 +524,7 @@ export class CodingScheme extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
-  const schemeState = state.scenes.codingScheme.scheme
+  const schemeState = state.scenes.codingScheme
   
   return {
     projectName: state.data.projects.byId[ownProps.match.params.id].name,
