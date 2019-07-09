@@ -18,9 +18,11 @@ const logoutLogic = createLogic({
     dispatchReturn: false
   },
   async process({ action, api }, dispatch, done) {
-    logout()
+    // if saml enabled, do saml logout first
     if (APP_IS_SAML_ENABLED === '1') {
       samsLogout()
+    } else {
+      logout()
     }
 
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
@@ -43,6 +45,7 @@ const samsLogout = async () => {
       }
     })
       .then(res => {
+        logout()
         const logoutURL = res.data
         location.href=logoutURL
       })
