@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createLogicMiddleware } from 'redux-logic'
 import { persistStore } from 'redux-persist'
 import rootLogic from 'logic'
-import appReducer from 'reducer'
+import createRootReducer from 'reducer'
 import createApiHandler, { projectApiInstance, docApiInstance } from '../api'
 import calls from '../api/calls'
 import docCalls from '../api/docManageCalls'
@@ -18,21 +18,28 @@ const configureStore = () => {
   history = createBrowserHistory()
   api = createApiHandler({ history }, projectApiInstance, calls)
   docApi = createApiHandler({ history }, docApiInstance, docCalls)
-
+  
   const store = createStore(
-    appReducer,
+    createRootReducer(),
     composeEnhancers(applyMiddleware(createLogicMiddleware(rootLogic, { api, docApi, history })))
   )
-
+  
+  store.dynamicReducers = { autocomplete: {} }
+  store.injectReducer = (key, reducer) => {
+    store.dynamicReducers[key] = reducer
+    store.replaceReducer(createRootReducer(store.dynamicReducers))
+    return store
+  }
+  
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../../reducer', () => {
-      store.replaceReducer(appReducer)
+      store.replaceReducer(createRootReducer())
     })
   }
-
+  
   persistor = persistStore(store, null, () => store.getState())
-
+  
   return { store, persistor }
 }
 

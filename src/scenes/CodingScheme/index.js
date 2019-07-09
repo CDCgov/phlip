@@ -7,6 +7,7 @@ import { Route, Link } from 'react-router-dom'
 import actions from './actions'
 import Scheme from './components/Scheme'
 import AddEditQuestion from './scenes/AddEditQuestion'
+import Autosuggest from 'react-autosuggest'
 import {
   ApiErrorAlert,
   ApiErrorView,
@@ -16,7 +17,8 @@ import {
   withTracking,
   PageHeader,
   Button,
-  withProjectLocked
+  withProjectLocked,
+  withAutocompleteMethods
 } from 'components'
 
 /**
@@ -295,8 +297,10 @@ export class CodingScheme extends Component {
   render() {
     const {
       projectLocked, currentUser, alertError, lockedAlert, lockInfo, projectName, projectId, lockedByCurrentUser,
-      questions, hasLock, schemeError, empty, actions, outline, flatQuestions
+      questions, hasLock, schemeError, empty, actions, outline, flatQuestions, projectAutocompleteProps
     } = this.props
+    
+    console.log(this.props)
     
     const { goBackAlertOpen, deleteQuestionAlertOpen } = this.state
     
@@ -352,6 +356,7 @@ export class CodingScheme extends Component {
             {currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session.'}
           </Typography>
         </Alert>
+        <Autosuggest {...projectAutocompleteProps} />
         <PageHeader
           projectName={projectName}
           projectId={projectId}
@@ -415,27 +420,34 @@ export class CodingScheme extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = (state, ownProps) => ({
-  projectName: state.data.projects.byId[ownProps.match.params.id].name,
-  projectId: ownProps.match.params.id,
-  questions: state.scenes.codingScheme.questions || [],
-  empty: state.scenes.codingScheme.empty || false,
-  outline: state.scenes.codingScheme.outline || {},
-  flatQuestions: state.scenes.codingScheme.flatQuestions || [],
-  schemeError: state.scenes.codingScheme.schemeError || null,
-  reorderError: state.scenes.codingScheme.reorderError || null,
-  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
-  lockInfo: state.scenes.codingScheme.lockInfo || {},
-  alertError: state.scenes.codingScheme.alertError || '',
-  lockedAlert: state.scenes.codingScheme.lockedAlert || null,
-  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
-  currentUser: state.data.user.currentUser
-})
+const mapStateToProps = (state, ownProps) => {
+  const schemeState = state.scenes.codingScheme.main
+  
+  return {
+    projectName: state.data.projects.byId[ownProps.match.params.id].name,
+    projectId: ownProps.match.params.id,
+    questions: schemeState.questions || [],
+    empty: schemeState.empty || false,
+    outline: schemeState.outline || {},
+    flatQuestions: schemeState.flatQuestions || [],
+    schemeError: schemeState.schemeError || null,
+    reorderError: schemeState.reorderError || null,
+    lockedByCurrentUser: schemeState.lockedByCurrentUser || false,
+    lockInfo: schemeState.lockInfo || {},
+    alertError: schemeState.alertError || '',
+    lockedAlert: schemeState.lockedAlert || null,
+    hasLock: Object.keys(schemeState.lockInfo).length > 0 || false,
+    currentUser: state.data.user.currentUser
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withProjectLocked(withTracking(CodingScheme, 'Coding Scheme')))
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'scheme')(
+    withProjectLocked(
+      withTracking(CodingScheme, 'Coding Scheme')
+    )
+  )
+)

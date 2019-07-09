@@ -26,6 +26,9 @@ export const types = {
   SET_EMPTY_STATE: 'SET_EMPTY_STATE',
   RESET_ALERT_ERROR: 'RESET_ALERT_ERROR',
   CLOSE_CODING_SCHEME_LOCK_ALERT: 'CLOSE_CODING_SCHEME_LOCK_ALERT',
+  COPY_CODING_SCHEME_REQUEST: 'COPY_CODING_SCHEME_REQUEST',
+  COPY_CODING_SCHEME_SUCCESS: 'COPY_CODING_SCHEME_SUCCESS',
+  COPY_CODING_SCHEME_FAIL: 'COPY_CODING_SCEME_FAIL',
   ...addEditTypes
 }
 
@@ -42,5 +45,6 @@ export default {
   setEmptyState: makeActionCreatore(types.SET_EMPTY_STATE),
   resetAlertError: makeActionCreatore(types.RESET_ALERT_ERROR),
   closeLockedAlert: makeActionCreatore(types.CLOSE_CODING_SCHEME_LOCK_ALERT),
-  deleteQuestionRequest: makeActionCreatore(types.DELETE_QUESTION_REQUEST, 'projectId', 'questionId', 'path')
+  deleteQuestionRequest: makeActionCreatore(types.DELETE_QUESTION_REQUEST, 'projectId', 'questionId', 'path'),
+  copyCodingSchemeRequest: makeActionCreatore(types.COPY_CODING_SCHEME_REQUEST, 'projectId')
 }

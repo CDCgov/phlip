@@ -26,7 +26,12 @@ const jurisdictionPersistConfig = {
 const dataReducer = combineReducers({
   user: persistReducer(dataPersistConfig, user),
   projects: persistReducer(projectPersistConfig, projects),
-  jurisdictions: persistReducer(jurisdictionPersistConfig, jurisdictions)
+  jurisdictions: persistReducer(jurisdictionPersistConfig, jurisdictions),
+  autocomplete: {
+    projects: {},
+    jurisdictions: {},
+    users: {}
+  }
 })
 
 export default dataReducer

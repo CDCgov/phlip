@@ -7,10 +7,9 @@ import {
   addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
+import { combineReducers } from 'redux'
+import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 
-/**
- * Initial state for coding scheme reducer
- */
 export const INITIAL_STATE = {
   questions: [],
   outline: {},
@@ -29,7 +28,6 @@ export const INITIAL_STATE = {
 
 /**
  * Turns the tree of questions into a flat object outline that is used by the backend.
- *
  * @param {Array} questions
  */
 export const questionsToOutline = questions => {
@@ -353,6 +351,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         lockedByCurrentUser: false,
         lockInfo: {}
       }
+      
+    case types.COPY_CODING_SCHEME_REQUEST:
+      return {
+        ...state,
+        copying: true
+      }
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
@@ -365,4 +369,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default codingSchemeReducer
+export default combineReducers({
+  main: codingSchemeReducer,
+  projectSuggestions: createAutocompleteReducer('PROJECT', '_SCHEME')
+})
