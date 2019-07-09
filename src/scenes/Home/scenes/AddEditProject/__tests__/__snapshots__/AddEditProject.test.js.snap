@@ -76,6 +76,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
           fullWidth={true}
           label="Project Name"
           name="name"
+          onKeyPress={[Function]}
           placeholder="Enter Project Name"
           required={true}
           shrinkLabel={true}
@@ -133,21 +134,33 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             <WithStyles(InputLabel)
               style={
                 Object {
+                  "flexShrink": 0,
                   "marginRight": 5,
                 }
               }
             >
               Project Users
             </WithStyles(InputLabel)>
-            <IconButton
-              color="primary"
-              disabled={false}
-              iconSize={18}
+            <WithTheme(Button)
+              color="accent"
               onClick={[Function]}
-              tooltipText="Add User"
+              raised={false}
+              size="small"
+              style={
+                Object {
+                  "marginRight": 15,
+                  "padding": 0,
+                }
+              }
+              variant="text"
             >
-              person_add
-            </IconButton>
+              <WithStyles(Typography)
+                color="secondary"
+                variant="caption"
+              >
+                - Add User
+              </WithStyles(Typography)>
+            </WithTheme(Button)>
           </FlexGrid>
           <FlexGrid
             align="stretch"

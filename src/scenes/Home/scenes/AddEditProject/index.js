@@ -354,6 +354,16 @@ export class AddEditProject extends Component {
   }
   
   /**
+   * Stops the form from submitting when hitting 'enter' while in the search field
+   * @param event
+   */
+  onEnterKeyPress = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+    }
+  }
+  
+  /**
    * Enables the add user field
    * @returns {*}
    */
@@ -474,6 +484,7 @@ export class AddEditProject extends Component {
                 disabled={isLocked}
                 fullWidth
                 required
+                onKeyPress={this.onEnterKeyPress}
                 shrinkLabel
               />
               <DetailRow
@@ -515,6 +526,7 @@ export class AddEditProject extends Component {
                       inputProps={{
                         value: userSearchValue,
                         onChange: this.onUserSuggestionChange,
+                        onKeyPress: this.onEnterKeyPress,
                         id: 'add-user-name',
                         style: { padding: 2 }
                       }}
