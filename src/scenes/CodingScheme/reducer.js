@@ -23,7 +23,8 @@ export const INITIAL_STATE = {
   lockedByCurrentUser: false,
   lockInfo: {},
   lockedAlert: null,
-  goBack: false
+  goBack: false,
+  copying: false
 }
 
 /**
@@ -357,6 +358,26 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         copying: true
       }
+      
+    case types.COPY_CODING_SCHEME_SUCCESS:
+      sortPossibleAnswers(action.payload.scheme.schemeQuestions)
+      return {
+        ...state,
+        questions: sortQuestions(getTreeFromFlatData({
+          flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
+        })),
+        flatQuestions: action.payload.scheme.schemeQuestions,
+        outline: action.payload.scheme.outline,
+        copying: false,
+        empty: false
+      }
+      
+    case types.COPY_CODING_SCHEME_FAIL:
+      return {
+        ...state,
+        alertError: action.payload,
+        copying: false
+      }
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
@@ -370,6 +391,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
 }
 
 export default combineReducers({
-  main: codingSchemeReducer,
+  scheme: codingSchemeReducer,
   projectSuggestions: createAutocompleteReducer('PROJECT', '_SCHEME')
 })

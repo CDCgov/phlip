@@ -74,6 +74,10 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
         context.store.injectReducer(key, reducer)
       }
       
+      componentWillUnmount() {
+        this.handleClearSuggestions()
+      }
+      
       /**
        * Get suggestions for some type of autocomplete search
        * @param suggestionType
@@ -254,7 +258,8 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
                 : this.handleSearchValueChange(e.target.value)
             },
             id: `${suffix}-${type}-name-search`
-          }
+          },
+          selectedSuggestion
         }
         
         return (

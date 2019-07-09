@@ -45,6 +45,22 @@ const getSchemeLogic = createLogic({
 })
 
 /**
+ * Logic for copying coding scheme
+ */
+const copyCodingSchemeLogic = createLogic({
+  type: types.COPY_CODING_SCHEME_REQUEST,
+  async process({ api, action, getState }, dispatch, done) {
+    try {
+      const scheme = await api.getScheme({}, {}, { projectId: action.projectId })
+      dispatch({ type: types.COPY_CODING_SCHEME_SUCCESS, payload: { scheme } })
+    } catch (err) {
+      dispatch({ type: types.COPY_CODING_SCHEME_FAIL, payload: 'We couldn\'t copy the coding scheme.' })
+    }
+    done()
+  }
+})
+
+/**
  * Sends a request to check out / lock the coding scheme for project ID: action.id and userId
  */
 const lockSchemeLogic = createLogic({
@@ -160,6 +176,7 @@ const deleteQuestionLogic = createLogic({
 
 export default [
   getSchemeLogic,
+  copyCodingSchemeLogic,
   reorderSchemeLogic,
   lockSchemeLogic,
   unlockSchemeLogic,
