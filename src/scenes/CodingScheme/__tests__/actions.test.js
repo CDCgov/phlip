@@ -60,4 +60,9 @@ describe('Coding Scheme actions creators', () => {
     const expectedAction = { type: types.CLOSE_CODING_SCHEME_LOCK_ALERT }
     expect(actions.closeLockedAlert()).toEqual(expectedAction)
   })
+  
+  test('should create an action to copy coding scheme', () => {
+    const expectedAction = { type: types.COPY_CODING_SCHEME_REQUEST, projectId: 4, copyProjectId: 2 }
+    expect(actions.copyCodingSchemeRequest(2, 4)).toEqual(expectedAction)
+  })
 })

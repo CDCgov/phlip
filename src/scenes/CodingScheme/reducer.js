@@ -31,6 +31,7 @@ export const INITIAL_STATE = {
  */
 export const questionsToOutline = questions => {
   const outline = {}
+  console.log()
 
   // Get the root questions information
   questions.forEach((parentQuestion, i) => {
@@ -188,6 +189,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         lockedAlert: null
       }
+  
+    case types.REORDER_SCHEME_SUCCESS:
+      return {
+        ...state,
+        alertError: '',
+        previousQuestions: [],
+        previousOutline: {}
+      }
 
     case types.REORDER_SCHEME_FAIL:
       return {
@@ -199,20 +208,21 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         previousOutline: {}
       }
 
-    case types.REORDER_SCHEME_SUCCESS:
-      return {
-        ...state,
-        alertError: null,
-        previousQuestion: [],
-        previousOutline: {}
-      }
-
     case types.LOCK_SCHEME_FAIL:
     case types.UNLOCK_SCHEME_FAIL:
     case types.DELETE_QUESTION_FAIL:
       return {
         ...state,
         alertError: action.payload
+      }
+  
+    case types.ADD_QUESTION_REQUEST:
+    case types.ADD_CHILD_QUESTION_REQUEST:
+    case types.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        formError: null,
+        goBack: false
       }
 
     case types.ADD_QUESTION_FAIL:
@@ -321,15 +331,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: action.payload.updatedQuestions,
         outline: action.payload.updatedOutline,
         empty: action.payload.updatedQuestions.length === 0
-      }
-
-    case types.ADD_QUESTION_REQUEST:
-    case types.ADD_CHILD_QUESTION_REQUEST:
-    case types.UPDATE_QUESTION_REQUEST:
-      return {
-        ...state,
-        formError: null,
-        goBack: false
       }
 
     case types.LOCK_SCHEME_SUCCESS:
