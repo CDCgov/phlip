@@ -70,4 +70,12 @@ describe('Document management actions creators', () => {
     }
     expect(actions.handleBulkProjectRemove(1, [1, 2])).toEqual(expectedAction)
   })
+  
+  test('should create an action to toggle all docs', () => {
+    const action = {
+      type: types.ON_TOGGLE_ALL_DOCS
+    }
+    
+    expect(actions.toggleAllDocs()).toEqual(action)
+  })
 })

@@ -16,10 +16,15 @@ export const types = {
 export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
   return {
     updateSearchValue: makeActionCreator(`${types.UPDATE_SEARCH_VALUE}_${searchName}${suffix}`, 'value'),
-    searchForSuggestionsRequest: makeActionCreator(`${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`, 'searchString', 'suffix', 'index'),
+    searchForSuggestionsRequest: makeActionCreator(
+      `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`,
+      'searchString',
+      'suffix',
+      'index'
+    ),
     clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`),
     onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`, 'suggestion'),
     clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}${suffix}`),
-    getProjectsByUserRequest: makeActionCreator(types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,'userId','count')
+    getProjectsByUserRequest: makeActionCreator(types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST, 'userId', 'count')
   }
 }

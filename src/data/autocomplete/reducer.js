@@ -15,11 +15,10 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
           ...state,
           searchValue: action.value,
           suggestions: action.value === '' ? [] : state.suggestions,
-          selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion,
-          searching: action.value !== ''
+          selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion
         }
         
-      case `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}${suffix}`:
+      case `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`:
         return {
           ...state,
           searching: true
@@ -44,7 +43,8 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
       case `${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`:
         return {
           ...state,
-          suggestions: []
+          suggestions: [],
+          searching: false
         }
 
       case `${types.CLEAR_ALL}_${searchName}${suffix}`:

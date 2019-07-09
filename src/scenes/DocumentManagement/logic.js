@@ -127,24 +127,52 @@ const pageRowChageLogic = createLogic({
   }
 })
 
+/*
+ * Handles updating the visible projects depending of if the user is toggling all docs
+ */
+const toggleDocsLogic = createLogic({
+  type: types.ON_TOGGLE_ALL_DOCS,
+  transform({ getState, action }, next) {
+    const searchState = getState().scenes.docManage.search
+    
+    next({
+      ...action,
+      form: searchState.form.params,
+      value: searchState.form.searchValue
+    })
+  }
+})
+
 /**
  * Determines matching docs
  * @type {Logic<object, undefined, undefined, {}, undefined, string>}
  */
 const searchBoxLogic = createLogic({
-  type: [types.SEARCH_VALUE_CHANGE],
+  type: [types.SEARCH_VALUE_CHANGE, types.ON_TOGGLE_ALL_DOCS],
   transform({ getState, action }, next) {
+    const state = getState().scenes.docManage.main.list
+    
     const projects = Object.values(getState().data.projects.byId)
     const jurisdictions = Object.values(getState().data.jurisdictions.byId)
-    const docs = [...Object.values(getState().scenes.docManage.main.list.documents.byId)]
-    const matches = resetFilter(
-      docs,
-      action.value,
-      action.form.project.id,
-      action.form.jurisdiction.id,
-      jurisdictions,
-      projects
-    )
+    const userDocs = state.documents.userDocs.map(id => ({ _id: id, ...state.documents.byId[id] }))
+    let docs = [...Object.values(state.documents.byId)]
+    
+    if ((!state.showAll && action.type === types.SEARCH_VALUE_CHANGE) ||
+      (state.showAll && action.type === types.ON_TOGGLE_ALL_DOCS)) {
+      docs = userDocs
+    }
+    
+    const matches = !action.value
+      ? docs
+      : resetFilter(
+        docs,
+        action.value,
+        action.form.project.id,
+        action.form.jurisdiction.id,
+        jurisdictions,
+        projects
+      )
+    
     next({
       ...action,
       payload: matches
@@ -170,7 +198,7 @@ const getDocLogic = createLogic({
         ...document,
         uploadedByName: `${document.uploadedBy.firstName} ${document.uploadedBy.lastName}`
       }))
-      dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
+      dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: { documents, userId: user.id } })
       
       let projects = { ...getState().data.projects.byId }
       let jurisdictions = { ...getState().data.jurisdictions.byId }
@@ -336,6 +364,7 @@ const bulkRemoveProjectLogic = createLogic({
 export default [
   getDocLogic,
   pageRowChageLogic,
+  toggleDocsLogic,
   searchBoxLogic,
   bulkUpdateLogic,
   bulkDeleteLogic,
