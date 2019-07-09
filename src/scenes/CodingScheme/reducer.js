@@ -8,9 +8,6 @@ import {
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
 
-/**
- * Initial state for coding scheme reducer
- */
 export const INITIAL_STATE = {
   questions: [],
   outline: {},
@@ -24,12 +21,12 @@ export const INITIAL_STATE = {
   lockedByCurrentUser: false,
   lockInfo: {},
   lockedAlert: null,
-  goBack: false
+  goBack: false,
+  copying: false
 }
 
 /**
  * Turns the tree of questions into a flat object outline that is used by the backend.
- *
  * @param {Array} questions
  */
 export const questionsToOutline = questions => {
@@ -323,7 +320,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: action.payload.updatedQuestions,
         outline: action.payload.updatedOutline,
-        empty: false
+        empty: action.payload.updatedQuestions.length === 0
       }
 
     case types.ADD_QUESTION_REQUEST:
@@ -352,6 +349,32 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         lockedByCurrentUser: false,
         lockInfo: {}
+      }
+      
+    case types.COPY_CODING_SCHEME_REQUEST:
+      return {
+        ...state,
+        copying: true
+      }
+      
+    case types.COPY_CODING_SCHEME_SUCCESS:
+      sortPossibleAnswers(action.payload.scheme.schemeQuestions)
+      return {
+        ...state,
+        questions: sortQuestions(getTreeFromFlatData({
+          flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
+        })),
+        flatQuestions: action.payload.scheme.schemeQuestions,
+        outline: action.payload.scheme.outline,
+        copying: false,
+        empty: false
+      }
+      
+    case types.COPY_CODING_SCHEME_FAIL:
+      return {
+        ...state,
+        alertError: action.payload,
+        copying: false
       }
 
     case types.CLEAR_STATE:

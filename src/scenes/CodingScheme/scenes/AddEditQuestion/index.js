@@ -399,14 +399,16 @@ export class AddEditQuestion extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
+  const schemeState = state.scenes.codingScheme
+  
   return {
     form: state.form.questionForm || {},
     projectId: ownProps.match.params.id,
     formName: 'questionForm',
-    formError: state.scenes.codingScheme.formError || null,
-    lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
-    hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
-    goBack: state.scenes.codingScheme.goBack
+    formError: schemeState.formError || null,
+    lockedByCurrentUser: schemeState.lockedByCurrentUser || false,
+    hasLock: Object.keys(schemeState.lockInfo).length > 0 || false,
+    goBack: schemeState.goBack
   }
 }
 

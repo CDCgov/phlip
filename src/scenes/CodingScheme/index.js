@@ -7,6 +7,7 @@ import { Route, Link } from 'react-router-dom'
 import actions from './actions'
 import Scheme from './components/Scheme'
 import AddEditQuestion from './scenes/AddEditQuestion'
+import Autosuggest from 'react-autosuggest'
 import {
   ApiErrorAlert,
   ApiErrorView,
@@ -16,8 +17,11 @@ import {
   withTracking,
   PageHeader,
   Button,
-  withProjectLocked
+  withProjectLocked,
+  withAutocompleteMethods, CircularLoader
 } from 'components'
+import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
+import Divider from '@material-ui/core/Divider'
 
 /**
  * Coding Scheme screen main component, rendered when the user clicks 'Edit' under the Coding Scheme table header. This
@@ -103,7 +107,8 @@ export class CodingScheme extends Component {
       goBackAlertOpen: false,
       deleteQuestionAlertOpen: false,
       questionIdToDelete: null,
-      path: null
+      path: null,
+      projectSearchOpen: false
     }
     
     this.deleteAlertActions = [
@@ -121,6 +126,16 @@ export class CodingScheme extends Component {
     setTimeout(() => {
       this.props.actions.setEmptyState()
     }, 1000)
+  }
+  
+  componentDidUpdate(prevProps) {
+    const { copying, alertError } = this.props
+    
+    if (prevProps.copying && !copying) {
+      if (!alertError) {
+        this.closeProjectSearch()
+      }
+    }
   }
   
   /**
@@ -255,6 +270,34 @@ export class CodingScheme extends Component {
   }
   
   /**
+   * Opens the project search modal for copying the coding scheme
+   */
+  openProjectSearch = () => {
+    this.setState({
+      projectSearchOpen: true
+    })
+  }
+  
+  /**
+   * Closes project search
+   */
+  closeProjectSearch = () => {
+    const { projectAutoActions } = this.props
+    this.setState({
+      projectSearchOpen: false
+    })
+    projectAutoActions.clearAll()
+  }
+  
+  /**
+   * Handles sending a request to copy coding scheme
+   */
+  onCopyCodingScheme = () => {
+    const { projectAutocompleteProps, actions, projectId } = this.props
+    actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id, projectId)
+  }
+  
+  /**
    * Renders a 'Get started' view. Only called when the coding scheme is empty
    * @public
    * @returns {*}
@@ -266,21 +309,31 @@ export class CodingScheme extends Component {
       <FlexGrid container flex align="center" justify="center">
         <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
           {projectLocked && 'This project is locked. No changes can be made to the coding scheme.'}
-          {!projectLocked && lockedByCurrentUser && 'The coding scheme is empty. To get started, add a question.'}
+          {!projectLocked && lockedByCurrentUser &&
+          'The coding scheme is empty. To get started, add a question or copy the coding scheme from another project.'}
           {!projectLocked && !lockedByCurrentUser &&
           'The coding scheme is empty. To get started, check out the coding scheme for editing.'}
         </Typography>
         {(!projectLocked && lockedByCurrentUser) &&
-        <Button
-          component={Link}
-          to={{
-            pathname: `/project/${projectId}/coding-scheme/add`,
-            state: { questionDefined: null, canModify: true, modal: true }
-          }}
-          value="Add New Question"
-          color="accent"
-          aria-label="Add new question to coding scheme"
-        />}
+        <FlexGrid container type="row" align="center" justify="center">
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${projectId}/coding-scheme/add`,
+              state: { questionDefined: null, canModify: true, modal: true }
+            }}
+            value="Add New Question"
+            color="accent"
+            aria-label="Add new question to coding scheme"
+          />
+          <span style={{ width: 20 }} />
+          <Button
+            onClick={this.openProjectSearch}
+            value="Copy Coding Scheme"
+            color="accent"
+            aria-label="Copy coding scheme from another project"
+          />
+        </FlexGrid>}
         {(!projectLocked && !lockedByCurrentUser) &&
         <Button
           value="Check out"
@@ -292,13 +345,25 @@ export class CodingScheme extends Component {
     )
   }
   
+  /*
+   * gets button modal text
+   */
+  getButtonText = (text, inProgress) => {
+    return (
+      <>
+        {text}
+        {inProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginRight: 5 }} />}
+      </>
+    )
+  }
+  
   render() {
     const {
       projectLocked, currentUser, alertError, lockedAlert, lockInfo, projectName, projectId, lockedByCurrentUser,
-      questions, hasLock, schemeError, empty, actions, outline, flatQuestions
+      questions, hasLock, schemeError, empty, actions, outline, flatQuestions, projectAutocompleteProps, copying
     } = this.props
     
-    const { goBackAlertOpen, deleteQuestionAlertOpen } = this.state
+    const { goBackAlertOpen, deleteQuestionAlertOpen, projectSearchOpen } = this.state
     
     // Actions for the 'Go Back' alert modal
     const alertActions = [
@@ -315,6 +380,25 @@ export class CodingScheme extends Component {
     if (currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
+    
+    const cancelButton = {
+      value: 'Cancel',
+      type: 'button',
+      otherProps: { 'aria-label': 'Close modal' },
+      preferred: true,
+      onClick: this.closeProjectSearch
+    }
+    
+    const modalActions = [
+      cancelButton,
+      {
+        value: this.getButtonText('Confirm', copying),
+        type: 'button',
+        otherProps: { 'aria-label': 'Confirm', 'id': 'copyCodingSchemeModalBtn' },
+        onClick: this.onCopyCodingScheme,
+        disabled: copying || !projectAutocompleteProps.selectedSuggestion.id
+      }
+    ]
     
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
@@ -352,6 +436,30 @@ export class CodingScheme extends Component {
             {currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session.'}
           </Typography>
         </Alert>
+        {projectSearchOpen &&
+        <Modal
+          onClose={this.closeProjectSearch}
+          open={projectSearchOpen}
+          maxWidth="md"
+          hideOverflow={false}
+          id="copySchemeSearchBox">
+          <ModalTitle title="Copy Coding Scheme" />
+          <Divider />
+          <ModalContent
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: 24,
+              width: 500,
+              height: 250
+            }}>
+            <FlexGrid container type="row" align="center">
+              <Icon style={{ paddingRight: 8 }}>dvr</Icon>
+              <Autosuggest {...projectAutocompleteProps} />
+            </FlexGrid>
+          </ModalContent>
+          <ModalActions actions={modalActions} />
+        </Modal>}
         <PageHeader
           projectName={projectName}
           projectId={projectId}
@@ -415,27 +523,35 @@ export class CodingScheme extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = (state, ownProps) => ({
-  projectName: state.data.projects.byId[ownProps.match.params.id].name,
-  projectId: ownProps.match.params.id,
-  questions: state.scenes.codingScheme.questions || [],
-  empty: state.scenes.codingScheme.empty || false,
-  outline: state.scenes.codingScheme.outline || {},
-  flatQuestions: state.scenes.codingScheme.flatQuestions || [],
-  schemeError: state.scenes.codingScheme.schemeError || null,
-  reorderError: state.scenes.codingScheme.reorderError || null,
-  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
-  lockInfo: state.scenes.codingScheme.lockInfo || {},
-  alertError: state.scenes.codingScheme.alertError || '',
-  lockedAlert: state.scenes.codingScheme.lockedAlert || null,
-  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
-  currentUser: state.data.user.currentUser
-})
+const mapStateToProps = (state, ownProps) => {
+  const schemeState = state.scenes.codingScheme
+  
+  return {
+    projectName: state.data.projects.byId[ownProps.match.params.id].name,
+    projectId: ownProps.match.params.id,
+    questions: schemeState.questions || [],
+    empty: schemeState.empty || false,
+    outline: schemeState.outline || {},
+    flatQuestions: schemeState.flatQuestions || [],
+    schemeError: schemeState.schemeError || null,
+    reorderError: schemeState.reorderError || null,
+    lockedByCurrentUser: schemeState.lockedByCurrentUser || false,
+    lockInfo: schemeState.lockInfo || {},
+    alertError: schemeState.alertError || '',
+    lockedAlert: schemeState.lockedAlert || null,
+    hasLock: Object.keys(schemeState.lockInfo).length > 0 || false,
+    copying: schemeState.copying,
+    currentUser: state.data.user.currentUser
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withProjectLocked(withTracking(CodingScheme, 'Coding Scheme')))
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'scheme')(
+    withProjectLocked(
+      withTracking(CodingScheme, 'Coding Scheme')
+    )
+  )
+)

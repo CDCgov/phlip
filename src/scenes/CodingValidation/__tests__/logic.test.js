@@ -5,7 +5,7 @@ import { types } from '../actions'
 import { INITIAL_STATE } from 'data/users/reducer'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import { INITIAL_STATE as initialCoding } from '../reducer'
-import { default as reducer } from 'reducer'
+import createRootReducer from 'reducer'
 import apiCalls from 'services/api/calls'
 import {
   schemeFromApi,
@@ -22,7 +22,7 @@ import {
 } from 'utils/testData/coding'
 
 let history = {}, mock = {}
-
+const reducer = createRootReducer()
 const mockReducer = state => state
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
@@ -31,20 +31,25 @@ const setupStore = (currentState = {}, reducerFn = mockReducer) => {
     initialState: {
       data: {
         user: {
-          ...INITIAL_STATE, currentUser: {
+          ...INITIAL_STATE,
+          currentUser: {
             id: 1, firstName: 'Test', lastName: 'User', avatar: ''
-          }, byId: {
+          },
+          byId: {
             1: { id: 1 }
           }
         }
-      }, scenes: {
+      },
+      scenes: {
         codingValidation: {
           coding: {
             ...initialCoding, ...currentState
           }
-        }, home: {
+        },
+        home: {
           main: {
-            searchValue: '', projects: {
+            searchValue: '',
+            projects: {
               byId: {
                 4: {
                   id: 4, name: 'p4', lastEditedBy: '', dateLastEdited: new Date(10, 10, 2010)
@@ -699,7 +704,8 @@ describe('CodingValidation logic', () => {
       beforeEach(() => {
         const questions = schemeFromApi
         questions[0] = {
-          ...schemeFromApi[0], flags: [
+          ...schemeFromApi[0],
+          flags: [
             {
               raisedBy: {
                 userId: 3, firstName: 'test', lastName: 'user3'
