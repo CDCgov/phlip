@@ -271,10 +271,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         newNode: { ...action.payload, hovering: false }
       })
       
-      console.log(newTree.treeData)
-      console.log(newTree.treeData[0])
-      console.log(newTree.treeData[1])
-    
       return {
         ...state,
         questions: newTree.treeData,
