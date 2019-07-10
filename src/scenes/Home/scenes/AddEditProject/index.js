@@ -23,6 +23,7 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
+import { Lock, LockOpen } from 'mdi-material-ui'
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -353,6 +354,16 @@ export class AddEditProject extends Component {
   }
   
   /**
+   * Stops the form from submitting when hitting 'enter' while in the search field
+   * @param event
+   */
+  onEnterKeyPress = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+    }
+  }
+  
+  /**
    * Enables the add user field
    * @returns {*}
    */
@@ -448,13 +459,13 @@ export class AddEditProject extends Component {
             title={this.projectDefined
               ? (
                 <FlexGrid container type="row" align="center" flex>
-                  <span style={{ width: 160 }}>{!isLocked ? 'Edit Project' : 'Project Locked'}</span>
+                  <span style={{ paddingRight: 15 }}>{!isLocked ? 'Edit Project' : 'Project Locked'}</span>
                   <IconButton
                     color={isLocked ? 'secondary' : '#757575'}
                     onClick={this.handleToggleLock}
                     tooltipText={isLocked ? 'Unlock Project' : 'Lock Project'}
                     iconSize={24}>
-                    {isLocked ? 'lock' : 'lock_open'}
+                    {isLocked ? <Lock /> : <LockOpen />}
                   </IconButton>
                 </FlexGrid>
               )
@@ -473,6 +484,7 @@ export class AddEditProject extends Component {
                 disabled={isLocked}
                 fullWidth
                 required
+                onKeyPress={this.onEnterKeyPress}
                 shrinkLabel
               />
               <DetailRow
@@ -489,30 +501,39 @@ export class AddEditProject extends Component {
               />
               <FlexGrid container padding="0 0 25px">
                 <FlexGrid container type="row" align="center">
-                  <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
-                  {!isLocked && <IconButton
-                    iconSize={18}
-                    color="primary"
-                    onClick={this.onEnabledAddUser}
-                    tooltipText="Add User">
-                    person_add
-                  </IconButton>}
+                  <InputLabel style={{ marginRight: 5, flexShrink: 0 }}>Project Users</InputLabel>
+                  {!isLocked &&
+                  <Button
+                    raised={false}
+                    color="accent"
+                    variant="text"
+                    size="small"
+                    style={{ padding: 0, marginRight: 15 }}
+                    onClick={this.onEnabledAddUser}>
+                    <Typography variant="caption" color="secondary">
+                      - Add User
+                    </Typography>
+                  </Button>}
+                  {addUserEnabled && <FlexGrid flex style={{ flexBasis: '50%', flexGrow: 0, marginBottom: 3 }}>
+                    <Autocomplete
+                      name="name"
+                      suggestions={userSuggestions}
+                      handleGetSuggestions={this.onUsersFetchRequest}
+                      handleClearSuggestions={this.onClearUserSuggestions}
+                      InputProps={{
+                        placeholder: 'Search for user by name'
+                      }}
+                      inputProps={{
+                        value: userSearchValue,
+                        onChange: this.onUserSuggestionChange,
+                        onKeyPress: this.onEnterKeyPress,
+                        id: 'add-user-name',
+                        style: { padding: 2 }
+                      }}
+                      handleSuggestionSelected={this.onUserSelected}
+                    />
+                  </FlexGrid>}
                 </FlexGrid>
-                {addUserEnabled && <Autocomplete
-                  name="name"
-                  suggestions={userSuggestions}
-                  handleGetSuggestions={this.onUsersFetchRequest}
-                  handleClearSuggestions={this.onClearUserSuggestions}
-                  InputProps={{
-                    placeholder: 'Search for user by name'
-                  }}
-                  inputProps={{
-                    value: userSearchValue,
-                    onChange: this.onUserSuggestionChange,
-                    id: 'add-user-name'
-                  }}
-                  handleSuggestionSelected={this.onUserSelected}
-                />}
                 <FlexGrid container>
                   {users.length > 0 && users.map((user, i) => {
                     const isCreator = this.projectDefined
@@ -598,7 +619,10 @@ const mapDispatchToProps = dispatch => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withFormAlert(withTracking(AddEditProject, 'Project Form'))))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withFormAlert(
+      withTracking(AddEditProject, 'Project Form')
+    )
+  )
+)

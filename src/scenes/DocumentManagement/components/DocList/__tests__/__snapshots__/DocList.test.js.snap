@@ -54,16 +54,16 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
             "value": "bulk",
           },
           Object {
-            "label": "Assign Project",
-            "value": "project",
+            "label": "Approve",
+            "value": "approve",
           },
           Object {
             "label": "Assign Jurisdiction",
             "value": "jurisdiction",
           },
           Object {
-            "label": "Approve",
-            "value": "approve",
+            "label": "Assign Project",
+            "value": "project",
           },
           Object {
             "label": "Unassign Project",

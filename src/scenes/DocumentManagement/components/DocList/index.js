@@ -168,7 +168,7 @@ export class DocList extends Component {
     ]
     
     options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete' }] : options
-    
+    options.sort((a,b) => (a.label > b.label)? 1 : -1)
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }}>
         <FlexGrid container type="row" justify="space-between" align="center" padding="6px 24px" style={{ height: 56 }}>
