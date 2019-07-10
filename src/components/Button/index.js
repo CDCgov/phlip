@@ -70,7 +70,9 @@ export class Button extends React.Component {
           : textColor
             ? textColor
             : 'white'
-        : color || '',
+        : theme.palette[color]
+          ? theme.palette[color].main
+          : color || '',
       fontWeight: 400,
       backgroundColor: raised
         ? disabled
