@@ -204,23 +204,24 @@ export class Upload extends Component {
   }
   
   /**
-   * Adds an excel file to redux
+   * Handles when the user chooses an excel file
+   * @param excel
    */
-  addExcelFile = e => {
-    const excelFile = e.target.files.item(0)
-    const formData = new FormData()
-    formData.append('file', excelFile, excelFile.name)
-    this.props.actions.extractInfoRequest(formData, excelFile)
+  addExcel = excel => {
+    if (excel) {
+      const formData = new FormData()
+      formData.append('file', excel, excel.name)
+      this.props.actions.extractInfoRequest(formData, excel)
+    }
   }
   
   /**
    * Adds selected files to redux, sends a request to verify the documents can be uploaded
-   * @param e
    */
-  addFilesToList = e => {
+  addFilesToList = fileItems => {
     const { selectedDocs, maxFileCount, actions, infoSheetSelected } = this.props
     
-    if (e.target.files.length + selectedDocs.length > maxFileCount) {
+    if (fileItems + selectedDocs.length > maxFileCount) {
       actions.openAlert(
         `The number of files selected for upload has exceeds the limit of ${maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
         'Maximum Number of Files Exceeded',
@@ -228,8 +229,7 @@ export class Upload extends Component {
       )
     } else {
       let files = []
-      Array.from(Array(e.target.files.length).keys()).map(x => {
-        const i = e.target.files.item(x)
+      fileItems.map(i => {
         files.push({
           name: i.name,
           lastModifiedDate: i.lastModifiedDate,
@@ -546,7 +546,7 @@ export class Upload extends Component {
             />
             <FlexGrid padding={10} />
             <FileUpload
-              handleAddFiles={this.addExcelFile}
+              handleAddFiles={this.addExcel}
               infoSheetSelected={infoSheetSelected}
               buttonText="Select excel file"
               containerBgColor="#f4f9ef"

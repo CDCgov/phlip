@@ -94,9 +94,101 @@ class FileUpload extends Component {
     this.inputRef.current.click()
   }
   
+  // Drop handler function to get all files
+  getAllFileEntries = async dataTransferItemList => {
+    const { allowMultiple } = this.props
+    
+    let fileEntries = []
+    let queue = []
+    
+    if (allowMultiple) {
+      for (let i = 0; i < dataTransferItemList.length; i++) {
+        queue.push(dataTransferItemList[i].webkitGetAsEntry())
+      }
+    } else {
+      queue.push(dataTransferItemList[0].webkitGetAsEntry())
+    }
+    
+    while (queue.length > 0) {
+      let entry = queue.shift()
+      if (entry.isFile) {
+        fileEntries.push(entry)
+      } else if (entry.isDirectory) {
+        queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
+      }
+      if (queue.length === 1) {
+        return fileEntries
+      }
+    }
+  }
+  
+  // Get all the entries (files or sub-directories) in a directory
+  // by calling readEntries until it returns empty array
+  readAllDirectoryEntries = async directoryReader => {
+    let entries = []
+    let readEntries = await this.readEntriesPromise(directoryReader)
+    while (readEntries.length > 0) {
+      entries.push(...readEntries)
+      readEntries = await this.readEntriesPromise(directoryReader)
+    }
+    return entries
+  }
+  
+  // Wrap readEntries in a promise to make working with readEntries easier
+  // readEntries will return only some of the entries in a directory
+  // e.g. Chrome returns at most 100 entries at a time
+  readEntriesPromise = async directoryReader => {
+    try {
+      return await new Promise((resolve, reject) => directoryReader.readEntries(resolve, reject))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  
+  /**
+   * Handle if the drag is a file or folder
+   * @param e
+   * @returns {Promise<void>}
+   */
+  onDrop = async e => {
+    const { handleAddFiles, allowMultiple } = this.props
+    
+    e.persist()
+    e.preventDefault()
+    const fileEntries = await this.getAllFileEntries(e.dataTransfer.items)
+    let files = []
+    for (let i = 0; i < fileEntries.length; i++) {
+      fileEntries[i].file(file => {
+        files.push(file)
+        if (i === fileEntries.length - 1) {
+          handleAddFiles(allowMultiple ? files : files[0])
+        }
+      })
+    }
+  }
+  
+  /**
+   * Handles when the user selects files via input field
+   * @param e
+   */
+  onSelectFiles = e => {
+    const { handleAddFiles, allowMultiple } = this.props
+  
+    let files = []
+    Array.from(Array(e.target.files.length).keys()).map(x => files.push(e.target.files.item(x)))
+    handleAddFiles(allowMultiple ? files : files[0])
+  }
+  
+  /**
+   * Stop the browser from opening the document
+   * @param e
+   */
+  onDragOver = e => {
+    e.preventDefault()
+  }
+  
   render() {
     const {
-      handleAddFiles,
       buttonText,
       containerBgColor,
       containerBorderColor,
@@ -116,7 +208,11 @@ class FileUpload extends Component {
     
     return (
       <>
-        <form encType="multipart/form-data" style={{ margin: '20px 0', flex: 1 }}>
+        <form
+          style={{ margin: '20px 0', flex: 1 }}
+          onDragOver={this.onDragOver}
+          onDrop={this.onDrop}
+          encType="multipart/form-data">
           <FlexGrid
             container
             type="row"
@@ -142,7 +238,7 @@ class FileUpload extends Component {
                 ref={this.inputRef}
                 multiple={allowMultiple}
                 type="file"
-                onChange={handleAddFiles}
+                onChange={this.onSelectFiles}
                 style={{ opacity: 0, height: '100%', width: '100%', position: 'absolute' }}
                 accept={allowedFileTypes}
               />
