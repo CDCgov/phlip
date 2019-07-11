@@ -83,8 +83,6 @@ class FileUpload extends Component {
    */
   handleInitiateFileSelector = () => {
     const { overwriteAlert, numOfFiles } = this.props
-    console.log(overwriteAlert)
-    console.log(numOfFiles)
     
     if (overwriteAlert.enable && numOfFiles > 0) {
       this.setState({
