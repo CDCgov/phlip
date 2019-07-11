@@ -120,6 +120,10 @@ class FileUpload extends Component {
     let fileEntries = []
     let queue = []
     
+    if (dataTransferItemList.length === 0) {
+      return []
+    }
+    
     if (allowMultiple) {
       for (let i = 0; i < dataTransferItemList.length; i++) {
         queue.push(dataTransferItemList[i].webkitGetAsEntry())
@@ -135,7 +139,8 @@ class FileUpload extends Component {
       } else if (entry.isDirectory) {
         queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
       }
-      if (queue.length === 1 || queue.length === 0) {
+    
+      if (queue.length === 0) {
         return fileEntries
       }
     }
@@ -163,6 +168,7 @@ class FileUpload extends Component {
     try {
       return await new Promise((resolve, reject) => directoryReader.readEntries(resolve, reject))
     } catch (err) {
+      /* istanbul ignore next */
       console.log(err)
     }
   }
@@ -174,7 +180,6 @@ class FileUpload extends Component {
   onDrop = async e => {
     const { handleAddFiles, allowMultiple } = this.props
     
-    e.persist()
     e.preventDefault()
     
     const fileEntries = await this.getAllFileEntries(e.dataTransfer.items)
