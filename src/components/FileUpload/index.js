@@ -38,13 +38,16 @@ class FileUpload extends Component {
      */
     handleAddFiles: PropTypes.func.isRequired,
     /**
-     *  Flag for excel file previously selected
-     */
-    infoSheetSelected: PropTypes.bool,
-    /**
      * Total # of files selected to know when to clear files input
      */
-    numOfFiles: PropTypes.number
+    numOfFiles: PropTypes.number,
+    /**
+     * info and whether or not to show overwrite alert
+     */
+    overwriteAlert: PropTypes.shape({
+      enable: PropTypes.bool,
+      text: PropTypes.any
+    })
   }
   
   static defaultProps = {
@@ -53,7 +56,11 @@ class FileUpload extends Component {
     containerText: 'or drag and drop here',
     buttonText: 'Select Files',
     allowMultiple: false,
-    numOfFiles: 0
+    numOfFiles: 0,
+    overwriteAlert: {
+      enable: false,
+      text: ''
+    }
   }
   
   constructor(props, context) {
@@ -65,13 +72,21 @@ class FileUpload extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.numOfFiles !== 0 && this.props.numOfFiles === 0) {
+    const { numOfFiles } = this.props
+    if (prevProps.numOfFiles !== 0 && numOfFiles === 0) {
       this.inputRef.current.value = null
     }
   }
   
+  /**
+   * Check to see if we should show the overwrite alert
+   */
   handleInitiateFileSelector = () => {
-    if (this.props.infoSheetSelected) {
+    const { overwriteAlert, numOfFiles } = this.props
+    console.log(overwriteAlert)
+    console.log(numOfFiles)
+    
+    if (overwriteAlert.enable && numOfFiles > 0) {
       this.setState({
         alertOpen: true
       })
@@ -81,20 +96,26 @@ class FileUpload extends Component {
   }
   
   /**
-   * Handles when the user cancels out of selecting a new excel file
+   * User clicked 'cancel' in overwrite alert
    */
-  onCancelSelectExcel = () => {
+  onCancelSelect = () => {
     this.setState({
       alertOpen: false
     })
   }
   
-  onContinueSelectExcel = () => {
-    this.onCancelSelectExcel()
+  /**
+   * User clicked 'continue' in overwrite alert
+   */
+  onContinueSelect = () => {
+    this.onCancelSelect()
     this.inputRef.current.click()
   }
   
-  // Drop handler function to get all files
+  /**
+   * Handles getting all individual file entries
+   * @param dataTransferItemList
+   */
   getAllFileEntries = async dataTransferItemList => {
     const { allowMultiple } = this.props
     
@@ -116,14 +137,16 @@ class FileUpload extends Component {
       } else if (entry.isDirectory) {
         queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
       }
-      if (queue.length === 1) {
+      if (queue.length === 1 || queue.length === 0) {
         return fileEntries
       }
     }
   }
   
-  // Get all the entries (files or sub-directories) in a directory
-  // by calling readEntries until it returns empty array
+  /**
+   * Get all the entries (files or sub-directories) in a directory
+   * by calling readEntries until it returns empty array
+   */
   readAllDirectoryEntries = async directoryReader => {
     let entries = []
     let readEntries = await this.readEntriesPromise(directoryReader)
@@ -134,9 +157,10 @@ class FileUpload extends Component {
     return entries
   }
   
-  // Wrap readEntries in a promise to make working with readEntries easier
-  // readEntries will return only some of the entries in a directory
-  // e.g. Chrome returns at most 100 entries at a time
+  /**
+   * Wrap readEntries in a promise to make working with readEntries easier
+   * readEntries will return only some of the entries in a directory,  e.g. Chrome returns at most 100 entries at a time
+   */
   readEntriesPromise = async directoryReader => {
     try {
       return await new Promise((resolve, reject) => directoryReader.readEntries(resolve, reject))
@@ -148,13 +172,13 @@ class FileUpload extends Component {
   /**
    * Handle if the drag is a file or folder
    * @param e
-   * @returns {Promise<void>}
    */
   onDrop = async e => {
     const { handleAddFiles, allowMultiple } = this.props
     
     e.persist()
     e.preventDefault()
+    
     const fileEntries = await this.getAllFileEntries(e.dataTransfer.items)
     let files = []
     for (let i = 0; i < fileEntries.length; i++) {
@@ -173,6 +197,7 @@ class FileUpload extends Component {
    */
   onSelectFiles = e => {
     const { handleAddFiles, allowMultiple } = this.props
+    e.preventDefault()
   
     let files = []
     Array.from(Array(e.target.files.length).keys()).map(x => files.push(e.target.files.item(x)))
@@ -195,14 +220,17 @@ class FileUpload extends Component {
       containerStyle,
       containerText,
       allowMultiple,
-      allowedFileTypes
+      allowedFileTypes,
+      overwriteAlert
     } = this.props
+    
+    const { alertOpen } = this.state
     
     const alertActions = [
       {
         value: 'Continue',
         type: 'button',
-        onClick: this.onContinueSelectExcel
+        onClick: this.onContinueSelect
       }
     ]
     
@@ -210,9 +238,11 @@ class FileUpload extends Component {
       <>
         <form
           style={{ margin: '20px 0', flex: 1 }}
+          id="drop_zone"
           onDragOver={this.onDragOver}
           onDrop={this.onDrop}
-          encType="multipart/form-data">
+          encType="multipart/form-data"
+          effectallowed="move">
           <FlexGrid
             container
             type="row"
@@ -250,16 +280,12 @@ class FileUpload extends Component {
             </FlexGrid>
           </FlexGrid>
         </form>
-        <Alert
-          open={this.state.alertOpen}
-          actions={alertActions}
-          onCloseAlert={this.onCancelSelectExcel}
-          title="Warning">
+        <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelSelect} title="Warning">
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Selecting a new Excel file will erase existing information. Do you want to continue?
+            {overwriteAlert.text}
           </Typography>
         </Alert>
-        </>
+      </>
     )
   }
 }

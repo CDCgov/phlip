@@ -543,6 +543,9 @@ export class Upload extends Component {
               allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               allowMultiple
               numOfFiles={selectedDocs.length}
+              overwriteAlert={{
+                enable: false
+              }}
             />
             <FlexGrid padding={10} />
             <FileUpload
@@ -556,6 +559,10 @@ export class Upload extends Component {
                 ? `Selected file: ${infoSheet.name}`
                 : 'or drag and drop here'}
               numOfFiles={infoSheetSelected ? 1 : 0}
+              overwriteAlert={{
+                enable: true,
+                text: 'Selecting a new Excel file will erase existing information. Do you want to continue?'
+              }}
             />
           </FlexGrid>
           {selectedDocs.length > 0 &&
