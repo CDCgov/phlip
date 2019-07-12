@@ -7,7 +7,9 @@ export const INITIAL_STATE = {
     text: '',
     type: '',
     data: {}
-  }
+  },
+  touched: false,
+  header: ''
 }
 
 export const cardReducer = (state = INITIAL_STATE, action) => {
@@ -28,6 +30,18 @@ export const cardReducer = (state = INITIAL_STATE, action) => {
           ...state.alert,
           ...action.alert
         }
+      }
+      
+    case types.CHANGE_TOUCHED_STATUS:
+      return {
+        ...state,
+        touched: action.touched
+      }
+      
+    case types.SET_HEADER_TEXT:
+      return {
+        ...state,
+        header: action.text
       }
       
     default:

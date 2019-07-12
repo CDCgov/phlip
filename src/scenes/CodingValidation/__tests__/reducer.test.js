@@ -1021,6 +1021,7 @@ describe('CodingValidation reducer', () => {
     }
 
     const currentState = getState({
+      question: schemeById[4],
       categories: [{ id: 9 }, { id: 10 }]
     })
 

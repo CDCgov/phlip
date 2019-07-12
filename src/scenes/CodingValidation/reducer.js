@@ -22,6 +22,7 @@ import cardReducer, { INITIAL_STATE as cardInitialState } from './components/Que
  */
 export const INITIAL_STATE = {
   question: {},
+  answerSnapshot: {},
   scheme: null,
   outline: {},
   currentIndex: 0,
@@ -203,15 +204,15 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...questionUpdater('answers', handleUserPinciteQuestion),
-        unsavedChanges: true
+        unsavedChanges: true,
+        handleTouchedQuestion: true
       }
     
     case types.ON_SAVE_ANNOTATION:
       return {
         ...state,
         ...questionUpdater('answers', handleUpdateAnnotations),
-        unsavedChanges: true,
-        hasTouchedQuestion: true
+        unsavedChanges: true
       }
     
     case types.ON_REMOVE_ANNOTATION:
@@ -226,14 +227,17 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...questionUpdater('comment', action.comment),
-        unsavedChanges: true
+        unsavedChanges: true,
+        hasTouchedQuestion: true
       }
     
     case types.ON_CHANGE_CATEGORY:
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
+        selectedCategoryId: state.categories[action.selection].id,
+        hasTouchedQuestion: false,
+        answerSnapshot: state.userAnswers[state.question.id][state.categories[action.selection].id]
       }
     
     case types.GET_QUESTION_SUCCESS:
@@ -266,14 +270,16 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             }), {})
           }
         },
-        unsavedChanges: true
+        unsavedChanges: true,
+        hasTouchedQuestion: true
       }
     
     case types.ON_CLEAR_ANSWER:
       return {
         ...state,
         ...questionUpdater('answers', {}),
-        unsavedChanges: true
+        unsavedChanges: true,
+        hasTouchedQuestion: true
       }
     
     case types.DISMISS_API_ALERT:

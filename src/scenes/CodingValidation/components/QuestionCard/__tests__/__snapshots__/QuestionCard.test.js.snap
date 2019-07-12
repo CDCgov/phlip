@@ -87,7 +87,18 @@ exports[`QuestionCard component should render correctly 1`] = `
           }
         }
         type="column"
-      />
+      >
+        <WithStyles(Typography)
+          style={
+            Object {
+              "color": "#757575",
+              "paddingLeft": 10,
+              "textAlign": "center",
+            }
+          }
+          variant="caption"
+        />
+      </FlexGrid>
       <FlexGrid
         align="stretch"
         circular={false}
@@ -136,6 +147,7 @@ exports[`QuestionCard component should render correctly 1`] = `
           <FlagPopover
             categoryId={0}
             disableAll={false}
+            onSaveFlag={[Function]}
             questionFlags={Array []}
             questionId={1}
             user={
@@ -173,6 +185,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         mergedUserQuestions={Object {}}
         onApplyAll={[Function]}
         onChange={[Function]}
+        onChangeTextAnswer={[Function]}
         onMouseInAnswerChoice={[Function]}
         onMouseOutAnswerChoice={[Function]}
         onToggleAnnotationMode={[Function]}
@@ -204,7 +217,9 @@ exports[`QuestionCard component should render correctly 1`] = `
       />
     </TabContainer>
     <WithStyles(Divider) />
-    <WithTheme(FooterNavigate) />
+    <FooterNavigate
+      getQuestion={[Function]}
+    />
   </FlexGrid>
 </FlexGrid>
 `;

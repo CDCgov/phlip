@@ -212,20 +212,28 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       }
     }, {})
     
+    const userAnswers = {
+      ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion }
+    }
+    
+    const selectedCatId = selectedCategories[state.selectedCategory].id
+    
     return {
       ...base,
       question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion } },
-      selectedCategoryId: selectedCategories[state.selectedCategory].id
+      userAnswers,
+      answerSnapshot: { ...userAnswers[newQuestion.id][selectedCatId] },
+      selectedCategoryId: selectedCatId
     }
   } else {
     return {
       ...base,
       categories: undefined,
       selectedCategory: 0,
-      selectedCategoryId: null
+      selectedCategoryId: null,
+      answerSnapshot: { ...base.userAnswers[newQuestion.id] }
     }
   }
 }

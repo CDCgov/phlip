@@ -34,33 +34,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     hideClose={false}
     onCloseAlert={[Function]}
     open={false}
-    title="Warning"
-  >
-    <WithStyles(Typography)
-      style={
-        Object {
-          "whiteSpace": "pre-wrap",
-        }
-      }
-      variant="body1"
-    >
-      Your answer will apply to ALL categories. Previous answers will be overwritten.
-    </WithStyles(Typography)>
-  </Alert>
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Continue",
-        },
-      ]
-    }
-    closeButton={Object {}}
-    hideClose={false}
-    onCloseAlert={[Function]}
-    open={false}
     title="Still Saving Changes"
   >
     <WithStyles(Typography)
@@ -193,11 +166,11 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             getNextQuestion={[Function]}
             getPrevQuestion={[Function]}
             onAnswer={[Function]}
+            onApplyAll={[Function]}
             onChange={[Function]}
             onChangeCategory={[Function]}
             onChangeTextAnswer={[Function]}
             onClearAnswer={[Function]}
-            onOpenAlert={[Function]}
             onOpenFlagConfirmAlert={[Function]}
             onSave={[Function]}
             onSaveFlag={[Function]}

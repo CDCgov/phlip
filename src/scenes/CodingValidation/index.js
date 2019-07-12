@@ -67,8 +67,6 @@ export class CodingValidation extends Component {
           ? props.project.projectJurisdictions.find(j => parseInt(props.match.params.jid) === parseInt(j.id))
           : props.project.projectJurisdictions[0]
         : { id: null },
-      navOpen: false,
-      applyAllAlertOpen: false,
       changeProps: [],
       stillSavingAlertOpen: false,
       changeMethod: null,
@@ -152,13 +150,6 @@ export class CodingValidation extends Component {
   }
   
   /**
-   * @public
-   */
-  onToggleNavigator = () => {
-    this.setState({ navOpen: !this.state.navOpen })
-  }
-  
-  /**
    * Handle changing the browser routes for when the user changes questions or jurisdictions
    */
   changeRoutes = () => {
@@ -175,10 +166,8 @@ export class CodingValidation extends Component {
    * @param index
    */
   getNextQuestion = index => {
-    const { actions, question, questionOrder, unsavedChanges, project } = this.props
+    const { actions, questionOrder, unsavedChanges, project } = this.props
     const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.onShowStillSavingAlert(index, actions.getNextQuestion)
@@ -193,10 +182,8 @@ export class CodingValidation extends Component {
    * @param index
    */
   getPrevQuestion = index => {
-    const { actions, question, project, questionOrder, unsavedChanges } = this.props
+    const { actions, project, questionOrder, unsavedChanges } = this.props
     const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.onShowStillSavingAlert(index, actions.getPrevQuestion)
@@ -244,10 +231,7 @@ export class CodingValidation extends Component {
     const { actions, question, project } = this.props
     const { jurisdiction } = this.state
     
-    actions.toggleAnnotationMode(question.id, '', false)
-    
     actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
   
@@ -260,44 +244,37 @@ export class CodingValidation extends Component {
     const { jurisdiction } = this.state
     
     actions.saveUserAnswerRequest(project.id, jurisdiction.id, question.id, selectedCategoryId)
+    actions.setHeaderText('Saving...')
   }
   
   /**
    * @public
-   * @param id
    * @param field
+   * @param value
+   * @param id
    * @returns {Function}
    */
-  onChangeTextAnswer = (id, field) => event => {
-    const { project, question, actions } = this.props
+  onChangeTextAnswer = (field, id, value) => {
+    const { actions, project, question } = this.props
     const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
-    
+  
     switch (field) {
       case 'textAnswer':
-        actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, event.target.value)
+        actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
         break
       
       case 'comment':
-        actions.onChangeComment(project.id, jurisdiction.id, question.id, event.target.value)
+        actions.onChangeComment(project.id, jurisdiction.id, question.id, value)
         break
       
       case 'pincite':
-        actions.onChangePincite(project.id, jurisdiction.id, question.id, id, event.target.value)
+        actions.onChangePincite(project.id, jurisdiction.id, question.id, id, value)
         break
     }
     
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
-  
-  /**
-   * @public
-   * @returns {*}
-   */
-  onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
-  
+
   /**
    * @public
    * @returns {*|{type, args}}
@@ -310,7 +287,6 @@ export class CodingValidation extends Component {
    * @param selection
    */
   onChangeCategory = (event, selection) => {
-    this.onSaveCodedQuestion()
     this.props.actions.onChangeCategory(selection)
   }
   
@@ -378,7 +354,6 @@ export class CodingValidation extends Component {
     const { jurisdiction } = this.state
     
     actions.onClearAnswer(project.id, jurisdiction.id, question.id)
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
   
@@ -398,23 +373,6 @@ export class CodingValidation extends Component {
     }
   }
   
-  /***
-   * @public
-   */
-  onChangeTouchedStatus = () => {
-    const { hasTouchedQuestion, actions } = this.props
-    
-    if (!hasTouchedQuestion) {
-      actions.changeTouchedStatus()
-    }
-  }
-  
-  /**
-   * @public
-   * @returns {*}
-   */
-  onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
-  
   /**
    * @public
    */
@@ -422,8 +380,6 @@ export class CodingValidation extends Component {
     const { actions, project, question } = this.props
     const { jurisdiction } = this.state
     
-    this.onCloseApplyAllAlert()
-    this.onChangeTouchedStatus()
     actions.applyAnswerToAll(project.id, jurisdiction.id, question.id)
   }
   
@@ -527,6 +483,8 @@ export class CodingValidation extends Component {
         }
         
         this.onShowQuestionLoader()
+        actions.changeTouchedStatus(false)
+        actions.setHeaderText('')
         actions.getApprovedDocumentsRequest(project.id, newJur.jurisdictionId, page)
       }
     }
@@ -538,26 +496,15 @@ export class CodingValidation extends Component {
    * @param flagInfo
    */
   onSaveFlag = flagInfo => {
-    const { actions, project, question, user, selectedCategoryId } = this.props
+    const { actions, project, question, selectedCategoryId } = this.props
     const { jurisdiction } = this.state
     
-    const flag = {
-      raisedBy: {
-        userId: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName
-      },
-      ...flagInfo
-    }
-    
     if (flagInfo.type === 3) {
-      actions.onSaveRedFlag(project.id, question.id, flag)
+      actions.onSaveRedFlag(project.id, question.id, flagInfo)
     } else {
-      actions.onSaveFlag(project.id, jurisdiction.id, question.id, flag)
+      actions.onSaveFlag(project.id, jurisdiction.id, question.id, flagInfo)
       actions.saveUserAnswerRequest(project.id, jurisdiction.id, question.id, selectedCategoryId)
     }
-    
-    this.onChangeTouchedStatus()
   }
   
   /**
@@ -616,9 +563,7 @@ export class CodingValidation extends Component {
       getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
     } = this.props
     
-    const {
-      applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
-    } = this.state
+    const { stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction } = this.state
     
     const containerStyle = {
       width: '100%',
@@ -630,15 +575,6 @@ export class CodingValidation extends Component {
     
     return (
       <FlexGrid container type="row" flex style={containerStyle}>
-        <Alert
-          open={applyAllAlertOpen}
-          actions={this.modalActions}
-          title="Warning"
-          onCloseAlert={this.onCloseApplyAllAlert}>
-          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Your answer will apply to ALL categories. Previous answers will be overwritten.
-          </Typography>
-        </Alert>
         <Alert
           open={stillSavingAlertOpen}
           onCloseAlert={this.onCancelStillSavingAlert}
@@ -686,7 +622,8 @@ export class CodingValidation extends Component {
                     ? (
                       <FlexGrid container flex align="center" justify="center" padding={30}>
                         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-                        {!projectLocked && <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
+                        {!projectLocked &&
+                        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
                           {(isSchemeEmpty && user.role !== 'Coder') &&
                           <TextLink to={{ pathname: `/project/${project.id}/coding-scheme` }}>
                             <Button value="Create Coding Scheme" color="accent" />
@@ -701,22 +638,22 @@ export class CodingValidation extends Component {
                     : (schemeError === null && (
                       <>
                         <QuestionCard
-                          page={page}
                           onChange={this.onAnswer}
                           onChangeTextAnswer={this.onChangeTextAnswer}
                           onChangeCategory={this.onChangeCategory}
                           onAnswer={this.onAnswer}
                           onClearAnswer={this.onClearAnswer}
-                          onOpenAlert={this.onOpenApplyAllAlert}
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-                          currentIndex={currentIndex}
-                          disableAll={projectLocked}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}
+                          onApplyAll={this.onApplyToAll}
                           totalLength={questionOrder.length}
                           showNextButton={showNextButton}
+                          currentIndex={currentIndex}
+                          disableAll={projectLocked}
+                          page={page}
                         />
                         <Resizable
                           style={{ display: 'flex' }}

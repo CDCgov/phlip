@@ -9,7 +9,7 @@ const props = {
   onChange: () => jest.fn(),
   onChangeCategory: () => jest.fn(),
   onClearAnswer: jest.fn(),
-  onOpenAlert: jest.fn(),
+  onApplyAll: jest.fn(),
   isValidation: false,
   user: { id: 5, firstName: 'test', lastName: 'user' },
   categories: [],
@@ -22,7 +22,8 @@ const props = {
   isChangingQuestion: false,
   unsavedChanges: false,
   saveFailed: false,
-  hasTouchedQuestion: false,
+  touched: false,
+  header: '',
   enabledAnswerId: '',
   enabledUserId: '',
   annotationModeEnabled: false,
@@ -31,7 +32,9 @@ const props = {
     toggleAnnotationMode: jest.fn(),
     setAlert: jest.fn(),
     closeAlert: jest.fn(),
-    toggleViewAnnotations: jest.fn()
+    toggleViewAnnotations: jest.fn(),
+    setHeaderText: jest.fn(),
+    changeTouchedStatus: jest.fn()
   },
   alert: {
     open: false,
@@ -59,6 +62,13 @@ const clearAlert = {
   ...categoryAlert,
   type: 'clearAnswer',
   text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
+  data: {}
+}
+
+const applyAll = {
+  ...categoryAlert,
+  type: 'applyAll',
+  text: 'Your answer will apply to ALL categories. Previous answers will be overwritten.',
   data: {}
 }
 
@@ -443,18 +453,49 @@ describe('QuestionCard component', () => {
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
-    
-    test('should apply to all categories', () => {
-      const spy = jest.spyOn(props, 'onOpenAlert')
+  
+    test('should call props.setAlert with clear answer alert information', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          enabledAnswerId={1}
+          userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+        />
+      )
+      wrapper.instance().onApplyAll()
+      expect(spy).toHaveBeenCalledWith(applyAll)
+    })
+  
+    test('should close the alert when \'Cancel\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props.actions, 'closeAlert')
       const wrapper = shallow(<QuestionCard
         {...props}
         userAnswers={{
           answers: {
-            1: { schemeAnswerId: 1 }
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
           }
         }}
+        alert={applyAll}
       />)
-      wrapper.instance().onApplyAll()
+      wrapper.find('Alert').at(0).prop('onCloseAlert')()
+      expect(spy).toHaveBeenCalled()
+    })
+  
+    test('should apply to all categories when \'Continue\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props, 'onApplyAll')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={applyAll}
+      />)
+      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
       expect(spy).toHaveBeenCalled()
     })
   })

@@ -279,7 +279,7 @@ export class FlagPopover extends Component {
                 [styles.stopIconFlag]: questionFlags.length > 0
               })}
             />,
-            style: { paddingRight: 15, paddingLeft: 15, maxHeight: 500 },
+            style: { maxHeight: 500 },
             tooltip: 'Stop coding this question',
             id: 'stop-coding-question'
           }}
