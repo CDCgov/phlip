@@ -304,29 +304,7 @@ describe('CodingValidation reducer', () => {
       })
     })
   })
-
-  describe('CHANGE_TOUCHED_STATUS', () => {
-    test('should set state.hasTouchedQuestion to true if state.hasTouchedQuestion is false', () => {
-      const action = {
-        type: types.CHANGE_TOUCHED_STATUS
-      }
-
-      const currentState = getState({ hasTouchedQuestion: false })
-      const state = reducer(currentState, action)
-      expect(state.hasTouchedQuestion).toEqual(true)
-    })
-
-    test('should set state.hasTouchedQuestion to false if state.hasTouchedQuestion is true', () => {
-      const action = {
-        type: types.CHANGE_TOUCHED_STATUS
-      }
-
-      const currentState = getState({ hasTouchedQuestion: true })
-      const state = reducer(currentState, action)
-      expect(state.hasTouchedQuestion).toEqual(false)
-    })
-  })
-
+  
   describe('SAVE_USER_ANSWER_SUCCESS', () => {
     test('should set state.unsavedChanges to true if there are messages in the queue', () => {
       const action = {
@@ -1245,11 +1223,7 @@ describe('CodingValidation reducer', () => {
     test('should set state.isChangingQuestion to false', () => {
       expect(state.isChangingQuestion).toEqual(false)
     })
-
-    test('should set state.hasTouchedQuestion to false', () => {
-      expect(state.hasTouchedQuestion).toEqual(false)
-    })
-
+    
     test('should set state.saveFailed to false', () => {
       expect(state.saveFailed).toEqual(false)
     })

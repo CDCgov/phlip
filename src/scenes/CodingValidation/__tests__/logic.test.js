@@ -3,8 +3,9 @@ import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import { types } from '../actions'
 import { INITIAL_STATE } from 'data/users/reducer'
-import createApiHandler, { projectApiInstance } from 'services/api'
 import { INITIAL_STATE as initialCoding } from '../reducer'
+import { INITIAL_STATE as initialDocList } from '../components/DocumentList/reducer'
+import createApiHandler, { projectApiInstance } from 'services/api'
 import createRootReducer from 'reducer'
 import apiCalls from 'services/api/calls'
 import {
@@ -18,7 +19,8 @@ import {
   userValidatedQuestions,
   userAnswersValidation,
   schemeUserAnswersEmpty,
-  schemeTreeAfterInitialization
+  schemeTreeAfterInitialization,
+  mergedUserQuestions
 } from 'utils/testData/coding'
 
 let history = {}, mock = {}
@@ -26,7 +28,7 @@ const reducer = createRootReducer()
 const mockReducer = state => state
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
-const setupStore = (currentState = {}, reducerFn = mockReducer) => {
+const setupStore = (currentState = {}, reducerFn = mockReducer, docListOther = {}) => {
   return createMockStore({
     initialState: {
       data: {
@@ -38,24 +40,22 @@ const setupStore = (currentState = {}, reducerFn = mockReducer) => {
           byId: {
             1: { id: 1 }
           }
+        },
+        projects: {
+          byId: {
+            4: {
+              id: 4, name: 'p4', lastEditedBy: '', dateLastEdited: new Date(10, 10, 2010)
+            }
+          }
         }
       },
       scenes: {
         codingValidation: {
           coding: {
             ...initialCoding, ...currentState
-          }
-        },
-        home: {
-          main: {
-            searchValue: '',
-            projects: {
-              byId: {
-                4: {
-                  id: 4, name: 'p4', lastEditedBy: '', dateLastEdited: new Date(10, 10, 2010)
-                }
-              }
-            }
+          },
+          documentList: {
+            ...initialDocList, ...docListOther
           }
         }
       }
@@ -80,9 +80,7 @@ describe('CodingValidation logic', () => {
         })
         
         mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1')
-          .reply(config => {
-            return userCodedQuestions[1]
-          })
+          .reply(config => userCodedQuestions[1])
         
         store.dispatch({
           type: types.SAVE_USER_ANSWER_REQUEST,
@@ -252,10 +250,15 @@ describe('CodingValidation logic', () => {
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: {} },
           userAnswers: {
-            ...schemeUserAnswersEmpty, 1: {
-              answers: { ...userAnswersCoded[1] }, flag: { type: 0 }, isNewCodedQuestion: true, hasMadePost: false
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: false
             }
           },
+          mergedUserQuestions,
           messageQueue: []
         })
         
@@ -285,6 +288,7 @@ describe('CodingValidation logic', () => {
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: [] },
           userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
           messageQueue: []
         })
         
@@ -710,7 +714,8 @@ describe('CodingValidation logic', () => {
               raisedBy: {
                 userId: 3, firstName: 'test', lastName: 'user3'
               }
-            }]
+            }
+          ]
         }
         
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -976,7 +981,8 @@ describe('CodingValidation logic', () => {
           parentId: 0,
           positionInParent: 1,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         const question2CodedAnswers = {
@@ -1024,7 +1030,8 @@ describe('CodingValidation logic', () => {
           positionInParent: 0,
           isCategoryQuestion: true,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
@@ -1033,7 +1040,8 @@ describe('CodingValidation logic', () => {
               schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: []
             }, {
               schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: []
-            }])
+            }
+          ])
         
         mock.onGet('/projects/1/scheme/4').reply(200, updatedCatChildQuestion)
         
@@ -1056,7 +1064,8 @@ describe('CodingValidation logic', () => {
                   id: 10, order: 2, text: 'category 2'
                 }, {
                   id: 20, order: 3, text: 'category 3'
-                }], question: schemeById[4], selectedCategory: 0, selectedCategoryId: 10
+                }
+              ], question: schemeById[4], selectedCategory: 0, selectedCategoryId: 10
             },
             userId: 1
           })
@@ -1069,7 +1078,8 @@ describe('CodingValidation logic', () => {
           
           expect(store.actions[1])
             .toHaveProperty('payload.updatedState.categories', [
-              { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }])
+              { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
+            ])
           
           done()
         })
@@ -1154,7 +1164,8 @@ describe('CodingValidation logic', () => {
           parentId: 0,
           positionInParent: 1,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         const question2CodedAnswers = {
@@ -1247,7 +1258,8 @@ describe('CodingValidation logic', () => {
                 schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: []
               }, {
                 schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: []
-              }])
+              }
+            ])
           mock.onGet('/projects/1/scheme/4').reply(200, schemeFromApi[3])
           
           const store = setupStore(currentState)
@@ -1269,7 +1281,8 @@ describe('CodingValidation logic', () => {
                     id: 10, order: 2, text: 'category 2'
                   }, {
                     id: 20, order: 3, text: 'category 3'
-                  }], selectedCategory: 0, selectedCategoryId: 10, index: 3, question: schemeById[4]
+                  }
+                ], selectedCategory: 0, selectedCategoryId: 10, index: 3, question: schemeById[4]
               }, userId: 1, page: 'coding'
             })
             
@@ -1356,7 +1369,8 @@ describe('CodingValidation logic', () => {
             store.whenComplete(() => {
               expect(store.actions[0].questionInfo).toEqual({
                 categories: [
-                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }],
+                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }
+                ],
                 selectedCategory: 0,
                 selectedCategoryId: 10,
                 index: 3,
@@ -1403,7 +1417,8 @@ describe('CodingValidation logic', () => {
             store.whenComplete(() => {
               expect(store.actions[0].questionInfo).toEqual({
                 categories: [
-                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }],
+                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }
+                ],
                 selectedCategory: 1,
                 selectedCategoryId: 20,
                 index: 3,

@@ -172,6 +172,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             onChangeTextAnswer={[Function]}
             onClearAnswer={[Function]}
             onOpenFlagConfirmAlert={[Function]}
+            onResetAnswer={[Function]}
             onSave={[Function]}
             onSaveFlag={[Function]}
             page="coding"
