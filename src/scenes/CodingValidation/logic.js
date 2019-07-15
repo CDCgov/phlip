@@ -401,6 +401,8 @@ const answerQuestionLogic = createLogic({
         }
       })
       
+      dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
+      
       if (state.messageQueue.length > 0) {
         dispatch({
           type: types.SEND_QUEUE_REQUESTS,

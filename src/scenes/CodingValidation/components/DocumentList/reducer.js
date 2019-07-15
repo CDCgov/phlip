@@ -144,7 +144,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         annotations: {
           all: action.annotations,
-          filtered: annotationsForDocument(action.annotations, state.openedDoc._id)
+          filtered: state.docSelected
+            ? annotationsForDocument(action.annotations, state.openedDoc._id)
+            : action.annotations
         },
         annotationUsers: {
           all: action.users,

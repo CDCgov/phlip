@@ -282,7 +282,7 @@ export class QuestionCard extends Component {
    * Continues with whatever action they were doing. Determines which action to call
    */
   onContinueAlert = () => {
-    const { alert, onClearAnswer, onChange, onApplyAll, actions } = this.props
+    const { alert, onClearAnswer, onChange, onApplyAll, onResetAnswer, actions } = this.props
     
     switch (alert.type) {
       case 'clearAnswer':
@@ -293,6 +293,9 @@ export class QuestionCard extends Component {
         break
       case 'applyAll':
         onApplyAll()
+        break
+      case 'reset':
+        onResetAnswer()
         break
     }
     
@@ -319,11 +322,16 @@ export class QuestionCard extends Component {
    * @returns {*}
    */
   handleResetAnswer = () => {
-    const { onResetAnswer } = this.props
+    const { actions } = this.props
     
     this.disableAnnotationMode()
-    this.changeTouchStatusAndText(true, 'Saving...')
-    onResetAnswer()
+    actions.setAlert({
+      open: true,
+      title: 'Warning',
+      text: 'Any changes you\'ve made, including selected answer, pincite, flags and annotations, since arriving to this question will be reset.',
+      type: 'reset',
+      data: {}
+    })
   }
   
   render() {
@@ -389,7 +397,10 @@ export class QuestionCard extends Component {
                 </FlexGrid>
                 <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
                   {touched &&
-                  <IconButton onClick={this.handleResetAnswer} style={{ height: 24, width: 24 }} tooltipText="Restore to initial">
+                  <IconButton
+                    onClick={this.handleResetAnswer}
+                    style={{ height: 24, width: 24 }}
+                    tooltipText="Restore to initial">
                     {!disableAll && <Restore className={styles.icon} />}
                   </IconButton>}
                   {question.questionType !== questionTypes.CATEGORY &&
