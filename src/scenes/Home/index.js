@@ -134,13 +134,17 @@ export class Home extends Component {
    * @param {string} text
    */
   prepareExport = text => {
+    const { projectToExport } = this.state
+    
     const csvBlob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
-    this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
+    this.exportRef.download = projectToExport.user === null
+      ? `${projectToExport.name}-${projectToExport.exportType}-export.csv`
+      : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
     this.exportRef.click()
-    //window.URL.revokeObjectURL(url)
     this.clearProjectExport()
+    //window.URL.revokeObjectURL(url)
   }
   
   /**
@@ -148,21 +152,23 @@ export class Home extends Component {
    * This is callback for setState after the user chooses an option in the export dialog
    * @public
    * @param {string} type - Type of export
+   * @param {string|number} userId - id of the user to export
    */
-  getExport = type => {
-    this.props.actions.exportDataRequest(this.state.projectToExport, type)
+  getExport = (type, userId) => {
+    this.props.actions.exportDataRequest(this.state.projectToExport, type, userId)
   }
   
   /**
    * Invoked after the user chooses an export type from the export dialog. Closes the export dialog and calls getExport
    * @public
    * @param {string} type - Type of export
+   * @param {object} user - user to export
    */
-  onChooseExport = type => {
+  onChooseExport = (type, user) => {
     this.setState({
       exportDialogOpen: false,
-      projectToExport: { ...this.state.projectToExport, exportType: type }
-    }, () => this.getExport(type))
+      projectToExport: { ...this.state.projectToExport, exportType: type, user }
+    }, () => this.getExport(type, user !== null ? user.userId : null))
   }
   
   /**
@@ -218,6 +224,8 @@ export class Home extends Component {
       exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
       searchValue, error, openProject
     } = this.props
+    
+    const { exportDialogOpen, projectToExport } = this.state
     
     const options = Array.from([
       { value: 'dateLastEdited', label: 'Date Last Edited' },
@@ -302,9 +310,10 @@ export class Home extends Component {
           />
         }
         <ExportDialog
-          open={this.state.exportDialogOpen}
+          open={exportDialogOpen}
           onChooseExport={this.onChooseExport}
           onClose={this.onCloseExportDialog}
+          users={exportDialogOpen ? projectToExport.projectUsers : []}
         />
         <a style={{ display: 'none' }} ref={this.setExportRef} />
       </FlexGrid>

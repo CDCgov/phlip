@@ -172,7 +172,7 @@ export const removeProjectLogic = createLogic({
     const update = getUpdatedState(action, getState().scenes.home.main)
     const { [action.projectId]: deleteProject, ...updatedById } = projectState.byId
     const projectArrays = getProjectArrays(Object.values(updatedById), update)
-  
+    
     next({
       ...action,
       payload: projectArrays
@@ -327,7 +327,8 @@ export const exportDataLogic = createLogic({
     failType: types.EXPORT_DATA_FAIL
   },
   async process({ action, api }) {
-    return await api.exportData({}, { params: { type: action.exportType } }, { projectId: action.project.id })
+    const params = action.userId ? { type: action.exportType, userId: action.userId } : { type: action.exportType }
+    return await api.exportData({}, { params }, { projectId: action.project.id })
   }
 })
 

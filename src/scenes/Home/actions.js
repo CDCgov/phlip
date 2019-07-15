@@ -48,7 +48,7 @@ export default {
   updateRows: rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { rowsPerPage } }),
   updateSearchValue: searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } }),
   updateEditedFields: makeActionCreator(types.UPDATE_EDITED_FIELDS, 'projectId'),
-  exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType'),
+  exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType', 'userId'),
   clearProjectToExport: makeActionCreator(types.CLEAR_PROJECT_TO_EXPORT),
   dismissApiError: makeActionCreator(types.DISMISS_API_ERROR, 'errorName'),
   getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
