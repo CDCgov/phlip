@@ -74,7 +74,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
       <div
         role="row"
         style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer', outline: 0 }}
-        onClick={() => onQuestionSelected(item)}
+        onClick={() => onQuestionSelected('nav', item)}
         aria-label="Click to show this question"
         aria-rowindex={item.treeIndex}>
         <span

@@ -25,7 +25,7 @@ export const FooterNavigate = props => {
         type="row"
         style={{ cursor: 'pointer' }}
         aria-label="Go to previous question"
-        onClick={getQuestion('prev')}>
+        onClick={getQuestion('prev', currentIndex - 1)}>
         <IconButton color="#767676" aria-label="Go to previous question">navigate_before</IconButton>
         <Typography variant="body2">
           <span style={{ ...styles, paddingLeft: 5, userSelect: 'none' }}>Previous question</span>
@@ -38,7 +38,7 @@ export const FooterNavigate = props => {
         flex={currentIndex === 0}
         aria-label="Go to next question"
         style={{ cursor: 'pointer' }}
-        onClick={getQuestion('next')}>
+        onClick={getQuestion('next', currentIndex + 1)}>
         <Typography variant="body2">
           <span style={{ ...styles, paddingRight: 5, userSelect: 'none' }}>Next question</span>
         </Typography>

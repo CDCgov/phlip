@@ -52,7 +52,8 @@ export class QuestionCard extends Component {
     enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     annotationModeEnabled: PropTypes.bool,
     areDocsEmpty: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    handleGetQuestion: PropTypes.func
   }
   
   constructor(props, context) {
@@ -307,14 +308,15 @@ export class QuestionCard extends Component {
   /**
    * When the user changes question using the arrow buttons
    * @param dir
+   * @param newIndex
    * @returns {Function}
    */
-  handleChangeQuestion = dir => () => {
-    const { getNextQuestion, getPrevQuestion, currentIndex } = this.props
+  onChangeQuestion = (dir, newIndex) => () => {
+    const { handleGetQuestion } = this.props
     
     this.disableAnnotationMode()
     this.changeTouchStatusAndText(false, '')
-    dir === 'next' ? getNextQuestion(currentIndex + 1) : getPrevQuestion(currentIndex - 1)
+    handleGetQuestion(dir, newIndex)
   }
   
   /**
@@ -436,7 +438,7 @@ export class QuestionCard extends Component {
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                getQuestion={this.handleChangeQuestion}
+                getQuestion={this.onChangeQuestion}
                 totalLength={totalLength}
                 currentIndex={currentIndex}
                 showNextButton={showNextButton}

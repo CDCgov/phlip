@@ -67,6 +67,10 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     onCloseAlert={[Function]}
     open={false}
   />
+  <Connect(Navigator)
+    handleQuestionSelected={[Function]}
+    selectedCategory={null}
+  />
   <FlexGrid
     align="stretch"
     circular={false}
@@ -163,8 +167,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
         >
           <Connect(QuestionCard)
             currentIndex={0}
-            getNextQuestion={[Function]}
-            getPrevQuestion={[Function]}
+            handleGetQuestion={[Function]}
             onAnswer={[Function]}
             onApplyAll={[Function]}
             onChange={[Function]}

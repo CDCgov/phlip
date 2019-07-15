@@ -15,6 +15,7 @@ const props = {
   user: { id: 11, role: 'Admin' },
   selectedCategory: null,
   schemeError: null,
+  gettingStartedText: '',
   updateAnswerError: null,
   answerErrorContent: null,
   saveFlagErrorContent: null,
@@ -78,54 +79,6 @@ describe('CodingValidation', () => {
       const spy = jest.spyOn(props.actions, 'getValidationOutlineRequest')
       shallow(<CodingValidation {...props} isValidation page="validation" />)
       expect(spy).toHaveBeenCalled()
-    })
-  })
-  
-  describe('setting page text when jurisdictions or scheme is empty', () => {
-    describe('when the page is coding', () => {
-      test('should show no scheme started text is there is no scheme', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: true, areJurisdictionsEmpty: false })
-        expect(wrapper.state().startedText).toEqual('You must add questions to the coding scheme before coding.')
-      })
-  
-      test('should show no jurisdictions started text is there are no jurisdictions', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: false, areJurisdictionsEmpty: true })
-        expect(wrapper.state().startedText).toEqual('You must add jurisdictions to the project before coding.')
-      })
-      
-      test('should show combined no jur / questions when both sheme and jurisdictions are empty', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: true, areJurisdictionsEmpty: true })
-        expect(wrapper.state().startedText).toEqual('You must add jurisdictions and questions to the coding scheme before coding.')
-      })
-      
-      test('should show coordinators must add started text if the user\'s role is Coder', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress user={{ role: 'Coder' }} />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: true, areJurisdictionsEmpty: true })
-        expect(wrapper.state().startedText).toEqual('The coordinator for this project has not created a coding scheme or added jurisdictions.')
-      })
-    })
-    
-    describe('when the page is validation', () => {
-      test('should show no scheme started text is there is no scheme', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress isValidation />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: true, areJurisdictionsEmpty: false })
-        expect(wrapper.state().startedText).toEqual('This project doesn\'t have a coding scheme.')
-      })
-  
-      test('should show no jurisdictions started text is there are no jurisdictions', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress isValidation />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: false, areJurisdictionsEmpty: true })
-        expect(wrapper.state().startedText).toEqual('This project doesn\'t have jurisdictions.')
-      })
-  
-      test('should show combined no jur / questions when both sheme and jurisdictions are empty', () => {
-        const wrapper = shallow(<CodingValidation {...props} getRequestInProgress isValidation />)
-        wrapper.setProps({ getRequestInProgress: false, isSchemeEmpty: true, areJurisdictionsEmpty: true })
-        expect(wrapper.state().startedText).toEqual('This project does not have a coding scheme or jurisdictions.')
-      })
     })
   })
   

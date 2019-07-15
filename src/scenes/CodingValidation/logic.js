@@ -148,9 +148,9 @@ const outlineLogic = createLogic({
         schemeError: null,
         isLoadingPage: false,
         showPageLoader: false,
-        errors: {}
+        errors: {},
+        user
       },
-      user,
       userId: user.id,
       currentUser: user
     })
@@ -199,7 +199,7 @@ export const getOutlineLogic = createLogic({
           errors: { ...codedValErrors },
           currentIndex: questionIndex,
           mergedUserQuestions: null,
-          user: action.user
+          user: action.payload.user
         }
       }
       
@@ -283,7 +283,7 @@ export const getValidationOutlineLogic = createLogic({
           question: firstQuestion,
           currentIndex: questionIndex,
           errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error },
-          user: action.user
+          user: action.payload.user
         }
       }
       

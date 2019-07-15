@@ -50,7 +50,8 @@ export const INITIAL_STATE = {
   saveFailed: false,
   objectExists: false,
   page: '',
-  getRequestInProgress: true
+  getRequestInProgress: true,
+  gettingStartedText: ''
 }
 
 export const COMBINED_INITIAL_STATE = {
@@ -81,19 +82,21 @@ const removeRequestsInQueue = (currentQueue, queueId, timeQueued) => {
  * Determines the 'getting started' text based on whether scheme / jurisdictions are empty
  */
 const getStartedText = (noScheme, noJurisdictions, role, isValidation) => {
-  return isValidation
-    ? noScheme && !noJurisdictions
-      ? 'This project doesn\'t have a coding scheme.'
-      : !noScheme && noJurisdictions
-        ? 'This project doesn\'t have jurisdictions.'
-        : 'This project does not have a coding scheme or jurisdictions.'
-    : role === 'Coder'
-      ? 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
-      : noScheme && !noJurisdictions
-        ? 'You must add questions to the coding scheme before coding.'
+  return !noScheme && !noJurisdictions
+    ? ''
+    : isValidation
+      ? noScheme && !noJurisdictions
+        ? 'This project doesn\'t have a coding scheme.'
         : !noScheme && noJurisdictions
-          ? 'You must add jurisdictions to the project before coding.'
-          : 'You must add jurisdictions and questions to the coding scheme before coding.'
+          ? 'This project doesn\'t have jurisdictions.'
+          : 'This project does not have a coding scheme or jurisdictions.'
+      : role === 'Coder'
+        ? 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
+        : noScheme && !noJurisdictions
+          ? 'You must add questions to the coding scheme before coding.'
+          : !noScheme && noJurisdictions
+            ? 'You must add jurisdictions to the project before coding.'
+            : 'You must add jurisdictions and questions to the coding scheme before coding.'
 }
 
 /**
@@ -106,6 +109,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
+  
+  console.log()
   
   switch (action.type) {
     case types.UPDATE_USER_ANSWER:
@@ -247,7 +252,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         selectedCategoryId: state.categories[action.selection].id,
         answerSnapshot: state.userAnswers[state.question.id][state.categories[action.selection].id]
       }
-  
+    
     case types.RESET_ANSWER:
       return {
         ...state,
@@ -278,7 +283,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         },
         unsavedChanges: true
       }
-      
+    
     case types.SET_UNSAVED_CHANGES:
       return {
         ...state,
@@ -299,7 +304,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isChangingQuestion: true
       }
-  
+    
     case types.GET_QUESTION_SUCCESS:
       errors = generateError(action.payload.errors)
       return {
@@ -320,21 +325,27 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         getRequestInProgress: true,
         schemeError: null
       }
-  
+    
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
     case types.GET_CODING_OUTLINE_SUCCESS:
       let error = generateError(action.payload.errors)
       const {
-        outline, scheme, question, userAnswers, areJurisdictionsEmpty, currentIndex, isSchemeEmpty, mergedUserQuestions
+        outline, scheme, question, userAnswers, areJurisdictionsEmpty, currentIndex, isSchemeEmpty, mergedUserQuestions,
+        user
       } = action.payload
-    
+      
       const upState = {
         ...state,
         outline,
         scheme,
         question,
         userAnswers,
-        gettingStartedText: '',
+        gettingStartedText: getStartedText(
+          isSchemeEmpty,
+          areJurisdictionsEmpty,
+          user.role,
+          state.page === 'validation'
+        ),
         areJurisdictionsEmpty,
         mergedUserQuestions,
         isSchemeEmpty,
@@ -347,7 +358,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         currentIndex,
         categories: undefined
       }
-    
+      
       return {
         ...upState,
         ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
@@ -406,7 +417,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: true,
         questionChangeLoader: false
       }
-  
+    
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
       let errors = generateError(action.payload.errors)
@@ -512,13 +523,13 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         page: action.page
       }
-  
+    
     case types.DISMISS_API_ALERT:
       return { ...state, [action.errorType]: null, objectExists: false }
-  
+    
     case types.ON_SHOW_PAGE_LOADER:
       return { ...state, showPageLoader: true }
-  
+    
     case types.ON_SHOW_QUESTION_LOADER:
       return { ...state, questionChangeLoader: true }
     

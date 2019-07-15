@@ -72,7 +72,7 @@ export const types = {
 export default {
   getNextQuestion: makeActionCreator(types.GET_NEXT_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
   getPrevQuestion: makeActionCreator(types.GET_PREV_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
-  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'projectId', 'jurisdictionId'),
+  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'newIndex', 'projectId', 'jurisdictionId'),
   applyAnswerToAll: makeActionCreator(types.ON_APPLY_ANSWER_TO_ALL, 'projectId', 'jurisdictionId', 'questionId'),
   updateUserAnswer: makeActionCreator(types.UPDATE_USER_ANSWER, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue'),
   onChangeComment: makeActionCreator(types.ON_CHANGE_COMMENT, 'projectId', 'jurisdictionId', 'questionId', 'comment'),
