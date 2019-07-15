@@ -168,54 +168,48 @@ exports[`QuestionCard component should render correctly 1`] = `
       </FlexGrid>
     </FlexGrid>
     <WithStyles(Divider) />
-    <TabContainer
-      onChangeCategory={[Function]}
-      selected={null}
-      tabs={Array []}
-    >
-      <WithStyles(QuestionContent)
-        annotationModeEnabled={false}
-        areDocsEmpty={false}
-        currentUserInitials="tu"
-        disableAll={false}
-        enabledAnswerId=""
-        enabledUserId=""
-        hoveredAnswerChoice={0}
-        isValidation={false}
-        mergedUserQuestions={Object {}}
-        onApplyAll={[Function]}
-        onChange={[Function]}
-        onChangeTextAnswer={[Function]}
-        onMouseInAnswerChoice={[Function]}
-        onMouseOutAnswerChoice={[Function]}
-        onToggleAnnotationMode={[Function]}
-        onToggleViewAnnotations={[Function]}
-        question={
-          Object {
-            "answers": Array [],
-            "id": 1,
-            "questionType": 1,
-          }
+    <WithStyles(QuestionContent)
+      annotationModeEnabled={false}
+      areDocsEmpty={false}
+      currentUserInitials="tu"
+      disableAll={false}
+      enabledAnswerId=""
+      enabledUserId=""
+      hoveredAnswerChoice={0}
+      isValidation={false}
+      mergedUserQuestions={Object {}}
+      onApplyAll={[Function]}
+      onChange={[Function]}
+      onChangeTextAnswer={[Function]}
+      onMouseInAnswerChoice={[Function]}
+      onMouseOutAnswerChoice={[Function]}
+      onToggleAnnotationMode={[Function]}
+      onToggleViewAnnotations={[Function]}
+      question={
+        Object {
+          "answers": Array [],
+          "id": 1,
+          "questionType": 1,
         }
-        user={
-          Object {
+      }
+      user={
+        Object {
+          "firstName": "test",
+          "id": 5,
+          "lastName": "user",
+        }
+      }
+      userAnswers={
+        Object {
+          "validatedBy": Object {
             "firstName": "test",
             "id": 5,
             "lastName": "user",
-          }
+          },
         }
-        userAnswers={
-          Object {
-            "validatedBy": Object {
-              "firstName": "test",
-              "id": 5,
-              "lastName": "user",
-            },
-          }
-        }
-        userImages={Object {}}
-      />
-    </TabContainer>
+      }
+      userImages={Object {}}
+    />
     <WithStyles(Divider) />
     <FooterNavigate
       getQuestion={[Function]}

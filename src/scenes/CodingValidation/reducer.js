@@ -110,8 +110,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
   
-  console.log()
-  
   switch (action.type) {
     case types.UPDATE_USER_ANSWER:
       return {

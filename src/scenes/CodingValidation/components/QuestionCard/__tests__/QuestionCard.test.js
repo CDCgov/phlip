@@ -8,11 +8,15 @@ const props = {
   userAnswers: {},
   onChange: () => jest.fn(),
   onChangeCategory: () => jest.fn(),
+  onChangeTextAnswer: () => jest.fn(),
   onClearAnswer: jest.fn(),
+  onSaveFlag: jest.fn(),
   onApplyAll: jest.fn(),
+  onResetAnswer: jest.fn(),
+  handleGetQuestion: jest.fn(),
   isValidation: false,
   user: { id: 5, firstName: 'test', lastName: 'user' },
-  categories: [],
+  categories: undefined,
   selectedCategory: null,
   selectedCategoryId: 0,
   mergedUserQuestions: {},
@@ -34,7 +38,8 @@ const props = {
     closeAlert: jest.fn(),
     toggleViewAnnotations: jest.fn(),
     setHeaderText: jest.fn(),
-    changeTouchedStatus: jest.fn()
+    changeTouchedStatus: jest.fn(),
+    setResetStatus: jest.fn()
   },
   alert: {
     open: false,
@@ -69,6 +74,13 @@ const applyAll = {
   ...categoryAlert,
   type: 'applyAll',
   text: 'Your answer will apply to ALL categories. Previous answers will be overwritten.',
+  data: {}
+}
+
+const reset = {
+  ...categoryAlert,
+  type: 'reset',
+  text: 'Any changes you\'ve made, including selected answer, pincite, flags and annotations, since arriving to this question will be reset.',
   data: {}
 }
 
@@ -403,7 +415,7 @@ describe('QuestionCard component', () => {
       wrapper.instance().onClearAnswer()
       expect(spy).toHaveBeenCalledWith(clearAlert)
     })
-  
+    
     test('should close the alert when \'Cancel\' button in alert is clicked', () => {
       const spy = jest.spyOn(props.actions, 'closeAlert')
       const wrapper = shallow(<QuestionCard
@@ -419,7 +431,7 @@ describe('QuestionCard component', () => {
       wrapper.find('Alert').at(0).prop('onCloseAlert')()
       expect(spy).toHaveBeenCalled()
     })
-  
+    
     test('should clear answer when \'Continue\' button in alert is clicked', () => {
       const spy = jest.spyOn(props, 'onClearAnswer')
       const wrapper = shallow(<QuestionCard
@@ -453,8 +465,8 @@ describe('QuestionCard component', () => {
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
-  
-    test('should call props.setAlert with clear answer alert information', () => {
+    
+    test('should call props.setAlert with apply all alert information', () => {
       const spy = jest.spyOn(props.actions, 'setAlert')
       const wrapper = shallow(
         <QuestionCard
@@ -466,7 +478,7 @@ describe('QuestionCard component', () => {
       wrapper.instance().onApplyAll()
       expect(spy).toHaveBeenCalledWith(applyAll)
     })
-  
+    
     test('should close the alert when \'Cancel\' button in alert is clicked', () => {
       const spy = jest.spyOn(props.actions, 'closeAlert')
       const wrapper = shallow(<QuestionCard
@@ -482,7 +494,7 @@ describe('QuestionCard component', () => {
       wrapper.find('Alert').at(0).prop('onCloseAlert')()
       expect(spy).toHaveBeenCalled()
     })
-  
+    
     test('should apply to all categories when \'Continue\' button in alert is clicked', () => {
       const spy = jest.spyOn(props, 'onApplyAll')
       const wrapper = shallow(<QuestionCard
@@ -497,6 +509,301 @@ describe('QuestionCard component', () => {
       />)
       wrapper.find('Alert').at(0).prop('actions')[0].onClick()
       expect(spy).toHaveBeenCalled()
+    })
+  })
+  
+  describe('reseting answer', () => {
+    test('should open an alert when the reset button is clicked', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          enabledAnswerId={1}
+          userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+          canReset
+        />
+      )
+      
+      wrapper.find('IconButton').at(0).simulate('click')
+      expect(spy).toHaveBeenCalledWith(reset)
+    })
+    
+    test('should disable annotation mode if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().handleResetAnswer()
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
+    })
+    
+    test('should close the alert when \'Cancel\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props.actions, 'closeAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={reset}
+      />)
+      wrapper.find('Alert').at(0).prop('onCloseAlert')()
+      expect(spy).toHaveBeenCalled()
+    })
+    
+    test('should reset answer when \'Continue\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props, 'onResetAnswer')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={reset}
+      />)
+      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+  
+  describe('changing a text answer', () => {
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
+    })
+    
+    test('should set card header text with Saving', () => {
+      const spy = jest.spyOn(props.actions, 'setHeaderText')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      expect(spy).toHaveBeenCalledWith('Saving...')
+      spy.mockReset()
+    })
+    
+    test('should set reset status', () => {
+      const spy = jest.spyOn(props.actions, 'setResetStatus')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      expect(spy).toHaveBeenCalledWith(true)
+      spy.mockReset()
+    })
+    
+    test('should actually change the text answer', () => {
+      const spy = jest.spyOn(props, 'onChangeTextAnswer')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      expect(spy).toHaveBeenCalledWith('textAnswer', 1, 'bloop')
+      spy.mockReset()
+    })
+  })
+  
+  describe('saving a flag', () => {
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().handleSaveFlag({ text: 'flag', type: 1 })
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
+    })
+    
+    test('should set card header text with Saving', () => {
+      const spy = jest.spyOn(props.actions, 'setHeaderText')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().handleSaveFlag({ text: 'flag', type: 1 })
+      expect(spy).toHaveBeenCalledWith('Saving...')
+      spy.mockReset()
+    })
+    
+    test('should set reset status', () => {
+      const spy = jest.spyOn(props.actions, 'setResetStatus')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().handleSaveFlag({ text: 'flag', type: 1 })
+      expect(spy).toHaveBeenCalledWith(true)
+      spy.mockReset()
+    })
+    
+    test('should add in user info to the flag information and save flag', () => {
+      const spy = jest.spyOn(props, 'onSaveFlag')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().handleSaveFlag({ text: 'flag', type: 1 })
+      expect(spy)
+        .toHaveBeenCalledWith({ text: 'flag', type: 1, raisedBy: { userId: 5, firstName: 'test', lastName: 'user' } })
+      spy.mockReset()
+    })
+  })
+  
+  describe('changing questions', () => {
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeQuestion('next', 1)()
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
+    })
+    
+    test('should clear card header text', () => {
+      const spy = jest.spyOn(props.actions, 'setHeaderText')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeQuestion('next', 1)()
+      expect(spy).toHaveBeenCalledWith('')
+      spy.mockReset()
+    })
+    
+    test('should clear reset status', () => {
+      const spy = jest.spyOn(props.actions, 'setResetStatus')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeQuestion('next', 1)()
+      expect(spy).toHaveBeenCalledWith(false)
+      spy.mockReset()
+    })
+    
+    test('should get new question', () => {
+      const spy = jest.spyOn(props, 'handleGetQuestion')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeQuestion('next', 1)()
+      expect(spy).toHaveBeenCalledWith('next', 1)
+      spy.mockReset()
+    })
+  })
+  
+  describe('page loading', () => {
+    test('should show a loader if the page is loading', () => {
+      const wrapper = shallow(<QuestionCard {...props} questionChangeLoader />)
+      expect(wrapper.find('PageLoader').length).toEqual(1)
+    })
+  })
+  
+  describe('hovering answer', () => {
+    const wrapper = shallow(<QuestionCard {...props} />)
+    
+    test('should clear the hovered answer choice when the user moves the mouse out of an answer', () => {
+      wrapper.setState({ hoveredAnswerChoice: 1 })
+      wrapper.instance().onMouseOutAnswerChoice()
+      expect(wrapper.state().hoveredAnswerChoice).toEqual(0)
+    })
+    
+    test('should set the hovered answer choice when the user moves their cursor into the answer', () => {
+      wrapper.setState({ hoveredAnswerChoice: 0 })
+      wrapper.instance().onMouseInAnswerChoice(4)
+      expect(wrapper.state().hoveredAnswerChoice).toEqual(4)
+    })
+  })
+  
+  describe('when the current question is a category question', () => {
+    const wrapper = shallow(<QuestionCard {...props} categories={[{ id: 4 }]} />)
+    
+    test('should wrap the question in a tab container', () => {
+      expect(wrapper.find('TabContainer').length).toEqual(1)
     })
   })
 })

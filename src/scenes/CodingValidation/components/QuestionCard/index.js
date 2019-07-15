@@ -15,6 +15,13 @@ import { bindActionCreators } from 'redux'
 import { default as codingActions } from 'scenes/CodingValidation/actions'
 import actions from './actions'
 
+/**
+ * Wraps a tab container
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
+/* istanbul ignore next */
 const TabContainer = props => {
   return (
     <Tabs tabs={props.tabs} selectedTab={props.selected} onChangeTab={props.onChangeCategory}>
@@ -268,6 +275,7 @@ export class QuestionCard extends Component {
     
     onSaveFlag(flag)
     actions.setResetStatus(true)
+    this.disableAnnotationMode()
     this.changeTouchStatusAndText(true, 'Saving...')
   }
   

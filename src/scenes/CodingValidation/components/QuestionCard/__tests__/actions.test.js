@@ -20,4 +20,9 @@ describe('CodingValidation - Question card action creators', () => {
     const action = { type: types.SET_HEADER_TEXT, text: 'header text' }
     expect(actions.setHeaderText('header text')).toEqual(action)
   })
+  
+  test('should create an action to set reset status', () => {
+    const action = { type: types.SET_RESET_STATUS, canReset: false }
+    expect(actions.setResetStatus(false)).toEqual(action)
+  })
 })

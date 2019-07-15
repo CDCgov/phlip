@@ -27,9 +27,9 @@ const props = {
   actions: {
     getCodingOutlineRequest: jest.fn(),
     setPage: jest.fn(),
-    getValidationOutlineRequest: jest.fn()
-  },
-  classes: {}
+    getValidationOutlineRequest: jest.fn(),
+    onCloseScreen: jest.fn()
+  }
 }
 
 describe('CodingValidation', () => {
@@ -65,6 +65,15 @@ describe('CodingValidation', () => {
         />
       )
       expect(document.title).toEqual('PHLIP - Blep - Validate')
+    })
+  })
+  
+  describe('unmounting', () => {
+    test('should clear the info when leaving the page', () => {
+      const spy = jest.spyOn(props.actions, 'onCloseScreen')
+      const wrapper = shallow(<CodingValidation {...props} />)
+      wrapper.unmount()
+      expect(spy).toHaveBeenCalled()
     })
   })
   

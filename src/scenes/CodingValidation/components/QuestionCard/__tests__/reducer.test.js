@@ -69,4 +69,13 @@ describe('CodingValidation - Card Reducer', () => {
       expect(state.header).toEqual('Saving...')
     })
   })
+  
+  describe('SET_RESET_STATUS', () => {
+    test('should set whether or not to show reset button', () => {
+      const action = { type: types.SET_RESET_STATUS, canReset: true }
+      const currentState = getState({ canReset: false })
+      const state = reducer(currentState, action)
+      expect(state.canReset).toEqual(true)
+    })
+  })
 })
