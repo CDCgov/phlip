@@ -36,24 +36,25 @@ describe('Project Data reducer', () => {
       type: types.ADD_PROJECT,
       payload: {
         id: 3,
-        name: 'project 3'
+        name: 'project 3',
+        projectJurisdictions: []
       }
     }
     
     test('should add project to the full list', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
       
       expect(state.byId.hasOwnProperty(3)).toEqual(true)
-      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3' })
+      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3', projectJurisdictions: [] })
     })
     
     test('should add the project id to the id list if it is not already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
@@ -64,7 +65,7 @@ describe('Project Data reducer', () => {
     
     test('should not add project id to list if it is already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [3, 1]
       })
       const state = reducer(currentState, action)
@@ -80,24 +81,25 @@ describe('Project Data reducer', () => {
       type: types.GET_PROJECT_SUCCESS,
       payload: {
         id: 3,
-        name: 'project 3'
+        name: 'project 3',
+        projectJurisdictions: []
       }
     }
     
     test('should add project to the full list', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
       
       expect(state.byId.hasOwnProperty(3)).toEqual(true)
-      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3' })
+      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3', projectJurisdictions: [] })
     })
     
     test('should add the project id to the id list if it is not already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
@@ -108,7 +110,7 @@ describe('Project Data reducer', () => {
     
     test('should not add project id to list if it is already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [3, 1]
       })
       const state = reducer(currentState, action)
@@ -124,24 +126,25 @@ describe('Project Data reducer', () => {
       type: types.UPDATE_PROJECT,
       payload: {
         id: 3,
-        name: 'project 3'
+        name: 'project 3',
+        projectJurisdictions: []
       }
     }
     
     test('should add project to the full list', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
       
       expect(state.byId.hasOwnProperty(3)).toEqual(true)
-      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3' })
+      expect(state.byId[3]).toEqual({ id: 3, name: 'project 3', projectJurisdictions: [] })
     })
     
     test('should add the project id to the id list if it is not already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [1]
       })
       const state = reducer(currentState, action)
@@ -152,7 +155,7 @@ describe('Project Data reducer', () => {
     
     test('should not add project id to list if it is already in there', () => {
       const currentState = getState({
-        byId: { 1: { name: 'blah' } },
+        byId: { 1: { name: 'blah', projectJurisdictions: [] } },
         allIds: [3, 1]
       })
       const state = reducer(currentState, action)

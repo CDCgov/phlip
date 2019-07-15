@@ -60,20 +60,26 @@ export class Button extends React.Component {
   }
   
   render() {
-    const { value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps } = this.props
+    const { value, color, onClick, raised, theme, textColor, listButton, style, children, disabled, ...otherProps } = this.props
     const buttonColor = color === 'accent' ? 'secondary' : 'default'
     const variant = raised ? 'raised' : 'text'
     const styles = {
       color: (raised || listButton)
-        ? textColor
-          ? textColor
-          : 'white'
-        : color || '',
+        ? disabled
+          ? `rgba(0, 0, 0, 0.26)`
+          : textColor
+            ? textColor
+            : 'white'
+        : theme.palette[color]
+          ? theme.palette[color].main
+          : color || '',
       fontWeight: 400,
       backgroundColor: raised
-        ? theme.palette[color]
-          ? theme.palette[color].main
-          : color
+        ? disabled
+          ? `rgba(0, 0, 0, 0.12)`
+          : theme.palette[color]
+            ? theme.palette[color].main
+            : color
         : listButton
           ? theme.palette.primary.light
           : '',
@@ -87,6 +93,7 @@ export class Button extends React.Component {
           color={buttonColor}
           onClick={onClick}
           style={styles}
+          disabled={disabled}
           onFocus={this.onFocus}
           {...otherProps}>
           {value}
@@ -98,6 +105,7 @@ export class Button extends React.Component {
           variant={variant}
           color={buttonColor}
           onClick={onClick}
+          disabled={disabled}
           style={styles}
           {...otherProps}>
           {children}

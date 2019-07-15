@@ -1,30 +1,11 @@
 import { types } from '../actions'
-import reducer from '../reducer'
-
-const INITIAL_STATE = {
-  jurisdictions: { byId: {}, allIds: [] },
-  visibleJurisdictions: [],
-  searchValue: '',
-  suggestions: [],
-  suggestionValue: '',
-  jurisdiction: {},
-  formError: null,
-  deleteError: null,
-  goBack: false,
-  isLoadingJurisdictions: false,
-  showJurisdictionLoader: false,
-  form: {
-    values: {
-      name: ''
-    }
-  }
-}
+import reducer, { INITIAL_STATE } from '../reducer'
 
 describe('Home scene - AddEditJurisdictions reducer', () => {
   test('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE)
   })
-
+  
   test('should handle GET_PROJECTS_JURISDICTIONS_SUCCESS', () => {
     expect(reducer(INITIAL_STATE, {
       type: types.GET_PROJECT_JURISDICTIONS_SUCCESS,
@@ -45,7 +26,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       goBack: false
     })
   })
-
+  
   test('should handle UPDATE_PROJECT_JURISDICTION_SUCCESS', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -55,19 +36,20 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [1]
       }
-    }, { type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS, payload: { id: 1, name: 'Jurisdiction Name Updated' } })).toEqual({
-      ...INITIAL_STATE,
-      jurisdictions: {
-        byId: {
-          1: { id: 1, name: 'Jurisdiction Name Updated' }
+    }, { type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS, payload: { id: 1, name: 'Jurisdiction Name Updated' } }))
+      .toEqual({
+        ...INITIAL_STATE,
+        jurisdictions: {
+          byId: {
+            1: { id: 1, name: 'Jurisdiction Name Updated' }
+          },
+          allIds: [1]
         },
-        allIds: [1]
-      },
-      formError: null,
-      goBack: true
-    })
+        formError: null,
+        goBack: true
+      })
   })
-
+  
   test('should handle ADD_PROJECT_JURISDICTION_SUCCESS', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -91,7 +73,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       visibleJurisdictions: [2, 1]
     })
   })
-
+  
   test('should handle UPDATE_JURISDICTION_SEARCH_VALUE', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -118,7 +100,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       visibleJurisdictions: [1, 2]
     })
   })
-
+  
   test('should handle UPDATE_SUGGESTION_VALUE', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -133,7 +115,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       }
     })
   })
-
+  
   test('should handle SET_JURISDICTION_SUGGESTIONS', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -164,12 +146,13 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [1, 2, 3, 4]
       },
+      searching: false,
       suggestions: [
         { id: 4, name: 'Boston' }, { id: 5, name: 'New York' }, { id: 6, name: 'Oklahoma' }, { id: 2, name: 'Oregon' }
       ]
     })
   })
-
+  
   test('should handle ON_CLEAR_SUGGESTIONS', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -179,7 +162,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       suggestions: []
     })
   })
-
+  
   test('should handle ON_JURISDICTION_SELECTED', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -189,6 +172,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       ...INITIAL_STATE,
       suggestionValue: 'Atlanta',
       jurisdiction: { name: 'Atlanta', id: 1 },
+      searching: false,
       form: {
         values: {
           name: 'Atlanta'
@@ -196,7 +180,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       }
     })
   })
-
+  
   test('should handle CLEAR_JURISDICTIONS', () => {
     expect(reducer({
       ...INITIAL_STATE,
@@ -210,20 +194,21 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       suggestionValue: ''
     })
   })
-
+  
   test('should handle SEARCH_JURISDICTION_LIST', () => {
-    expect(reducer(INITIAL_STATE, { type: types.SEARCH_JURISDICTION_LIST })).toEqual(INITIAL_STATE)
+    expect(reducer(INITIAL_STATE, { type: types.SEARCH_JURISDICTION_LIST }))
+      .toEqual({ ...INITIAL_STATE, searching: true })
   })
-
+  
   test('should handle GET_PROJECT_JURISDICTIONS_REQUEST', () => {
     expect(reducer(INITIAL_STATE, { type: types.GET_PROJECT_JURISDICTIONS_REQUEST }))
       .toEqual({ ...INITIAL_STATE, isLoadingJurisdictions: true })
   })
-
+  
   test('should handle UPDATE_PROJECT_JURISDICTION_REQUEST', () => {
     expect(reducer(INITIAL_STATE, { type: types.UPDATE_PROJECT_JURISDICTION_REQUEST })).toEqual(INITIAL_STATE)
   })
-
+  
   test('should handle ADD_PROJECT_JURISDICTION_REQUEST', () => {
     expect(reducer(INITIAL_STATE, { type: types.ADD_PROJECT_JURISDICTION_REQUEST })).toEqual(INITIAL_STATE)
   })

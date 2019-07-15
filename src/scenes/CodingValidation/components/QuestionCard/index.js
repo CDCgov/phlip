@@ -85,12 +85,19 @@ export class QuestionCard extends Component {
     clearTimeout(this.unsavedChangesTimeout)
   }
   
+  /**
+   * User stops hovering on an answer choice
+   */
   onMouseOutAnswerChoice = () => {
     this.setState({
       hoveredAnswerChoice: 0
     })
   }
   
+  /**
+   * When the user hovers over an answer choice
+   * @param answerId
+   */
   onMouseInAnswerChoice = answerId => {
     this.setState({
       hoveredAnswerChoice: answerId
@@ -105,7 +112,7 @@ export class QuestionCard extends Component {
   onChangeAnswer = id => (event, value) => {
     const { question, userAnswers, annotationModeEnabled, enabledAnswerId, actions } = this.props
     let text = '', open = false
-  
+    
     if (annotationModeEnabled) {
       actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
@@ -130,7 +137,7 @@ export class QuestionCard extends Component {
         }
       }
     }
-  
+    
     if (open) {
       this.props.actions.setAlert({
         open: true,
@@ -196,6 +203,9 @@ export class QuestionCard extends Component {
     onChangeCategory(event, selection)
   }
   
+  /**
+   * When the user clicks the 'Apply to all categories' button for an answer
+   */
   onApplyAll = () => {
     const { annotationModeEnabled, onOpenAlert, actions, question, enabledAnswerId } = this.props
     
@@ -234,6 +244,9 @@ export class QuestionCard extends Component {
     actions.toggleViewAnnotations(question.id, answerId)
   }
   
+  /**
+   * Turns of annotation mode
+   */
   disableAnnotationMode = () => {
     const { question, actions, enabledAnswerId } = this.props
     actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
@@ -245,8 +258,10 @@ export class QuestionCard extends Component {
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
       selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isUserAnswerSelected, selectedCategoryId, alert, actions
+      isUserAnswerSelected, selectedCategoryId, alert, actions, onChange
     } = this.props
+    
+    const { hoveredAnswerChoice, isSaving } = this.state
     
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -271,37 +286,28 @@ export class QuestionCard extends Component {
       areDocsEmpty,
       onMouseInAnswerChoice: this.onMouseInAnswerChoice,
       onMouseOutAnswerChoice: this.onMouseOutAnswerChoice,
-      hoveredAnswerChoice: this.state.hoveredAnswerChoice
+      hoveredAnswerChoice: hoveredAnswerChoice
     }
     
-    const { isSaving } = this.state
-    
-    const closeButton = { value: alert.type === 'disableAnnoMode' ? 'Dismiss' : 'Cancel' }
-    this.alertActions = alert.type === 'disableAnnoMode'
-      ? [] : [
-        {
-          value: 'Continue',
-          type: 'button',
-          onClick: () => {
-            if (alert.type === 'clearAnswer') {
-              onClearAnswer()
-              actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-            } else {
-              this.props.onChange(alert.data.id)(alert.data.value)
-            }
-            this.props.actions.setAlert({ open: false })
+    this.alertActions = [
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: () => {
+          if (alert.type === 'clearAnswer') {
+            onClearAnswer()
+            actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+          } else {
+            onChange(alert.data.id)(alert.data.value)
           }
+          actions.setAlert({ open: false })
         }
-      ]
+      }
+    ]
     
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert
-          actions={this.alertActions}
-          title={alert.title}
-          onCloseAlert={this.onCloseAlert}
-          closeButton={closeButton}
-          open={alert.open}>
+        <Alert actions={this.alertActions} title={alert.title} onCloseAlert={this.onCloseAlert} open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.text}
           </Typography>
@@ -324,6 +330,7 @@ export class QuestionCard extends Component {
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
+                    disabled={disableAll}
                     style={{ height: 24 }}>
                     {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
@@ -344,10 +351,7 @@ export class QuestionCard extends Component {
               <Divider />
               {categories !== undefined
                 ? (
-                  <TabContainer
-                    tabs={categories}
-                    selected={selectedCategory}
-                    onChangeCategory={this.onChangeCategory}>
+                  <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={this.onChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
@@ -389,7 +393,7 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
-    disableAll: pageState.codedQuestionsError !== null || false,
+    disableAll: pageState.codedQuestionsError !== null || ownProps.disableAll || false,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
@@ -405,6 +409,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),

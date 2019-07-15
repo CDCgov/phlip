@@ -29,6 +29,8 @@ export const types = {
   CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
   CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
   ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE',
+  BULK_REMOVE_PROJECT_REQUEST: 'BULK_REMOVE_PROJECT_REQUEST',
+  ON_TOGGLE_ALL_DOCS: 'ON_TOGGLE_ALL_DOCS',
   ...searchTypes,
   ...uploadTypes
 }
@@ -46,7 +48,9 @@ export default {
   handleSearchValueChange: searchActions.updateSearchValue,
   handleFormValueChange: searchActions.updateFormValue,
   cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST, 'projectMeta'),
-  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE, 'id')
+  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE, 'id'),
+  handleBulkProjectRemove: makeActionCreator(types.BULK_REMOVE_PROJECT_REQUEST, 'projectMeta', 'selectedDocs'),
+  toggleAllDocs: makeActionCreator(types.ON_TOGGLE_ALL_DOCS)
 }
 
 export const projectAutocomplete = {

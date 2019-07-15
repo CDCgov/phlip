@@ -5,6 +5,9 @@ import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 import { types as codingTypes } from 'scenes/CodingValidation/components/DocumentList/actions'
 import { types as docManageTypes } from 'scenes/DocumentManagement/actions'
 
+/**
+ * Retrieves the actual document contents
+ */
 const getDocumentContentsLogic = createLogic({
   type: [types.GET_DOCUMENT_CONTENTS_REQUEST, codingTypes.GET_DOC_CONTENTS_REQUEST],
   async process({ getState, docApi, action }, dispatch, done) {
@@ -28,30 +31,43 @@ const getDocumentContentsLogic = createLogic({
   }
 })
 
+/**
+ * Handles sending updates for a document to doc management server
+ */
 const updateDocLogic = createLogic({
   type: types.UPDATE_DOC_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
-    let md = {}
-    const selectedDoc = getState().scenes.docView.documentForm
+    const selectedDoc = getState().scenes.docView.meta.documentForm
+    let updatedDoc = {}
     
-    md.status = selectedDoc.status
-    md.effectiveDate = selectedDoc.effectiveDate !== undefined
-      ? selectedDoc.effectiveDate
-      : ''
-    md.citation = selectedDoc.citation
-    md.jurisdictions = selectedDoc.jurisdictions
-    md.projects = selectedDoc.projects
-
     try {
-      const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
-      
       if (['jurisdictions', 'projects'].includes(action.property)) {
         if (action.updateType === 'add') {
+          updatedDoc = await docApi.addToDocArray(
+            {},
+            {},
+            { docId: selectedDoc._id, updateType: action.property, newId: parseInt(action.value.id) }
+          )
+  
           dispatch({
             type: action.property === 'jurisdictions' ? jurisdictionTypes.ADD_JURISDICTION : projectTypes.ADD_PROJECT,
             payload: action.value
           })
+        } else {
+          updatedDoc = await docApi.removeFromDocArray(
+            {},
+            {},
+            { docId: selectedDoc._id, updateType: action.property, removeId: parseInt(action.value.id) }
+          )
         }
+      } else {
+        updatedDoc = await docApi.updateDoc({
+          status: selectedDoc.status,
+          effectiveDate: selectedDoc.effectiveDate !== undefined
+            ? selectedDoc.effectiveDate
+            : '',
+          citation: selectedDoc.citation
+        }, {}, { docId: selectedDoc._id })
       }
       
       dispatch({
@@ -73,6 +89,9 @@ const updateDocLogic = createLogic({
   }
 })
 
+/**
+ * Handles deleting a document from the doc management server
+ */
 const deleteDocLogic = createLogic({
   type: types.DELETE_DOCUMENT_REQUEST,
   async process({ docApi, action, getState, api }, dispatch, done) {

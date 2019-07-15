@@ -30,8 +30,8 @@ const modalPaths = [
   '/project/:id/jurisdictions/add',
   '/project/:id/jurisdictions/:jid/edit',
   '/docs/upload',
-  '/project/:projectId/coding-scheme/add',
-  '/project/:projectId/coding-scheme/edit/:id',
+  '/project/:id/coding-scheme/add',
+  '/project/:id/coding-scheme/edit/:questionId',
   '/admin/new/user',
   '/admin/edit/user/:id',
   '/user/profile',
@@ -77,13 +77,15 @@ export class Main extends Component {
           label: 'Project List',
           active: !props.history.location.pathname.startsWith('/docs'),
           location: '/home',
-          icon: 'dvr'
+          icon: 'dvr',
+          id: 'project-list'
         },
         {
           label: 'Document Management',
           active: props.history.location.pathname.startsWith('/docs'),
           location: '/docs',
-          icon: 'description'
+          icon: 'description',
+          id: 'doc-manage'
         }
       ]
     }
@@ -213,6 +215,9 @@ export class Main extends Component {
     }
   }
   
+  /**
+   * Logs out the user after they've been idle for too long
+   */
   logoutUserOnIdle = () => {
     this.props.actions.logoutUser(true)
   }
@@ -263,8 +268,8 @@ export class Main extends Component {
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
           <Route path="/docs/upload" component={Upload} />
-          <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
-          <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
+          <Route path="/project/:id/coding-scheme/add" component={AddEditQuestion} />
+          <Route path="/project/:id/coding-scheme/edit/:questionId" component={AddEditQuestion} />
           <Route path="/admin/new/user" component={AddEditUser} />
           <Route path="/admin/edit/user/:id" component={AddEditUser} />
           <Route path="/user/profile" component={AddEditUser} />
@@ -277,13 +282,15 @@ export class Main extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  user: state.data.user.currentUser,
-  pdfError: state.scenes.main.pdfError,
-  pdfFile: state.scenes.main.pdfFile,
-  isRefreshing: state.scenes.main.isRefreshing,
-  previousLocation: state.scenes.main.previousLocation
-})
+const mapStateToProps = state => {
+  return {
+    user: state.data.user.currentUser,
+    pdfError: state.scenes.main.pdfError,
+    pdfFile: state.scenes.main.pdfFile,
+    isRefreshing: state.scenes.main.isRefreshing,
+    previousLocation: state.scenes.main.previousLocation
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

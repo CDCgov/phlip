@@ -10,6 +10,12 @@ const flagColors = {
   3: '#D50000'
 }
 
+/**
+ * Consolidates the comments and flags to be by user
+ * @param questionFlag
+ * @param flagsComments
+ * @returns {*|Array|*[]}
+ */
 const checkQuestionFlag = (questionFlag, flagsComments) => {
   let sameUser = false, updatedItems = []
   updatedItems = flagsComments.map(item => {
@@ -26,18 +32,25 @@ const checkQuestionFlag = (questionFlag, flagsComments) => {
   return [...updatedItems, { ...questionFlag }]
 }
 
+/**
+ * Expand / Collapse table in Validation that has all of the comments and flags for a question
+ */
 export class ValidationTable extends Component {
   static propTypes = {
     userImages: PropTypes.object,
     questionFlags: PropTypes.array,
     mergedUserQuestions: PropTypes.object,
-    onOpenAlert: PropTypes.func
+    onOpenAlert: PropTypes.func,
+    disableAll: PropTypes.bool
   }
   
   state = {
     expanded: false
   }
   
+  /**
+   * Expands or closes the table
+   */
   handleTogglePanel = () => {
     this.setState({
       expanded: !this.state.expanded
@@ -45,7 +58,7 @@ export class ValidationTable extends Component {
   }
   
   render() {
-    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages } = this.props
+    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages, disableAll } = this.props
     const { expanded } = this.state
     
     const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
@@ -113,6 +126,7 @@ export class ValidationTable extends Component {
                           onClick={() => onOpenAlert(item.id, item.type)}
                           tooltipText="Clear this flag"
                           id="clear-flag"
+                          disabled={disableAll}
                           iconSize={20}
                           aria-label="Clear this flag"
                           color={flagColors[item.type]}>

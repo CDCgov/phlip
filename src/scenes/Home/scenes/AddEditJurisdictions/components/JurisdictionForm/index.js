@@ -61,7 +61,8 @@ export class JurisdictionForm extends Component {
     goBack: PropTypes.bool,
     onSubmitError: PropTypes.func,
     project: PropTypes.object,
-    title: PropTypes.string
+    title: PropTypes.string,
+    searching: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -364,6 +365,7 @@ export class JurisdictionForm extends Component {
           helperText: this.state.errors.name,
           onBlur: this.validateJurisdiction
         }}
+        isSearching={this.props.searching}
         inputProps={{
           value: this.props.form.values.name,
           onChange: this.onSuggestionChange,
@@ -447,7 +449,8 @@ const mapStateToProps = (state, ownProps) => ({
   formError: state.scenes.home.addEditJurisdictions.formError || null,
   goBack: state.scenes.home.addEditJurisdictions.goBack || false,
   form: state.scenes.home.addEditJurisdictions.form || {},
-  isReduxForm: false
+  isReduxForm: false,
+  searching: state.scenes.home.addEditJurisdictions.searching
 })
 
 /* istanbul ignore next */

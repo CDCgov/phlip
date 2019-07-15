@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Text field input with form control wrapper, set up for use in redux-form
@@ -11,26 +12,37 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 export const TextInput = props => {
   const {
     label, type, input, disabled, multiline, shrinkLabel, required,
-    meta: { active, touched, error, warning },
+    meta: { active, touched, error, warning }, smallLabel,
     ...custom
   } = props
-
+  
+  const hasError = Boolean(touched && error && !active || warning)
+  const Container = shrinkLabel ? FlexGrid : FormControl
+  const containerProps = shrinkLabel ? { container: true } : { disabled, error: hasError, fullWidth: true }
+  
   return (
-    <FormControl
-      error={Boolean(touched && error && !active || warning)}
-      fullWidth
-      disabled={disabled}>
-      <InputLabel htmlFor={input.name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
+    <Container {...containerProps}>
+      {label && <InputLabel
+        {...{
+          htmlFor: input.name,
+          error: hasError,
+          ...(shrinkLabel && { shrink: smallLabel }),
+          disabled,
+          required
+        }}>
+        {label}
+      </InputLabel>}
       <Input
         {...input}
         {...custom}
         type={type}
         id={input.name}
+        disabled={disabled}
         multiline={multiline}
         inputProps={{ 'aria-label': label }}
       />
-      {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
-    </FormControl>
+      {hasError && <FormHelperText error={hasError}>{error}</FormHelperText>}
+    </Container>
   )
 }
 
@@ -70,11 +82,16 @@ TextInput.propTypes = {
   /**
    * Style classes from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * Whether or not to make the text of the input label small
+   */
+  smallLabel: PropTypes.bool
 }
 
 TextInput.defaultProps = {
-  meta: {}
+  meta: {},
+  smallLabel: false
 }
 
 export default TextInput

@@ -34,15 +34,23 @@ describe('Document Management logic', () => {
     apiMock = new MockAdapter(projectApiInstance)
   })
   
-  const setupStore = (data = {}, docManage = {}) => {
+  const setupStore = (data = {}, docManage = {}, searchForm = {}) => {
     return createMockStore({
       initialState: {
         data: {
           jurisdictions: {
-            byId: jurisdictions
+            byId: jurisdictions,
+            allIds: [1, 2, 33, 200]
           },
           projects: {
-            byId: projects
+            byId: projects,
+            allIds: [12, 5, 44, 11]
+          },
+          user: {
+            currentUser: {
+              role: 'Admin',
+              id: 4
+            }
           },
           ...data
         },
@@ -51,7 +59,13 @@ describe('Document Management logic', () => {
             main: {
               list: {
                 documents: JSON.parse(JSON.stringify(mockDocuments)),
+                showAll: true,
                 ...docManage
+              }
+            },
+            search: {
+              form: {
+                ...searchForm
               }
             }
           }
@@ -353,6 +367,102 @@ describe('Document Management logic', () => {
     })
   })
   
+  describe('TOGGLING SHOW ALL DOCUMENTS', () => {
+    test('should set action with form information', done => {
+      const action = {
+        type: types.ON_TOGGLE_ALL_DOCS
+      }
+      
+      const store = setupStore({}, {}, {
+        searchValue: 'uploadedDate: ["10/10/2015","10/10/2010"]',
+        params: {
+          uploadedDate1: '10/10/2015',
+          uploadedDate2: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        }
+      })
+      
+      store.dispatch(action)
+      store.whenComplete(() => {
+        expect(store.actions[0].form).toEqual({
+          uploadedDate1: '10/10/2015',
+          uploadedDate2: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        })
+        expect(store.actions[0].value).toEqual('uploadedDate: ["10/10/2015","10/10/2010"]')
+        done()
+      })
+    })
+    
+    describe('when toggling off show all', () => {
+      const action = {
+        type: types.ON_TOGGLE_ALL_DOCS
+      }
+      
+      test('should use user documents and should filter if form is populated', done => {
+        const store = setupStore({}, {}, {
+          searchValue: 'uploadedDate: ["10/10/2015","10/10/2010"]',
+          params: {
+            uploadedDate1: '10/10/2015',
+            uploadedDate2: '10/10/2010',
+            project: {},
+            jurisdiction: {}
+          }
+        })
+        
+        store.dispatch(action)
+        store.whenComplete(() => {
+          expect(store.actions[0].payload).toEqual([byId[6]])
+          done()
+        })
+      })
+      
+      test('should send all documents as filtered if form is not populated', done => {
+        const store = setupStore({}, {}, {})
+        store.dispatch(action)
+        store.whenComplete(() => {
+          expect(store.actions[0].payload).toEqual([byId[2], byId[3], byId[6]])
+          done()
+        })
+      })
+    })
+    
+    describe('when toggle on show all', () => {
+      const action = {
+        type: types.ON_TOGGLE_ALL_DOCS
+      }
+      
+      test('should use all documents and should filter if form is populated', done => {
+        const store = setupStore({}, { showAll: false }, {
+          searchValue: 'uploadedDate: ["10/10/2015","10/10/2010"]',
+          params: {
+            uploadedDate1: '10/10/2015',
+            uploadedDate2: '10/10/2010',
+            project: {},
+            jurisdiction: {}
+          }
+        })
+        
+        store.dispatch(action)
+        store.whenComplete(() => {
+          expect(store.actions[0].payload).toEqual([byId[6], byId[7]])
+          done()
+        })
+      })
+      
+      test('should send all documents as filtered if form is not populated', done => {
+        const store = setupStore({}, { showAll: false }, {})
+        store.dispatch(action)
+        store.whenComplete(() => {
+          expect(store.actions[0].payload).toEqual(Object.values(mockDocuments.byId))
+          done()
+        })
+      })
+    })
+  })
+  
   describe('GET DOCUMENTS', () => {
     describe('getting documents successfully', () => {
       test('should get document list and dispatch GET_DOCUMENTS_SUCCESS on success', done => {
@@ -376,7 +486,8 @@ describe('Document Management logic', () => {
             byId: {
               33: { name: 'Florida', id: 33 },
               200: { name: 'Puerto Rico', id: 200 }
-            }
+            },
+            allIds: [33, 200]
           }
         }, {})
         
@@ -386,7 +497,7 @@ describe('Document Management logic', () => {
           done()
         })
       })
-  
+      
       test('should call an api to get projects only if the project does not exist in state', done => {
         const proSpy = jest.spyOn(api, 'getProject')
         mock.onGet('/docs').reply(200, Object.values(mockDocuments.byId))
@@ -397,10 +508,11 @@ describe('Document Management logic', () => {
             byId: {
               12: { name: 'Project 1', id: 12 },
               5: { name: 'Overwatch', id: 5 }
-            }
+            },
+            allIds: [12, 5]
           }
         }, {})
-    
+        
         store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
         store.whenComplete(() => {
           expect(proSpy).toHaveBeenCalledTimes(2)
@@ -545,6 +657,37 @@ describe('Document Management logic', () => {
             5: {
               ...mockDocuments.byId[5],
               projects: [12]
+            }
+          }
+        })
+        done()
+      })
+    })
+  })
+  
+  describe('bulk remove Project  from selected docs', () => {
+    test('should remove project id if exist from documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
+      mock.onPut('/docs/cleanProjectList/12').reply(200, { n: 2, ok: 1 })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.BULK_REMOVE_PROJECT_REQUEST,
+        projectMeta: { id: 12 },
+        selectedDocs: [1, 2]
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1]).toEqual({
+          type: types.BULK_UPDATE_SUCCESS,
+          payload: {
+            ...mockDocuments.byId,
+            1: {
+              ...mockDocuments.byId[1],
+              projects: []
+            },
+            2: {
+              ...mockDocuments.byId[2],
+              projects: [11]
             }
           }
         })

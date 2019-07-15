@@ -10,7 +10,7 @@ let DevLoginForm = ({ handleSubmit, pristine, error, submitting, pivError }) => 
   <form onSubmit={handleSubmit}>
     <FlexGrid container justify="space-around" align="center">
       <FlexGrid padding={16} style={{ width: 280, boxSizing: 'border-box' }}>
-        <Field name="email" label="Email" component={TextInput} />
+        <Field name="email" label="Email" component={TextInput} smallLabel={false} />
       </FlexGrid>
     </FlexGrid>
     <FlexGrid container type="row" justify="center" align="center">
@@ -18,7 +18,7 @@ let DevLoginForm = ({ handleSubmit, pristine, error, submitting, pivError }) => 
       {pivError && <Typography color="error" align="center">{pivError}</Typography>}
     </FlexGrid>
     <FlexGrid container type="row" flex justify="center" padding={16}>
-      <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
+      <Button type="submit" color="secondary" value="Login" disabled={pristine || submitting} />
     </FlexGrid>
     <Divider />
   </form>

@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import {
   changeNodeAtPath,
   getTreeFromFlatData,
@@ -8,9 +8,6 @@ import {
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
 
-/**
- * Initial state for coding scheme reducer
- */
 export const INITIAL_STATE = {
   questions: [],
   outline: {},
@@ -24,12 +21,12 @@ export const INITIAL_STATE = {
   lockedByCurrentUser: false,
   lockInfo: {},
   lockedAlert: null,
-  goBack: false
+  goBack: false,
+  copying: false
 }
 
 /**
  * Turns the tree of questions into a flat object outline that is used by the backend.
- *
  * @param {Array} questions
  */
 export const questionsToOutline = questions => {
@@ -191,6 +188,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         lockedAlert: null
       }
+  
+    case types.REORDER_SCHEME_SUCCESS:
+      return {
+        ...state,
+        alertError: '',
+        previousQuestions: [],
+        previousOutline: {}
+      }
 
     case types.REORDER_SCHEME_FAIL:
       return {
@@ -201,13 +206,32 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         previousQuestions: [],
         previousOutline: {}
       }
-
-    case types.REORDER_SCHEME_SUCCESS:
+  
+    case types.LOCK_SCHEME_SUCCESS:
       return {
         ...state,
-        alertError: null,
-        previousQuestion: [],
-        previousOutline: {}
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockInfo: action.payload.lockInfo,
+        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
+          : null
+      }
+  
+    case types.UNLOCK_SCHEME_SUCCESS:
+      return {
+        ...state,
+        lockedByCurrentUser: false,
+        lockInfo: {}
+      }
+  
+    case types.DELETE_QUESTION_SUCCESS:
+      return {
+        ...state,
+        questions: action.payload.updatedQuestions,
+        outline: action.payload.updatedOutline,
+        empty: action.payload.updatedQuestions.length === 0
       }
 
     case types.LOCK_SCHEME_FAIL:
@@ -216,6 +240,60 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         alertError: action.payload
+      }
+  
+    case types.ADD_QUESTION_REQUEST:
+    case types.ADD_CHILD_QUESTION_REQUEST:
+    case types.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        formError: null,
+        goBack: false
+      }
+  
+    case types.ADD_QUESTION_SUCCESS:
+      return {
+        ...state,
+        questions: [...state.questions, action.payload],
+        outline: questionsToOutline([...state.questions, action.payload]),
+        flatQuestions: [...state.flatQuestions, action.payload],
+        empty: false,
+        error: null,
+        goBack: true
+      }
+  
+    case types.ADD_CHILD_QUESTION_SUCCESS:
+      const newTree = addNodeUnderParent({
+        treeData: state.questions,
+        parentKey: action.payload.path[action.payload.path.length - 1],
+        expandParent: true,
+        getNodeKey,
+        newNode: { ...action.payload, hovering: false }
+      })
+      
+      return {
+        ...state,
+        questions: newTree.treeData,
+        outline: questionsToOutline(newTree.treeData),
+        empty: false,
+        flatQuestions: [...state.flatQuestions, action.payload],
+        goBack: true
+      }
+  
+    case types.UPDATE_QUESTION_SUCCESS:
+      const updatedTree = changeNodeAtPath({
+        treeData: state.questions,
+        path: action.payload.path,
+        getNodeKey,
+        newNode: { ...action.payload, hovering: false }
+      })
+    
+      return {
+        ...state,
+        questions: updatedTree,
+        outline: questionsToOutline(updatedTree),
+        empty: false,
+        goBack: true
       }
 
     case types.ADD_QUESTION_FAIL:
@@ -272,91 +350,37 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         allowHover: true
       }
-
-    case types.ADD_QUESTION_SUCCESS:
+      
+    case types.COPY_CODING_SCHEME_REQUEST:
       return {
         ...state,
-        questions: [...state.questions, action.payload],
-        outline: questionsToOutline([...state.questions, action.payload]),
-        empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload],
-        error: null,
-        goBack: true
+        copying: true
       }
-
-    case types.ADD_CHILD_QUESTION_SUCCESS:
-      const newTree = addNodeUnderParent({
-        treeData: state.questions,
-        parentKey: action.payload.path[action.payload.path.length - 1],
-        expandParent: true,
-        getNodeKey,
-        newNode: { ...action.payload, hovering: false }
-      })
-
+      
+    case types.COPY_CODING_SCHEME_SUCCESS:
+      sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
         ...state,
-        questions: newTree.treeData,
-        outline: questionsToOutline(newTree.treeData),
-        empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload],
-        goBack: true
-      }
-
-    case types.UPDATE_QUESTION_SUCCESS:
-      const updatedTree = changeNodeAtPath({
-        treeData: state.questions,
-        path: action.payload.path,
-        getNodeKey,
-        newNode: { ...action.payload, hovering: false }
-      })
-
-      return {
-        ...state,
-        questions: updatedTree,
-        outline: questionsToOutline(updatedTree),
-        empty: false,
-        goBack: true
-      }
-
-    case types.DELETE_QUESTION_SUCCESS:
-      return {
-        ...state,
-        questions: action.payload.updatedQuestions,
-        outline: action.payload.updatedOutline,
+        questions: sortQuestions(getTreeFromFlatData({
+          flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
+        })),
+        flatQuestions: action.payload.scheme.schemeQuestions,
+        outline: action.payload.scheme.outline,
+        copying: false,
         empty: false
       }
-
-    case types.ADD_QUESTION_REQUEST:
-    case types.ADD_CHILD_QUESTION_REQUEST:
-    case types.UPDATE_QUESTION_REQUEST:
+      
+    case types.COPY_CODING_SCHEME_FAIL:
       return {
         ...state,
-        formError: null,
-        goBack: false
-      }
-
-    case types.LOCK_SCHEME_SUCCESS:
-      return {
-        ...state,
-        lockedByCurrentUser: action.payload.lockedByCurrentUser,
-        lockInfo: action.payload.lockInfo,
-        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
-          ? action.payload.lockedByCurrentUser
-            ? null
-            : true
-          : null
-      }
-
-    case types.UNLOCK_SCHEME_SUCCESS:
-      return {
-        ...state,
-        lockedByCurrentUser: false,
-        lockInfo: {}
+        alertError: action.payload,
+        copying: false
       }
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
 
+    case types.DELETE_QUESTION_REQUEST:
     case types.LOCK_SCHEME_REQUEST:
     case types.UNLOCK_SCHEME_REQUEST:
     case types.REORDER_SCHEME_REQUEST:

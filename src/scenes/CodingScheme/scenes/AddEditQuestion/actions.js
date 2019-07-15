@@ -1,36 +1,30 @@
-import * as types from '../../actionTypes'
+import makeActionCreator from 'utils/makeActionCreator'
 
-/** Adding questions */
-export const addQuestionRequest = (question, projectId, parentId) => ({
-  type: types.ADD_QUESTION_REQUEST,
-  question,
-  projectId,
-  parentId
-})
+export const types = {
+  ADD_QUESTION_SUCCESS: 'ADD_QUESTION_SUCCESS',
+  ADD_QUESTION_REQUEST: 'ADD_QUESTION_REQUEST',
+  ADD_QUESTION_FAIL: 'ADD_QUESTION_FAIL',
+  ADD_CHILD_QUESTION_REQUEST: 'ADD_CHILD_QUESTION_REQUEST',
+  ADD_CHILD_QUESTION_SUCCESS: 'ADD_CHILD_QUESTION_SUCCESS',
+  ADD_CHILD_QUESTION_FAIL: 'ADD_CHILD_QUESTION_FAIL',
+  UPDATE_QUESTION_SUCCESS: 'UPDATE_QUESTION_SUCCESS',
+  UPDATE_QUESTION_REQUEST: 'UPDATE_QUESTION_REQUEST',
+  UPDATE_QUESTION_FAIL: 'UPDATE_QUESTION_FAIL',
+  UPDATE_TYPE: 'UPDATE_TYPE',
+  RESET_ALERT_ERROR: 'RESET_ALERT_ERROR'
+}
 
-export const addChildQuestionRequest = (question, projectId, parentId, parentNode, path) => ({
-  type: types.ADD_CHILD_QUESTION_REQUEST,
-  question,
-  projectId,
-  parentId,
-  parentNode,
-  path
-})
-
-export const addChildQuestionFailure = (payload) => ({
-  type: types.ADD_CHILD_QUESTION_FAIL,
-  payload: { errorContent: payload, error: true }
-})
-
-/** Updating questions */
-export const updateQuestionRequest = (question, projectId, questionId, path) => ({
-  type: types.UPDATE_QUESTION_REQUEST,
-  question,
-  projectId,
-  questionId,
-  path
-})
-
-export const resetFormError = () => ({ type: types.RESET_ALERT_ERROR })
-
-export const updateType = () => ({ type: types.UPDATE_TYPE })
+export default {
+  addQuestionRequest: makeActionCreator(types.ADD_QUESTION_REQUEST, 'question', 'projectId', 'parentId'),
+  addChildQuestionRequest: makeActionCreator(
+    types.ADD_CHILD_QUESTION_REQUEST,
+    'question',
+    'projectId',
+    'parentId',
+    'parentNode',
+    'path'
+  ),
+  updateQuestionRequest: makeActionCreator(types.UPDATE_QUESTION_REQUEST, 'question', 'projectId', 'questionId', 'path'),
+  resetFormError: makeActionCreator(types.RESET_ALERT_ERROR),
+  updateType: makeActionCreator(types.UPDATE_TYPE)
+}

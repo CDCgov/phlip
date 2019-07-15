@@ -29,6 +29,7 @@ export const HeaderTabs = props => {
             container
             tabIndex={0}
             type="row"
+            id={`tab-${tab.id}`}
             padding="12px 20px 12px 20px"
             onKeyPress={(e) => e.key === 'Enter' ? onTabChange(i) : null}
             style={tab.active ? activeStyle : allStyle}

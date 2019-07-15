@@ -154,6 +154,7 @@ export const addPresetJurisdictionLogic = createLogic({
  */
 export const searchJurisdictionList = createLogic({
   type: types.SEARCH_JURISDICTION_LIST,
+  latest: true,
   processOptions: {
     dispatchReturn: true,
     successType: types.SET_JURISDICTION_SUGGESTIONS

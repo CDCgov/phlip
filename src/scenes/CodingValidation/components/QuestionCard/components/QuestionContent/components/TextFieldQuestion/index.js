@@ -101,7 +101,7 @@ export const TextFieldQuestion = props => {
             showAnnoModeButton={isAnswered}
             viewEnabled={viewModeEnabled}
             annoModeEnabled={showAnnoMode}
-            annoModeButtonDisabled={!isAnswered}
+            annoModeButtonDisabled={!isAnswered || disableAll}
             viewButtonDisabled={isValidation
               ? !checkForAnnotations(mergedUserQuestions.answers, userHasAnnotations)
               : !userHasAnnotations

@@ -79,6 +79,7 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
           type="column"
         >
           <SimpleInput
+            disabled={false}
             error={false}
             helperText=""
             id="flag-notes"
@@ -117,6 +118,7 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
         />
         <WithTheme(Button)
           color="accent"
+          disabled={false}
           onClick={[Function]}
           raised={false}
           type="submit"

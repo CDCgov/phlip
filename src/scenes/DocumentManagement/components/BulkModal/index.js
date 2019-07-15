@@ -12,7 +12,8 @@ const typeToTitle = {
   'delete': 'Delete Documents',
   'approve': 'Approve Documents',
   'project': 'Assign Project',
-  'jurisdiction': 'Assign Jurisdiction'
+  'jurisdiction': 'Assign Jurisdiction',
+  'removeproject' : 'Unassign Project'
 }
 
 /*
@@ -41,7 +42,8 @@ export const BulkModal = props => {
     open,
     buttonInfo,
     onConfirmAction,
-    ownerList
+    ownerList,
+    searching
   } = props
   
   const cancelButton = {
@@ -62,14 +64,17 @@ export const BulkModal = props => {
       disabled: buttonInfo.disabled
     }
   ]
-
+  
   const genMessage = (bulkType) => {
     if (['project', 'jurisdiction'].includes(bulkType)) {
       return `Do you want to assign this ${bulkType} to other users' documents?`
+    } else if (bulkType === 'removeproject') {
+      return `Do you want to remove this ${typeToTitle[bulkType]} from other users' documents?`
     } else {
       return `Do you want to ${bulkType} other users' documents?`
     }
   }
+  
   return (
     <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox">
       <ModalTitle title={typeToTitle[bulkType]} />
@@ -83,27 +88,28 @@ export const BulkModal = props => {
           height: 250
         }}>
         <FlexGrid container flex justify="space-between">
-          {['project', 'jurisdiction'].includes(bulkType) &&
+          {['project', 'jurisdiction', 'removeproject'].includes(bulkType) &&
           <FlexGrid container type="row" align="center" padding="0 0 20px">
             <Icon style={{ paddingRight: 8 }}>
               {bulkType === 'jurisdiction' ? 'account_balance' : 'dvr'}
             </Icon>
             <Autocomplete
               suggestions={suggestions}
-              handleGetSuggestions={val => onGetSuggestions(bulkType, val)}
-              handleClearSuggestions={() => onClearSuggestions(bulkType)}
+              handleGetSuggestions={val => onGetSuggestions(bulkType.includes('project') ? 'project' : bulkType, val)}
+              handleClearSuggestions={() => onClearSuggestions(bulkType.includes('project') ? 'project' : bulkType)}
+              isSearching={searching}
               inputProps={{
                 value: searchValue,
                 onChange: (e, { newValue }) => {
                   e.target.value === undefined
-                    ? onSearchValueChange(bulkType, newValue.name)
-                    : onSearchValueChange(bulkType, e.target.value)
+                    ? onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, newValue.name)
+                    : onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, e.target.value)
                 },
-                id: `${bulkType}-name`
+                id: `${bulkType.includes('project') ? 'project' : bulkType}-name`
               }}
-              handleSuggestionSelected={onSuggestionSelected(bulkType)}
+              handleSuggestionSelected={onSuggestionSelected(bulkType.includes('project') ? 'project' : bulkType)}
               InputProps={{
-                placeholder: `Search ${bulkType}s`,
+                placeholder: `Search ${bulkType.includes('project') ? 'project' : bulkType}s`,
                 fullWidth: true
               }}
             />
@@ -112,21 +118,23 @@ export const BulkModal = props => {
             {ownerList.length > 0 &&
             <>
               <Typography variant="body1">{genMessage(bulkType)}</Typography>
-              <Typography style={{ padding:10 }} />
+              <Typography style={{ padding: 10 }} />
               <Typography variant="body1">Number of documents selected: {docCount}</Typography>
-              <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
-             </> }
-            { ownerList.length === 0 && bulkType !== 'delete' &&
-              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+              <Typography variant="body2" style={{ paddingTop: 20 }}>Users: {ownerList.join(', ')}</Typography>
+            </>}
+            {ownerList.length === 0 && bulkType !== 'delete' &&
+            <Typography variant="body1">Number of documents selected: {docCount}</Typography>
             }
             {bulkType === 'delete' &&
             <>
-              { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
-              <Typography style={{ paddingTop:20 }} >
-                <span style={{ fontSize:18, fontWeight:500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
+              {ownerList.length === 0 &&
+              <Typography variant="body1">
+                Do you want to delete {docCount} document{docCount > 1 ? 's' : ''}?
+              </Typography>}
+              <Typography style={{ paddingTop: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
               </Typography>
-              </>
-            }
+            </>}
           </FlexGrid>
         </FlexGrid>
       </ModalContent>
@@ -144,12 +152,13 @@ BulkModal.propTypes = {
   onGetSuggestions: PropTypes.func,
   onSearchValueChange: PropTypes.func,
   onSuggestionSelected: PropTypes.func,
-  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve']),
+  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve', 'removeproject']),
   docCount: PropTypes.number,
   onCloseModal: PropTypes.func,
   onConfirmAction: PropTypes.func,
   buttonInfo: PropTypes.object,
-  ownerList: PropTypes.array
+  ownerList: PropTypes.array,
+  searching: PropTypes.bool
 }
 
 export default BulkModal

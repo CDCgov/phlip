@@ -7,7 +7,7 @@ import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { FlexGrid, IconButton, TextLink, Link, Button, GridListTile } from 'components'
+import { FlexGrid, IconButton, Link, Button, GridListTile, Icon } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
@@ -25,7 +25,8 @@ export class ProjectPanel extends Component {
     onExport: PropTypes.func,
     length: PropTypes.number,
     index: PropTypes.number,
-    handleExpandProject: PropTypes.func
+    handleExpandProject: PropTypes.func,
+    handleEditProject: PropTypes.func
   }
   
   /**
@@ -87,7 +88,7 @@ export class ProjectPanel extends Component {
   }
   
   render() {
-    const { project, role, bookmarked, actions, index, length, users, allUsers, expanded } = this.props
+    const { project, role, bookmarked, actions, index, length, users, allUsers, expanded, handleEditProject } = this.props
     
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -137,10 +138,12 @@ export class ProjectPanel extends Component {
       disableRipple: true
     }
     
+    const isLocked = project.status === 2
+    
     return (
       <>
         {containerStyles.paddingTop === 30 && <div style={{ height: 30 }} onClick={this.handleChange} />}
-        <FlexGrid>
+        <FlexGrid style={{ backgroundColor: isLocked ? `rgb(249, 249, 249)` : 'white' }}>
           <FlexGrid container justify="center" style={rowStyles} flex>
             {!expanded && <ProjectRow
               isCoder={isCoder}
@@ -224,7 +227,7 @@ export class ProjectPanel extends Component {
                       flex
                       align="center"
                       justify="flex-start"
-                      style={{ fontSize: 20, minWidth: 150 }}>
+                      style={{ minWidth: 150, marginRight: 15 }}>
                       <IconButton
                         color={bookmarked ? '#fdc43b' : greyIcon}
                         onClick={() => actions.toggleBookmark(project)}
@@ -233,15 +236,28 @@ export class ProjectPanel extends Component {
                         id={`bookmark-project-${project.id}`}>
                         {bookmarked ? 'bookmark' : 'bookmark_border'}
                       </IconButton>
-                      <FlexGrid style={{ width: 20 }} />
-                      {!isCoder ? (<TextLink
-                        aria-label="Edit project details"
-                        to={!isCoder ? {
-                          pathname: `/project/edit/${project.id}`,
-                          state: { projectDefined: { ...project }, modal: true, directEditMode: true }
-                        } : ''}>
+                      <Typography variant="title" style={{ margin: '0 8px', whiteSpace: 'nowrap' }}>
                         {project.name}
-                      </TextLink>) : (<Typography variant="title">{project.name}</Typography>)}
+                      </Typography>
+                      {isLocked && isCoder && <Icon>lock</Icon>}
+                      {isLocked && !isCoder && <IconButton
+                        color="secondary"
+                        iconSize={24}
+                        id={`unlock-project-${project.id}`}
+                        tooltipText="Unlock Project"
+                        aria-label={`Unlock Project ${project.name}`}
+                        onClick={handleEditProject(project)}>
+                        lock
+                      </IconButton>}
+                      {!isCoder && !isLocked && <IconButton
+                        color="secondary"
+                        iconSize={24}
+                        id={`edit-project-${project.id}`}
+                        tooltipText="Edit Project Details"
+                        aria-label={`Edit Project ${project.name}`}
+                        onClick={handleEditProject(project)}>
+                        edit
+                      </IconButton>}
                     </FlexGrid>
                     <FlexGrid container type="row" flex justify="flex-end" align="stretch" style={{ height: 40 }}>
                       {!isCoder && (<Button

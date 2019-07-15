@@ -41,11 +41,12 @@ export class ProjectList extends Component {
     handleExport: PropTypes.func,
     getProjectUsers: PropTypes.func,
     location: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    openProject: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    handleToggleProject: PropTypes.func
   }
   
   state = {
-    expanded: 0,
     mouse: {
       x: 0,
       y: 0
@@ -60,7 +61,13 @@ export class ProjectList extends Component {
   checkTargetPath = path => {
     let valid = true
     path.forEach(node => {
-      if (['projectSort-container', 'menu-projectSort', 'avatar-user-menu'].includes(node.id)) {
+      if ([
+        'projectSort-container',
+        'menu-projectSort',
+        'avatar-user-menu',
+        'tab-project-list',
+        'tab-doc-manage'
+      ].includes(node.id)) {
         valid = false
       }
     })
@@ -87,14 +94,17 @@ export class ProjectList extends Component {
    * @param event
    */
   handleExpandProject = (id, event) => {
-    if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+    const { location, history, handleToggleProject } = this.props
+    
+    if (location.pathname === '/home' && isRouteOk(history)) {
       const expand = this.checkExpand(event.target) &&
         this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
       
+      if (expand) {
+        handleToggleProject(id)
+      }
+      
       this.setState({
-        expanded: this.state.expanded === id
-          ? expand ? 0 : id
-          : expand ? id : 0,
         mouse: {
           x: 0,
           y: 0
@@ -108,29 +118,32 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    let expanded = this.state.expanded
+    const { openProject, location, history, handleToggleProject } = this.props
+    const { mouse } = this.state
+    
     let check = true
     
-    if (this.state.mouse.x !== 0 || this.state.mouse.y !== 0) {
-      if (event.clientX !== this.state.mouse.x && event.clientY !== this.state.mouse.y) {
+    if (mouse.x !== 0 || mouse.y !== 0) {
+      if (event.clientX !== mouse.x && event.clientY !== mouse.y) {
         check = false
       }
     }
     
     if (check) {
       if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
-        if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+        if (location.pathname === '/home' && isRouteOk(history)) {
           const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
           const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
             && this.checkTargetPath(event.path)
           
-          expanded = expand ? 0 : this.state.expanded
+          if (expand) {
+            handleToggleProject(openProject)
+          }
         }
       }
     }
     
     this.setState({
-      expanded,
       mouse: {
         x: 0,
         y: 0
@@ -152,13 +165,22 @@ export class ProjectList extends Component {
     })
   }
   
+  /**
+   * Changes route to edit modal for project
+   * @param project
+   */
+  handleEditProject = project => () => {
+    this.props.history.push({
+      pathname: `/project/edit/${project.id}`,
+      state: { projectDefined: { ...project }, modal: true }
+    })
+  }
+  
   render() {
     const {
       projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
-      getProjectUsers
+      getProjectUsers, openProject
     } = this.props
-    
-    const { expanded } = this.state
     
     return (
       <FlexGrid style={{ overflow: 'auto' }} onMouseDown={this.onMouseDown}>
@@ -172,9 +194,10 @@ export class ProjectList extends Component {
                 id={id}
                 onExport={handleExport}
                 role={user.role}
+                handleEditProject={this.handleEditProject}
                 getProjectUsers={getProjectUsers}
                 handleExpandProject={this.handleExpandProject}
-                expanded={expanded === id}
+                expanded={openProject === id}
               />
             ))}
           </div>

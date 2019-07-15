@@ -3,62 +3,23 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
-import { default as MuiButton } from '@material-ui/core/Button'
 import Header from './components/Header'
 import QuestionCard from './components/QuestionCard'
 import Navigator from './components/Navigator'
 import DocumentList from './components/DocumentList'
 import actions from './actions'
 import {
-  TextLink, Icon, Button, Alert, Tooltip, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
+  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid, withProjectLocked
 } from 'components'
-import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import Resizable from 're-resizable'
 
-const navButtonStyles = {
-  height: 90,
-  width: 20,
-  minWidth: 'unset',
-  minHeight: 'unset',
-  backgroundColor: '#bdbdbd',
-  padding: 0,
-  top: '35%',
-  borderRadius: '0 5px 5px 0',
-  boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-  color: '#424242'
-}
-
-const iconStyle = { transform: 'rotate(90deg)' }
-
 /* istanbul ignore next */
-const styles = theme => ({
-  mainContent: {
-    height: '100vh',
-    width: '100%',
-    flex: '1 !important',
-    overflow: 'auto',
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -250
-  },
-  openNavShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  },
-  pageLoading: {
-    marginLeft: 0
-  }
-})
-
-/* istanbul ignore next */
-const ResizeHandle = () => <Icon>more_vert</Icon>
+const ResizeHandle = () => (
+  <Icon style={{ width: 17, minWidth: 17, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    more_vert
+  </Icon>
+)
 
 export class CodingValidation extends Component {
   static propTypes = {
@@ -89,7 +50,12 @@ export class CodingValidation extends Component {
     classes: PropTypes.object,
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
-    match: PropTypes.object
+    match: PropTypes.object,
+    /**
+     * Whether or not the project has been finalized (locked) by an admin or coordinator. Different from being 'checked
+     * out'
+     */
+    projectLocked: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -466,12 +432,14 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowGetStartedView = () => {
-    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation } = this.props
+    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation, projectLocked } = this.props
     const noScheme = isSchemeEmpty
     const noJurisdictions = areJurisdictionsEmpty
     
     let startedText = ''
-    if (isValidation) {
+    if (projectLocked) {
+      startedText = 'This project is locked. No changes can be made.'
+    } else if (isValidation) {
       if (noScheme && !noJurisdictions) {
         startedText = 'This project doesn\'t have a coding scheme.'
       } else if (!noScheme && noJurisdictions) {
@@ -490,6 +458,7 @@ export class CodingValidation extends Component {
         startedText = 'You must add jurisdictions and questions to the coding scheme before coding.'
       }
     }
+    
     this.setState({
       startedText
     })
@@ -550,13 +519,13 @@ export class CodingValidation extends Component {
         this.setState({
           jurisdiction: newJur
         })
-  
+        
         if (page === 'coding') {
           actions.getUserCodedQuestions(project.id, event.target.value)
         } else {
           actions.getUserValidatedQuestionsRequest(project.id, event.target.value)
         }
-  
+        
         this.onShowQuestionLoader()
         actions.getApprovedDocumentsRequest(project.id, newJur.jurisdictionId, page)
       }
@@ -642,31 +611,25 @@ export class CodingValidation extends Component {
   
   render() {
     const {
-      classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
+      showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       questionOrder, isSchemeEmpty, schemeError, areJurisdictionsEmpty, saveFlagErrorContent,
-      getRequestInProgress, user, currentIndex, showNextButton, question, project
+      getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
     } = this.props
     
     const {
-      navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
+      applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
     } = this.state
-    
-    const containerClasses = classNames(classes.mainContent, {
-      [classes.openNavShift]: navOpen && !showPageLoader,
-      [classes.pageLoading]: !navOpen
-    })
     
     const containerStyle = {
       width: '100%',
       height: '100%',
-      position: 'relative',
       display: 'flex',
       flexWrap: 'nowrap',
       overflow: 'hidden'
     }
     
     return (
-      <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
+      <FlexGrid container type="row" flex style={containerStyle}>
         <Alert
           open={applyAllAlertOpen}
           actions={this.modalActions}
@@ -696,13 +659,8 @@ export class CodingValidation extends Component {
           content={getQuestionErrors}
           onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
         />
-        {navOpen &&
-        <Navigator
-          open={navOpen}
-          page={page}
-          selectedCategory={selectedCategory}
-          handleQuestionSelected={this.onQuestionSelectedInNav}
-        />}
+        {showNav &&
+        <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.onQuestionSelectedInNav} />}
         <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             project={project}
@@ -714,20 +672,11 @@ export class CodingValidation extends Component {
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
-              {!showPageLoader &&
-              <FlexGrid>
-                {showNav &&
-                <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">
-                  <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                    <Icon color="#424242" style={iconStyle}>menu</Icon>
-                  </MuiButton>
-                </Tooltip>}
-              </FlexGrid>}
               <FlexGrid
                 container
                 type="row"
                 flex
-                style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
+                style={{ padding: '1px 15px 20px 3px', overflow: 'auto', minHeight: 500 }}>
                 {schemeError !== null && <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                 {getRequestInProgress
                   ? showPageLoader
@@ -737,7 +686,7 @@ export class CodingValidation extends Component {
                     ? (
                       <FlexGrid container flex align="center" justify="center" padding={30}>
                         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-                        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
+                        {!projectLocked && <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
                           {(isSchemeEmpty && user.role !== 'Coder') &&
                           <TextLink to={{ pathname: `/project/${project.id}/coding-scheme` }}>
                             <Button value="Create Coding Scheme" color="accent" />
@@ -746,7 +695,7 @@ export class CodingValidation extends Component {
                           <TextLink to={{ pathname: `/project/${project.id}/jurisdictions` }}>
                             <Button value="Add Jurisdictions" color="accent" />
                           </TextLink>}
-                        </FlexGrid>
+                        </FlexGrid>}
                       </FlexGrid>
                     )
                     : (schemeError === null && (
@@ -763,6 +712,7 @@ export class CodingValidation extends Component {
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
                           currentIndex={currentIndex}
+                          disableAll={projectLocked}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}
                           totalLength={questionOrder.length}
@@ -786,16 +736,16 @@ export class CodingValidation extends Component {
                             left: {
                               height: 'fit-content',
                               width: 'fit-content',
-                              bottom: '50%',
+                              bottom: '51.25%',
                               top: 'unset',
-                              left: -4
+                              left: 0
                             }
                           }}
                           defaultSize={{
                             width: '50%',
                             height: '100%'
                           }}>
-                          <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
+                          <FlexGrid style={{ minWidth: 17, maxWidth: 17, width: 17 }} />
                           <DocumentList
                             projectId={project.id}
                             jurisdictionId={jurisdiction.jurisdictionId}
@@ -866,4 +816,4 @@ const mapStateToProps = (state, ownProps) => {
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withTracking(CodingValidation)))
+export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(withTracking(CodingValidation)))

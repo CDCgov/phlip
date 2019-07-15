@@ -66,6 +66,11 @@ let apiCalls = [
     path: () => '/users'
   },
   {
+    name: 'searchUserList',
+    method: 'get',
+    path: () => '/users'
+  },
+  {
     name: 'addUser',
     method: 'post',
     path: () => '/users'
@@ -134,6 +139,11 @@ let apiCalls = [
     name: 'getScheme',
     method: 'get',
     path: ({ projectId }) => `/projects/${projectId}/scheme`
+  },
+  {
+    name: 'getSchemeTree',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}/scheme/tree`
   },
   {
     name: 'addQuestion',

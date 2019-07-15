@@ -3,7 +3,8 @@ import { types } from './actions'
 export const INITIAL_STATE = {
   searchValue: '',
   suggestions: [],
-  selectedSuggestion: {}
+  selectedSuggestion: {},
+  searching: false
 }
 
 export const createAutocompleteReducer = (searchName, suffix = '') => {
@@ -16,11 +17,18 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
           suggestions: action.value === '' ? [] : state.suggestions,
           selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion
         }
+        
+      case `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`:
+        return {
+          ...state,
+          searching: true
+        }
 
       case `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_${searchName}${suffix}`:
         return {
           ...state,
-          suggestions: action.payload
+          suggestions: action.payload,
+          searching: false
         }
 
       case `${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`:
@@ -28,13 +36,15 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
           ...state,
           selectedSuggestion: action.suggestion,
           searchValue: action.suggestion.name,
-          suggestions: []
+          suggestions: [],
+          searching: false
         }
 
       case `${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`:
         return {
           ...state,
-          suggestions: []
+          suggestions: [],
+          searching: false
         }
 
       case `${types.CLEAR_ALL}_${searchName}${suffix}`:
