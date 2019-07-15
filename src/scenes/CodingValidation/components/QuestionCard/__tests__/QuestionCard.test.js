@@ -40,7 +40,8 @@ const props = {
     toggleViewAnnotations: jest.fn(),
     setHeaderText: jest.fn(),
     changeTouchedStatus: jest.fn(),
-    setResetStatus: jest.fn()
+    setResetStatus: jest.fn(),
+    toggleOffView: jest.fn()
   },
   alert: {
     open: false,

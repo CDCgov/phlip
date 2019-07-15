@@ -17,7 +17,8 @@ export const types = {
   HIDE_ANNO_MODE_ALERT: 'HIDE_ANNO_MODE_ALERT',
   CLEAR_DOC_SELECTED: 'CLEAR_DOC_SELECTED',
   FLUSH_STATE: 'FLUSH_STATE',
-  UPDATE_ANNOTATIONS: 'UPDATE_ANNOTATIONS'
+  UPDATE_ANNOTATIONS: 'UPDATE_ANNOTATIONS',
+  TOGGLE_OFF_VIEW: 'TOGGLE_OFF_VIEW'
 }
 
 export default {
@@ -27,6 +28,7 @@ export default {
     'jurisdictionId',
     'page'
   ),
+  toggleOffView: makeActionCreator(types.TOGGLE_OFF_VIEW),
   clearDocSelected: makeActionCreator(types.CLEAR_DOC_SELECTED),
   getDocumentContentsRequest: makeActionCreator(types.GET_DOC_CONTENTS_REQUEST, 'id'),
   saveAnnotation: makeActionCreator(types.ON_SAVE_ANNOTATION, 'annotation', 'answerId', 'questionId'),

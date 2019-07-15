@@ -53,7 +53,6 @@ export class QuestionCard extends Component {
     questionChangeLoader: PropTypes.bool,
     isChangingQuestion: PropTypes.bool,
     unsavedChanges: PropTypes.bool,
-    hasTouchedQuestion: PropTypes.bool,
     enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     annotationModeEnabled: PropTypes.bool,
@@ -189,6 +188,7 @@ export class QuestionCard extends Component {
     
     this.disableAnnotationMode()
     this.changeTouchStatusAndText(false, '')
+    actions.toggleOffView()
     actions.setResetStatus(false)
     onChangeCategory(event, selection)
   }
@@ -299,10 +299,12 @@ export class QuestionCard extends Component {
     switch (alert.type) {
       case 'clearAnswer':
         onClearAnswer()
+        actions.toggleOffView()
         actions.setResetStatus(true)
         break
       case 'changeAnswer':
         onChange(alert.data.id, alert.data.value)
+        actions.toggleOffView()
         actions.setResetStatus(true)
         break
       case 'applyAll':
@@ -311,6 +313,7 @@ export class QuestionCard extends Component {
         break
       case 'reset':
         onResetAnswer()
+        actions.toggleOffView()
         actions.setResetStatus(false)
         break
       case 'clearFlag':

@@ -15,12 +15,16 @@ const getQuestions = (questionId, state, isValidation) => {
   if (codingState.question.isCategoryQuestion) {
     coderQuestion = isValidation
       ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
-      : {}
+        ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
+        : null
+      : null
     userQuestion = codingState.userAnswers[questionId][codingState.selectedCategoryId]
   } else {
     coderQuestion = isValidation
       ? codingState.mergedUserQuestions[questionId]
-      : {}
+        ? codingState.mergedUserQuestions[questionId]
+        : null
+      : null
     userQuestion = codingState.userAnswers[questionId]
   }
   
@@ -132,7 +136,7 @@ const toggleViewAnnotations = createLogic({
     
     const { userQuestion, coderQuestion } = getQuestions(action.questionId, getState(), isValidation)
     const userAnnotations = getUserAnnotations(userQuestion, answerId, getState(), isValidation, user)
-    const coderAnnotations = isValidation
+    const coderAnnotations = isValidation && coderQuestion !== null
       ? getCoderAnnotations(coderQuestion, answerId)
       : { annotations: [], users: [] }
     

@@ -78,4 +78,13 @@ describe('CodingValidation - Card Reducer', () => {
       expect(state.canReset).toEqual(true)
     })
   })
+  
+  describe('ON_CLOSE_SCREEN', () => {
+    test('should reset everything when leaving the page', () => {
+      const action = { type: types.ON_CLOSE_SCREEN }
+      const currentState = getState({ header: 'All changes saved', touched: true, canReset: true })
+      const state = reducer(currentState, action)
+      expect(state).toEqual(INITIAL_STATE)
+    })
+  })
 })

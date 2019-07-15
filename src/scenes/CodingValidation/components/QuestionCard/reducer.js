@@ -52,6 +52,9 @@ export const cardReducer = (state = INITIAL_STATE, action) => {
         canReset: action.canReset
       }
       
+    case types.ON_CLOSE_SCREEN:
+      return INITIAL_STATE
+      
     default:
       return state
   }
