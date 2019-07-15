@@ -9,7 +9,8 @@ export const INITIAL_STATE = {
     data: {}
   },
   touched: false,
-  header: ''
+  header: '',
+  canReset: false
 }
 
 export const cardReducer = (state = INITIAL_STATE, action) => {
@@ -42,6 +43,12 @@ export const cardReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         header: action.text
+      }
+      
+    case types.SET_RESET_STATUS:
+      return {
+        ...state,
+        canReset: action.canReset
       }
       
     default:

@@ -136,7 +136,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
         saveFailed: false,
-        unsavedChanges: state.messageQueue.length > 0
+        unsavedChanges: state.messageQueue.length > 0,
+        answerSnapshot: {
+          ...state.answerSnapshot,
+          id: action.payload.id,
+          isNewCodedQuestion: false
+        }
       }
     
     case types.SAVE_USER_ANSWER_REQUEST:
@@ -432,6 +437,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
+        answerSnapshot: action.payload.userAnswers[action.payload.question.id],
         ...action.payload.otherUpdates
       }
     

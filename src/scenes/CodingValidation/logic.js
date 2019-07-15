@@ -657,14 +657,13 @@ export const getUserCodedQuestionsLogic = createLogic({
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       userAnswers,
       scheme: updatedScheme,
+      mergedUserQuestions: null,
       otherUpdates,
       errors: { ...errors, ...codedValErrors, ...schemeErrors }
     }
     
-    dispatch({
-      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_CODED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })
@@ -803,6 +802,8 @@ const getQuestionLogic = createLogic({
         }
       })
     }
+    
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     dispatch({ type: types.SET_HEADER_TEXT, text: '' })
     dispatch({ type: types.CHANGE_TOUCHED_STATUS, touched: false })
     done()
@@ -875,6 +876,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     }
     
     dispatch({ type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })

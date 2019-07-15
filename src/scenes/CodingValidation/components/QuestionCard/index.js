@@ -130,6 +130,7 @@ export class QuestionCard extends Component {
       })
     } else {
       onChange(id)(event, value)
+      actions.setResetStatus(true)
       this.changeTouchStatusAndText(true, 'Saving...')
     }
   }
@@ -178,10 +179,11 @@ export class QuestionCard extends Component {
    * When the user changes the category
    */
   onChangeCategory = (event, selection) => {
-    const { onChangeCategory } = this.props
+    const { onChangeCategory, actions } = this.props
     
     this.disableAnnotationMode()
     this.changeTouchStatusAndText(false, '')
+    actions.setResetStatus(false)
     onChangeCategory(event, selection)
   }
   
@@ -231,10 +233,11 @@ export class QuestionCard extends Component {
    * Handles when the user changes a text field
    */
   onChangeTextAnswer = (id, field) => event => {
-    const { onChangeTextAnswer } = this.props
+    const { onChangeTextAnswer, actions } = this.props
     
     this.disableAnnotationMode()
     this.changeTouchStatusAndText(true, 'Saving...')
+    actions.setResetStatus(true)
     onChangeTextAnswer(field, id, event.target.value)
   }
   
@@ -252,7 +255,7 @@ export class QuestionCard extends Component {
    * Event handler for saving a flag
    */
   handleSaveFlag = flagInfo => {
-    const { user, onSaveFlag } = this.props
+    const { user, onSaveFlag, actions } = this.props
     
     const flag = {
       raisedBy: {
@@ -264,6 +267,7 @@ export class QuestionCard extends Component {
     }
     
     onSaveFlag(flag)
+    actions.setResetStatus(true)
     this.changeTouchStatusAndText(true, 'Saving...')
   }
   
@@ -288,15 +292,19 @@ export class QuestionCard extends Component {
     switch (alert.type) {
       case 'clearAnswer':
         onClearAnswer()
+        actions.setResetStatus(true)
         break
       case 'changeAnswer':
         onChange(alert.data.id)(alert.data.value)
+        actions.setResetStatus(true)
         break
       case 'applyAll':
         onApplyAll()
+        actions.setResetStatus(true)
         break
       case 'reset':
         onResetAnswer()
+        actions.setResetStatus(false)
         break
     }
     
@@ -312,10 +320,11 @@ export class QuestionCard extends Component {
    * @returns {Function}
    */
   onChangeQuestion = (dir, newIndex) => () => {
-    const { handleGetQuestion } = this.props
+    const { handleGetQuestion, actions } = this.props
     
     this.disableAnnotationMode()
     this.changeTouchStatusAndText(false, '')
+    actions.setResetStatus(false)
     handleGetQuestion(dir, newIndex)
   }
   
@@ -338,7 +347,7 @@ export class QuestionCard extends Component {
   
   render() {
     const {
-      touched, header, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation, mergedUserQuestions,
+      canReset, header, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation, mergedUserQuestions,
       disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, questionChangeLoader,
       categories, selectedCategory, currentIndex, totalLength, showNextButton, isUserAnswerSelected, selectedCategoryId,
       alert
@@ -398,7 +407,7 @@ export class QuestionCard extends Component {
                   </Typography>
                 </FlexGrid>
                 <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
-                  {touched &&
+                  {canReset &&
                   <IconButton
                     onClick={this.handleResetAnswer}
                     style={{ height: 24, width: 24 }}
@@ -486,7 +495,8 @@ const mapStateToProps = (state, ownProps) => {
     annotationModeEnabled: docState.annotationModeEnabled,
     isUserAnswerSelected: docState.isUserAnswerSelected,
     areDocsEmpty: docState.showEmptyDocs,
-    alert: cardState.alert
+    alert: cardState.alert,
+    canReset: cardState.canReset
   }
 }
 
