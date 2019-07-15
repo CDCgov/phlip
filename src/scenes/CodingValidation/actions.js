@@ -65,6 +65,7 @@ export const types = {
   CLEAR_FLAG_FAIL: 'CLEAR_FLAG_FAIL',
   SET_PAGE: 'SET_PAGE',
   SET_UNSAVED_CHANGES: 'SET_UNSAVED_CHANGES',
+  CLOSE_API_ERROR_ALERT: 'CLOSE_API_ERROR_ALERT',
   ...docTypes,
   ...cardTypes
 }
@@ -99,6 +100,7 @@ export default {
   setPage: makeActionCreator(types.SET_PAGE, 'page'),
   resetAnswer: makeActionCreator(types.RESET_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
   setUnsavedChanges: makeActionCreator(types.SET_UNSAVED_CHANGES, 'unsavedChanges'),
+  closeApiErrorAlert: makeActionCreator(types.CLOSE_API_ERROR_ALERT),
   ...docListActions,
   ...cardActions
 }

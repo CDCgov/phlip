@@ -382,10 +382,6 @@ describe('CodingValidation reducer', () => {
         expect(state.userAnswers[1].id).toEqual(10)
       })
       
-      test('should set state.saveFailed to false', () => {
-        expect(state.saveFailed).toEqual(false)
-      })
-      
       test('should set state.answerErrorContent to null', () => {
         expect(state.answerErrorContent).toEqual(null)
       })
@@ -415,10 +411,6 @@ describe('CodingValidation reducer', () => {
       
       test('should set the id from action.payload.id in userAnswers[questionId][selectedCategoryId]', () => {
         expect(state.userAnswers[4][10].id).toEqual(22)
-      })
-      
-      test('should set state.saveFailed to false', () => {
-        expect(state.saveFailed).toEqual(false)
       })
       
       test('should set state.answerErrorContent to null', () => {
@@ -451,10 +443,6 @@ describe('CodingValidation reducer', () => {
       test('should hasMadePost to true for userAnswers[questionId]', () => {
         expect(state.userAnswers[1].hasMadePost).toEqual(true)
       })
-      
-      test('should set state.saveFailed to false', () => {
-        expect(state.saveFailed).toEqual(false)
-      })
     })
     
     describe('for category questions', () => {
@@ -481,10 +469,6 @@ describe('CodingValidation reducer', () => {
       
       test('should set hasMadePost to true for userAnswers[questionId][selectedCategoryId]', () => {
         expect(state.userAnswers[4][10].hasMadePost).toEqual(true)
-      })
-      
-      test('should set state.saveFailed to false', () => {
-        expect(state.saveFailed).toEqual(false)
       })
     })
   })
@@ -578,10 +562,6 @@ describe('CodingValidation reducer', () => {
       expect(state.answerErrorContent).toEqual('We couldn\'t save your answer for this question.')
     })
     
-    test('should set state.saveFailed to true', () => {
-      expect(state.saveFailed).toEqual(true)
-    })
-    
     describe('should set hasMadePost to false for question at state.userAnswers[action.payload.questionId]', () => {
       test('should work for regular non-category questions', () => {
         const action = {
@@ -639,10 +619,6 @@ describe('CodingValidation reducer', () => {
           .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
       }
     )
-    
-    test('should set state.saveFailed to true', () => {
-      expect(state.saveFailed).toEqual(true)
-    })
     
     test('should set state.objectExists to true', () => {
       expect(state.objectExists).toEqual(true)
@@ -1303,8 +1279,8 @@ describe('CodingValidation reducer', () => {
       })
     })
     
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+    test('should no open an alert if there are no errors', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
     })
     
     test('should set state.questionChangeLoader to false', () => {
@@ -1313,10 +1289,6 @@ describe('CodingValidation reducer', () => {
     
     test('should set state.isChangingQuestion to false', () => {
       expect(state.isChangingQuestion).toEqual(false)
-    })
-    
-    test('should set state.saveFailed to false', () => {
-      expect(state.saveFailed).toEqual(false)
     })
     
     test('should set state.unsavedChanges to false', () => {
@@ -1338,8 +1310,9 @@ describe('CodingValidation reducer', () => {
       const currentState = getState({ question: schemeById[1] })
       const state = reducer(currentState, action)
       
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
+      test('should open an alert if there are errors', () => {
+        expect(state.apiErrorAlert.text).toEqual('omg this is an error.\n\nomg this is another error.')
+        expect(state.apiErrorAlert.open).toEqual(true)
       })
     })
   })
@@ -1411,16 +1384,13 @@ describe('CodingValidation reducer', () => {
       expect(state.showPageLoader).toEqual(false)
     })
     
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+    test('should not open an alert if there are no errors', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
     })
     
-    test(
-      'should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist',
-      () => {
-        expect(state.codedQuestionsError).toEqual(null)
-      }
-    )
+    test('should set not disable all if action.payload.errors.codedValQuestions does not exist', () => {
+      expect(state.disableAll).toEqual(false)
+    })
     
     describe('handling errors', () => {
       const action = {
@@ -1449,12 +1419,12 @@ describe('CodingValidation reducer', () => {
       const currentState = getState()
       const state = reducer(currentState, action)
       
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
+      test('should open an alert if there are errors', () => {
+        expect(state.apiErrorAlert.text).toEqual('omg this is an error.\n\nomg this is another error.')
       })
       
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
+      test('should disable all actions if failure when retrieving answers', () => {
+        expect(state.disableAll).toEqual(true)
       })
     })
     
@@ -1550,7 +1520,8 @@ describe('CodingValidation reducer', () => {
           }
           
           const state = reducer(currentState, action)
-          expect(state.gettingStartedText).toEqual('You must add jurisdictions and questions to the coding scheme before coding.')
+          expect(state.gettingStartedText)
+            .toEqual('You must add jurisdictions and questions to the coding scheme before coding.')
         })
       })
     })
@@ -1624,14 +1595,14 @@ describe('CodingValidation reducer', () => {
       expect(state.showPageLoader).toEqual(false)
     })
     
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+    test('should not open an alert if there are no errors', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
     })
     
     test(
-      'should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist',
+      'should set not disable all actions if there were no errors',
       () => {
-        expect(state.codedQuestionsError).toEqual(null)
+        expect(state.disableAll).toEqual(false)
       }
     )
     
@@ -1667,12 +1638,12 @@ describe('CodingValidation reducer', () => {
       const currentState = getState()
       const state = reducer(currentState, action)
       
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
+      test('should open an alert if there are errors', () => {
+        expect(state.apiErrorAlert.text).toEqual('omg this is an error.\n\nomg this is another error.')
       })
       
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
+      test('should disable all actions if failure when retrieving answers', () => {
+        expect(state.disableAll).toEqual(true)
       })
     })
     
@@ -1844,12 +1815,9 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should set state.saveFlagErrorContent to "We couldn\'t save the flag for this question."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the flag for this question.')
-    })
-    
-    test('should set state.saveFailed to true', () => {
-      expect(state.saveFailed).toEqual(true)
+    test('should open an alert with "We couldn\'t save the flag for this question."', () => {
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t save the flag for this question.')
+      expect(state.apiErrorAlert.open).toEqual(true)
     })
   })
   
@@ -1928,16 +1896,13 @@ describe('CodingValidation reducer', () => {
       expect(state.scheme).toEqual({ byId: schemeById, tree: schemeTree, order: schemeOrder })
     })
     
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+    test('should not open an alert if there are no errors', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
     })
     
-    test(
-      'should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist',
-      () => {
-        expect(state.codedQuestionsError).toEqual(null)
-      }
-    )
+    test('should not disable all if there were no errors', () => {
+      expect(state.disableAll).toEqual(false)
+    })
     
     test('should set state.isLoadingPage to false', () => {
       expect(state.isLoadingPage).toEqual(false)
@@ -1968,12 +1933,13 @@ describe('CodingValidation reducer', () => {
       const currentState = getState()
       const state = reducer(currentState, action)
       
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
+      test('should open an alert if there are errors', () => {
+        expect(state.apiErrorAlert.text).toEqual('omg this is an error.\n\nomg this is another error.')
+        expect(state.apiErrorAlert.open).toEqual(true)
       })
       
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
+      test('should disable all actions if failure when retrieving answers', () => {
+        expect(state.disableAll).toEqual(true)
       })
     })
   })
@@ -1983,8 +1949,8 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should set state.codedQuestionsError to null', () => {
-      expect(state.codedQuestionsError).toEqual(null)
+    test('should clear disabling rules', () => {
+      expect(state.disableAll).toEqual(false)
     })
     
     test('should set state.isLoadingPage to true', () => {
@@ -1997,48 +1963,12 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should set state.codedQuestionsError to null', () => {
-      expect(state.codedQuestionsError).toEqual(null)
+    test('should clear disabling rules', () => {
+      expect(state.disableAll).toEqual(false)
     })
     
     test('should set state.isLoadingPage to true', () => {
       expect(state.isLoadingPage).toEqual(true)
-    })
-  })
-  
-  describe('GET_USER_CODED_QUESTIONS_FAIL', () => {
-    const action = { type: types.GET_USER_CODED_QUESTIONS_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-    
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-    
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-    
-    test('should set state.getQuestionsError to an empty string', () => {
-      expect(state.getQuestionsError).toEqual('')
-    })
-  })
-  
-  describe('GET_USER_VALIDATED_QUESTIONS_FAIL', () => {
-    const action = { type: types.GET_USER_VALIDATED_QUESTIONS_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-    
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-    
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-    
-    test('should set state.getQuestionsError to an empty string', () => {
-      expect(state.getQuestionsError).toEqual('')
     })
   })
   
@@ -2049,10 +1979,6 @@ describe('CodingValidation reducer', () => {
     
     test('should set state.unsavedChanges to true', () => {
       expect(state.unsavedChanges).toEqual(true)
-    })
-    
-    test('should set state.saveFailed to false', () => {
-      expect(state.saveFailed).toEqual(false)
     })
   })
   
@@ -2269,12 +2195,12 @@ describe('CodingValidation reducer', () => {
   })
   
   describe('DISMISS_API_ALERT', () => {
-    const action = { type: types.DISMISS_API_ALERT, errorType: 'getQuestionErrors' }
-    const currentState = getState({ getQuestionErrors: 'blep' })
+    const action = { type: types.DISMISS_API_ALERT, errorType: 'answerErrorContent' }
+    const currentState = getState({ answerErrorContent: 'blep' })
     const state = reducer(currentState, action)
     
     test('should set state[action.errorType] to null', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+      expect(state.answerErrorContent).toEqual(null)
     })
     
     test('should set state.objectExists to false', () => {
@@ -2337,8 +2263,9 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should set state.saveFlagErrorContent to "We couldn\'t clear this flag."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t clear this flag.')
+    test('should open an alert with "We couldn\'t clear this flag."', () => {
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t clear this flag.')
+      expect(state.apiErrorAlert.open).toEqual(true)
     })
   })
   
@@ -2377,16 +2304,13 @@ describe('CodingValidation reducer', () => {
       expect(state.mergedUserQuestions).toEqual(mergedUserQuestions)
     })
     
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
+    test('should not open an alert if there are no errors', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
     })
     
-    test(
-      'should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist',
-      () => {
-        expect(state.codedQuestionsError).toEqual(null)
-      }
-    )
+    test('should not disable all actions if there were no errors', () => {
+      expect(state.disableAll).toEqual(false)
+    })
     
     test('should set state.isLoadingPage to false', () => {
       expect(state.isLoadingPage).toEqual(false)
@@ -2418,12 +2342,13 @@ describe('CodingValidation reducer', () => {
       const currentState = getState()
       const state = reducer(currentState, action)
       
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
+      test('should open an alert if there are errors', () => {
+        expect(state.apiErrorAlert.text).toEqual('omg this is an error.\n\nomg this is another error.')
+        expect(state.apiErrorAlert.open).toEqual(true)
       })
       
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
+      test('should disable all actions if failure when retrieving answers', () => {
+        expect(state.disableAll).toEqual(true)
       })
     })
   })
@@ -2467,6 +2392,16 @@ describe('CodingValidation reducer', () => {
       const state = reducer(currentState, action)
       expect(state.question).toEqual(schemeById[4])
       expect(state.userAnswers).toEqual(userAnswersCoded)
+    })
+  })
+  
+  describe('CLOSE_API_ERROR_ALERT', () => {
+    test('should close the alert', () => {
+      const action = { type: types.CLOSE_API_ERROR_ALERT }
+      const currentState = getState({ apiErrorAlert: { open: true, text: 'blep' } })
+      const state = reducer(currentState, action)
+      expect(state.apiErrorAlert.open).toEqual(false)
+      expect(state.apiErrorAlert.text).toEqual('blep')
     })
   })
 })

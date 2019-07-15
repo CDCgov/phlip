@@ -26,6 +26,11 @@ export const INITIAL_STATE = {
   scheme: null,
   outline: {},
   currentIndex: 0,
+  apiErrorAlert: {
+    open: false,
+    text: ''
+  },
+  disableAll: false,
   categories: undefined,
   selectedCategory: 0,
   selectedCategoryId: null,
@@ -37,17 +42,12 @@ export const INITIAL_STATE = {
   snapshotUserAnswer: {},
   answerErrorContent: null,
   schemeError: null,
-  saveFlagErrorContent: null,
-  getQuestionErrors: null,
-  codedQuestionsError: null,
-  isApplyAllError: null,
   isLoadingPage: false,
   questionChangeLoader: false,
   showPageLoader: false,
   isChangingQuestion: false,
   unsavedChanges: false,
   messageQueue: [],
-  saveFailed: false,
   objectExists: false,
   page: '',
   getRequestInProgress: true,
@@ -133,7 +133,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
-        saveFailed: false,
         unsavedChanges: state.messageQueue.length > 0,
         answerSnapshot: {
           ...state.answerSnapshot,
@@ -153,7 +152,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        saveFailed: false,
         unsavedChanges: true
       }
     
@@ -193,7 +191,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         answerErrorContent: 'We couldn\'t save your answer for this question.',
-        saveFailed: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
           ? updateCategoryCodedQuestion(
             state,
@@ -208,7 +205,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         answerErrorContent: 'Something about this question has changed since you loaded the page. We couldn\'t save your answer.',
-        saveFailed: true,
         objectExists: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
           ? updateCategoryCodedQuestion(
@@ -313,11 +309,13 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...action.payload.updatedState,
         ...handleCheckCategories(action.payload.question, action.payload.currentIndex, action.payload.updatedState),
-        getQuestionErrors: errors.length > 0 ? errors : null,
+        apiErrorAlert: {
+          open: errors.length > 0,
+          text: errors
+        },
         questionChangeLoader: false,
         isChangingQuestion: false,
-        unsavedChanges: false,
-        saveFailed: false
+        unsavedChanges: false
       }
     
     case types.GET_CODING_OUTLINE_REQUEST:
@@ -353,8 +351,11 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         mergedUserQuestions,
         isSchemeEmpty,
         schemeError: null,
-        getQuestionErrors: error.length > 0 ? error : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
+        apiErrorAlert: {
+          open: error.length > 0,
+          text: error
+        },
+        disableAll: action.payload.errors.hasOwnProperty('codedValQuestions'),
         isLoadingPage: false,
         showPageLoader: false,
         getRequestInProgress: false,
@@ -401,8 +402,10 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t save the flag for this question.',
-        saveFailed: true
+        apiErrorAlert: {
+          text: 'We couldn\'t save the flag for this question.',
+          open: true
+        }
       }
     
     case types.ON_SAVE_FLAG:
@@ -416,7 +419,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
       return {
         ...state,
-        codedQuestionsError: null,
+        disableAll: false,
         isLoadingPage: true,
         questionChangeLoader: false
       }
@@ -429,9 +432,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         userAnswers: action.payload.userAnswers,
         question: action.payload.question,
         scheme: action.payload.scheme,
-        getQuestionErrors: errors.length > 0 ? errors : null,
         mergedUserQuestions: action.payload.mergedUserQuestions || null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
+        apiErrorAlert: {
+          open: errors.length > 0,
+          text: errors
+        },
+        disableAll: action.payload.errors.hasOwnProperty('codedValQuestions'),
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
@@ -439,20 +445,10 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates
       }
     
-    case types.GET_USER_CODED_QUESTIONS_FAIL:
-    case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
-      return {
-        ...state,
-        getQuestionsError: '',
-        isLoadingPage: false,
-        showPageLoader: false
-      }
-    
     case types.ON_SAVE_RED_FLAG_REQUEST:
       return {
         ...state,
-        unsavedChanges: true,
-        saveFailed: false
+        unsavedChanges: true
       }
     
     case types.CLEAR_FLAG_SUCCESS:
@@ -519,7 +515,19 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.CLEAR_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t clear this flag.'
+        apiErrorAlert: {
+          text: 'We couldn\'t clear this flag.',
+          open: true
+        }
+      }
+      
+    case types.CLOSE_API_ERROR_ALERT:
+      return {
+        ...state,
+        apiErrorAlert: {
+          ...state.apiErrorAlert,
+          open: false
+        }
       }
     
     case types.SET_PAGE:

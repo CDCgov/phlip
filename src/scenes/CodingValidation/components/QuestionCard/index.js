@@ -53,7 +53,6 @@ export class QuestionCard extends Component {
     questionChangeLoader: PropTypes.bool,
     isChangingQuestion: PropTypes.bool,
     unsavedChanges: PropTypes.bool,
-    saveFailed: PropTypes.bool,
     hasTouchedQuestion: PropTypes.bool,
     enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -517,11 +516,10 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
-    disableAll: pageState.codedQuestionsError !== null || ownProps.disableAll || false,
+    disableAll: pageState.disableAll || ownProps.disableAll || false,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
-    saveFailed: pageState.saveFailed || false,
     userImages: state.data.user.byId,
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,

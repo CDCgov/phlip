@@ -46,7 +46,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     >
       We haven't finished saving your answer. If you continue, changes might not be saved.
     </WithStyles(Typography)>
-                     1 \`1\` \`
   </Alert>
   <ApiErrorAlert
     actions={
@@ -64,7 +63,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
   />
   <ApiErrorAlert
     actions={Array []}
-    content={null}
+    content=""
     onCloseAlert={[Function]}
     open={false}
   />
@@ -267,11 +266,5 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       </FlexGrid>
     </FlexGrid>
   </FlexGrid>
-  <ApiErrorAlert
-    actions={Array []}
-    content={null}
-    onCloseAlert={[Function]}
-    open={false}
-  />
 </FlexGrid>
 `;

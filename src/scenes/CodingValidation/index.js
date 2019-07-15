@@ -36,10 +36,9 @@ export class CodingValidation extends Component {
     selectedCategory: PropTypes.number,
     schemeError: PropTypes.string,
     answerErrorContent: PropTypes.any,
-    saveFlagErrorContent: PropTypes.string,
-    getQuestionErrors: PropTypes.string,
     isLoadingPage: PropTypes.bool,
     pageLoadingMessage: PropTypes.string,
+    apiErrorAlert: PropTypes.object,
     showPageLoader: PropTypes.bool,
     actions: PropTypes.object,
     unsavedChanges: PropTypes.bool,
@@ -70,20 +69,16 @@ export class CodingValidation extends Component {
           : props.project.projectJurisdictions[0]
         : { id: null },
       changeProps: [],
-      stillSavingAlertOpen: false,
-      changeMethod: null
+      changeMethod: null,
+      stillSavingAlertOpen: false
     }
     
-    this.modalActions = [
+    this.stillSavingActions = [
       {
         value: 'Continue',
         type: 'button',
-        onClick: this.onApplyToAll
+        onClick: this.onContinueStillSavingAlert
       }
-    ]
-    
-    this.stillSavingActions = [
-      { ...this.modalActions[0], onClick: this.onContinueStillSavingAlert }
     ]
     
     this.saveFailedActions = [
@@ -160,7 +155,7 @@ export class CodingValidation extends Component {
     let action = '', qItem = itemOrIndex, changeProps = []
     actions.toggleAnnotationMode(question.id, '', false)
     
-    switch(source) {
+    switch (source) {
       case 'nav':
         action = actions.onQuestionSelectedInNav
         changeProps = [itemOrIndex, null]
@@ -176,7 +171,7 @@ export class CodingValidation extends Component {
         changeProps = [qItem, itemOrIndex]
         break
     }
-  
+    
     if (unsavedChanges) {
       this.onShowStillSavingAlert(itemOrIndex, action, changeProps)
     } else {
@@ -184,7 +179,7 @@ export class CodingValidation extends Component {
       this.onShowQuestionLoader()
     }
   }
-
+  
   /**
    * Shows a question loader spinner
    * @public
@@ -255,7 +250,7 @@ export class CodingValidation extends Component {
    * @public
    * @returns {*|{type, args}}
    */
-  onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
+  onCloseSaveFailedAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
   
   /**
    * @public
@@ -271,7 +266,7 @@ export class CodingValidation extends Component {
    */
   onTryAgain = () => {
     this.onSaveCodedQuestion()
-    this.onCloseAlert()
+    this.onCloseSaveFailedAlert()
   }
   
   /**
@@ -458,7 +453,6 @@ export class CodingValidation extends Component {
    * Resets users answer to initial state when they came to the question
    */
   onResetAnswer = () => {
-    console.log()
     const { actions, question, project } = this.props
     const { jurisdiction } = this.state
     
@@ -469,9 +463,9 @@ export class CodingValidation extends Component {
   
   render() {
     const {
-      showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
-      questionOrder, isSchemeEmpty, schemeError, areJurisdictionsEmpty, saveFlagErrorContent, gettingStartedText,
-      getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
+      showPageLoader, answerErrorContent, objectExists, actions, page, selectedCategory, questionOrder, isSchemeEmpty,
+      schemeError, areJurisdictionsEmpty, gettingStartedText, getRequestInProgress, user, currentIndex, showNextButton,
+      question, project, projectLocked, apiErrorAlert
     } = this.props
     
     const { stillSavingAlertOpen, jurisdiction } = this.state
@@ -493,18 +487,18 @@ export class CodingValidation extends Component {
           actions={this.stillSavingActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             We haven't finished saving your answer. If you continue, changes might not be saved.
-          </Typography>                 1 `1` `
+          </Typography>
         </Alert>
         <ApiErrorAlert
           open={answerErrorContent !== null}
           content={answerErrorContent}
           actions={objectExists ? [] : this.saveFailedActions}
-          onCloseAlert={this.onCloseAlert}
+          onCloseAlert={this.onCloseSaveFailedAlert}
         />
         <ApiErrorAlert
-          open={getQuestionErrors !== null}
-          content={getQuestionErrors}
-          onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
+          open={apiErrorAlert.open}
+          content={apiErrorAlert.text}
+          onCloseAlert={() => actions.closeApiErrorAlert()}
         />
         {(gettingStartedText === '' && !getRequestInProgress) &&
         <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.getQuestion} />}
@@ -611,11 +605,6 @@ export class CodingValidation extends Component {
             </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-        <ApiErrorAlert
-          content={saveFlagErrorContent}
-          open={saveFlagErrorContent !== null}
-          onCloseAlert={() => actions.dismissApiAlert('saveFlagErrorContent')}
-        />
       </FlexGrid>
     )
   }
@@ -644,15 +633,14 @@ const mapStateToProps = (state, ownProps) => {
     selectedCategory: pageState.selectedCategory,
     schemeError: pageState.schemeError || null,
     answerErrorContent: pageState.answerErrorContent || null,
-    saveFlagErrorContent: pageState.saveFlagErrorContent || null,
-    getQuestionErrors: pageState.getQuestionErrors || null,
     isLoadingPage: pageState.isLoadingPage,
     showPageLoader: pageState.showPageLoader,
     isChangingQuestion: pageState.isChangingQuestion || false,
     selectedCategoryId: pageState.selectedCategoryId || null,
     unsavedChanges: pageState.unsavedChanges || false,
     objectExists: pageState.objectExists || false,
-    getRequestInProgress: pageState.getRequestInProgress
+    getRequestInProgress: pageState.getRequestInProgress,
+    apiErrorAlert: pageState.apiErrorAlert
   }
 }
 

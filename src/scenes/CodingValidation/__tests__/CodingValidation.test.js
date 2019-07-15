@@ -17,10 +17,11 @@ const props = {
   selectedCategoryId: null,
   schemeError: null,
   gettingStartedText: '',
-  updateAnswerError: null,
   answerErrorContent: null,
-  saveFlagErrorContent: null,
-  getQuestionErrors: null,
+  apiErrorAlert: {
+    open: false,
+    text: ''
+  },
   match: { url: '/project/1/code', params: { id: 1, view: 'code' } },
   history: {
     replace: jest.fn()
