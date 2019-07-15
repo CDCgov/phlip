@@ -20,6 +20,7 @@ export const cardReducer = (state = INITIAL_STATE, action) => {
         ...state,
         alert: {
           ...state.alert,
+          continueButtonText: '',
           ...action.alert
         }
       }

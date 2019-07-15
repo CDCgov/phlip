@@ -14,6 +14,7 @@ const props = {
   areJurisdictionsEmpty: false,
   user: { id: 11, role: 'Admin' },
   selectedCategory: null,
+  selectedCategoryId: null,
   schemeError: null,
   gettingStartedText: '',
   updateAnswerError: null,
@@ -28,7 +29,22 @@ const props = {
     getCodingOutlineRequest: jest.fn(),
     setPage: jest.fn(),
     getValidationOutlineRequest: jest.fn(),
-    onCloseScreen: jest.fn()
+    onCloseScreen: jest.fn(),
+    getPrevQuestion: jest.fn(),
+    getNextQuestion: jest.fn(),
+    onQuestionSelectedInNav: jest.fn(),
+    updateUserAnswer: jest.fn(),
+    saveUserAnswerRequest: jest.fn(),
+    showQuestionLoader: jest.fn(),
+    setHeaderText: jest.fn(),
+    onChangeComment: jest.fn(),
+    onChangePincite: jest.fn(),
+    onChangeCategory: jest.fn(),
+    onCloseAlert: jest.fn(),
+    onClearAnswer: jest.fn(),
+    applyAnswerToAll: jest.fn(),
+    showPageLoader: jest.fn(),
+    toggleAnnotationMode: jest.fn()
   }
 }
 
@@ -147,5 +163,103 @@ describe('CodingValidation', () => {
       shallow(<CodingValidation {...props} isSchemeEmpty areJurisdictionsEmpty />)
       expect(spy).not.toHaveBeenCalled()
     })
-  })  
+  })
+  
+  describe('changing questions', () => {
+    test('should open an alert if the user tries to change questions while current answer is saving', () => {
+      const wrapper = shallow(<CodingValidation {...props} unsavedChanges />)
+      wrapper.instance().getQuestion('next', 0)
+      expect(wrapper.state().stillSavingAlertOpen).toEqual(true)
+    })
+    
+    test('should handle if the user selects a question in the navigator', () => {
+      const spy = jest.spyOn(props.actions, 'onQuestionSelectedInNav')
+      const wrapper = shallow(<CodingValidation {...props} />)
+      wrapper.instance().getQuestion('nav', { id: 4, text: 'floop' })
+      expect(spy).toHaveBeenCalledWith({ id: 4, text: 'floop' }, { id: 4, text: 'floop' }, 1, 11)
+    })
+    
+    test('should handle if the user selects the next question', () => {
+      const spy = jest.spyOn(props.actions, 'getNextQuestion')
+      const wrapper = shallow(<CodingValidation {...props} questionOrder={[1, 3]} />)
+      wrapper.instance().getQuestion('next', 1)
+      expect(spy).toHaveBeenCalledWith(3, 1, 1, 11)
+    })
+    
+    test('should handle if the user selects the previous question', () => {
+      const spy = jest.spyOn(props.actions, 'getPrevQuestion')
+      const wrapper = shallow(<CodingValidation {...props} questionOrder={[1, 3]} currentIndex={1} />)
+      wrapper.instance().getQuestion('prev', 0)
+      expect(spy).toHaveBeenCalledWith(1, 0, 1, 11)
+    })
+  })
+  
+  describe('on answering the question when it\'s not a text field', () => {
+    const saveSpy = jest.spyOn(props.actions, 'saveUserAnswerRequest')
+    const updateSpy = jest.spyOn(props.actions, 'updateUserAnswer')
+    const setSpy = jest.spyOn(props.actions, 'setHeaderText')
+    const wrapper = shallow(<CodingValidation {...props} />)
+    wrapper.find('Connect(QuestionCard)').simulate('change', 12, 23)
+    
+    test('should update the answer', () => {
+      expect(updateSpy).toHaveBeenCalledWith(1, 11, 1, 12, 23)
+    })
+    
+    test('should save the answer', () => {
+      expect(saveSpy).toHaveBeenCalledWith(1, 11, 1, null)
+    })
+    
+    test('should set header text to Saving...', () => {
+      expect(setSpy).toHaveBeenCalledWith('Saving...')
+    })
+  })
+  
+  describe('when changing a text field part of the answer', () => {
+    const wrapper = shallow(<CodingValidation {...props} />)
+    
+    test('should handle if the user changes the text answer field', () => {
+      const spy = jest.spyOn(props.actions, 'updateUserAnswer')
+      wrapper.find('Connect(QuestionCard)').simulate('changeTextAnswer', 'textAnswer', 22, 'new text answer')
+      expect(spy).toHaveBeenCalledWith(1, 11, 1, 22, 'new text answer')
+    })
+    
+    test('should update the pincite if the user changes the pincite', () => {
+      const spy = jest.spyOn(props.actions, 'onChangePincite')
+      wrapper.find('Connect(QuestionCard)').simulate('changeTextAnswer', 'pincite', 22, 'pincite here')
+      expect(spy).toHaveBeenCalledWith(1, 11, 1, 22, 'pincite here')
+    })
+    
+    test('should update the comment if the user changes the comment', () => {
+      const spy = jest.spyOn(props.actions, 'onChangeComment')
+      wrapper.find('Connect(QuestionCard)').simulate('changeTextAnswer', 'comment', null, 'comment here')
+      expect(spy).toHaveBeenCalledWith(1, 11, 1, 'comment here')
+    })
+    
+    test('should save the new answer', () => {
+      const spy = jest.spyOn(props.actions, 'saveUserAnswerRequest')
+      wrapper.find('Connect(QuestionCard)').simulate('changeTextAnswer', 'textAnswer', 22, 'new text answer')
+      expect(spy).toHaveBeenCalledWith(1, 11, 1, null)
+    })
+  
+    test('should set header text to Saving...', () => {
+      const spy = jest.spyOn(props.actions, 'setHeaderText')
+      wrapper.find('Connect(QuestionCard)').simulate('changeTextAnswer', 'textAnswer', 22, 'new text answer')
+      expect(spy).toHaveBeenCalledWith('Saving...')
+    })
+  })
+  
+  xdescribe('answer error api alert', () => {
+    test('should close the alert', () => {
+    
+    })
+  })
+  
+  describe('changing categories', () => {
+    test('should move to the new category', () => {
+      const spy = jest.spyOn(props.actions, 'onChangeCategory')
+      const wrapper = shallow(<CodingValidation {...props} />)
+      wrapper.find('Connect(QuestionCard)').simulate('changeCategory', null, 3)
+      expect(spy).toHaveBeenCalledWith(3)
+    })
+  })
 })

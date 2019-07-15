@@ -6,9 +6,10 @@ import * as questionTypes from '../../../constants'
 const props = {
   question: { id: 1, answers: [], questionType: questionTypes.BINARY },
   userAnswers: {},
-  onChange: () => jest.fn(),
-  onChangeCategory: () => jest.fn(),
-  onChangeTextAnswer: () => jest.fn(),
+  onChange: jest.fn(),
+  onChangeCategory: jest.fn(),
+  onChangeTextAnswer: jest.fn(),
+  onClearFlag: jest.fn(),
   onClearAnswer: jest.fn(),
   onSaveFlag: jest.fn(),
   onApplyAll: jest.fn(),
@@ -80,8 +81,17 @@ const applyAll = {
 const reset = {
   ...categoryAlert,
   type: 'reset',
-  text: 'Any changes you\'ve made, including selected answer, pincite, flags and annotations, since arriving to this question will be reset.',
+  text: 'Any changes you\'ve made, including selected answer, pincites, comments, and annotations, since arriving to this question will be reset.',
   data: {}
+}
+
+const clearFlag = {
+  ...categoryAlert,
+  type: 'clearFlag',
+  text: 'Do you want to clear this flag?',
+  title: 'Confirm Clear Flag',
+  data: { id: 2, type: 1 },
+  continueButtonText: 'Clear Flag'
 }
 
 describe('QuestionCard component', () => {
@@ -95,7 +105,7 @@ describe('QuestionCard component', () => {
       () => {
         const wrapper = shallow(<QuestionCard {...props} userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }} />)
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
-        wrapper.instance().onToggleAnnotationMode(1)()
+        wrapper.instance().handleToggleAnnotationMode(1)()
         expect(spy).toHaveBeenCalledWith(1, 1, true)
         spy.mockReset()
       }
@@ -113,7 +123,7 @@ describe('QuestionCard component', () => {
           />
         )
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
-        wrapper.instance().onToggleAnnotationMode(1)()
+        wrapper.instance().handleToggleAnnotationMode(1)()
         expect(spy).toHaveBeenCalledWith(1, 1, false)
         spy.mockReset()
       }
@@ -131,7 +141,7 @@ describe('QuestionCard component', () => {
           />
         )
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
-        wrapper.instance().onToggleAnnotationMode(2)()
+        wrapper.instance().handleToggleAnnotationMode(2)()
         expect(spy).toHaveBeenCalledWith(1, 2, true)
         spy.mockReset()
       }
@@ -149,7 +159,7 @@ describe('QuestionCard component', () => {
           userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
         />
       )
-      wrapper.instance().onChangeAnswer(2)({}, {})
+      wrapper.instance().handleChangeAnswer(2)({}, {})
       expect(spy).toHaveBeenCalledWith(1, 1, false)
       spy.mockReset()
     })
@@ -167,7 +177,7 @@ describe('QuestionCard component', () => {
             }
           }}
         />)
-        wrapper.instance().onChangeAnswer(2)({}, 3)
+        wrapper.instance().handleChangeAnswer(2)({}, 3)
         expect(spy).toHaveBeenCalledWith(categoryAlert)
       })
       
@@ -233,7 +243,7 @@ describe('QuestionCard component', () => {
             }
           }}
         />)
-        wrapper.instance().onChangeAnswer(2)({}, 3)
+        wrapper.instance().handleChangeAnswer(2)({}, 3)
         expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
       })
       
@@ -265,7 +275,7 @@ describe('QuestionCard component', () => {
             }}
           />)
           
-          wrapper.instance().onChangeAnswer(2)({}, 3)
+          wrapper.instance().handleChangeAnswer(2)({}, 3)
           expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
         }
       )
@@ -285,7 +295,7 @@ describe('QuestionCard component', () => {
             }}
           />)
           
-          wrapper.instance().onChangeAnswer(2)({}, 3)
+          wrapper.instance().handleChangeAnswer(2)({}, 3)
           expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
         }
       )
@@ -299,7 +309,7 @@ describe('QuestionCard component', () => {
           }}
         />)
         
-        wrapper.instance().onChangeAnswer(2)({}, {})
+        wrapper.instance().handleChangeAnswer(2)({}, {})
         const alert = wrapper.find('Alert').at(0)
         expect(alert.props().open).toEqual(false)
       })
@@ -315,7 +325,7 @@ describe('QuestionCard component', () => {
           }}
         />)
         
-        wrapper.instance().onChangeAnswer(2)({}, {})
+        wrapper.instance().handleChangeAnswer(2)({}, {})
         const alert = wrapper.find('Alert').at(0)
         expect(alert.props().open).toEqual(false)
       })
@@ -335,7 +345,7 @@ describe('QuestionCard component', () => {
         annotationModeEnabled
         enabledAnswerId={1}
       />)
-      wrapper.instance().onToggleViewAnnotations(2)()
+      wrapper.instance().handleToggleViewAnnotations(2)()
       expect(spy).toHaveBeenCalledWith(1, 1, false)
       spy.mockReset()
     })
@@ -350,7 +360,7 @@ describe('QuestionCard component', () => {
           }
         }}
       />)
-      wrapper.instance().onToggleViewAnnotations(1)()
+      wrapper.instance().handleToggleViewAnnotations(1)()
       expect(spy).toHaveBeenCalledWith(1, 1)
     })
   })
@@ -367,7 +377,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeCategory({}, 2)
+      wrapper.instance().handleChangeCategory({}, 2)
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
@@ -382,7 +392,7 @@ describe('QuestionCard component', () => {
           }
         }}
       />)
-      wrapper.instance().onChangeCategory({}, 2)
+      wrapper.instance().handleChangeCategory({}, 2)
       expect(spy).toHaveBeenCalled()
     })
   })
@@ -398,7 +408,7 @@ describe('QuestionCard component', () => {
           userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
         />
       )
-      wrapper.instance().onClearAnswer()
+      wrapper.instance().handleClearAnswer()
       expect(spy).toHaveBeenCalledWith(1, 1, false)
       spy.mockReset()
     })
@@ -412,7 +422,7 @@ describe('QuestionCard component', () => {
           userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
         />
       )
-      wrapper.instance().onClearAnswer()
+      wrapper.instance().handleClearAnswer()
       expect(spy).toHaveBeenCalledWith(clearAlert)
     })
     
@@ -461,7 +471,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onApplyAll()
+      wrapper.instance().handleApplyAll()
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
@@ -475,7 +485,7 @@ describe('QuestionCard component', () => {
           userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
         />
       )
-      wrapper.instance().onApplyAll()
+      wrapper.instance().handleApplyAll()
       expect(spy).toHaveBeenCalledWith(applyAll)
     })
     
@@ -577,6 +587,70 @@ describe('QuestionCard component', () => {
     })
   })
   
+  describe('clearing a flag', () => {
+    test('should open an alert when a flag is requested to be cleared', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          enabledAnswerId={1}
+          userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+        />
+      )
+      
+      wrapper.find('WithStyles(QuestionContent)').simulate('clearFlag', 2, 1)
+      expect(spy).toHaveBeenCalledWith(clearFlag)
+    })
+    
+    test('should disable annotation mode if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.find('WithStyles(QuestionContent)').simulate('clearFlag', 2, 1)
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
+    })
+    
+    test('should close the alert when \'Cancel\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props.actions, 'closeAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={clearFlag}
+      />)
+      wrapper.find('Alert').at(0).prop('onCloseAlert')()
+      expect(spy).toHaveBeenCalled()
+    })
+    
+    test('should reset answer when \'Continue\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props, 'onClearFlag')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={clearFlag}
+      />)
+      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+  
   describe('changing a text answer', () => {
     test('should disable annotation mode', () => {
       const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
@@ -589,7 +663,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      wrapper.instance().handleChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
@@ -605,7 +679,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      wrapper.instance().handleChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
       expect(spy).toHaveBeenCalledWith('Saving...')
       spy.mockReset()
     })
@@ -621,7 +695,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      wrapper.instance().handleChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
       expect(spy).toHaveBeenCalledWith(true)
       spy.mockReset()
     })
@@ -637,7 +711,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
+      wrapper.instance().handleChangeTextAnswer(1, 'textAnswer')({ target: { value: 'bloop' } })
       expect(spy).toHaveBeenCalledWith('textAnswer', 1, 'bloop')
       spy.mockReset()
     })
@@ -722,7 +796,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeQuestion('next', 1)()
+      wrapper.instance().handleChangeQuestion('next', 1)()
       expect(spy).toHaveBeenCalledWith(1, '', false)
       spy.mockReset()
     })
@@ -738,7 +812,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeQuestion('next', 1)()
+      wrapper.instance().handleChangeQuestion('next', 1)()
       expect(spy).toHaveBeenCalledWith('')
       spy.mockReset()
     })
@@ -754,7 +828,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeQuestion('next', 1)()
+      wrapper.instance().handleChangeQuestion('next', 1)()
       expect(spy).toHaveBeenCalledWith(false)
       spy.mockReset()
     })
@@ -770,7 +844,7 @@ describe('QuestionCard component', () => {
         }}
         annotationModeEnabled
       />)
-      wrapper.instance().onChangeQuestion('next', 1)()
+      wrapper.instance().handleChangeQuestion('next', 1)()
       expect(spy).toHaveBeenCalledWith('next', 1)
       spy.mockReset()
     })
@@ -788,13 +862,13 @@ describe('QuestionCard component', () => {
     
     test('should clear the hovered answer choice when the user moves the mouse out of an answer', () => {
       wrapper.setState({ hoveredAnswerChoice: 1 })
-      wrapper.instance().onMouseOutAnswerChoice()
+      wrapper.instance().handleMouseOutAnswerChoice()
       expect(wrapper.state().hoveredAnswerChoice).toEqual(0)
     })
     
     test('should set the hovered answer choice when the user moves their cursor into the answer', () => {
       wrapper.setState({ hoveredAnswerChoice: 0 })
-      wrapper.instance().onMouseInAnswerChoice(4)
+      wrapper.instance().handleMouseInAnswerChoice(4)
       expect(wrapper.state().hoveredAnswerChoice).toEqual(4)
     })
   })

@@ -23,11 +23,11 @@ const styles = () => ({
  */
 export const QuestionContent = props => {
   const {
-    question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onApplyAll, onOpenFlagConfirmAlert, userImages,
+    question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll, onClearFlag,
+    onChange, onChangeTextAnswer, onApplyAll, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations, onMouseInAnswerChoice,
-    onMouseOutAnswerChoice, hoveredAnswerChoice
+    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations,
+    onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const commonQuestionProps = {
@@ -122,7 +122,7 @@ export const QuestionContent = props => {
       </FlexGrid>
       <FlexGrid container type="column">
         {isValidation && <ValidationTable
-          onOpenAlert={onOpenFlagConfirmAlert}
+          onClearFlag={onClearFlag}
           mergedUserQuestions={mergedUserQuestions}
           questionFlags={question.flags}
           userImages={userImages}

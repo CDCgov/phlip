@@ -896,6 +896,7 @@ export const clearFlagLogic = createLogic({
         }
       })
       dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } catch (error) {
       dispatch({
         type: types.CLEAR_FLAG_FAIL,

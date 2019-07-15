@@ -23,7 +23,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Continue",
+          "value": undefined,
         },
       ]
     }
@@ -181,6 +181,7 @@ exports[`QuestionCard component should render correctly 1`] = `
       onApplyAll={[Function]}
       onChange={[Function]}
       onChangeTextAnswer={[Function]}
+      onClearFlag={[Function]}
       onMouseInAnswerChoice={[Function]}
       onMouseOutAnswerChoice={[Function]}
       onToggleAnnotationMode={[Function]}

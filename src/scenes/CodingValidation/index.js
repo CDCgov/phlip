@@ -71,14 +71,8 @@ export class CodingValidation extends Component {
         : { id: null },
       changeProps: [],
       stillSavingAlertOpen: false,
-      changeMethod: null,
-      flagConfirmAlertOpen: false,
-      flagToDelete: null
+      changeMethod: null
     }
-    
-    this.confirmAlertActions = [
-      { value: 'Clear Flag', type: 'button', onClick: this.onClearFlag }
-    ]
     
     this.modalActions = [
       {
@@ -160,10 +154,11 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   getQuestion = (source, itemOrIndex) => {
-    const { actions, questionOrder, unsavedChanges, project } = this.props
+    const { actions, questionOrder, unsavedChanges, project, question } = this.props
     const { jurisdiction } = this.state
     
     let action = '', qItem = itemOrIndex, changeProps = []
+    actions.toggleAnnotationMode(question.id, '', false)
     
     switch(source) {
       case 'nav':
@@ -191,22 +186,26 @@ export class CodingValidation extends Component {
   }
 
   /**
+   * Shows a question loader spinner
    * @public
    */
   onShowQuestionLoader = () => {
+    const { isChangingQuestion, actions } = this.props
+    
     setTimeout(() => {
-      if (this.props.isChangingQuestion) {
-        this.props.actions.showQuestionLoader()
+      if (isChangingQuestion) {
+        actions.showQuestionLoader()
       }
     }, 1000)
   }
   
   /**
+   * Handles when the user changes part of their answer that's not a text field
    * @public
    * @param id
-   * @returns {Function}
+   * @param value
    */
-  onAnswer = id => (event, value) => {
+  onAnswer = (id, value) => {
     const { actions, question, project } = this.props
     const { jurisdiction } = this.state
     
@@ -241,11 +240,9 @@ export class CodingValidation extends Component {
       case 'textAnswer':
         actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
         break
-      
       case 'comment':
         actions.onChangeComment(project.id, jurisdiction.id, question.id, value)
         break
-      
       case 'pincite':
         actions.onChangePincite(project.id, jurisdiction.id, question.id, id, value)
         break
@@ -442,58 +439,26 @@ export class CodingValidation extends Component {
   }
   
   /**
-   * Opens an alert to ask the user to confirm deleting a flag from the Flags & Comments validation table
-   * @public
-   * @param flagId
-   * @param type
-   */
-  onOpenFlagConfirmAlert = (flagId, type) => {
-    const { question, actions } = this.props
-    
-    actions.toggleAnnotationMode(question.id, '', false)
-    
-    this.setState({
-      flagConfirmAlertOpen: true,
-      flagToDelete: { id: flagId, type }
-    })
-  }
-  
-  /**
    * Called if the user chooses they are sure they want to clear the flag, calls a redux action creator function
    * depending on flag type. Closes delete flag confirm alert
    * @public
    */
-  onClearFlag = () => {
+  onClearFlag = (id, type) => {
     const { actions, question, project } = this.props
-    const { flagToDelete, jurisdiction } = this.state
+    const { jurisdiction } = this.state
     
-    if (flagToDelete.type === 3) {
-      actions.clearRedFlag(flagToDelete.id, question.id, project.id)
+    if (type === 3) {
+      actions.clearRedFlag(id, question.id, project.id)
     } else {
-      actions.clearFlag(flagToDelete.id, project.id, jurisdiction.id, question.id)
+      actions.clearFlag(id, project.id, jurisdiction.id, question.id)
     }
-    
-    this.setState({
-      flagConfirmAlertOpen: false,
-      flagToDelete: null
-    })
-  }
-  
-  /**
-   * Closes the delete flag confirm alert after the user decided to they don't want to delete the flag
-   * @public
-   */
-  onCloseFlagConfigAlert = () => {
-    this.setState({
-      flagConfirmAlertOpen: false,
-      flagToDelete: null
-    })
   }
   
   /**
    * Resets users answer to initial state when they came to the question
    */
   onResetAnswer = () => {
+    console.log()
     const { actions, question, project } = this.props
     const { jurisdiction } = this.state
     
@@ -509,7 +474,7 @@ export class CodingValidation extends Component {
       getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
     } = this.props
     
-    const { stillSavingAlertOpen, flagConfirmAlertOpen, jurisdiction } = this.state
+    const { stillSavingAlertOpen, jurisdiction } = this.state
     
     const containerStyle = {
       width: '100%',
@@ -528,7 +493,7 @@ export class CodingValidation extends Component {
           actions={this.stillSavingActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             We haven't finished saving your answer. If you continue, changes might not be saved.
-          </Typography>
+          </Typography>                 1 `1` `
         </Alert>
         <ApiErrorAlert
           open={answerErrorContent !== null}
@@ -594,7 +559,7 @@ export class CodingValidation extends Component {
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
                           onResetAnswer={this.onResetAnswer}
-                          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+                          onClearFlag={this.onClearFlag}
                           handleGetQuestion={this.getQuestion}
                           onApplyAll={this.onApplyToAll}
                           totalLength={questionOrder.length}
@@ -646,14 +611,6 @@ export class CodingValidation extends Component {
             </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-        <Alert
-          open={flagConfirmAlertOpen}
-          onCloseAlert={this.onCloseFlagConfigAlert}
-          actions={this.confirmAlertActions}
-          title="Confirm Clear Flag">
-          <Typography variant="body1">Do you want to clear this flag?</Typography>
-        </Alert>
-        
         <ApiErrorAlert
           content={saveFlagErrorContent}
           open={saveFlagErrorContent !== null}

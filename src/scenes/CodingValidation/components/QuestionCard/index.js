@@ -79,7 +79,7 @@ export class QuestionCard extends Component {
   /**
    * User stops hovering on an answer choice
    */
-  onMouseOutAnswerChoice = () => {
+  handleMouseOutAnswerChoice = () => {
     this.setState({
       hoveredAnswerChoice: 0
     })
@@ -89,7 +89,7 @@ export class QuestionCard extends Component {
    * When the user hovers over an answer choice
    * @param answerId
    */
-  onMouseInAnswerChoice = answerId => {
+  handleMouseInAnswerChoice = answerId => {
     this.setState({
       hoveredAnswerChoice: answerId
     })
@@ -100,7 +100,7 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onChangeAnswer = id => (event, value) => {
+  handleChangeAnswer = id => (event, value) => {
     const { question, userAnswers, actions, onChange } = this.props
     let text = '', open = false
     
@@ -136,7 +136,7 @@ export class QuestionCard extends Component {
         data: { id, value }
       })
     } else {
-      onChange(id)(event, value)
+      onChange(id, value)
       actions.setResetStatus(true)
       this.changeTouchStatusAndText(true, 'Saving...')
     }
@@ -145,7 +145,7 @@ export class QuestionCard extends Component {
   /**
    * Shows an alert to confirm clearing answer
    */
-  onClearAnswer = () => {
+  handleClearAnswer = () => {
     const { actions } = this.props
     
     this.disableAnnotationMode()
@@ -162,7 +162,7 @@ export class QuestionCard extends Component {
   /**
    * Closes the open alert on the page
    */
-  onCloseAlert = () => {
+  handleCloseAlert = () => {
     this.props.actions.closeAlert()
   }
   
@@ -185,7 +185,7 @@ export class QuestionCard extends Component {
   /**
    * When the user changes the category
    */
-  onChangeCategory = (event, selection) => {
+  handleChangeCategory = (event, selection) => {
     const { onChangeCategory, actions } = this.props
     
     this.disableAnnotationMode()
@@ -197,7 +197,7 @@ export class QuestionCard extends Component {
   /**
    * When the user clicks the 'Apply to all categories' button for an answer
    */
-  onApplyAll = () => {
+  handleApplyAll = () => {
     const { actions } = this.props
     
     this.disableAnnotationMode()
@@ -215,7 +215,7 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onToggleAnnotationMode = id => () => {
+  handleToggleAnnotationMode = id => () => {
     const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
     
     const enabled = annotationModeEnabled
@@ -229,7 +229,7 @@ export class QuestionCard extends Component {
    * Toggles showing annotations for an answer choice
    * @param answerId
    */
-  onToggleViewAnnotations = answerId => () => {
+  handleToggleViewAnnotations = answerId => () => {
     const { question, actions } = this.props
     
     this.disableAnnotationMode()
@@ -239,7 +239,7 @@ export class QuestionCard extends Component {
   /**
    * Handles when the user changes a text field
    */
-  onChangeTextAnswer = (id, field) => event => {
+  handleChangeTextAnswer = (id, field) => event => {
     const { onChangeTextAnswer, actions } = this.props
     
     this.disableAnnotationMode()
@@ -294,8 +294,8 @@ export class QuestionCard extends Component {
   /**
    * Continues with whatever action they were doing. Determines which action to call
    */
-  onContinueAlert = () => {
-    const { alert, onClearAnswer, onChange, onApplyAll, onResetAnswer, actions } = this.props
+  handleContinueAlert = () => {
+    const { alert, onClearAnswer, onChange, onApplyAll, onResetAnswer, actions, onClearFlag } = this.props
     
     switch (alert.type) {
       case 'clearAnswer':
@@ -303,7 +303,7 @@ export class QuestionCard extends Component {
         actions.setResetStatus(true)
         break
       case 'changeAnswer':
-        onChange(alert.data.id)(alert.data.value)
+        onChange(alert.data.id, alert.data.value)
         actions.setResetStatus(true)
         break
       case 'applyAll':
@@ -313,6 +313,9 @@ export class QuestionCard extends Component {
       case 'reset':
         onResetAnswer()
         actions.setResetStatus(false)
+        break
+      case 'clearFlag':
+        onClearFlag(alert.data.id, alert.data.type)
         break
     }
     
@@ -327,7 +330,7 @@ export class QuestionCard extends Component {
    * @param newIndex
    * @returns {Function}
    */
-  onChangeQuestion = (dir, newIndex) => () => {
+  handleChangeQuestion = (dir, newIndex) => () => {
     const { handleGetQuestion, actions } = this.props
     
     this.disableAnnotationMode()
@@ -347,15 +350,34 @@ export class QuestionCard extends Component {
     actions.setAlert({
       open: true,
       title: 'Warning',
-      text: 'Any changes you\'ve made, including selected answer, pincite, flags and annotations, since arriving to this question will be reset.',
+      text: 'Any changes you\'ve made, including selected answer, pincites, comments, and annotations, since arriving to this question will be reset.',
       type: 'reset',
       data: {}
     })
   }
   
+  /**
+   * Shows an alert asking the user to confirm clearing a flag
+   * @param id
+   * @param type
+   */
+  handleClearFlag = (id, type) => {
+    const { actions } = this.props
+    
+    this.disableAnnotationMode()
+    actions.setAlert({
+      open: true,
+      title: 'Confirm Clear Flag',
+      text: 'Do you want to clear this flag?',
+      type: 'clearFlag',
+      data: { id, type },
+      continueButtonText: 'Clear Flag'
+    })
+  }
+  
   render() {
     const {
-      canReset, header, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation, mergedUserQuestions,
+      canReset, header, user, question, userAnswers, isValidation, mergedUserQuestions,
       disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, questionChangeLoader,
       categories, selectedCategory, currentIndex, totalLength, showNextButton, isUserAnswerSelected, selectedCategoryId,
       alert
@@ -364,42 +386,42 @@ export class QuestionCard extends Component {
     const { hoveredAnswerChoice } = this.state
     
     const questionContentProps = {
-      onChange: this.onChangeAnswer,
-      onChangeTextAnswer: this.onChangeTextAnswer,
-      currentUserInitials: getInitials(user.firstName, user.lastName),
-      onOpenFlagConfirmAlert,
+      onChange: this.handleChangeAnswer,
+      onChangeTextAnswer: this.handleChangeTextAnswer,
+      onClearFlag: this.handleClearFlag,
+      onApplyAll: this.handleApplyAll,
+      onToggleAnnotationMode: this.handleToggleAnnotationMode,
+      onToggleViewAnnotations: this.handleToggleViewAnnotations,
+      onMouseInAnswerChoice: this.handleMouseInAnswerChoice,
+      onMouseOutAnswerChoice: this.handleMouseOutAnswerChoice,
       user,
+      currentUserInitials: getInitials(user.firstName, user.lastName),
       question,
-      onApplyAll: this.onApplyAll,
       userAnswers: { validatedBy: { ...user }, ...userAnswers },
       comment: userAnswers.comment,
       isValidation,
       mergedUserQuestions,
       disableAll,
       userImages,
-      onToggleAnnotationMode: this.onToggleAnnotationMode,
-      onToggleViewAnnotations: this.onToggleViewAnnotations,
       isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
       areDocsEmpty,
-      onMouseInAnswerChoice: this.onMouseInAnswerChoice,
-      onMouseOutAnswerChoice: this.onMouseOutAnswerChoice,
       hoveredAnswerChoice
     }
     
     this.alertActions = [
       {
-        value: 'Continue',
+        value: alert.continueButtonText !== '' ? alert.continueButtonText : 'Continue',
         type: 'button',
-        onClick: this.onContinueAlert
+        onClick: this.handleContinueAlert
       }
     ]
     
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert actions={this.alertActions} title={alert.title} onCloseAlert={this.onCloseAlert} open={alert.open}>
+        <Alert actions={this.alertActions} title={alert.title} onCloseAlert={this.handleCloseAlert} open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.text}
           </Typography>
@@ -424,7 +446,7 @@ export class QuestionCard extends Component {
                   </IconButton>}
                   {question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
-                    onClick={this.onClearAnswer}
+                    onClick={this.handleClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
@@ -449,13 +471,16 @@ export class QuestionCard extends Component {
               <Divider />
               {categories !== undefined
                 ? (
-                  <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={this.onChangeCategory}>
+                  <TabContainer
+                    tabs={categories}
+                    selected={selectedCategory}
+                    onChangeCategory={this.handleChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                getQuestion={this.onChangeQuestion}
+                getQuestion={this.handleChangeQuestion}
                 totalLength={totalLength}
                 currentIndex={currentIndex}
                 showNextButton={showNextButton}
