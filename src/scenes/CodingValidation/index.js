@@ -415,9 +415,7 @@ export class CodingValidation extends Component {
       }
     }
     
-    this.setState({
-      startedText
-    })
+    this.setState({ startedText })
   }
   
   /**
@@ -425,10 +423,7 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowCodeView = () => {
-    this.setState({
-      navOpen: true,
-      showNav: true
-    })
+    this.setState({ showNav: true })
   }
   
   /**
@@ -436,9 +431,11 @@ export class CodingValidation extends Component {
    * @public
    */
   onShowPageLoader = () => {
+    const { isLoadingPage, actions } = this.props
+    
     setTimeout(() => {
-      if (this.props.isLoadingPage) {
-        this.props.actions.showPageLoader()
+      if (isLoadingPage) {
+        actions.showPageLoader()
       }
     }, 1000)
   }
@@ -556,6 +553,18 @@ export class CodingValidation extends Component {
     })
   }
   
+  /**
+   * Resets users answer to initial state when they came to the question
+   */
+  onResetAnswer = () => {
+    const { actions, question, project } = this.props
+    const { jurisdiction } = this.state
+    
+    actions.resetAnswer(project.id, jurisdiction.id, question.id)
+    actions.setUnsavedChanges(true)
+    this.onSaveCodedQuestion()
+  }
+  
   render() {
     const {
       showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
@@ -645,6 +654,7 @@ export class CodingValidation extends Component {
                           onClearAnswer={this.onClearAnswer}
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
+                          onResetAnswer={this.onResetAnswer}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}

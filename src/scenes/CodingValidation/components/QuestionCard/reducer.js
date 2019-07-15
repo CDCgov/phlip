@@ -14,21 +14,21 @@ export const INITIAL_STATE = {
 
 export const cardReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.CLOSE_ALERT:
-      return {
-        ...state,
-        alert: {
-          ...state.alert,
-          open: false
-        }
-      }
-    
     case types.SET_ALERT:
       return {
         ...state,
         alert: {
           ...state.alert,
           ...action.alert
+        }
+      }
+    
+    case types.CLOSE_ALERT:
+      return {
+        ...state,
+        alert: {
+          ...state.alert,
+          open: false
         }
       }
       

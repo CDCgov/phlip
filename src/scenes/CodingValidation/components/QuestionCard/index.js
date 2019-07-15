@@ -314,6 +314,18 @@ export class QuestionCard extends Component {
     dir === 'next' ? getNextQuestion(currentIndex + 1) : getPrevQuestion(currentIndex - 1)
   }
   
+  /**
+   * Handle reset answer
+   * @returns {*}
+   */
+  handleResetAnswer = () => {
+    const { onResetAnswer } = this.props
+    
+    this.disableAnnotationMode()
+    this.changeTouchStatusAndText(true, 'Saving...')
+    onResetAnswer()
+  }
+  
   render() {
     const {
       touched, header, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation, mergedUserQuestions,
@@ -327,8 +339,8 @@ export class QuestionCard extends Component {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
       onChangeTextAnswer: this.onChangeTextAnswer,
-      onOpenFlagConfirmAlert: onOpenFlagConfirmAlert,
       currentUserInitials: getInitials(user.firstName, user.lastName),
+      onOpenFlagConfirmAlert,
       user,
       question,
       onApplyAll: this.onApplyAll,
@@ -377,7 +389,7 @@ export class QuestionCard extends Component {
                 </FlexGrid>
                 <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
                   {touched &&
-                  <IconButton onClick={null} style={{ height: 24, width: 24 }} tooltipText="Restore to initial">
+                  <IconButton onClick={this.handleResetAnswer} style={{ height: 24, width: 24 }} tooltipText="Restore to initial">
                     {!disableAll && <Restore className={styles.icon} />}
                   </IconButton>}
                   {question.questionType !== questionTypes.CATEGORY &&

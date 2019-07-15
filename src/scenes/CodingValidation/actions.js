@@ -28,6 +28,7 @@ export const types = {
   ON_REMOVE_ANNOTATION: 'ON_REMOVE_ANNOTATION',
   ON_APPLY_ANSWER_TO_ALL: 'ON_APPLY_ANSWER_TO_ALL',
   ON_CLEAR_ANSWER: 'ON_CLEAR_ANSWER',
+  RESET_ANSWER: 'RESET_ANSWER',
 
   ADD_REQUEST_TO_QUEUE: 'ADD_REQUEST_TO_QUEUE',
   REMOVE_REQUEST_FROM_QUEUE: 'REMOVE_REQUEST_FROM_QUEUE',
@@ -63,6 +64,7 @@ export const types = {
   CLEAR_FLAG_SUCCESS: 'CLEAR_FLAG_SUCCESS',
   CLEAR_FLAG_FAIL: 'CLEAR_FLAG_FAIL',
   SET_PAGE: 'SET_PAGE',
+  SET_UNSAVED_CHANGES: 'SET_UNSAVED_CHANGES',
   ...docTypes,
   ...cardTypes
 }
@@ -95,6 +97,8 @@ export default {
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
   setPage: makeActionCreator(types.SET_PAGE, 'page'),
+  resetAnswer: makeActionCreator(types.RESET_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
+  setUnsavedChanges: makeActionCreator(types.SET_UNSAVED_CHANGES, 'unsavedChanges'),
   ...docListActions,
   ...cardActions
 }

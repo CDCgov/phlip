@@ -150,6 +150,7 @@ const outlineLogic = createLogic({
         showPageLoader: false,
         errors: {}
       },
+      user,
       userId: user.id,
       currentUser: user
     })
@@ -196,13 +197,13 @@ export const getOutlineLogic = createLogic({
           userAnswers,
           question: firstQuestion,
           errors: { ...codedValErrors },
-          currentIndex: questionIndex
+          currentIndex: questionIndex,
+          mergedUserQuestions: null,
+          user: action.user
         }
       }
-      dispatch({
-        type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload
-      })
+      
+      dispatch({ type: types.GET_CODING_OUTLINE_SUCCESS, payload })
     } catch (e) {
       dispatch({
         type: types.GET_CODING_OUTLINE_FAIL,
@@ -281,7 +282,8 @@ export const getValidationOutlineLogic = createLogic({
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
           currentIndex: questionIndex,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error },
+          user: action.user
         }
       }
       
@@ -870,10 +872,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     
-    dispatch({
-      type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS, payload })
     done()
   }
 })

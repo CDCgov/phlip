@@ -180,16 +180,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           ...state.userAnswers,
           [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
         }
-    
-  }
-  
-  if (newQuestion.parentId === 0) {
-    return {
-      ...base,
-      categories: undefined,
-      selectedCategory: 0,
-      selectedCategoryId: null
-    }
   }
   
   if (newQuestion.isCategoryQuestion) {
@@ -213,7 +203,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     }, {})
     
     const userAnswers = {
-      ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion }
+      ...base.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion }
     }
     
     const selectedCatId = selectedCategories[state.selectedCategory].id
@@ -564,8 +554,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
           ? initializeNavigator(
-            commonHelpers.sortListOfObjects(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            commonHelpers.sortListOfObjects(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion
