@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
-import { IconButton } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import ListSection from './components/ListSection'
+import ListItem from './components/ListItem'
 
 export class ExportDialog extends Component {
   static propTypes = {
@@ -36,6 +34,13 @@ export class ExportDialog extends Component {
     expanded: 0
   }
   
+  componentDidUpdate(prevProps) {
+    const { open } = this.props
+    if (prevProps.open && !open) {
+      this.setState({ expanded: 0 })
+    }
+  }
+  
   onCloseModal = () => {
     const { onClose } = this.props
     this.setState({ expanded: 0 })
@@ -57,7 +62,6 @@ export class ExportDialog extends Component {
   onChooseExport = (type, user = null) => () => {
     const { onChooseExport } = this.props
     onChooseExport(type, user)
-    this.setState({ expanded: 0 })
   }
   
   render() {
@@ -68,26 +72,33 @@ export class ExportDialog extends Component {
       { value: 'Close', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Close modal' } }
     ]
     
+    const progressInfo = {
+      user: inProgress ? projectToExport.user.id : null,
+      type: inProgress ? projectToExport.exportType: null
+    }
+    
     return (
       <Modal open={open} onClose={this.onCloseModal} id="export-modal">
         <ModalTitle title="Choose export type" />
         <Divider />
         <ModalContent style={{ minWidth: 400, padding: 0 }}>
           <List>
-            <ListItem>
-              <ListItemText primary="Codebook" />
-              <IconButton iconStyle={{ color: 'black' }} onClick={this.onChooseExport('codebook')}>
-                file_download
-              </IconButton>
-            </ListItem>
+            <ListItem
+              item={{ displayText: 'Codebook' }}
+              onExport={this.onChooseExport('codebook', null)}
+              showAvatar={false}
+              isSubItem={false}
+              disabled={progressInfo.type !== 'codebook' && progressInfo.type !== null}
+              inProgress={progressInfo.type === 'codebook'}
+            />
             <ListSection
               onExpand={this.expand}
               sectionText="Coded Data - Numeric"
               expanded={expanded === 'numeric'}
               users={projectToExport.projectUsers}
               section="numeric"
+              inProgress={progressInfo}
               onExport={this.onChooseExport}
-              userInProgress={inProgress ? projectToExport.userId : null}
             />
             <ListSection
               onExpand={this.expand}
@@ -95,6 +106,7 @@ export class ExportDialog extends Component {
               expanded={expanded === 'text'}
               users={projectToExport.projectUsers}
               section="text"
+              inProgress={progressInfo}
               onExport={this.onChooseExport}
             />
           </List>

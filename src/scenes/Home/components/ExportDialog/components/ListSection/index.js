@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Avatar, FlexGrid, Icon, IconButton } from 'components'
-import Typography from '@material-ui/core/Typography'
+import { Icon, IconButton } from 'components'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
+import { default as MuiListItem } from '@material-ui/core/ListItem'
 import Collapse from '@material-ui/core/Collapse'
 import ListItemText from '@material-ui/core/ListItemText'
+import ListItem from '../ListItem'
 
 /**
  * Renders the expandable part for a export dialog list section
@@ -14,8 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText'
  * @constructor
  */
 export const ListSection = props => {
-  const { users, section, expanded, sectionText, onExport, onExpand } = props
-  const listItemStyle = { paddingTop: 8, paddingBottom: 8, fontSize: '.875rem' }
+  const { users, section, expanded, sectionText, onExport, onExpand, inProgress } = props
   const validatorUser = {
     avatarInfo: {
       initials: <Icon size={20} color="white" style={{ fontWeight: 800 }}>check</Icon>,
@@ -30,27 +29,30 @@ export const ListSection = props => {
   
   return (
     <>
-      <ListItem onClick={onExpand(section)} selected={expanded}>
+      <MuiListItem onClick={onExpand(section)} selected={expanded}>
         <ListItemText primary={sectionText} />
         <IconButton iconStyle={{ color: 'black' }}>
           {expanded ? 'expand_less' : 'expand_more'}
         </IconButton>
-      </ListItem>
+      </MuiListItem>
       <Collapse in={expanded}>
         <List component="div" disablePadding>
           {allUsers.map(user => {
+            const userInProgress = inProgress.type !== section
+              ? false
+              : user.userId === null
+                ? inProgress.user === 'val'
+                : inProgress.user === user.userId
+            
             return (
-              <ListItem key={`${section}-${user.userId}`} style={listItemStyle}>
-                <FlexGrid container type="row" align="center" style={{ width: '100%' }}>
-                  <Avatar small userId={user.userId} {...user.avatarInfo} />
-                  <Typography style={{ flex: '1 1 auto', fontSize: '.875rem', padding: '0 16px' }}>
-                    {`${user.firstName} ${user.lastName}`}
-                  </Typography>
-                  <IconButton iconStyle={{ color: 'black' }} onClick={onExport(section, user)}>
-                    file_download
-                  </IconButton>
-                </FlexGrid>
-              </ListItem>
+              <ListItem
+                key={`${section}-${user.userId}`}
+                isUser={user.userId !== null}
+                item={{ ...user, displayText: `${user.firstName} ${user.lastName}` }}
+                inProgress={userInProgress}
+                disabled={inProgress.type !== null && !userInProgress}
+                onExport={onExport(section, user.userId === null ? null : user)}
+              />
             )
           })}
         </List>
@@ -83,7 +85,11 @@ ListSection.propTypes = {
   /**
    * Expand or collapse section
    */
-  onExpand: PropTypes.func
+  onExpand: PropTypes.func,
+  /**
+   * User in progress for export if any
+   */
+  inProgress: PropTypes.object
 }
 
 export default ListSection

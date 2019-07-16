@@ -134,11 +134,10 @@ export class Home extends Component {
     const csvBlob = new Blob([projectToExport.text], { type: 'text/csv' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
-    this.exportRef.download = projectToExport.user === null
+    this.exportRef.download = projectToExport.user.id === null || projectToExport.user.id === 'val'
       ? `${projectToExport.name}-${projectToExport.exportType}-export.csv`
       : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
     this.exportRef.click()
-    this.clearProjectToExport()
     //window.URL.revokeObjectURL(url)
   }
   
