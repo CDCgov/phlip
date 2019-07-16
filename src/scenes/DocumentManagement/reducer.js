@@ -33,12 +33,21 @@ export const INITIAL_STATE = {
   showAll: false
 }
 
-const mergeName = docObj => ({
-  ...docObj,
-  uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
-})
-
-const sortAndSlice = (arr, page, rowsPerPage, sortBy, sortDirection) => {
+/**
+ * Handles slicing and sorting an array of objects to be used as the 'visible' objects
+ * @param arrToSlice
+ * @param page
+ * @param rowsPerPage
+ * @param sortBy
+ * @param sortDirection
+ * @param showAll
+ * @param userId
+ * @returns {Array}
+ */
+const sortAndSlice = (arrToSlice, page, rowsPerPage, sortBy, sortDirection, showAll, userId) => {
+  //const arr = showAll ? arrToSlice.filter(doc => parseInt(doc.uploadedBy.id) === parseInt(userId)) : arrToSlice
+  const arr = arrToSlice
+  
   if (arr.length === 0) return []
   const sorted = sortListOfObjects(arr, sortBy, sortDirection)
   const ids = sorted.map(m => m._id)
@@ -59,10 +68,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.GET_DOCUMENTS_SUCCESS:
-      let docs = action.payload.documents.map(mergeName)
-      let obj = arrayToObject(docs, '_id')
-      const userDocs = docs.filter(doc => parseInt(doc.uploadedBy.id) === parseInt(action.payload.userId))
-      const userDocObj = arrayToObject(userDocs, '_id')
+      let obj = arrayToObject(action.payload.documents, '_id')
+      let userDocs = action.payload.documents.filter(
+        doc => parseInt(doc.uploadedBy.id) === parseInt(action.payload.userId)
+      )
+      let userDocObj = arrayToObject(userDocs, '_id')
       const visible = sortAndSlice(
         userDocs,
         0,
@@ -84,7 +94,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         getDocumentsInProgress: false,
         pageError: '',
         page: 0,
-        count: visible.length,
+        count: userDocs.length,
         showAll: false
       }
     
@@ -141,7 +151,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(action.payload, page, rows, state.sortBy, state.sortDirection)
+          visible: sortAndSlice(
+            action.payload,
+            page,
+            rows,
+            state.sortBy,
+            state.sortDirection
+          )
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -178,6 +194,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
     case uploadTypes.UPLOAD_ONE_DOC_COMPLETE:
       if (!action.payload.failed) {
         obj = { ...state.documents.byId, [action.payload.doc._id]: action.payload.doc }
+        let userDocs = state.documents.userDocs.map(id => ({ _id: id, ...state.documents.byId[id] }))
+        let docArr = state.showAll ? Object.values(obj) : [action.payload.doc, ...userDocs]
         
         return {
           ...state,
@@ -185,9 +203,16 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
             ...state.documents,
             byId: obj,
             allIds: Object.keys(obj),
-            visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+            visible: sortAndSlice(
+              docArr,
+              state.page,
+              state.rowsPerPage,
+              state.sortBy,
+              state.sortDirection
+            ),
+            userDocs: [...state.documents.userDocs, action.payload.doc._id]
           },
-          count: Object.keys(obj).length
+          count: docArr.length
         }
       } else {
         return state
@@ -214,22 +239,34 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_DELETE_SUCCESS:
-      docs = { ...state.documents.byId }
+      let updatedDocs = { ...state.documents.byId }
       state.documents.checked.forEach(docId => {
-        delete docs[docId]
+        const { [docId]: removed, ...docs } = updatedDocs
+        updatedDocs = docs
       })
-      obj = docs
+      
+      userDocs = Object.values(updatedDocs)
+        .filter(doc => parseInt(doc.uploadedBy.id) === parseInt(action.payload.userId))
+      let docArr = state.showAll ? Object.values(updatedDocs) : userDocs
+      
       return {
         ...state,
         documents: {
           ...state.documents,
-          byId: obj,
-          allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
+          byId: updatedDocs,
+          allIds: Object.keys(updatedDocs),
+          visible: sortAndSlice(
+            docArr,
+            state.page,
+            state.rowsPerPage,
+            state.sortBy,
+            state.sortDirection
+          ),
           checked: [],
-          matches: []
+          matches: [],
+          userDocs: userDocs.map(doc => doc._id)
         },
-        count: Object.keys(obj).length,
+        count: docArr.length,
         bulkOperationInProgress: false,
         allSelected: false
       }
@@ -242,14 +279,24 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_UPDATE_SUCCESS:
-      obj = action.payload
+      obj = action.payload.docs
+      docArr = state.showAll
+        ? Object.values(obj)
+        : state.documents.userDocs.map(id => ({ _id: id, ...obj[id] }))
+      
       return {
         ...state,
         documents: {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
+          visible: sortAndSlice(
+            docArr,
+            state.page,
+            state.rowsPerPage,
+            state.sortBy,
+            state.sortDirection
+          ),
           checked: []
         },
         bulkOperationInProgress: false,
