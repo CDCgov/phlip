@@ -561,7 +561,7 @@ describe('Document Management logic', () => {
       store.dispatch({ type: types.BULK_DELETE_REQUEST, selectedDocs: ['1', '2'] })
       
       store.whenComplete(() => {
-        expect(store.actions[1]).toEqual({ type: types.BULK_DELETE_SUCCESS, payload: { n: 2, ok: 1 } })
+        expect(store.actions[1].payload.docs).toEqual({ n: 2, ok: 1 })
         done()
       })
     })
@@ -582,18 +582,15 @@ describe('Document Management logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[2]).toEqual({
-          type: types.BULK_UPDATE_SUCCESS,
-          payload: {
-            ...mockDocuments.byId,
-            1: {
-              ...mockDocuments.byId[1],
-              jurisdictions: [1, 2]
-            },
-            2: {
-              ...mockDocuments.byId[2],
-              jurisdictions: [1, 33, 2]
-            }
+        expect(store.actions[2].payload.docs).toEqual({
+          ...mockDocuments.byId,
+          1: {
+            ...mockDocuments.byId[1],
+            jurisdictions: [1, 2]
+          },
+          2: {
+            ...mockDocuments.byId[2],
+            jurisdictions: [1, 33, 2]
           }
         })
         done()
@@ -602,7 +599,6 @@ describe('Document Management logic', () => {
     
     test('should update status of selected documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
       mock.onPost('/docs/bulkUpdate').reply(200)
-      
       const store = setupStore()
       store.dispatch({
         type: types.BULK_UPDATE_REQUEST,
@@ -613,18 +609,15 @@ describe('Document Management logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[1]).toEqual({
-          type: types.BULK_UPDATE_SUCCESS,
-          payload: {
-            ...mockDocuments.byId,
-            1: {
-              ...mockDocuments.byId[1],
-              status: 'Approved'
-            },
-            2: {
-              ...mockDocuments.byId[2],
-              status: 'Approved'
-            }
+        expect(store.actions[1].payload.docs).toEqual({
+          ...mockDocuments.byId,
+          1: {
+            ...mockDocuments.byId[1],
+            status: 'Approved'
+          },
+          2: {
+            ...mockDocuments.byId[2],
+            status: 'Approved'
           }
         })
         done()
