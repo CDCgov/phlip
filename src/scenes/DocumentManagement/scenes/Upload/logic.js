@@ -247,13 +247,9 @@ export const getFileType = doc => {
       if (evt.target.readyState === FileReader.DONE) {
         const uint = new Uint8Array(evt.target.result)
         let bytes = []
-        uint.forEach((byte) => {
-          bytes.push(byte.toString(16))
-        })
+        uint.forEach(byte => bytes.push(byte.toString(16)))
         const hex = bytes.join('').toUpperCase()
-        matchedOne = validMimeTypes.find(oneType => {
-          return oneType.pattern === hex
-        })
+        matchedOne = validMimeTypes.find(oneType => oneType.pattern === hex)
         resolve({
           doc: { ...doc, docHex: hex, docType: matchedOne || undefined },
           docHex: hex,

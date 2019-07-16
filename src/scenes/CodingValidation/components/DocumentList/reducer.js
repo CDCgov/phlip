@@ -138,13 +138,32 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           open: true
         }
       }
+      
+    case types.TOGGLE_OFF_VIEW:
+      return {
+        ...state,
+        enabledAnswerId: '',
+        enabledUserId: '',
+        currentAnnotationIndex: 0,
+        annotations: {
+          all: [],
+          filtered: []
+        },
+        annotationUsers: {
+          all: [],
+          filtered: []
+        },
+        scrollTop: false
+      }
     
     case types.UPDATE_ANNOTATIONS:
       return {
         ...state,
         annotations: {
           all: action.annotations,
-          filtered: annotationsForDocument(action.annotations, state.openedDoc._id)
+          filtered: state.docSelected
+            ? annotationsForDocument(action.annotations, state.openedDoc._id)
+            : action.annotations
         },
         annotationUsers: {
           all: action.users,

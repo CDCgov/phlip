@@ -29,11 +29,12 @@ describe('CodingValidation scene actions creators', () => {
     const expectedAction = {
       type: types.ON_QUESTION_SELECTED_IN_NAV,
       question: {},
+      newIndex: null,
       projectId: 1,
       jurisdictionId: 1
     }
 
-    expect(actions.onQuestionSelectedInNav({}, 1, 1)).toEqual(expectedAction)
+    expect(actions.onQuestionSelectedInNav({}, null, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to apply answer to all', () => {

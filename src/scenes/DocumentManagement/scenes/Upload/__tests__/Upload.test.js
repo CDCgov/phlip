@@ -175,7 +175,9 @@ describe('Document Management - Upload scene', () => {
           length: 2,
           item: index => files[index]
         }
-      }
+      },
+      preventDefault: jest.fn(),
+      persist: jest.fn()
     }
     
     const fileArr = [
@@ -209,9 +211,7 @@ describe('Document Management - Upload scene', () => {
     test('should open an alert if user selects more documents than allowed', () => {
       const spy = jest.spyOn(props.actions, 'openAlert')
       const wrapper = shallow(<Upload {...props} />)
-      wrapper.find('FileUpload').at(0).dive().find('input').simulate('change', {
-        target: { files: { length: 21 } }
-      })
+      wrapper.instance().addFilesToList({ length: 21 })
       expect(spy).toHaveBeenCalled()
     })
     
@@ -405,7 +405,9 @@ describe('Document Management - Upload scene', () => {
             length: 1,
             item: index => files[index]
           }
-        }
+        },
+        preventDefault: jest.fn(),
+        persist: jest.fn()
       }
       
       const wrapper = shallow(<Upload {...props} />)

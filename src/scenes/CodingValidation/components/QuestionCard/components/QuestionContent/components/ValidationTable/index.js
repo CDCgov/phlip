@@ -40,7 +40,7 @@ export class ValidationTable extends Component {
     userImages: PropTypes.object,
     questionFlags: PropTypes.array,
     mergedUserQuestions: PropTypes.object,
-    onOpenAlert: PropTypes.func,
+    onClearFlag: PropTypes.func,
     disableAll: PropTypes.bool
   }
   
@@ -58,7 +58,7 @@ export class ValidationTable extends Component {
   }
   
   render() {
-    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages, disableAll } = this.props
+    const { mergedUserQuestions, questionFlags, onClearFlag, userImages, disableAll } = this.props
     const { expanded } = this.state
     
     const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
@@ -123,7 +123,7 @@ export class ValidationTable extends Component {
                     <FlexGrid container type="row" align="center" flex style={{ overflow: 'hidden', flexBasis: '35%' }}>
                       <FlexGrid padding="0 5px 0 0">
                         <IconButton
-                          onClick={() => onOpenAlert(item.id, item.type)}
+                          onClick={() => onClearFlag(item.id, item.type)}
                           tooltipText="Clear this flag"
                           id="clear-flag"
                           disabled={disableAll}

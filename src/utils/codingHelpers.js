@@ -180,16 +180,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           ...state.userAnswers,
           [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
         }
-    
-  }
-  
-  if (newQuestion.parentId === 0) {
-    return {
-      ...base,
-      categories: undefined,
-      selectedCategory: 0,
-      selectedCategoryId: null
-    }
   }
   
   if (newQuestion.isCategoryQuestion) {
@@ -212,20 +202,28 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       }
     }, {})
     
+    const userAnswers = {
+      ...base.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion }
+    }
+    
+    const selectedCatId = selectedCategories[state.selectedCategory].id
+    
     return {
       ...base,
       question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion } },
-      selectedCategoryId: selectedCategories[state.selectedCategory].id
+      userAnswers,
+      answerSnapshot: { ...userAnswers[newQuestion.id][selectedCatId] },
+      selectedCategoryId: selectedCatId
     }
   } else {
     return {
       ...base,
       categories: undefined,
       selectedCategory: 0,
-      selectedCategoryId: null
+      selectedCategoryId: null,
+      answerSnapshot: { ...base.userAnswers[newQuestion.id] }
     }
   }
 }
@@ -556,8 +554,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
           ? initializeNavigator(
-            commonHelpers.sortListOfObjects(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            commonHelpers.sortListOfObjects(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion

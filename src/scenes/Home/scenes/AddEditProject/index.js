@@ -619,7 +619,10 @@ const mapDispatchToProps = dispatch => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withFormAlert(withTracking(AddEditProject, 'Project Form'))))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withFormAlert(
+      withTracking(AddEditProject, 'Project Form')
+    )
+  )
+)

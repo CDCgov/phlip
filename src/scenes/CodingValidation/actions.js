@@ -1,6 +1,6 @@
 import makeActionCreator from 'utils/makeActionCreator'
 import { default as docListActions, types as docTypes } from './components/DocumentList/actions'
-import { default as cardActions } from './components/QuestionCard/actions'
+import { default as cardActions, types as cardTypes } from './components/QuestionCard/actions'
 
 export const types = {
   UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
@@ -9,7 +9,6 @@ export const types = {
   ON_SHOW_QUESTION_LOADER: 'ON_SHOW_QUESTION_LOADER',
   CLEAR_ANSWER_ERROR: 'CLEAR_ANSWER_ERROR',
   DISMISS_API_ALERT: 'DISMISS_API_ALERT',
-  CHANGE_TOUCHED_STATUS: 'CHANGE_TOUCHED_STATUS',
 
   ON_QUESTION_SELECTED_IN_NAV: 'ON_QUESTION_SELECTED_IN_NAV',
   GET_NEXT_QUESTION: 'GET_NEXT_QUESTION',
@@ -29,6 +28,7 @@ export const types = {
   ON_REMOVE_ANNOTATION: 'ON_REMOVE_ANNOTATION',
   ON_APPLY_ANSWER_TO_ALL: 'ON_APPLY_ANSWER_TO_ALL',
   ON_CLEAR_ANSWER: 'ON_CLEAR_ANSWER',
+  RESET_ANSWER: 'RESET_ANSWER',
 
   ADD_REQUEST_TO_QUEUE: 'ADD_REQUEST_TO_QUEUE',
   REMOVE_REQUEST_FROM_QUEUE: 'REMOVE_REQUEST_FROM_QUEUE',
@@ -64,13 +64,16 @@ export const types = {
   CLEAR_FLAG_SUCCESS: 'CLEAR_FLAG_SUCCESS',
   CLEAR_FLAG_FAIL: 'CLEAR_FLAG_FAIL',
   SET_PAGE: 'SET_PAGE',
-  ...docTypes
+  SET_UNSAVED_CHANGES: 'SET_UNSAVED_CHANGES',
+  CLOSE_API_ERROR_ALERT: 'CLOSE_API_ERROR_ALERT',
+  ...docTypes,
+  ...cardTypes
 }
 
 export default {
   getNextQuestion: makeActionCreator(types.GET_NEXT_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
   getPrevQuestion: makeActionCreator(types.GET_PREV_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
-  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'projectId', 'jurisdictionId'),
+  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'newIndex', 'projectId', 'jurisdictionId'),
   applyAnswerToAll: makeActionCreator(types.ON_APPLY_ANSWER_TO_ALL, 'projectId', 'jurisdictionId', 'questionId'),
   updateUserAnswer: makeActionCreator(types.UPDATE_USER_ANSWER, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue'),
   onChangeComment: makeActionCreator(types.ON_CHANGE_COMMENT, 'projectId', 'jurisdictionId', 'questionId', 'comment'),
@@ -85,7 +88,6 @@ export default {
   showPageLoader: makeActionCreator(types.ON_SHOW_PAGE_LOADER),
   saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId'),
   addRequestToQueue: makeActionCreator(types.ADD_REQUEST_TO_QUEUE, 'payload'),
-  changeTouchedStatus: makeActionCreator(types.CHANGE_TOUCHED_STATUS),
   getQuestionRequest: makeActionCreator(types.GET_QUESTION_REQUEST, 'questionId', 'projectId'),
   getCodingOutlineRequest: makeActionCreator(types.GET_CODING_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'questionId'),
   getUserCodedQuestions: makeActionCreator(types.GET_USER_CODED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId'),
@@ -96,6 +98,9 @@ export default {
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
   setPage: makeActionCreator(types.SET_PAGE, 'page'),
+  resetAnswer: makeActionCreator(types.RESET_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
+  setUnsavedChanges: makeActionCreator(types.SET_UNSAVED_CHANGES, 'unsavedChanges'),
+  closeApiErrorAlert: makeActionCreator(types.CLOSE_API_ERROR_ALERT),
   ...docListActions,
   ...cardActions
 }

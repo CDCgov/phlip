@@ -148,7 +148,8 @@ const outlineLogic = createLogic({
         schemeError: null,
         isLoadingPage: false,
         showPageLoader: false,
-        errors: {}
+        errors: {},
+        user
       },
       userId: user.id,
       currentUser: user
@@ -196,13 +197,13 @@ export const getOutlineLogic = createLogic({
           userAnswers,
           question: firstQuestion,
           errors: { ...codedValErrors },
-          currentIndex: questionIndex
+          currentIndex: questionIndex,
+          mergedUserQuestions: null,
+          user: action.payload.user
         }
       }
-      dispatch({
-        type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload
-      })
+      
+      dispatch({ type: types.GET_CODING_OUTLINE_SUCCESS, payload })
     } catch (e) {
       dispatch({
         type: types.GET_CODING_OUTLINE_FAIL,
@@ -281,7 +282,8 @@ export const getValidationOutlineLogic = createLogic({
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
           currentIndex: questionIndex,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error },
+          user: action.payload.user
         }
       }
       
@@ -357,6 +359,7 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
+    const state = getState().scenes.codingValidation.coding
     
     try {
       // check if we need to send a post or a put request
@@ -398,24 +401,30 @@ const answerQuestionLogic = createLogic({
         }
       })
       
-      dispatch({
-        type: types.SEND_QUEUE_REQUESTS,
-        payload: {
-          selectedCategoryId: action.payload.selectedCategoryId,
-          questionId: action.payload.questionId,
-          id: respCodedQuestion.id,
-          queueId: action.payload.queueId,
-          timeQueued: action.payload.timeQueued
-        },
-        apiUpdateMethod: action.payload.apiMethods.update
-      })
+      dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
+      
+      if (state.messageQueue.length > 0) {
+        dispatch({
+          type: types.SEND_QUEUE_REQUESTS,
+          payload: {
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId,
+            id: respCodedQuestion.id,
+            queueId: action.payload.queueId,
+            timeQueued: action.payload.timeQueued
+          },
+          apiUpdateMethod: action.payload.apiMethods.update
+        })
+      } else {
+        dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
+      }
       
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.payload.projectId
       })
     } catch (error) {
-      if (error.response.status === 303) {
+      if (error.response && error.response.status === 303) {
         dispatch({
           type: types.OBJECT_EXISTS,
           payload: {
@@ -434,6 +443,8 @@ const answerQuestionLogic = createLogic({
             questionId: action.payload.questionId
           }
         })
+        
+        dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
       }
     }
     done()
@@ -494,10 +505,9 @@ const applyAnswerToAllLogic = createLogic({
           payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
         })
       }
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
-      })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
@@ -508,6 +518,8 @@ const applyAnswerToAllLogic = createLogic({
           selectedCategoryId: allCategoryObjects
         }
       })
+  
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -538,7 +550,6 @@ const sendMessageLogic = createLogic({
    * Actually sends the requests in the queue and then removest the request from the queue.
    */
   async process({ getState, action, api }, dispatch, done) {
-    console.log(action)
     try {
       const respCodedQuestion = await action.apiUpdateMethod({
         ...action.messageToSend.questionObj,
@@ -553,6 +564,8 @@ const sendMessageLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId
         }
       })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
       
       dispatch({
         type: types.REMOVE_REQUEST_FROM_QUEUE,
@@ -573,6 +586,8 @@ const sendMessageLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId
         }
       })
+  
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -642,14 +657,13 @@ export const getUserCodedQuestionsLogic = createLogic({
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       userAnswers,
       scheme: updatedScheme,
+      mergedUserQuestions: null,
       otherUpdates,
       errors: { ...errors, ...codedValErrors, ...schemeErrors }
     }
     
-    dispatch({
-      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_CODED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })
@@ -663,19 +677,14 @@ const saveRedFlagLogic = createLogic({
     try {
       const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
       const resp = await api.saveRedFlag(flag, {}, { questionId: action.questionId })
-      dispatch({
-        type: types.ON_SAVE_RED_FLAG_SUCCESS,
-        payload: { ...resp }
-      })
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
-      })
+      
+      dispatch({ type: types.ON_SAVE_RED_FLAG_SUCCESS, payload: { ...resp } })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
+      
     } catch (error) {
-      dispatch({
-        type: types.ON_SAVE_RED_FLAG_FAIL,
-        payload: 'Failed to save red flag.'
-      })
+      dispatch({ type: types.ON_SAVE_RED_FLAG_FAIL, payload: 'Failed to save red flag.' })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -757,7 +766,6 @@ const getQuestionLogic = createLogic({
         api.getCodedQuestion
       )
       dispatch({ type: types.GET_QUESTION_SUCCESS, payload: response })
-      done()
     } else {
       const {
         updatedState,
@@ -793,9 +801,12 @@ const getQuestionLogic = createLogic({
           errors: { ...errors, ...coderErrors, ...otherErrors, ...imageResult.errors }
         }
       })
-      
-      done()
     }
+    
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
+    dispatch({ type: types.SET_HEADER_TEXT, text: '' })
+    dispatch({ type: types.CHANGE_TOUCHED_STATUS, touched: false })
+    done()
   }
 })
 
@@ -864,10 +875,8 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     
-    dispatch({
-      type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })
@@ -887,6 +896,7 @@ export const clearFlagLogic = createLogic({
         }
       })
       dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } catch (error) {
       dispatch({
         type: types.CLEAR_FLAG_FAIL,

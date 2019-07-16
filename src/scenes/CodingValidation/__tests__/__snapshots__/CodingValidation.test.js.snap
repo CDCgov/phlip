@@ -34,33 +34,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     hideClose={false}
     onCloseAlert={[Function]}
     open={false}
-    title="Warning"
-  >
-    <WithStyles(Typography)
-      style={
-        Object {
-          "whiteSpace": "pre-wrap",
-        }
-      }
-      variant="body1"
-    >
-      Your answer will apply to ALL categories. Previous answers will be overwritten.
-    </WithStyles(Typography)>
-  </Alert>
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Continue",
-        },
-      ]
-    }
-    closeButton={Object {}}
-    hideClose={false}
-    onCloseAlert={[Function]}
-    open={false}
     title="Still Saving Changes"
   >
     <WithStyles(Typography)
@@ -90,9 +63,13 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
   />
   <ApiErrorAlert
     actions={Array []}
-    content={null}
+    content=""
     onCloseAlert={[Function]}
     open={false}
+  />
+  <Connect(Navigator)
+    handleQuestionSelected={[Function]}
+    selectedCategory={null}
   />
   <FlexGrid
     align="stretch"
@@ -190,15 +167,15 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
         >
           <Connect(QuestionCard)
             currentIndex={0}
-            getNextQuestion={[Function]}
-            getPrevQuestion={[Function]}
+            handleGetQuestion={[Function]}
             onAnswer={[Function]}
+            onApplyAll={[Function]}
             onChange={[Function]}
             onChangeCategory={[Function]}
             onChangeTextAnswer={[Function]}
             onClearAnswer={[Function]}
-            onOpenAlert={[Function]}
-            onOpenFlagConfirmAlert={[Function]}
+            onClearFlag={[Function]}
+            onResetAnswer={[Function]}
             onSave={[Function]}
             onSaveFlag={[Function]}
             page="coding"
@@ -289,33 +266,5 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       </FlexGrid>
     </FlexGrid>
   </FlexGrid>
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Clear Flag",
-        },
-      ]
-    }
-    closeButton={Object {}}
-    hideClose={false}
-    onCloseAlert={[Function]}
-    open={false}
-    title="Confirm Clear Flag"
-  >
-    <WithStyles(Typography)
-      variant="body1"
-    >
-      Do you want to clear this flag?
-    </WithStyles(Typography)>
-  </Alert>
-  <ApiErrorAlert
-    actions={Array []}
-    content={null}
-    onCloseAlert={[Function]}
-    open={false}
-  />
 </FlexGrid>
 `;

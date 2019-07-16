@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import KeyboardArrowLeft from '@material-ui/core/internal/svg-icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/core/internal/svg-icons/KeyboardArrowRight'
 
+/* istanbul ignore next */
 export const styles = theme => ({
   root: {
     '&:last-child': {
@@ -140,12 +141,15 @@ class TablePagination extends Component {
               classes={{ root: classes.selectRoot, select: classes.select, icon: classes.icon }}
               input={
                 <Input
-                  classes={{
-                    root: classes.input
-                  }}
+                  classes={{ root: classes.input }}
                   disableUnderline
+                  autoFocus={false}
                 />
               }
+              MenuProps={{
+                disableAutoFocusItem: true,
+                disableRestoreFocus: true
+              }}
               value={rowsPerPage}
               renderValue={this.renderSelectedNumber}
               onChange={onChangeRowsPerPage}>
