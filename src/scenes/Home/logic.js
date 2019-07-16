@@ -324,7 +324,7 @@ export const exportDataLogic = createLogic({
   async process({ action, api, getState }, dispatch, done) {
     try {
       const project = getState().scenes.home.main.projectToExport
-      const params = action.userId ? { type: action.exportType, userId: action.userId } : { type: action.exportType }
+      const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
       const response = await api.exportData({}, { params }, { projectId: project.id })
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: response })
       done()

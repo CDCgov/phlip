@@ -139,7 +139,7 @@ export class Home extends Component {
       : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
     this.exportRef.click()
     this.clearProjectToExport()
-    window.URL.revokeObjectURL(url)
+    //window.URL.revokeObjectURL(url)
   }
   
   /**

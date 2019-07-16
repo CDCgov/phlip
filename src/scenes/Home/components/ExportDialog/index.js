@@ -87,6 +87,7 @@ export class ExportDialog extends Component {
               users={projectToExport.projectUsers}
               section="numeric"
               onExport={this.onChooseExport}
+              userInProgress={inProgress ? projectToExport.userId : null}
             />
             <ListSection
               onExpand={this.expand}

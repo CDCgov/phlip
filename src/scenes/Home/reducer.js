@@ -109,7 +109,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
           ...state.projectToExport,
           exportType: action.exportType,
           user: action.user === null
-            ? {}
+            ? { id: 'val' }
             : {
               id: action.user.userId,
               firstName: action.user.firstName,
