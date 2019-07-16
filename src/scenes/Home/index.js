@@ -307,6 +307,7 @@ export class Home extends Component {
             handleToggleProject={actions.toggleProject}
             getProjectUsers={actions.getProjectUsers}
             openProject={openProject}
+            allowExpandCollapse={!exportDialogOpen}
           />
         }
         <ExportDialog
