@@ -102,7 +102,7 @@ export class ExportDialog extends Component {
     ]
     
     return (
-      <Modal open={open} onClose={this.onCloseModal}>
+      <Modal open={open} onClose={this.onCloseModal} id="export-modal">
         <ModalTitle title="Choose export type" />
         <Divider />
         <ModalContent style={{ minWidth: 400, padding: 0 }}>

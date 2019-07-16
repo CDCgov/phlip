@@ -81,7 +81,7 @@ export class ProjectList extends Component {
    */
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
-    const regex = /([Bb]utton)|(icons?)|([sS]elect)|([iI]nput)/g
+    const regex = /([Bb]utton)|(icons?)|([sS]elect)|([iI]nput)|([dD]ialog)|([mM]odal)/g
     return !stopOpenEls.includes(target.tagName)
       && (target.tagName !== 'svg' ? target.className.search(regex) === -1 : true)
       && target.id !== 'avatar-menu-button'
@@ -118,6 +118,7 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
+    console.log('click away', event)
     const { openProject, location, history, handleToggleProject } = this.props
     const { mouse } = this.state
     
