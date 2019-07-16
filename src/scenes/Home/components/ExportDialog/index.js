@@ -41,6 +41,9 @@ export class ExportDialog extends Component {
     }
   }
   
+  /**
+   * When the user closes the modal
+   */
   onCloseModal = () => {
     const { onClose } = this.props
     this.setState({ expanded: 0 })
