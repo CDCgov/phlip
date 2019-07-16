@@ -111,7 +111,6 @@ export class Annotation extends PureComponent {
         width: 20,
         zIndex: 4
       }
-
       const iconLocation = {
         left: pending ? bounds[2] - 53 : bounds[2] - 24,
         top: bounds[3],
