@@ -178,7 +178,6 @@ export class Home extends Component {
    */
   onCloseApiError = () => {
     this.props.actions.dismissApiError()
-    this.clearProjectToExport()
   }
   
   /**
@@ -186,10 +185,12 @@ export class Home extends Component {
    * @param selectedOption
    */
   handleSortParmChange = selectedOption => {
+    const { actions, sortBookmarked } = this.props
+    
     if (selectedOption !== 'sortBookmarked') {
-      this.props.actions.sortProjects(selectedOption)
+      actions.sortProjects(selectedOption)
     } else {
-      this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+      actions.sortBookmarked(!sortBookmarked)
     }
   }
   

@@ -323,6 +323,7 @@ export const exportDataLogic = createLogic({
   type: types.EXPORT_DATA_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
     try {
+      console.log()
       const project = getState().scenes.home.main.projectToExport
       const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
       const response = await api.exportData({}, { params }, { projectId: project.id })

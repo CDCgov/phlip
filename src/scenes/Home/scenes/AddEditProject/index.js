@@ -255,7 +255,7 @@ export class AddEditProject extends Component {
    * Handles when the user confirms deletion of project
    */
   handleDeleteConfirm = () => {
-    this.onCancel()
+    this.onCancelDelete()
     this.props.actions.deleteProjectRequest(this.projectDefined.id)
   }
   

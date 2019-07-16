@@ -106,6 +106,7 @@ exports[`Home scene should render correctly 1`] = `
     />
   </withRouter(WithTheme(PageHeader))>
   <withRouter(ProjectList)
+    allowExpandCollapse={false}
     direction="desc"
     handleExport={[Function]}
     handlePageChange={[MockFunction]}
@@ -132,7 +133,12 @@ exports[`Home scene should render correctly 1`] = `
   <ExportDialog
     onChooseExport={[Function]}
     onClose={[Function]}
-    open={false}
+    open={true}
+    projectToExport={
+      Object {
+        "text": "",
+      }
+    }
   />
   <a
     style={

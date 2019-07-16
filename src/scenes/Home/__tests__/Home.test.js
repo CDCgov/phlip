@@ -14,7 +14,10 @@ const props = {
     updateRows: jest.fn(),
     toggleBookmark: jest.fn(),
     sortBookmarked: jest.fn(),
-    updateSearchValue: jest.fn()
+    updateSearchValue: jest.fn(),
+    setProjectToExport: jest.fn(),
+    clearProjectToExport: jest.fn(),
+    exportDataRequest: jest.fn()
   },
   user: {
     id: 2,
@@ -36,15 +39,22 @@ const props = {
   rowsPerPage: '10',
   searchValue: '',
   projectToExport: { text: '' },
-  exportError: ''
+  apiErrorAlert: {
+    text: '',
+    open: false
+  }
 }
 
-const setup = (otherProps = {}, initialEntries = ['/']) => {
-  return mount(<MemoryRouter initialEntries={initialEntries}>
-    <MuiThemeProvider theme={theme}>
-      <Home {...props} {...otherProps} />
-    </MuiThemeProvider>
-  </MemoryRouter>)
+// const setup = (otherProps = {}, initialEntries = ['/']) => {
+//   return mount(<MemoryRouter initialEntries={initialEntries}>
+//     <MuiThemeProvider theme={theme}>
+//       <Home {...props} {...otherProps} />
+//     </MuiThemeProvider>
+//   </MemoryRouter>)
+// }
+
+const setup = (otherProps = {}) => {
+  return shallow(<Home {...props} {...otherProps} />)
 }
 
 describe('Home scene', () => {
@@ -54,19 +64,19 @@ describe('Home scene', () => {
   
   test('should render ProjectList and PageHeader components', () => {
     const wrapper = setup()
-    expect(wrapper.find(ProjectList)).toHaveLength(1)
+    expect(wrapper.find('withRouter(ProjectList)')).toHaveLength(1)
   })
   
   describe('Error handling', () => {
     test('should display an error message if prop: error is true', () => {
       const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
       expect(wrapper.find('CardError')).toHaveLength(1)
-      expect(wrapper.find('ProjectList')).toHaveLength(0)
+      expect(wrapper.find('withRouter(ProjectList)')).toHaveLength(0)
     })
     
     test('should display the content of errorContent prop in error message', () => {
       const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
-      expect(wrapper.find('CardError').text()).toEqual('Uh-oh! Something went wrong. We could not get projects.')
+      expect(wrapper.find('CardError').childAt(0).text()).toEqual('Uh-oh! Something went wrong. We could not get projects.')
     })
   })
 })

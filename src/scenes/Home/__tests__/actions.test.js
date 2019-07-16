@@ -9,18 +9,6 @@ describe('Home actions creators', () => {
     expect(actions.getProjectsRequest({})).toEqual(expectedAction)
   })
 
-  test('should create an action to indicate getting projects failed', () => {
-    const payload = 'errorValue'
-    const expectedAction = {
-      type: types.GET_PROJECTS_FAIL,
-      payload: {
-        errorContent: payload,
-        error: true
-      }
-    }
-    expect(actions.getProjectsFail(payload)).toEqual(expectedAction)
-  })
-
   test('should create an action update projects', () => {
     const project = { name: 'Project 1' }
     const expectedAction = {
@@ -29,18 +17,6 @@ describe('Home actions creators', () => {
     }
 
     expect(actions.updateProjectRequest(project)).toEqual(expectedAction)
-  })
-
-  test('should create an action to indicate updating a project failed', () => {
-    const payload = 'errorValue'
-    const expectedAction = {
-      type: types.UPDATE_PROJECT_FAIL,
-      payload: {
-        errorContent: payload,
-        error: true
-      }
-    }
-    expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
   })
 
   test('should create an action to toggle bookmark', () => {
@@ -100,16 +76,24 @@ describe('Home actions creators', () => {
 
     expect(actions.deleteProjectRequest(project)).toEqual(expectedAction)
   })
-
-  test('should create an action to indicate delete a project failed', () => {
-    const payload = 'errorValue'
-    const expectedAction = {
-      type: types.DELETE_PROJECT_FAIL,
-      payload: {
-        errorContent: payload,
-        error: true
-      }
-    }
-    expect(actions.deleteProjectFail(payload)).toEqual(expectedAction)
+  
+  test('should create an action to export data', () => {
+    const action = { type: types.EXPORT_DATA_REQUEST, exportType: 'numeric', user: null }
+    expect(actions.exportDataRequest('numeric', null)).toEqual(action)
+  })
+  
+  test('should create an action to clear project export dialog', () => {
+    const action = { type: types.CLEAR_PROJECT_TO_EXPORT }
+    expect(actions.clearProjectToExport()).toEqual(action)
+  })
+  
+  test('should create an action to dismiss api alerts', () => {
+    const action = { type: types.DISMISS_API_ERROR }
+    expect(actions.dismissApiError()).toEqual(action)
+  })
+  
+  test('should create an action to set project export dialog', () => {
+    const action = { type: types.SET_PROJECT_TO_EXPORT, project: { id: 1, name: 'blep' } }
+    expect(actions.setProjectToExport({ id: 1, name: 'blep' })).toEqual(action)
   })
 })
