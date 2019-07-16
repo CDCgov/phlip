@@ -265,7 +265,7 @@ export const getProjectUsersLogic = createLogic({
       })
       done()
     } catch (e) {
-      dispatch({ type: types.GET_PROJECT_USERS_FAIL, payload: 'Failed to get user profiles' })
+      dispatch({ type: types.GET_PROJECT_USERS_FAIL, payload: 'We couldn\'t get the updated user profiles for this project.' })
       done()
     }
   }
@@ -310,7 +310,7 @@ export const toggleBookmarkLogic = createLogic({
       dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: { bookmarkList } })
       done()
     } catch (err) {
-      console.log('err adding / removing bookmark')
+      dispatch({ type: types.TOGGLE_BOOKMARK_FAIL, payload: 'We couldn\'t save your bookmark request.' })
       done()
     }
   }
@@ -321,14 +321,17 @@ export const toggleBookmarkLogic = createLogic({
  */
 export const exportDataLogic = createLogic({
   type: types.EXPORT_DATA_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.EXPORT_DATA_SUCCESS,
-    failType: types.EXPORT_DATA_FAIL
-  },
-  async process({ action, api }) {
-    const params = action.userId ? { type: action.exportType, userId: action.userId } : { type: action.exportType }
-    return await api.exportData({}, { params }, { projectId: action.project.id })
+  async process({ action, api, getState }, dispatch, done) {
+    try {
+      const project = getState().scenes.home.main.projectToExport
+      const params = action.userId ? { type: action.exportType, userId: action.userId } : { type: action.exportType }
+      const response = await api.exportData({}, { params }, { projectId: project.id })
+      dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: response })
+      done()
+    } catch (err) {
+      dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
+      done()
+    }
   }
 })
 

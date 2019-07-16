@@ -46,7 +46,7 @@ export const ListSection = props => {
                   <Typography style={{ flex: '1 1 auto', fontSize: '.875rem', padding: '0 16px' }}>
                     {`${user.firstName} ${user.lastName}`}
                   </Typography>
-                  <IconButton iconStyle={{ color: 'black' }} onClick={onExport(section, user.userId)}>
+                  <IconButton iconStyle={{ color: 'black' }} onClick={onExport(section, user)}>
                     file_download
                   </IconButton>
                 </FlexGrid>

@@ -20,9 +20,24 @@ export const INITIAL_STATE = {
   errorContent: '',
   error: false,
   projectCount: 0,
-  projectToExport: { text: '' },
-  exportError: '',
-  openProject: 0
+  projectToExport: {
+    text: '',
+    id: null,
+    name: '',
+    projectUsers: [],
+    exportType: null,
+    user: {
+      id: null,
+      firstName: '',
+      lastName: ''
+    }
+  },
+  exporting: false,
+  openProject: 0,
+  apiErrorAlert: {
+    text: '',
+    open: false
+  }
 }
 
 /**
@@ -67,14 +82,42 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         ...state, errorContent: 'We couldn\'t retrieve the project list. Please try again later.', error: true
       }
     
+    case types.SET_PROJECT_TO_EXPORT:
+      return {
+        ...state,
+        projectToExport: {
+          ...state.projectToExport,
+          id: action.project.id,
+          projectUsers: action.project.projectUsers,
+          name: action.project.name,
+          text: ''
+        }
+      }
+    
+    case types.CLEAR_PROJECT_TO_EXPORT:
+      return {
+        ...state,
+        projectToExport: {
+          ...INITIAL_STATE.projectToExport
+        }
+      }
+    
     case types.EXPORT_DATA_REQUEST:
       return {
         ...state,
         projectToExport: {
-          ...action.project,
+          ...state.projectToExport,
           exportType: action.exportType,
+          user: action.user === null
+            ? {}
+            : {
+              id: action.user.userId,
+              firstName: action.user.firstName,
+              lastName: action.user.lastName
+            },
           text: ''
-        }
+        },
+        exporting: true
       }
     
     case types.EXPORT_DATA_SUCCESS:
@@ -83,26 +126,28 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         projectToExport: {
           ...state.projectToExport,
           text: action.payload
-        }
+        },
+        exporting: false
       }
     
+    case types.TOGGLE_BOOKMARK_FAIL:
+    case types.GET_PROJECT_USERS_FAIL:
     case types.EXPORT_DATA_FAIL:
       return {
         ...state,
-        exportError: 'We couldn\'t export the project.'
+        apiErrorAlert: {
+          text: action.payload,
+          open: true
+        },
+        exporting: false
       }
     
     case types.DISMISS_API_ERROR:
       return {
         ...state,
-        [action.errorName]: ''
-      }
-    
-    case types.CLEAR_PROJECT_TO_EXPORT:
-      return {
-        ...state,
-        projectToExport: {
-          text: ''
+        apiErrorAlert: {
+          ...state.apiErrorAlert,
+          open: false
         }
       }
     

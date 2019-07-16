@@ -23,9 +23,13 @@ export class ExportDialog extends Component {
      */
     open: PropTypes.bool,
     /**
-     * List of users on the project
+     * The project for which the dialog is open
      */
-    users: PropTypes.array
+    projectToExport: PropTypes.object,
+    /**
+     * Whether a request is in progress
+     */
+    inProgress: PropTypes.bool
   }
   
   state = {
@@ -50,14 +54,14 @@ export class ExportDialog extends Component {
   /**
    * User is exporting validation or codebook
    */
-  onChooseExport = (type, userId = null) => () => {
+  onChooseExport = (type, user = null) => () => {
     const { onChooseExport } = this.props
-    onChooseExport(type, userId)
+    onChooseExport(type, user)
     this.setState({ expanded: 0 })
   }
   
   render() {
-    const { open, users } = this.props
+    const { open, projectToExport, inProgress } = this.props
     const { expanded } = this.state
     
     const actions = [
@@ -80,7 +84,7 @@ export class ExportDialog extends Component {
               onExpand={this.expand}
               sectionText="Coded Data - Numeric"
               expanded={expanded === 'numeric'}
-              users={users}
+              users={projectToExport.projectUsers}
               section="numeric"
               onExport={this.onChooseExport}
             />
@@ -88,7 +92,7 @@ export class ExportDialog extends Component {
               onExpand={this.expand}
               sectionText="Coded Data - Text"
               expanded={expanded === 'text'}
-              users={users}
+              users={projectToExport.projectUsers}
               section="text"
               onExport={this.onChooseExport}
             />
