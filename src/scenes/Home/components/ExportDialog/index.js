@@ -1,38 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
-import { FlexGrid, IconButton, Avatar } from 'components'
-import Collapse from '@material-ui/core/Collapse'
-import Typography from '@material-ui/core/Typography'
-
-/**
- * Renders a list of users for when a section on the list is expanded
- */
-const UserList = ({ users, section, onClick, onExportValidation }) => {
-  return (
-    <List component="div" disablePadding>
-      {users.map(user => {
-        return (
-          <ListItem key={`${section}-${user.userId}`} style={{ paddingTop: 8, paddingBottom: 8, fontSize: '.875rem' }}>
-            <FlexGrid container type="row" align="center" style={{ width: '100%' }}>
-              <Avatar small userId={user.userId} />
-              <Typography style={{ flex: '1 1 auto', fontSize: '.875rem', padding: '0 16px' }}>
-                {`${user.firstName} ${user.lastName}`}
-              </Typography>
-              <IconButton iconStyle={{ color: 'black' }} onClick={onClick(user, section)}>
-                file_download
-              </IconButton>
-            </FlexGrid>
-          </ListItem>
-        )
-      })}
-    </List>
-  )
-}
+import { IconButton } from 'components'
+import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
+import ListSection from './components/ListSection'
 
 export class ExportDialog extends Component {
   static propTypes = {
@@ -74,22 +48,11 @@ export class ExportDialog extends Component {
   }
   
   /**
-   * Export specific data for a user
-   * @param userId
-   * @param section
-   */
-  onClickUser = (userId, section) => () => {
-    const { onChooseExport } = this.props
-    onChooseExport(section, userId)
-    this.setState({ expanded: 0 })
-  }
-  
-  /**
    * User is exporting validation or codebook
    */
-  onChooseExport = type => () => {
+  onChooseExport = (type, userId = null) => () => {
     const { onChooseExport } = this.props
-    onChooseExport(type, null)
+    onChooseExport(type, userId)
     this.setState({ expanded: 0 })
   }
   
@@ -113,34 +76,22 @@ export class ExportDialog extends Component {
                 file_download
               </IconButton>
             </ListItem>
-            <ListItem onClick={this.expand('numeric')} selected={expanded === 'numeric'}>
-              <ListItemText primary="Coded Data - Numeric" />
-              <IconButton iconStyle={{ color: 'black' }}>
-                {expanded === 'numeric' ? 'expand_less' : 'expand_more'}
-              </IconButton>
-            </ListItem>
-            <Collapse in={expanded === 'numeric'}>
-              <UserList
-                users={users}
-                section="numeric"
-                onClick={this.onClickUser}
-                onExportValidation={this.onChooseExport('numeric')}
-              />
-            </Collapse>
-            <ListItem onClick={this.expand('text')} selected={expanded === 'text'}>
-              <ListItemText primary="Coded Data - Text" />
-              <IconButton iconStyle={{ color: 'black' }}>
-                {expanded === 'text' ? 'expand_less' : 'expand_more'}
-              </IconButton>
-            </ListItem>
-            <Collapse in={expanded === 'text'}>
-              <UserList
-                users={users}
-                section="text"
-                onClick={this.onClickUser}
-                onExportValidation={this.onChooseExport('text')}
-              />
-            </Collapse>
+            <ListSection
+              onExpand={this.expand}
+              sectionText="Coded Data - Numeric"
+              expanded={expanded === 'numeric'}
+              users={users}
+              section="numeric"
+              onExport={this.onChooseExport}
+            />
+            <ListSection
+              onExpand={this.expand}
+              sectionText="Coded Data - Text"
+              expanded={expanded === 'text'}
+              users={users}
+              section="text"
+              onExport={this.onChooseExport}
+            />
           </List>
         </ModalContent>
         <ModalActions actions={actions} />

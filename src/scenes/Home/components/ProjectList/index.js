@@ -118,7 +118,6 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    console.log('click away', event)
     const { openProject, location, history, handleToggleProject } = this.props
     const { mouse } = this.state
     
