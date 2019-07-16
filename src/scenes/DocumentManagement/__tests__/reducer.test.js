@@ -45,14 +45,12 @@ describe('Document Management reducer', () => {
         '12345': {
           name: 'Doc 1',
           _id: '12345',
-          uploadedBy: { firstName: 'test', lastName: 'user', id: 1 },
-          uploadedByName: 'test user'
+          uploadedBy: { firstName: 'test', lastName: 'user', id: 1 }
         },
         '54321': {
           name: 'Doc 2',
           _id: '54321',
-          uploadedBy: { firstName: 'test', lastName: 'user', id: 4 },
-          uploadedByName: 'test user'
+          uploadedBy: { firstName: 'test', lastName: 'user', id: 4 }
         }
       })
       
