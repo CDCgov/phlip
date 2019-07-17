@@ -6,6 +6,7 @@ exports[`DocumentManagement - BulkModal should render correctly 1`] = `
   id="bulkConfirmBox"
   maxWidth="md"
   onClose={[MockFunction]}
+  onMouseDown={[Function]}
   open={true}
 >
   <ModalTitle
