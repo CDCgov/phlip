@@ -10,7 +10,8 @@ export const types = {
   CLEAR_SUGGESTIONS: 'CLEAR_SUGGESTIONS',
   CLEAR_ALL: 'CLEAR_ALL',
   FLUSH_STATE: 'FLUSH_STATE',
-  GET_INITIAL_PROJECT_SUGGESTION_REQUEST: 'GET_INITIAL_PROJECT_SUGGESTION_REQUEST'
+  GET_INITIAL_PROJECT_SUGGESTION_REQUEST: 'GET_INITIAL_PROJECT_SUGGESTION_REQUEST',
+  SET_SEARCHING_STATUS: 'SET_SEARCHING_STATUS'
 }
 
 export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
@@ -22,6 +23,7 @@ export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
       'suffix',
       'index'
     ),
+    setSearchingStatus: makeActionCreator(`${types.SET_SEARCHING_STATUS}_${searchName}${suffix}`, 'status'),
     clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`),
     onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`, 'suggestion'),
     clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}${suffix}`),

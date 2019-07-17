@@ -133,9 +133,11 @@ export class DocumentMeta extends Component {
     const { actions } = this.props
     
     clearTimeout(this.timeout)
+    actions[`${suggestionType}Autocomplete`].setSearchingStatus(true)
     this.timeout = setTimeout(() => {
       actions[`${suggestionType}Autocomplete`].searchForSuggestionsRequest(searchString, '_META')
     }, 500)
+    
   }
   
   /**

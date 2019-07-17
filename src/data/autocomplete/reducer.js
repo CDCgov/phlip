@@ -18,7 +18,7 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
           selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion
         }
         
-      case `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`:
+      case `${types.SET_SEARCHING_STATUS}_${searchName}${suffix}`:
         return {
           ...state,
           searching: true
