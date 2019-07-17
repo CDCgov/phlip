@@ -380,6 +380,54 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['7', '2', '5', '3'])
     })
+    
+    test('should clear matches if the user clears their search', () => {
+      const action = {
+        type: types.SEARCH_VALUE_CHANGE,
+        payload: [byId[2], byId[3], byId[5], byId[7]],
+        value: ''
+      }
+  
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.matches).toEqual([])
+    })
+  })
+  
+  describe('BULK_DELETE_REQUEST', () => {
+    const action = {
+      type: types.BULK_DELETE_REQUEST
+    }
+    const currentState = getState({ documents: mockDocuments })
+    const state = reducer(currentState, action)
+    
+    test('should set that a bulk operation is happening', () => {
+      expect(state.bulkOperationInProgress).toEqual(true)
+    })
+  })
+  
+  describe('BULK_UPDATE_REQUEST', () => {
+    const action = {
+      type: types.BULK_UPDATE_REQUEST
+    }
+    const currentState = getState({ documents: mockDocuments })
+    const state = reducer(currentState, action)
+  
+    test('should set that a bulk operation is happening', () => {
+      expect(state.bulkOperationInProgress).toEqual(true)
+    })
+  })
+  
+  describe('BULK_REMOVE_PROJECT_REQUEST', () => {
+    const action = {
+      type: types.BULK_REMOVE_PROJECT_REQUEST
+    }
+    const currentState = getState({ documents: mockDocuments })
+    const state = reducer(currentState, action)
+  
+    test('should set that a bulk operation is happening', () => {
+      expect(state.bulkOperationInProgress).toEqual(true)
+    })
   })
   
   describe('FLUSH_STATE', () => {
