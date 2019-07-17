@@ -670,18 +670,15 @@ describe('Document Management logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[1]).toEqual({
-          type: types.BULK_UPDATE_SUCCESS,
-          payload: {
-            ...mockDocuments.byId,
-            1: {
-              ...mockDocuments.byId[1],
-              projects: []
-            },
-            2: {
-              ...mockDocuments.byId[2],
-              projects: [11]
-            }
+        expect(store.actions[1].payload.docs).toEqual({
+          ...mockDocuments.byId,
+          1: {
+            ...mockDocuments.byId[1],
+            projects: []
+          },
+          2: {
+            ...mockDocuments.byId[2],
+            projects: [11]
           }
         })
         done()

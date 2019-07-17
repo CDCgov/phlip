@@ -84,9 +84,15 @@ export class SearchBox extends Component {
    * @returns {Function}
    */
   handleGetSuggestions = (suggestionType, index = null) => ({ value: searchString }) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN', index)
+    const { actions } = this.props
+    
+    if (suggestionType === 'project') {
+      actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN')
+      actions.projectAutocomplete.setSearchingStatus(true)
+    } else {
+      actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN', index)
+      actions.jurisdictionAutocomplete.setSearchingStatus(true)
+    }
   }
   
   /**

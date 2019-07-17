@@ -173,9 +173,15 @@ export class DocumentManagement extends Component {
    * @param index
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_BULK')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_BULK', index)
+    const { actions } = this.props
+  
+    if (suggestionType === 'project') {
+      actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_BULK')
+      actions.projectAutocomplete.setSearchingStatus(true)
+    } else {
+      actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_BULK', index)
+      actions.jurisdictionAutocomplete.setSearchingStatus(true)
+    }
   }
   
   /**

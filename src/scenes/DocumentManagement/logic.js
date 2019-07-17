@@ -353,6 +353,7 @@ const bulkRemoveProjectLogic = createLogic({
     let projectMeta = action.projectMeta
     let selectedDocs = action.selectedDocs
     try {
+      const user = getState().data.user.currentUser
       await docApi.cleanProject({ 'docIds': selectedDocs }, {}, { 'projectId': projectMeta.id })
       let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
       selectedDocs.forEach(docKey => {
@@ -361,7 +362,7 @@ const bulkRemoveProjectLogic = createLogic({
           cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
         }
       })
-      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: cleannedDocs })
+      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: { docs: cleannedDocs, userId: user.id } })
       done()
     } catch (e) {
       dispatch({ type: types.BULK_UPDATE_FAIL, payload: 'We couldn\'t update the documents.' })
