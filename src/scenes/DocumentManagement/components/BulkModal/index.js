@@ -74,9 +74,15 @@ export const BulkModal = props => {
       return `Do you want to ${bulkType} other users' documents?`
     }
   }
+
+  const onMouseDown = e => {
+    if (['react-autowhatever-1','jurisdiction-form','bulkConfirmBox'].includes(e.target.id)){
+      e.preventDefault()
+    }
+  }
   
   return (
-    <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox">
+    <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox" onMouseDown={onMouseDown}>
       <ModalTitle title={typeToTitle[bulkType]} />
       <Divider />
       <ModalContent
