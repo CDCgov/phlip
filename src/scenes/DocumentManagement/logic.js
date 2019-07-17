@@ -344,7 +344,7 @@ const cleanDocProjectLogic = createLogic({
       dispatch({ type: types.CLEAN_PROJECT_LIST_SUCCESS, payload: cleannedDocs })
       done()
     } catch (e) {
-      dispatch({ type: types.CLEAN_PROJECT_LIST_FAIL, payload: 'We couldn\'t update the documents.' })
+      dispatch({ type: types.CLEAN_PROJECT_LIST_FAIL, payload: { error: 'We couldn\'t update the documents.' } })
     }
     done()
   }
@@ -363,27 +363,37 @@ const bulkRemoveProjectLogic = createLogic({
     const docState = getState().scenes.docManage.main.list
     const searchState = getState().scenes.docManage.search.form
     const isSearch = searchState.searchValue !== ''
+    const userDocs = docState.documents.userDocs.slice()
     
     try {
       await docApi.cleanProject({ 'docIds': selectedDocs }, {}, { 'projectId': projectMeta.id })
-      const cleanedDocs = docState.documents.byId
+      let cleanedDocs = docState.documents.byId
       
       selectedDocs.forEach(docKey => {
         const index = cleanedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
         if (index !== -1) {
           cleanedDocs[docKey].projects.splice(index, 1)
+          if (cleanedDocs[docKey].projects.length === 0 && user.role !== 'Admin') {
+            // needs to be removed from the state
+            const { [docKey]: removed, ...otherDocs } = cleanedDocs
+            cleanedDocs = otherDocs
+            if (userDocs.includes(docKey)) {
+              userDocs.splice(userDocs.indexOf(docKey), 1)
+            }
+          }
         }
       })
       
+      const docArr = docState.showAll ? Object.values(cleanedDocs) : normalize.createArrOfObj(cleanedDocs, userDocs)
       const sortPayload = isSearch
         ? resetFilter(
-          action.docArr,
+          docArr,
           action.value,
           action.form.project.id,
           action.form.jurisdiction.id,
-          action.projects,
-          action.jurisdictions
-        ) : action.docArr
+          action.jurisdictions,
+          action.projects
+        ) : docArr
       
       dispatch({
         type: types.BULK_UPDATE_SUCCESS,
@@ -391,12 +401,13 @@ const bulkRemoveProjectLogic = createLogic({
           updatedById: cleanedDocs,
           sortPayload,
           userId: user.id,
-          affectsView: true
+          affectsView: true,
+          count: sortPayload.length
         }
       })
       done()
     } catch (e) {
-      dispatch({ type: types.BULK_UPDATE_FAIL, payload: 'We couldn\'t update the documents.' })
+      dispatch({ type: types.BULK_UPDATE_FAIL, payload: { error: 'We couldn\'t update the documents.' } })
     }
     done()
   }

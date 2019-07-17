@@ -262,6 +262,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           ...state.documents,
           byId: action.payload.updatedById,
+          allIds: Object.keys(action.payload.updatedById),
           visible: updatedVisible,
           checked: [],
           matches: action.payload.affectsView
@@ -269,9 +270,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
             : state.documents.matches
         },
         count: action.payload.affectsView
-          ? action.payload.search
-            ? action.payload.sortPayload.length
-            : updatedVisible.length
+          ? action.payload.count
           : state.count,
         bulkOperationInProgress: false,
         apiErrorOpen: false,
