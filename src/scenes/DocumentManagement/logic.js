@@ -3,7 +3,7 @@ import { createLogic } from 'redux-logic'
 import { types } from './actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 import { types as projectTypes } from 'data/projects/actions'
-import { searchUtils } from 'utils'
+import { searchUtils, normalize } from 'utils'
 
 /**
  * Search in an array of objects and then matches docs, used for projects / jurisdictions
@@ -120,8 +120,8 @@ const pageRowChageLogic = createLogic({
   transform({ getState, action }, next) {
     const isSearch = getState().scenes.docManage.search.form.searchValue !== ''
     const docState = getState().scenes.docManage.main.list
-    const userDocs = docState.documents.userDocs.map(id => ({ _id: id, ...docState.documents.byId[id] }))
-    const matches = docState.documents.matches
+    const userDocs = normalize.createArrOfObj(docState.documents.byId, docState.documents.userDocs)
+    const matches = normalize.createArrOfObj(docState.documents.byId, docState.documents.matches)
     
     next({
       ...action,
@@ -138,14 +138,20 @@ const pageRowChageLogic = createLogic({
  * Handles updating the visible projects depending of if the user is toggling all docs
  */
 const toggleDocsLogic = createLogic({
-  type: types.ON_TOGGLE_ALL_DOCS,
+  type: [types.ON_TOGGLE_ALL_DOCS, types.BULK_REMOVE_PROJECT_REQUEST, types.SEARCH_VALUE_CHANGE],
   transform({ getState, action }, next) {
     const searchState = getState().scenes.docManage.search
+    const docState = getState().scenes.docManage.main.list
+    const userDocs = normalize.createArrOfObj(docState.documents.byId, docState.documents.userDocs)
     
     next({
-      ...action,
       form: searchState.form.params,
-      value: searchState.form.searchValue
+      value: searchState.form.searchValue,
+      userDocs,
+      projects: Object.values(getState().data.projects.byId),
+      jurisdictions: Object.values(getState().data.jurisdictions.byId),
+      docArr: docState.showAll ? Object.values(docState.documents.byId) : userDocs,
+      ...action
     })
   }
 })
@@ -158,15 +164,11 @@ const searchBoxLogic = createLogic({
   type: [types.SEARCH_VALUE_CHANGE, types.ON_TOGGLE_ALL_DOCS],
   transform({ getState, action }, next) {
     const state = getState().scenes.docManage.main.list
-    
-    const projects = Object.values(getState().data.projects.byId)
-    const jurisdictions = Object.values(getState().data.jurisdictions.byId)
-    const userDocs = state.documents.userDocs.map(id => ({ _id: id, ...state.documents.byId[id] }))
     let docs = [...Object.values(state.documents.byId)]
     
     if ((!state.showAll && action.type === types.SEARCH_VALUE_CHANGE) ||
       (state.showAll && action.type === types.ON_TOGGLE_ALL_DOCS)) {
-      docs = userDocs
+      docs = action.userDocs
     }
     
     const matches = !action.value
@@ -176,14 +178,11 @@ const searchBoxLogic = createLogic({
         action.value,
         action.form.project.id,
         action.form.jurisdiction.id,
-        jurisdictions,
-        projects
+        action.jurisdictions,
+        action.projects
       )
     
-    next({
-      ...action,
-      payload: matches
-    })
+    next({ ...action, payload: matches })
   }
 })
 
@@ -279,7 +278,15 @@ const bulkUpdateLogic = createLogic({
         }
       })
       
-      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: { docs: existingDocs, userId: user.id } })
+      dispatch({
+        type: types.BULK_UPDATE_SUCCESS,
+        payload: {
+          updatedById: existingDocs,
+          sortPayload: [],
+          userId: user.id,
+          affectsView: false
+        }
+      })
       done()
     } catch (err) {
       dispatch({
@@ -300,7 +307,7 @@ const bulkDeleteLogic = createLogic({
   async process({ getState, docApi, action, api }, dispatch, done) {
     const user = getState().data.user.currentUser
     try {
-      const deleteResult = await docApi.bulkDeleteDoc({ 'docIds': action.selectedDocs })
+      await docApi.bulkDeleteDoc({ 'docIds': action.selectedDocs })
       action.selectedDocs.map(doc => {
         try {
           api.cleanAnnotations({}, {}, { docId: doc })
@@ -308,7 +315,7 @@ const bulkDeleteLogic = createLogic({
           console.log(`failed to remove annotations for doc: ${doc}`)
         }
       })
-      dispatch({ type: types.BULK_DELETE_SUCCESS, payload: { docs: deleteResult, userId: user.id } })
+      dispatch({ type: types.BULK_DELETE_SUCCESS, payload: { docsDeleted: action.selectedDocs, userId: user.id } })
       done()
     } catch (e) {
       dispatch({ type: types.BULK_DELETE_FAIL, payload: { error: 'We couldn\'t delete the selected documents.' } })
@@ -350,19 +357,43 @@ const cleanDocProjectLogic = createLogic({
 const bulkRemoveProjectLogic = createLogic({
   type: types.BULK_REMOVE_PROJECT_REQUEST,
   async process({ getState, docApi, action }, dispatch, done) {
-    let projectMeta = action.projectMeta
-    let selectedDocs = action.selectedDocs
+    const projectMeta = action.projectMeta
+    const selectedDocs = action.selectedDocs
+    const user = getState().data.user.currentUser
+    const docState = getState().scenes.docManage.main.list
+    const searchState = getState().scenes.docManage.search.form
+    const isSearch = searchState.searchValue !== ''
+    
     try {
-      const user = getState().data.user.currentUser
       await docApi.cleanProject({ 'docIds': selectedDocs }, {}, { 'projectId': projectMeta.id })
-      let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
+      const cleanedDocs = docState.documents.byId
+      
       selectedDocs.forEach(docKey => {
-        const index = cleannedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
-        if (index !== -1) { // found matching projectId
-          cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
+        const index = cleanedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
+        if (index !== -1) {
+          cleanedDocs[docKey].projects.splice(index, 1)
         }
       })
-      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: { docs: cleannedDocs, userId: user.id } })
+      
+      const sortPayload = isSearch
+        ? resetFilter(
+          action.docArr,
+          action.value,
+          action.form.project.id,
+          action.form.jurisdiction.id,
+          action.projects,
+          action.jurisdictions
+        ) : action.docArr
+      
+      dispatch({
+        type: types.BULK_UPDATE_SUCCESS,
+        payload: {
+          updatedById: cleanedDocs,
+          sortPayload,
+          userId: user.id,
+          affectsView: true
+        }
+      })
       done()
     } catch (e) {
       dispatch({ type: types.BULK_UPDATE_FAIL, payload: 'We couldn\'t update the documents.' })

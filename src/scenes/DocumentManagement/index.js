@@ -365,8 +365,8 @@ export class DocumentManagement extends Component {
               docCount={docCount}
               onChangePage={actions.handlePageChange}
               onChangeRows={actions.handleRowsChange}
-              onSelectAllFiles={actions.handleSelectAll}
-              onSelectOneFile={actions.handleSelectOneFile}
+              onSelectAllDocs={actions.handleSelectAllDocs}
+              onSelectOneDoc={actions.handleSelectOneDoc}
               allSelected={allSelected}
               page={page}
               rowsPerPage={rowsPerPage}

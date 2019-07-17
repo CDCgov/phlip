@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types as uploadTypes } from './scenes/Upload/actions'
 import { types } from './actions'
-import { arrayToObject } from 'utils/normalize'
+import { arrayToObject, createArrOfObj, mapArray } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
 import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
@@ -40,12 +40,9 @@ export const INITIAL_STATE = {
  * @param rowsPerPage
  * @param sortBy
  * @param sortDirection
- * @param showAll
- * @param userId
  * @returns {Array}
  */
-const sortAndSlice = (arrToSlice, page, rowsPerPage, sortBy, sortDirection, showAll, userId) => {
-  //const arr = showAll ? arrToSlice.filter(doc => parseInt(doc.uploadedBy.id) === parseInt(userId)) : arrToSlice
+const sortAndSlice = (arrToSlice, page, rowsPerPage, sortBy, sortDirection) => {
   const arr = arrToSlice
   
   if (arr.length === 0) return []
@@ -57,6 +54,9 @@ const sortAndSlice = (arrToSlice, page, rowsPerPage, sortBy, sortDirection, show
   return sliceTable(ids, page, rows)
 }
 
+/***
+ * Reducers for all things related to the document management list
+ */
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   let rows = parseInt(state.rowsPerPage)
   switch (action.type) {
@@ -164,34 +164,6 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         rowsPerPage: action.rowsPerPage
       }
     
-    case types.ON_SELECT_ALL:
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          checked: state.allSelected ? [] : state.documents.visible
-        },
-        allSelected: !state.allSelected
-      }
-    
-    case types.ON_SELECT_ONE_FILE:
-      let updatedChecked = [...state.documents.checked]
-      
-      if (state.documents.checked.includes(action.id)) {
-        const index = state.documents.checked.indexOf(action.id)
-        updatedChecked.splice(index, 1)
-      } else {
-        updatedChecked = [...updatedChecked, action.id]
-      }
-      
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          checked: updatedChecked
-        }
-      }
-    
     case uploadTypes.UPLOAD_ONE_DOC_COMPLETE:
       if (!action.payload.failed) {
         obj = { ...state.documents.byId, [action.payload.doc._id]: action.payload.doc }
@@ -227,51 +199,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           ...state.documents,
           visible: sorted,
-          matches: action.payload
+          matches: action.value === '' ? [] : mapArray(action.payload, '_id')
         },
         page: 0,
         count: action.payload.length
       }
     
     case types.BULK_DELETE_REQUEST:
-      return {
-        ...state,
-        bulkOperationInProgress: true
-      }
-    
-    case types.BULK_DELETE_SUCCESS:
-      let updatedDocs = { ...state.documents.byId }
-      state.documents.checked.forEach(docId => {
-        const { [docId]: removed, ...docs } = updatedDocs
-        updatedDocs = docs
-      })
-      
-      userDocs = Object.values(updatedDocs)
-        .filter(doc => parseInt(doc.uploadedBy.id) === parseInt(action.payload.userId))
-      let docArr = state.showAll ? Object.values(updatedDocs) : userDocs
-      
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          byId: updatedDocs,
-          allIds: Object.keys(updatedDocs),
-          visible: sortAndSlice(
-            docArr,
-            state.page,
-            state.rowsPerPage,
-            state.sortBy,
-            state.sortDirection
-          ),
-          checked: [],
-          matches: [],
-          userDocs: userDocs.map(doc => doc._id)
-        },
-        count: docArr.length,
-        bulkOperationInProgress: false,
-        allSelected: false
-      }
-    
     case types.BULK_UPDATE_REQUEST:
     case types.BULK_REMOVE_PROJECT_REQUEST:
       return {
@@ -279,34 +213,73 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         bulkOperationInProgress: true
       }
     
-    case types.BULK_UPDATE_SUCCESS:
-      obj = action.payload.docs
-      docArr = state.showAll
-        ? Object.values(obj)
-        : state.documents.userDocs.map(id => ({ _id: id, ...obj[id] }))
+    case types.BULK_DELETE_SUCCESS:
+      let updatedDocs = { ...state.documents.byId }
+      let matches = state.documents.matches.slice()
+      userDocs = state.documents.userDocs.slice()
+      
+      action.payload.docsDeleted.forEach(docId => {
+        const { [docId]: removed, ...docs } = updatedDocs
+        updatedDocs = docs
+        if (userDocs.includes(docId)) {
+          userDocs.splice(userDocs.indexOf(docId), 1)
+        }
+        
+        if (matches.length > 0 && matches.includes(docId)) {
+          matches.splice(matches.indexOf(docId), 1)
+        }
+      })
+      
+      let docArr = state.documents.matches.length > 0
+        ? createArrOfObj(updatedDocs, matches)
+        : state.showAll
+          ? Object.values(updatedDocs)
+          : createArrOfObj(updatedDocs, userDocs)
       
       return {
         ...state,
         documents: {
           ...state.documents,
-          byId: obj,
-          allIds: Object.keys(obj),
-          visible: sortAndSlice(
-            docArr,
-            state.page,
-            state.rowsPerPage,
-            state.sortBy,
-            state.sortDirection
-          ),
-          checked: []
+          byId: updatedDocs,
+          allIds: Object.keys(updatedDocs),
+          visible: sortAndSlice(docArr, state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
+          checked: [],
+          matches,
+          userDocs
         },
+        count: docArr.length,
+        bulkOperationInProgress: false,
+        allSelected: false
+      }
+    
+    case types.BULK_UPDATE_SUCCESS:
+      const updatedVisible = action.payload.affectsView
+        ? sortAndSlice(action.payload.sortPayload, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+        : state.documents.visible
+      
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: action.payload.updatedById,
+          visible: updatedVisible,
+          checked: [],
+          matches: action.payload.affectsView
+            ? mapArray(action.payload.sortPayload, '_id')
+            : state.documents.matches
+        },
+        count: action.payload.affectsView
+          ? action.payload.search
+            ? action.payload.sortPayload.length
+            : updatedVisible.length
+          : state.count,
         bulkOperationInProgress: false,
         apiErrorOpen: false,
         allSelected: false
       }
     
-    case types.BULK_DELETE_FAIL:
     case types.CLEAN_PROJECT_LIST_FAIL:
+    case types.BULK_DELETE_FAIL:
     case types.BULK_UPDATE_FAIL:
       return {
         ...state,
@@ -354,7 +327,6 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       let sortDirection = 'desc'
       if (action.sortDirection === undefined) {
         if (currentSortField !== action.sortBy) {
-          // if sort field changed,  set sort direct to asc
           sortDirection = 'asc'
         } else {
           sortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc'
@@ -372,14 +344,27 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
+  
+    case types.SELECT_ALL_DOCS:
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          checked: state.allSelected ? [] : state.documents.visible
+        },
+        allSelected: !state.allSelected
+      }
+  
+    case types.SELECT_ONE_DOC:
+      let updatedChecked = [...state.documents.checked]
     
-    case types.ON_DELETE_ONE_FILE:
-      updatedChecked = [...state.documents.checked]
-      
       if (state.documents.checked.includes(action.id)) {
         const index = state.documents.checked.indexOf(action.id)
         updatedChecked.splice(index, 1)
+      } else {
+        updatedChecked = [...updatedChecked, action.id]
       }
+    
       return {
         ...state,
         documents: {
