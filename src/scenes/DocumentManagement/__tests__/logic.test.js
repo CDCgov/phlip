@@ -65,6 +65,15 @@ describe('Document Management logic', () => {
             },
             search: {
               form: {
+                params: {
+                  project: {
+                    id: null
+                  },
+                  jurisdiction: {
+                    id: null
+                  }
+                },
+                searchValue: '',
                 ...searchForm
               }
             }
@@ -561,7 +570,7 @@ describe('Document Management logic', () => {
       store.dispatch({ type: types.BULK_DELETE_REQUEST, selectedDocs: ['1', '2'] })
       
       store.whenComplete(() => {
-        expect(store.actions[1].payload.docs).toEqual({ n: 2, ok: 1 })
+        expect(store.actions[1].payload.docsDeleted).toEqual(['1', '2'])
         done()
       })
     })
@@ -582,7 +591,7 @@ describe('Document Management logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[2].payload.docs).toEqual({
+        expect(store.actions[2].payload.updatedById).toEqual({
           ...mockDocuments.byId,
           1: {
             ...mockDocuments.byId[1],
@@ -609,7 +618,7 @@ describe('Document Management logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[1].payload.docs).toEqual({
+        expect(store.actions[1].payload.updatedById).toEqual({
           ...mockDocuments.byId,
           1: {
             ...mockDocuments.byId[1],
@@ -658,30 +667,107 @@ describe('Document Management logic', () => {
     })
   })
   
-  describe('bulk remove Project  from selected docs', () => {
-    test('should remove project id if exist from documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
-      mock.onPut('/docs/cleanProjectList/12').reply(200, { n: 2, ok: 1 })
+  describe('bulk remove project from selected docs', () => {
+    xdescribe('if search fields are populated', () => {
+      describe('if show all is toggled', () => {
       
-      const store = setupStore()
-      store.dispatch({
-        type: types.BULK_REMOVE_PROJECT_REQUEST,
-        projectMeta: { id: 12 },
-        selectedDocs: [1, 2]
       })
       
-      store.whenComplete(() => {
-        expect(store.actions[1].payload.docs).toEqual({
-          ...mockDocuments.byId,
-          1: {
-            ...mockDocuments.byId[1],
-            projects: []
-          },
-          2: {
-            ...mockDocuments.byId[2],
-            projects: [11]
-          }
+      describe('if show all if not toggled', () => {
+      
+      })
+    })
+    
+    describe('if search fields are not populated', () => {
+      describe('if show all is toggled', () => {
+        let store
+        beforeEach(() => {
+          mock.onPut('/docs/cleanProjectList/12').reply(200, { n: 2, ok: 1 })
+          store = setupStore({}, {}, {})
+          store.dispatch({
+            type: types.BULK_REMOVE_PROJECT_REQUEST,
+            projectMeta: { id: 12 },
+            selectedDocs: [1, 2]
+          })
         })
-        done()
+        
+        test('should pass in all documents in state as the sorting list', done => {
+          const clean = {
+            ...mockDocuments.byId,
+            1: {
+              ...mockDocuments.byId[1],
+              projects: []
+            },
+            2: {
+              ...mockDocuments.byId[2],
+              projects: [11]
+            }
+          }
+          
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.sortPayload).toEqual(Object.values(clean))
+            expect(store.actions[1].payload.updatedById).toEqual(clean)
+            done()
+          })
+        })
+        
+        test('should set that it affects the view', done => {
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.affectsView).toEqual(true)
+            done()
+          })
+        })
+      })
+      
+      describe('if only showing documents uploaded by current user', () => {
+        let store
+        beforeEach(() => {
+          mock.onPut('/docs/cleanProjectList/12').reply(200, { n: 1, ok: 1 })
+          store = setupStore({}, { showAll: false }, {})
+          store.dispatch({
+            type: types.BULK_REMOVE_PROJECT_REQUEST,
+            projectMeta: { id: 12 },
+            selectedDocs: [2]
+          })
+        })
+        
+        test('should pass in only documents uploaded by current user for sorting', done => {
+          store.whenComplete(() => {
+            const clean = {
+              ...mockDocuments.byId,
+              2: {
+                ...mockDocuments.byId[2],
+                projects: [11]
+              }
+            }
+            expect(store.actions[1].payload.sortPayload).toEqual([clean[2], clean[3], clean[6]])
+            done()
+          })
+        })
+        
+        test('should pass in cleaned all documents', done => {
+          store.whenComplete(() => {
+            const clean = {
+              ...mockDocuments.byId,
+              2: {
+                ...mockDocuments.byId[2],
+                projects: [11]
+              }
+            }
+            expect(store.actions[1].payload.updatedById).toEqual(clean)
+            done()
+          })
+        })
+      })
+    })
+    
+    xdescribe('if the user removes the last remaining project from a document', () => {
+      describe('if the user is an admin', () => {
+      
+      })
+      
+      describe('if the user is not an admin', () => {
+      
       })
     })
   })

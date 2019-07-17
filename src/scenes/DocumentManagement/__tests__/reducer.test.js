@@ -248,9 +248,9 @@ describe('Document Management reducer', () => {
     })
   })
   
-  describe('ON_SELECT_ALL', () => {
+  describe('SELECT_ALL_DOCS', () => {
     test('should update allSelect property to false if state.allSelected === true', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = { type: types.SELECT_ALL_DOCS }
       
       const currentState = getState({ allSelected: true })
       const updatedState = reducer(currentState, action)
@@ -259,7 +259,7 @@ describe('Document Management reducer', () => {
     })
     
     test('should update allSelect property to true if state.allSelected === false', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = { type: types.SELECT_ALL_DOCS }
       
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -268,7 +268,7 @@ describe('Document Management reducer', () => {
     })
     
     test('should add all document ids to the documents.checked if state.allSelected === false', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = { type: types.SELECT_ALL_DOCS }
       
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
@@ -280,7 +280,7 @@ describe('Document Management reducer', () => {
     })
     
     test('should remove all document ids from documents.checked if state.allSelected === true', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = { type: types.SELECT_ALL_DOCS }
       
       const currentState = getState({
         allSelected: true,
@@ -292,9 +292,9 @@ describe('Document Management reducer', () => {
     })
   })
   
-  describe('ON_SELECT_ONE_FILE', () => {
+  describe('SELECT_ONE_DOC', () => {
     test('should add the action.id to documents.checked if it doesn\'t already exist', () => {
-      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
+      const action = { type: types.SELECT_ONE_DOC, id: '5' }
       
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -303,27 +303,7 @@ describe('Document Management reducer', () => {
     })
     
     test('should remove the id that matches action.id if documents.checked already contains action.id', () => {
-      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
-      
-      const currentState = getState({ documents: { checked: ['4', '5', '6'] } })
-      const updatedState = reducer(currentState, action)
-      
-      expect(updatedState.documents.checked).toEqual(['4', '6'])
-    })
-  })
-  
-  describe('ON_DELETE_ONE_FILE', () => {
-    test('should remove the action.id from documents.checked if it does exist', () => {
-      const action = { type: types.ON_DELETE_ONE_FILE, id: '5' }
-      
-      const currentState = getState()
-      const updatedState = reducer(currentState, action)
-      
-      expect(updatedState.documents.checked).toEqual([])
-    })
-    
-    test('should remove the id that matches action.id if documents.checked already contains action.id', () => {
-      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
+      const action = { type: types.SELECT_ONE_DOC, id: '5' }
       
       const currentState = getState({ documents: { checked: ['4', '5', '6'] } })
       const updatedState = reducer(currentState, action)
