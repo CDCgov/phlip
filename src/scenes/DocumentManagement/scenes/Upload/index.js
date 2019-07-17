@@ -301,8 +301,10 @@ export class Upload extends Component {
         searchString === ''
           ? this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id, 30)
           : this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        this.props.actions.projectAutocomplete.setSearchingStatus(true)
       } else {
         this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+        this.props.actions.jurisdictionAutocomplete.setSearchingStatus(true)
       }
     }, 300)
   }

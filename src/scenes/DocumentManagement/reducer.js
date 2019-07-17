@@ -64,7 +64,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         getDocumentsInProgress: true,
-        allSelected: false
+        allSelected: false,
+        bulkOperationInProgress: false
       }
     
     case types.GET_DOCUMENTS_SUCCESS:
