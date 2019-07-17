@@ -94,6 +94,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
       handleGetSuggestions = ({ value: searchString }) => {
         const actions = this.props[`${type}AutoActions`]
         actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+        actions.setSearchingStatus(true)
       }
       
       /**

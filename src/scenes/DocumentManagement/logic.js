@@ -119,10 +119,17 @@ const pageRowChageLogic = createLogic({
   type: [types.ON_PAGE_CHANGE, types.ON_ROWS_CHANGE, types.SORT_DOCUMENTS],
   transform({ getState, action }, next) {
     const isSearch = getState().scenes.docManage.search.form.searchValue !== ''
-    const matches = getState().scenes.docManage.main.list.documents.matches
+    const docState = getState().scenes.docManage.main.list
+    const userDocs = docState.documents.userDocs.map(id => ({ _id: id, ...docState.documents.byId[id] }))
+    const matches = docState.documents.matches
+    
     next({
       ...action,
-      payload: isSearch ? matches : Object.values(getState().scenes.docManage.main.list.documents.byId)
+      payload: isSearch
+        ? matches
+        : docState.showAll
+          ? Object.values(docState.documents.byId)
+          : userDocs
     })
   }
 })
@@ -245,6 +252,7 @@ const getDocLogic = createLogic({
 const bulkUpdateLogic = createLogic({
   type: types.BULK_UPDATE_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
+    const user = getState().data.user.currentUser
     try {
       await docApi.bulkUpdateDoc({ meta: action.updateData, docIds: action.selectedDocs })
       if (['projects', 'jurisdictions'].includes(action.updateData.updateType)) {
@@ -271,7 +279,7 @@ const bulkUpdateLogic = createLogic({
         }
       })
       
-      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: existingDocs })
+      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: { docs: existingDocs, userId: user.id } })
       done()
     } catch (err) {
       dispatch({
@@ -290,6 +298,7 @@ const bulkUpdateLogic = createLogic({
 const bulkDeleteLogic = createLogic({
   type: types.BULK_DELETE_REQUEST,
   async process({ getState, docApi, action, api }, dispatch, done) {
+    const user = getState().data.user.currentUser
     try {
       const deleteResult = await docApi.bulkDeleteDoc({ 'docIds': action.selectedDocs })
       action.selectedDocs.map(doc => {
@@ -299,7 +308,7 @@ const bulkDeleteLogic = createLogic({
           console.log(`failed to remove annotations for doc: ${doc}`)
         }
       })
-      dispatch({ type: types.BULK_DELETE_SUCCESS, payload: deleteResult })
+      dispatch({ type: types.BULK_DELETE_SUCCESS, payload: { docs: deleteResult, userId: user.id } })
       done()
     } catch (e) {
       dispatch({ type: types.BULK_DELETE_FAIL, payload: { error: 'We couldn\'t delete the selected documents.' } })
@@ -344,6 +353,7 @@ const bulkRemoveProjectLogic = createLogic({
     let projectMeta = action.projectMeta
     let selectedDocs = action.selectedDocs
     try {
+      const user = getState().data.user.currentUser
       await docApi.cleanProject({ 'docIds': selectedDocs }, {}, { 'projectId': projectMeta.id })
       let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
       selectedDocs.forEach(docKey => {
@@ -352,7 +362,7 @@ const bulkRemoveProjectLogic = createLogic({
           cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
         }
       })
-      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: cleannedDocs })
+      dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: { docs: cleannedDocs, userId: user.id } })
       done()
     } catch (e) {
       dispatch({ type: types.BULK_UPDATE_FAIL, payload: 'We couldn\'t update the documents.' })

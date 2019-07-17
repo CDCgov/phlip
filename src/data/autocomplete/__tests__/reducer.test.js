@@ -14,9 +14,9 @@ describe('Autocomplete reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
   
-  describe('SEARCH_FOR_SUGGESTIONS_REQUEST', () => {
+  describe('SET_SEARCHING_STATUS', () => {
     test('should indicate that searching is happening', () => {
-      const action = { type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` }
+      const action = { type: `${types.SET_SEARCHING_STATUS}_PROJECT`, status: true }
       const currentState = getState()
       const state = reducer(currentState, action)
       expect(state.searching).toEqual(true)
