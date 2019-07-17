@@ -668,15 +668,15 @@ describe('Document Management logic', () => {
   })
   
   describe('bulk remove project from selected docs', () => {
-    xdescribe('if search fields are populated', () => {
-      describe('if show all is toggled', () => {
-      
-      })
-      
-      describe('if show all if not toggled', () => {
-      
-      })
-    })
+    // xdescribe('if search fields are populated', () => {
+    //   describe('if show all is toggled', () => {
+    //
+    //   })
+    //
+    //   describe('if show all if not toggled', () => {
+    //
+    //   })
+    // })
     
     describe('if search fields are not populated', () => {
       describe('if show all is toggled', () => {
@@ -758,16 +758,6 @@ describe('Document Management logic', () => {
             done()
           })
         })
-      })
-    })
-    
-    xdescribe('if the user removes the last remaining project from a document', () => {
-      describe('if the user is an admin', () => {
-      
-      })
-      
-      describe('if the user is not an admin', () => {
-      
       })
     })
   })
