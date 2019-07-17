@@ -38,11 +38,11 @@ export class DocList extends Component {
     /**
      * Handles when the user clicks the checkbox table header to select all files
      */
-    onSelectAllFiles: PropTypes.func,
+    onSelectAllDocs: PropTypes.func,
     /**
      * Handles when a user clicks the checkbox table cell in a row
      */
-    onSelectOneFile: PropTypes.func,
+    onSelectOneDoc: PropTypes.func,
     /**
      * Total number of documents
      */
@@ -155,11 +155,11 @@ export class DocList extends Component {
    * Renders the table header
    */
   headerRenderer = ({ label, columnIndex, dataKey, sortBy, sortDirection }) => {
-    const { allSelected, onSelectAllFiles, handleSortRequest } = this.props
+    const { allSelected, onSelectAllDocs, handleSortRequest } = this.props
     const inner =
       columnIndex === 0
         ? <CheckboxLabel
-          input={{ value: allSelected, onChange: onSelectAllFiles }}
+          input={{ value: allSelected, onChange: onSelectAllDocs }}
           labelStyle={{ margin: 0 }}
           style={{ width: 24, height: 24 }}
         />
@@ -198,7 +198,7 @@ export class DocList extends Component {
    * @returns {*}
    */
   cellRenderer = ({ cellData, columnIndex = null, rowIndex, style }) => {
-    const { docs, onSelectOneFile } = this.props
+    const { docs, onSelectOneDoc } = this.props
     const doc = docs[rowIndex]
     
     return (
@@ -214,7 +214,7 @@ export class DocList extends Component {
           boxSizing: 'border-box'
         }}>
         {columnIndex === 0 && <CheckboxLabel
-          input={{ value: cellData, onChange: () => onSelectOneFile(doc._id) }}
+          input={{ value: cellData, onChange: () => onSelectOneDoc(doc._id) }}
           labelStyle={{ margin: 0 }}
           style={{ width: 24, height: 24 }}
         />}
@@ -323,73 +323,6 @@ export class DocList extends Component {
       </FlexGrid>
     )
   }
-}
-
-DocList.propTypes = {
-  /**
-   * List of document ids
-   */
-  documents: PropTypes.array,
-  /**
-   * Current page in table
-   */
-  page: PropTypes.number,
-  /**
-   * Currently selected # of rows per page to show
-   */
-  rowsPerPage: PropTypes.string,
-  /**
-   * Handles when the user clicks the checkbox table header to select all files
-   */
-  onSelectAllFiles: PropTypes.func,
-  /**
-   * Handles when a user clicks the checkbox table cell in a row
-   */
-  onSelectOneFile: PropTypes.func,
-  /**
-   * Total number of documents
-   */
-  docCount: PropTypes.number,
-  /**
-   * Handles when the user requests to change pages in table
-   */
-  onChangePage: PropTypes.func,
-  /**
-   * Handles when the user requests to change number of rows per page
-   */
-  onChangeRows: PropTypes.func,
-  /**
-   * Whether or not all files are selected (by clicking the talbe header checkbox)
-   */
-  allSelected: PropTypes.bool,
-  /**
-   * Handles when the user requests to change pages in table
-   */
-  onBulkAction: PropTypes.func,
-  /**
-   * Handles when the user requests sorting
-   */
-  handleSortRequest: PropTypes.func,
-  /**
-   * Current value that the table is being sorted by
-   */
-  sortBy: PropTypes.string,
-  /**
-   * Current direction the table is being sorted
-   */
-  sortDirection: PropTypes.string,
-  /**
-   * Current user role
-   */
-  userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder']),
-  /**
-   * Whether or not to show all docs as opposed to just the ones uploaded by the user
-   */
-  showAll: PropTypes.bool,
-  /**
-   * Function called when the user toggles the switch
-   */
-  toggleAllDocs: PropTypes.func
 }
 
 /* istanbul ignore next*/

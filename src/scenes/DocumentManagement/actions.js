@@ -10,8 +10,8 @@ export const types = {
   GET_DOCUMENTS_REQUEST: 'GET_DOCUMENTS_REQUEST',
   GET_DOCUMENTS_SUCCESS: 'GET_DOCUMENTS_SUCCESS',
   GET_DOCUMENTS_FAIL: 'GET_DOCUMENTS_FAIL',
-  ON_SELECT_ALL: 'ON_SELECT_ALL',
-  ON_SELECT_ONE_FILE: 'ON_SELECT_ONE_FILE',
+  SELECT_ALL_DOCS: 'SELECT_ALL_DOCS',
+  SELECT_ONE_DOC: 'SELECT_ONE_DOC',
   ON_PAGE_CHANGE: 'ON_PAGE_CHANGE',
   ON_ROWS_CHANGE: 'ON_ROWS_CHANGE',
   FLUSH_STATE: 'FLUSH_STATE',
@@ -28,7 +28,6 @@ export const types = {
   CLEAN_PROJECT_LIST_REQUEST: 'CLEAN_PROJECT_LIST_REQUEST',
   CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
   CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
-  ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE',
   BULK_REMOVE_PROJECT_REQUEST: 'BULK_REMOVE_PROJECT_REQUEST',
   ON_TOGGLE_ALL_DOCS: 'ON_TOGGLE_ALL_DOCS',
   ...searchTypes,
@@ -37,10 +36,10 @@ export const types = {
 
 export default {
   getDocumentsRequest: makeActionCreator(types.GET_DOCUMENTS_REQUEST),
-  handleSelectAll: makeActionCreator(types.ON_SELECT_ALL),
   handlePageChange: makeActionCreator(types.ON_PAGE_CHANGE, 'page'),
   handleRowsChange: makeActionCreator(types.ON_ROWS_CHANGE, 'rowsPerPage'),
-  handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id'),
+  handleSelectAllDocs: makeActionCreator(types.SELECT_ALL_DOCS),
+  handleSelectOneDoc: makeActionCreator(types.SELECT_ONE_DOC, 'id'),
   handleBulkUpdate: makeActionCreator(types.BULK_UPDATE_REQUEST, 'updateData', 'selectedDocs'),
   handleBulkDelete: makeActionCreator(types.BULK_DELETE_REQUEST, 'selectedDocs'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
@@ -48,7 +47,6 @@ export default {
   handleSearchValueChange: searchActions.updateSearchValue,
   handleFormValueChange: searchActions.updateFormValue,
   cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST, 'projectMeta'),
-  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE, 'id'),
   handleBulkProjectRemove: makeActionCreator(types.BULK_REMOVE_PROJECT_REQUEST, 'projectMeta', 'selectedDocs'),
   toggleAllDocs: makeActionCreator(types.ON_TOGGLE_ALL_DOCS)
 }
