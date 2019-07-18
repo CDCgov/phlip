@@ -174,11 +174,24 @@ export class ProjectList extends Component {
     })
   }
   
+  /**
+   * Handles a change in the current page
+   */
+  handlePageChange = (event, page) => {
+    const { handlePageChange } = this.props
+    handlePageChange(page)
+  }
+  
+  /**
+   * Handles change in rows per page
+   */
+  handleRowsPerPageChange = event => {
+    const { handleRowsChange } = this.props
+    handleRowsChange(event.target.value)
+  }
+  
   render() {
-    const {
-      projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
-      getProjectUsers, openProject
-    } = this.props
+    const { projectIds, user, page, rowsPerPage, projectCount, handleExport, getProjectUsers, openProject } = this.props
     
     return (
       <FlexGrid style={{ overflow: 'auto' }} onMouseDown={this.onMouseDown}>
@@ -207,8 +220,8 @@ export class ProjectList extends Component {
                 count={projectCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
+                onChangePage={this.handlePageChange}
+                onChangeRowsPerPage={this.handleRowsPerPageChange}
               />
             </TableRow>
           </TableFooter>
