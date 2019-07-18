@@ -1,10 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from '@material-ui/core/styles'
-import theme from 'services/theme'
 import { Home } from '../index'
-import { FlexGrid, Icon } from 'components'
 
 const props = {
   actions: {

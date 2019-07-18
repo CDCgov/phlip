@@ -89,13 +89,12 @@ export class Login extends Component {
    * @param {object} values
    */
   handleSubmit = values => {
-    const { session, actions, history } = this.props
+    const { session, actions } = this.props
     if (session) {
-      // maybe the user clicked the 'back' button in the browser
-      history.push('/home')
-    } else {
-      actions.loginUserRequest(values)
+      // clear the current session to start fresh
+      actions.logoutUser()
     }
+    actions.loginUserRequest(values)
   }
   
   render() {
