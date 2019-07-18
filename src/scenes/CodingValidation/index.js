@@ -545,7 +545,11 @@ export class CodingValidation extends Component {
                 flex
                 style={{ padding: '1px 15px 20px 3px', overflow: 'auto', minHeight: 500 }}>
                 {schemeError !== null && <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                <BulkValidate open={bulkValidateOpen} onClose={this.handleCloseBulkValidate} />
+                <BulkValidate
+                  open={bulkValidateOpen}
+                  onClose={this.handleCloseBulkValidate}
+                  users={project.projectUsers}
+                />
                 {getRequestInProgress
                   ? showPageLoader
                     ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
