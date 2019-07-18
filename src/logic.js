@@ -5,7 +5,7 @@ import { createLogic } from 'redux-logic'
 import { types } from 'data/users/actions'
 import scenesLogic from 'scenes/logic'
 import dataLogic from 'data/logic'
-import { logout } from 'services/authToken'
+import { logout, getSamlToken } from 'services/authToken'
 import { persistor } from 'services/store'
 import axios from 'axios'
 
@@ -34,7 +34,7 @@ const logoutLogic = createLogic({
 
 const samsLogout = async () => {
 
-  const user = getCookie('user').trim()
+  const user = getSamlToken()
   let parsedUser = JSON.parse(user.substring(1,user.length-1))
   try {
     axios.get('/logout', {
@@ -53,21 +53,43 @@ const samsLogout = async () => {
     return err
   }
 }
-
-const getCookie = (cname) => {
-  let name = cname + '='
-  let ca = document.cookie.split(';')
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i]
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1)
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length)
-    }
-  }
-  return ''
-}
+// using cooking section
+// const samsLogout = async () => {
+//
+//   const user = getCookie('user').trim()
+//   let parsedUser = JSON.parse(user.substring(1,user.length-1))
+//   try {
+//     axios.get('/logout', {
+//       params: {
+//         nameID: parsedUser.nameID,
+//         nameIDFormat: parsedUser.nameIDFormat,
+//         sessionIndex: parsedUser.sessionIndex
+//       }
+//     })
+//         .then(res => {
+//           logout()
+//           const logoutURL = res.data
+//           location.href=logoutURL
+//         })
+//   } catch (err) {
+//     return err
+//   }
+// }
+//
+// const getCookie = (cname) => {
+//   let name = cname + '='
+//   let ca = document.cookie.split(';')
+//   for(let i = 0; i < ca.length; i++) {
+//     let c = ca[i]
+//     while (c.charAt(0) === ' ') {
+//       c = c.substring(1)
+//     }
+//     if (c.indexOf(name) === 0) {
+//       return c.substring(name.length, c.length)
+//     }
+//   }
+//   return ''
+// }
 
 export default [
   ...dataLogic,

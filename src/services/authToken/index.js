@@ -2,6 +2,7 @@ import memoize from 'lodash/memoize'
 import jwtDecode from 'jwt-decode'
 
 const TOKEN_KEY = 'esquire_token'
+const SAML_KEY = 'saml_token'
 
 const getItem = key => () => window.sessionStorage.getItem(key)
 const setItem = key => value => window.sessionStorage.setItem(key, value)
@@ -10,17 +11,25 @@ const removeItem = key => () => window.sessionStorage.removeItem(key)
 const getAuthToken = getItem(TOKEN_KEY)
 const setAuthToken = setItem(TOKEN_KEY)
 const removeAuthToken = removeItem(TOKEN_KEY)
+
+const getSamlAuthToken = getItem(SAML_KEY)
+const setSamlAuthToken = setItem(SAML_KEY)
+const removeSamlAuthToken = removeItem(SAML_KEY)
+
 const memoizedGetAuthToken = memoize(getAuthToken)
+const memoizedGetSamlAuthToken = memoize(getSamlAuthToken)
 
 /**
  * Logs in a user by setting the token parameter is session storage
  *
  * @param {String} token
  */
-export const login = async token => {
+export const login = async (tokens) => {
   return new Promise(resolve => {
     memoizedGetAuthToken.cache.clear()
-    setAuthToken(token)
+    memoizedGetSamlAuthToken.cache.clear()
+    setAuthToken(tokens.token)
+    setSamlAuthToken(tokens.samlToken)
     resolve()
   })
 }
@@ -39,7 +48,9 @@ export const isLoggedIn = () => {
  */
 export const logout = () => {
   removeAuthToken()
+  removeSamlAuthToken()
   memoizedGetAuthToken.cache.clear()
+  memoizedGetSamlAuthToken.cache.clear()
 }
 
 /**
@@ -48,6 +59,13 @@ export const logout = () => {
  * @returns {String}
  */
 export const getToken = () => memoizedGetAuthToken(TOKEN_KEY)
+
+/**
+ * Gets the saml token that is in session storage
+ *
+ * @returns {String}
+ */
+export const getSamlToken = () => memoizedGetSamlAuthToken(SAML_KEY)
 
 /**
  * Decodes the JWT token
