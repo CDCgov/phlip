@@ -538,7 +538,6 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                     Object {
                       "borderRadius": 3,
                       "height": 50,
-                      "marginRight": 20,
                       "width": 150,
                     }
                   }
@@ -558,6 +557,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                     Object {
                       "borderRadius": 3,
                       "height": 50,
+                      "marginLeft": 20,
                       "width": 150,
                     }
                   }
@@ -1108,7 +1108,6 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                     Object {
                       "borderRadius": 3,
                       "height": 50,
-                      "marginRight": 20,
                       "width": 150,
                     }
                   }
@@ -1128,6 +1127,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                     Object {
                       "borderRadius": 3,
                       "height": 50,
+                      "marginLeft": 20,
                       "width": 150,
                     }
                   }
