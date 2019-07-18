@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Button, Icon, Avatar } from 'components'
+import { FlexGrid, Button, Icon, Avatar, RadioButtonLabel } from 'components'
 import Modal, { ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import Stepper from '@material-ui/core/Stepper'
@@ -187,32 +187,54 @@ export class BulkValidate extends Component {
                   )
                 })}
               </FlexGrid>}
-              {activeStep === 1 && <FlexGrid container flex padding="20px 10px 10px">
+              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 10px">
                 {/*<Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>*/}
                 <FlexGrid container style={{ marginTop: 10 }}>
                   <FlexGrid container>
                     <Typography variant="display1" style={{ color: 'black' }}>User</Typography>
-                    <Typography style={{ paddingTop: 10, paddingBottom: 40 }} variant="body1">
-                      Select the user whose coding information you would like to use as the validated codes.
+                    <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">
+                      Select the user whose coding data you would like to use as the validated codes.
                     </Typography>
                   </FlexGrid>
-                  {users.map((user, i) => {
-                    return (
-                      <FlexGrid key={`select-user-${i}`} container type="row" padding="10px 20px 10px 0" align="center">
-                        <Avatar userId={user.userId} {...user} />
-                        <Typography
-                          variant="subheading"
+                  <List>
+                    {users.map((user, i) => {
+                      const isUserSelected = selections.user !== null && selections.user.userId === user.userId
+                      return (
+                        <ListItem
+                          button
+                          key={`select-user-${i}`}
                           style={{
-                            marginLeft: 10,
-                            fontSize: '1.2rem',
-                            fontWeight: 300,
-                            lineHeight: 'normal'
-                          }}>
-                          {user.firstName}{' '}{user.lastName}
-                        </Typography>
-                      </FlexGrid>
-                    )
-                  })}
+                            padding: 10,
+                            backgroundColor: isUserSelected ? `rgba(233, 233, 233, 0.48)` : ''
+                          }}
+                          onClick={this.handleSelectUser(user)}>
+                          <ListItemAvatar>
+                            <Avatar userId={user.userId} />
+                          </ListItemAvatar>
+                          <ListItemText
+                            style={{ padding: 0 }}
+                            primaryTypographyProps={{
+                              variant: 'subheading',
+                              style: {
+                                marginLeft: 10,
+                                fontSize: '1.2rem',
+                                fontWeight: 300,
+                                lineHeight: 'normal'
+                              }
+                            }}
+                            primary={`${user.firstName}${' '}${user.lastName}`}
+                          />
+                          <RadioButtonLabel
+                            checked={isUserSelected}
+                            onChange={this.handleSelectUser(user)}
+                            labelStyle={{
+                              width: 24, height: 24
+                            }}
+                          />
+                        </ListItem>
+                      )
+                    })}
+                  </List>
                 </FlexGrid>
               </FlexGrid>}
               {activeStep === 2 && <FlexGrid container flex type="row">
@@ -220,10 +242,11 @@ export class BulkValidate extends Component {
             </FlexGrid>
             <FlexGrid>
               <Stepper activeStep={activeStep} alternativeLabel>
-                {steps.map(step => {
+                {steps.map((step, i) => {
+                  const isActive = activeStep === i
                   return (
-                    <Step key={step.label} completed={step.completed}>
-                      <StepLabel optional={false} disabled={!step.completed}>
+                    <Step key={step.label} completed={step.completed && !isActive} active={isActive}>
+                      <StepLabel optional={false} disabled={!isActive}>
                         {step.label}
                       </StepLabel>
                     </Step>
