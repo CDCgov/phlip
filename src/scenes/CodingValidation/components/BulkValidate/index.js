@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Button } from 'components'
+import { FlexGrid, Button, Icon } from 'components'
 import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import Stepper from '@material-ui/core/Stepper'
@@ -35,7 +35,7 @@ export class BulkValidate extends Component {
         ...this.state.selections,
         scope
       },
-      activeStep: 1
+      activeStep: this.state.selections.scope === null ? 1 : 0
     })
   }
   
@@ -135,23 +135,32 @@ export class BulkValidate extends Component {
           <FlexGrid container flex style={{ height: '100%' }}>
             {activeStep === 0 && <FlexGrid container flex type="row">
               {scopes.map((scope, i) => {
+                const isScopeSelected = selections.scope === scope.scope
                 return (
                   <FlexGrid
                     container
                     key={`scope-${i}`}
                     flex
-                    padding="0 10px 10px"
+                    padding="20px 10px 10px"
                     style={{
                       width: '33%',
-                      marginTop: 30,
-                      borderRight: `${i !== 2 ? 1 : 0}px solid rgba(0, 0, 0, 0.12)`
+                      marginTop: 10,
+                      borderRight: `${i !== 2 ? 1 : 0}px solid rgba(0, 0, 0, 0.12)`,
+                      backgroundColor: isScopeSelected ? `rgba(233, 233, 233, 0.48)` : 'white'
                     }}
                     align="center">
                     <Typography variant="display1" style={{ color: 'black' }}>{scope.title}</Typography>
                     <FlexGrid padding="40px 20px 20px" style={{ height: '40%' }}>
                       <Typography variant="body1" align="center">{scope.text}</Typography>
                     </FlexGrid>
-                    <Button onClick={this.handleSelectScope(scope.scope)} color="accent">Select</Button>
+                    {!isScopeSelected && <Button onClick={this.handleSelectScope(scope.scope)}>
+                      Select
+                    </Button>}
+                    {isScopeSelected &&
+                    <FlexGrid container type="row" align="center">
+                      <Icon color="primary" size={25}>check_circle</Icon>
+                      <Typography variant="title" style={{ marginLeft: 4 }}>Selected!</Typography>
+                    </FlexGrid>}
                   </FlexGrid>
                 )
               })}
@@ -172,6 +181,19 @@ export class BulkValidate extends Component {
                   )
                 })}
               </Stepper>
+              <FlexGrid
+                container
+                type="row"
+                align="center"
+                justify={activeStep === 1
+                  ? 'space-between'
+                  : activeStep === 0
+                    ? 'flex-end'
+                    : 'flex-start'}>
+                {activeStep !== 0 && <Button onClick={this.handleGoBackStep}>Back</Button>}
+                {(activeStep !== 2 && steps[activeStep].completed) &&
+                <Button onClick={this.handleGoForwardStep}>Next</Button>}
+              </FlexGrid>
             </FlexGrid>
           </FlexGrid>
         </ModalContent>
