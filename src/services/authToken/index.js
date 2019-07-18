@@ -24,12 +24,14 @@ const memoizedGetSamlAuthToken = memoize(getSamlAuthToken)
  *
  * @param {String} token
  */
-export const login = async (tokens) => {
+export const login = async (token,samlToken) => {
   return new Promise(resolve => {
     memoizedGetAuthToken.cache.clear()
-    memoizedGetSamlAuthToken.cache.clear()
-    setAuthToken(tokens.token)
-    setSamlAuthToken(tokens.samlToken)
+    setAuthToken(token)
+    if (samlToken !== undefined) {
+      memoizedGetSamlAuthToken.cache.clear()
+      setSamlAuthToken(samlToken)
+    }
     resolve()
   })
 }

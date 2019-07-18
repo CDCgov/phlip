@@ -54,9 +54,7 @@ export const checkPivUserLogic = createLogic({
         {},
         { tokenObj: action.tokenObj }
       )
-      //build a new token object
-      const PIVtokens = { token: user.token.value, samlToken: action.tokenObj.samlToken}
-      await login(PIVtokens)  // combine JWT with saml before send it to login
+      await login(user.token.value,action.tokenObj.samlToken) // combine JWT with saml before send it to login
       
       try {
         bookmarks = await getBookmarks(api, user.id)
