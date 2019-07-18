@@ -87,8 +87,7 @@ export class Home extends Component {
   
   constructor(props, context) {
     super(props, context)
-    this.exportRef = null
-    this.setExportRef = element => this.exportRef = element
+    this.exportRef = React.createRef()
   }
   
   componentDidMount() {
@@ -104,6 +103,8 @@ export class Home extends Component {
       }
     }
   }
+  
+  url = null
   
   /**
    * Opens the export dialog after the user clicks the 'Export' download button.
@@ -121,6 +122,9 @@ export class Home extends Component {
    */
   onCloseExportDialog = () => {
     const { actions } = this.props
+    if (this.url !== null) {
+      window.URL.revokeObjectURL(this.url)
+    }
     actions.clearProjectToExport()
   }
   
@@ -132,13 +136,12 @@ export class Home extends Component {
     const { projectToExport } = this.props
     
     const csvBlob = new Blob([projectToExport.text], { type: 'text/csv' })
-    const url = URL.createObjectURL(csvBlob)
-    this.exportRef.href = url
-    this.exportRef.download = projectToExport.user.id === null || projectToExport.user.id === 'val'
+    this.url = URL.createObjectURL(csvBlob)
+    this.exportRef.current.href = this.url
+    this.exportRef.current.download = projectToExport.user.id === null || projectToExport.user.id === 'val'
       ? `${projectToExport.name}-${projectToExport.exportType}-export.csv`
       : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
-    this.exportRef.click()
-    //window.URL.revokeObjectURL(url)
+    this.exportRef.current.click()
   }
   
   /**
@@ -149,16 +152,11 @@ export class Home extends Component {
    */
   onChooseExport = (type, user) => {
     const { actions } = this.props
+    if (this.url !== null) {
+      window.URL.revokeObjectURL(this.url)
+      this.url = null
+    }
     actions.exportDataRequest(type, user)
-  }
-  
-  /**
-   * Closes the dialog for exporting a specific project
-   * @public
-   */
-  clearProjectToExport = () => {
-    const { actions } = this.props
-    actions.clearProjectToExport()
   }
   
   /**
@@ -184,7 +182,7 @@ export class Home extends Component {
    * Handles which sort type to use
    * @param selectedOption
    */
-  handleSortParmChange = selectedOption => {
+  handleSortParamChange = selectedOption => {
     const { actions, sortBookmarked } = this.props
     
     if (selectedOption !== 'sortBookmarked') {
@@ -207,6 +205,14 @@ export class Home extends Component {
         <Icon size={20} color="black">{direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}</Icon>
       </>
     )
+  }
+  
+  /**
+   * Handles search value change
+   */
+  handleSearchValueChange = event => {
+    const { actions } = this.props
+    actions.updateSearchValue(event.target.value)
   }
   
   render() {
@@ -253,7 +259,7 @@ export class Home extends Component {
             options={options}
             input={{
               value: sortBookmarked ? 'sortBookmarked' : sortBy,
-              onChange: this.handleSortParmChange
+              onChange: this.handleSortParamChange
             }}
             renderValue={value => {
               const option = options.find(option => option.value === value)
@@ -268,36 +274,29 @@ export class Home extends Component {
             formControlStyle={{ minWidth: 180, paddingRight: 20 }}
           />
           <SearchBar
-            searchValue={this.searchValue}
+            searchValue={searchValue}
             id="project-search"
-            handleSearchValueChange={event => actions.updateSearchValue(event.target.value)}
+            handleSearchValueChange={this.handleSearchValueChange}
             placeholder="Search"
           />
         </PageHeader>
         
-        {error
-          ? this.renderErrorMessage()
-          : <ProjectList
-            user={user}
-            projectIds={visibleProjects}
-            projectCount={projectCount}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            sortBy={sortBy}
-            direction={direction}
-            sortBookmarked={sortBookmarked}
-            searchValue={searchValue}
-            handleExport={this.onToggleExportDialog}
-            handleRequestSort={actions.sortProjects}
-            handlePageChange={actions.updatePage}
-            handleRowsChange={actions.updateRows}
-            handleSortBookmarked={() => actions.sortBookmarked(!sortBookmarked)}
-            handleToggleProject={actions.toggleProject}
-            getProjectUsers={actions.getProjectUsers}
-            openProject={openProject}
-            allowExpandCollapse={projectToExport.id === null}
-          />
-        }
+        {error && this.renderErrorMessage()}
+        {!error &&
+        <ProjectList
+          user={user}
+          projectIds={visibleProjects}
+          projectCount={projectCount}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleExport={this.onToggleExportDialog}
+          handlePageChange={actions.updatePage}
+          handleRowsChange={actions.updateRows}
+          handleToggleProject={actions.toggleProject}
+          getProjectUsers={actions.getProjectUsers}
+          openProject={openProject}
+          allowExpandCollapse={projectToExport.id === null}
+        />}
         <ExportDialog
           open={projectToExport.id !== null}
           onChooseExport={this.onChooseExport}
@@ -305,7 +304,7 @@ export class Home extends Component {
           projectToExport={projectToExport}
           inProgress={exporting}
         />
-        <a style={{ display: 'none' }} ref={this.setExportRef} />
+        <a style={{ display: 'none' }} ref={this.exportRef} />
       </FlexGrid>
     )
   }

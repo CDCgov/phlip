@@ -255,8 +255,6 @@ describe('File Upload component', () => {
         
         const spy = jest.spyOn(props, 'handleAddFiles')
         await wrapper.find('form').simulate('drop', event)
-        //const files = await wrapper.instance().getAllFileEntries(event.dataTransfer.items)
-        //console.log(files)
         expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
         done()
       })

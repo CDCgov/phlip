@@ -36,7 +36,7 @@ export const types = {
 }
 
 export default {
-  getProjectsRequest: () => ({ type: types.GET_PROJECTS_REQUEST, payload: {} }),
+  getProjectsRequest: () => ({ type: types.GET_PROJECTS_REQUEST, payload: { searchValue: undefined } }),
   sortBookmarked: sortBookmarked => ({ type: types.SORT_BOOKMARKED, payload: { sortBookmarked } }),
   sortProjects: sortBy => ({ type: types.SORT_PROJECTS, payload: { sortBy } }),
   updatePage: page => ({ type: types.UPDATE_PAGE, payload: { page } }),

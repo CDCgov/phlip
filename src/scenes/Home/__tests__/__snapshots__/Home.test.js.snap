@@ -103,22 +103,17 @@ exports[`Home scene should render correctly 1`] = `
       handleSearchValueChange={[Function]}
       id="project-search"
       placeholder="Search"
+      searchValue=""
     />
   </withRouter(WithTheme(PageHeader))>
   <withRouter(ProjectList)
     allowExpandCollapse={false}
-    direction="desc"
     handleExport={[Function]}
     handlePageChange={[MockFunction]}
-    handleRequestSort={[MockFunction]}
     handleRowsChange={[MockFunction]}
-    handleSortBookmarked={[Function]}
     page={0}
     projectIds={Array []}
     rowsPerPage="10"
-    searchValue=""
-    sortBookmarked={false}
-    sortBy="dateLastEdited"
     user={
       Object {
         "email": "kmuterspaw@cdc.gov",

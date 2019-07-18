@@ -4,7 +4,7 @@ describe('Home actions creators', () => {
   test('should create an action to get projects', () => {
     const expectedAction = {
       type: types.GET_PROJECTS_REQUEST,
-      payload: {}
+      payload: { searchValue: undefined }
     }
     expect(actions.getProjectsRequest({})).toEqual(expectedAction)
   })

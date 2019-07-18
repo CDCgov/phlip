@@ -54,7 +54,8 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
     case projectTypes.SET_PROJECTS:
       return {
         ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue', 'projectCount']),
-        projects: action.payload.projects
+        projects: action.payload.projects,
+        searchValue: ''
       }
     
     case types.TOGGLE_BOOKMARK_SUCCESS:
