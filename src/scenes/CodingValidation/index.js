@@ -7,6 +7,7 @@ import Header from './components/Header'
 import QuestionCard from './components/QuestionCard'
 import Navigator from './components/Navigator'
 import DocumentList from './components/DocumentList'
+import BulkValidate from './components/BulkValidate'
 import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid, withProjectLocked
@@ -21,6 +22,9 @@ const ResizeHandle = () => (
   </Icon>
 )
 
+/**
+ * The base component for the Code or Validate screens
+ */
 export class CodingValidation extends Component {
   static propTypes = {
     project: PropTypes.object,
@@ -70,7 +74,8 @@ export class CodingValidation extends Component {
         : { id: null },
       changeProps: [],
       changeMethod: null,
-      stillSavingAlertOpen: false
+      stillSavingAlertOpen: false,
+      bulkValidateOpen: false
     }
     
     this.stillSavingActions = [
@@ -356,6 +361,24 @@ export class CodingValidation extends Component {
   }
   
   /**
+   * Handles opening the bulk validate modal
+   */
+  handleOpenBulkValidate = () => {
+    this.setState({
+      bulkValidateOpen: true
+    })
+  }
+  
+  /**
+   * Handles closing the bulk validate modal
+   */
+  handleCloseBulkValidate = () => {
+    this.setState({
+      bulkValidateOpen: false
+    })
+  }
+  
+  /**
    * Waits 1 sec, then displays a circular loader if API is still loading
    * @public
    */
@@ -509,6 +532,8 @@ export class CodingValidation extends Component {
             pageTitle={capitalizeFirstLetter(page)}
             currentJurisdiction={jurisdiction}
             onGoBack={this.onGoBack}
+            isValidation={page === 'validation'}
+            onOpenBulkValidate={this.handleOpenBulkValidate}
             empty={jurisdiction.id === null || questionOrder === null || questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
