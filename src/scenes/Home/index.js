@@ -72,24 +72,22 @@ export class Home extends Component {
      */
     projectToExport: PropTypes.object,
     /**
-     * Any error that has occurred during export
+     * Any api error that has occurred
      */
-    exportError: PropTypes.string,
+    apiErrorAlert: PropTypes.object,
     /**
      * Current open project
      */
-    openProject: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    openProject: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    /**
+     * Whether an export request is in progress
+     */
+    exporting: PropTypes.bool
   }
   
   constructor(props, context) {
     super(props, context)
-    this.state = {
-      exportDialogOpen: false,
-      projectToExport: null
-    }
-    
-    this.exportRef = null
-    this.setExportRef = element => this.exportRef = element
+    this.exportRef = React.createRef()
   }
   
   componentDidMount() {
@@ -98,12 +96,15 @@ export class Home extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
-      if (this.state.projectToExport !== null) {
-        this.prepareExport(this.props.projectToExport.text)
+    const { exporting, apiErrorAlert } = this.props
+    if (prevProps.exporting && !exporting) {
+      if (!apiErrorAlert.open) {
+        this.prepareExport()
       }
     }
   }
+  
+  url = null
   
   /**
    * Opens the export dialog after the user clicks the 'Export' download button.
@@ -111,10 +112,8 @@ export class Home extends Component {
    * @param {object} project
    */
   onToggleExportDialog = project => {
-    this.setState({
-      exportDialogOpen: true,
-      projectToExport: { ...project }
-    })
+    const { actions } = this.props
+    actions.setProjectToExport(project)
   }
   
   /**
@@ -122,58 +121,42 @@ export class Home extends Component {
    * @public
    */
   onCloseExportDialog = () => {
-    this.setState({
-      projectToExport: null,
-      exportDialogOpen: false
-    })
+    const { actions } = this.props
+    if (this.url !== null) {
+      window.URL.revokeObjectURL(this.url)
+    }
+    actions.clearProjectToExport()
   }
   
   /**
    * Prepares the export CSV file by creating a Blob and ObjectURL from the text parameter. Downloads the file
    * @public
-   * @param {string} text
    */
-  prepareExport = text => {
-    const csvBlob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(csvBlob)
-    this.exportRef.href = url
-    this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
-    this.exportRef.click()
-    //window.URL.revokeObjectURL(url)
-    this.clearProjectExport()
+  prepareExport = () => {
+    const { projectToExport } = this.props
+    
+    const csvBlob = new Blob([projectToExport.text], { type: 'text/csv' })
+    this.url = URL.createObjectURL(csvBlob)
+    this.exportRef.current.href = this.url
+    this.exportRef.current.download = projectToExport.user.id === null || projectToExport.user.id === 'val'
+      ? `${projectToExport.name}-${projectToExport.exportType}-export.csv`
+      : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
+    this.exportRef.current.click()
   }
   
   /**
-   * Calls a redux action to send a request to the API to download the export file, with type being the type of export.
-   * This is callback for setState after the user chooses an option in the export dialog
+   * Invoked after the user chooses an export type from the export dialog. Sends a request for that export data
    * @public
    * @param {string} type - Type of export
+   * @param {object} user - user to export
    */
-  getExport = type => {
-    this.props.actions.exportDataRequest(this.state.projectToExport, type)
-  }
-  
-  /**
-   * Invoked after the user chooses an export type from the export dialog. Closes the export dialog and calls getExport
-   * @public
-   * @param {string} type - Type of export
-   */
-  onChooseExport = type => {
-    this.setState({
-      exportDialogOpen: false,
-      projectToExport: { ...this.state.projectToExport, exportType: type }
-    }, () => this.getExport(type))
-  }
-  
-  /**
-   * Clears the export project from local state as well as calls an redux action to clear it from the redux state.
-   * @public
-   */
-  clearProjectExport = () => {
-    this.setState({
-      projectToExport: null
-    })
-    this.props.actions.clearProjectToExport()
+  onChooseExport = (type, user) => {
+    const { actions } = this.props
+    if (this.url !== null) {
+      window.URL.revokeObjectURL(this.url)
+      this.url = null
+    }
+    actions.exportDataRequest(type, user)
   }
   
   /**
@@ -188,22 +171,33 @@ export class Home extends Component {
   )
   
   /**
-   * Calls a redux action to close the alert error for any export error that is shown
+   * Calls a redux action to close any alert error
    * @public
    */
-  onCloseExportError = () => {
-    this.props.actions.dismissApiError('exportError')
-    this.clearProjectExport()
+  onCloseApiError = () => {
+    this.props.actions.dismissApiError()
   }
   
-  handleSortParmChange = selectedOption => {
+  /**
+   * Handles which sort type to use
+   * @param selectedOption
+   */
+  handleSortParamChange = selectedOption => {
+    const { actions, sortBookmarked } = this.props
+    
     if (selectedOption !== 'sortBookmarked') {
-      this.props.actions.sortProjects(selectedOption)
+      actions.sortProjects(selectedOption)
     } else {
-      this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+      actions.sortBookmarked(!sortBookmarked)
     }
   }
   
+  /**
+   * Returns the sort label depending on current selected sort and direction
+   * @param label
+   * @param direction
+   * @returns {*}
+   */
   sortLabel = (label, direction) => {
     return (
       <>
@@ -213,10 +207,18 @@ export class Home extends Component {
     )
   }
   
+  /**
+   * Handles search value change
+   */
+  handleSearchValueChange = event => {
+    const { actions } = this.props
+    actions.updateSearchValue(event.target.value)
+  }
+  
   render() {
     const {
-      exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
-      searchValue, error, openProject
+      user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
+      searchValue, error, openProject, apiErrorAlert, projectToExport, exporting
     } = this.props
     
     const options = Array.from([
@@ -235,7 +237,7 @@ export class Home extends Component {
     
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
-        <ApiErrorAlert content={exportError} open={exportError !== ''} onCloseAlert={this.onCloseExportError} />
+        <ApiErrorAlert content={apiErrorAlert.text} open={apiErrorAlert.open} onCloseAlert={this.onCloseApiError} />
         <PageHeader
           showButton={user.role !== 'Coder'}
           pageTitle="Project List"
@@ -257,7 +259,7 @@ export class Home extends Component {
             options={options}
             input={{
               value: sortBookmarked ? 'sortBookmarked' : sortBy,
-              onChange: this.handleSortParmChange
+              onChange: this.handleSortParamChange
             }}
             renderValue={value => {
               const option = options.find(option => option.value === value)
@@ -272,41 +274,37 @@ export class Home extends Component {
             formControlStyle={{ minWidth: 180, paddingRight: 20 }}
           />
           <SearchBar
-            searchValue={this.searchValue}
+            searchValue={searchValue}
             id="project-search"
-            handleSearchValueChange={event => actions.updateSearchValue(event.target.value)}
+            handleSearchValueChange={this.handleSearchValueChange}
             placeholder="Search"
           />
         </PageHeader>
         
-        {error
-          ? this.renderErrorMessage()
-          : <ProjectList
-            user={user}
-            projectIds={visibleProjects}
-            projectCount={projectCount}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            sortBy={sortBy}
-            direction={direction}
-            sortBookmarked={sortBookmarked}
-            searchValue={searchValue}
-            handleExport={this.onToggleExportDialog}
-            handleRequestSort={actions.sortProjects}
-            handlePageChange={actions.updatePage}
-            handleRowsChange={actions.updateRows}
-            handleSortBookmarked={() => actions.sortBookmarked(!sortBookmarked)}
-            handleToggleProject={actions.toggleProject}
-            getProjectUsers={actions.getProjectUsers}
-            openProject={openProject}
-          />
-        }
+        {error && this.renderErrorMessage()}
+        {!error &&
+        <ProjectList
+          user={user}
+          projectIds={visibleProjects}
+          projectCount={projectCount}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleExport={this.onToggleExportDialog}
+          handlePageChange={actions.updatePage}
+          handleRowsChange={actions.updateRows}
+          handleToggleProject={actions.toggleProject}
+          getProjectUsers={actions.getProjectUsers}
+          openProject={openProject}
+          allowExpandCollapse={projectToExport.id === null}
+        />}
         <ExportDialog
-          open={this.state.exportDialogOpen}
+          open={projectToExport.id !== null}
           onChooseExport={this.onChooseExport}
           onClose={this.onCloseExportDialog}
+          projectToExport={projectToExport}
+          inProgress={exporting}
         />
-        <a style={{ display: 'none' }} ref={this.setExportRef} />
+        <a style={{ display: 'none' }} ref={this.exportRef} />
       </FlexGrid>
     )
   }
@@ -320,14 +318,15 @@ const mapStateToProps = state => ({
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
-  searchValue: state.scenes.home.main.searchValue || '',
+  searchValue: state.scenes.home.main.searchValue,
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
-  projectCount: state.scenes.home.main.projectCount || 0,
-  projectToExport: state.scenes.home.main.projectToExport || { text: '' },
-  exportError: state.scenes.home.main.exportError || '',
-  openProject: state.scenes.home.main.openProject || 0
+  projectCount: state.scenes.home.main.projectCount,
+  projectToExport: state.scenes.home.main.projectToExport,
+  openProject: state.scenes.home.main.openProject,
+  apiErrorAlert: state.scenes.home.main.apiErrorAlert,
+  exporting: state.scenes.home.main.exporting
 })
 
 /* istanbul ignore next */

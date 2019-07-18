@@ -1,7 +1,11 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import { Annotation } from '../index'
 import { viewport, annotations } from 'utils/testData/pdfTest'
+import { createMockStore } from 'utils/testData/createMockStore'
+import { Provider } from 'react-redux'
+
+const store = createMockStore()
 
 const props = {
   annotation: annotations[0],
@@ -24,54 +28,59 @@ const props = {
   closeToOthers: 1
 }
 
+const setup = (otherProps = {}) => {
+  return mount(
+    <Provider store={store}>
+      <Annotation {...props} {...otherProps} />
+    </Provider>
+  )
+}
+
 describe('PDFViewer - Page - Annotation component', () => {
   test('should render correctly', () => {
-    const wrapper = mount(<Annotation {...props} />)
+    const wrapper = shallow(<Annotation {...props} />)
     expect(wrapper).toMatchSnapshot()
   })
   
   test('should render all annotation rects', () => {
-    const wrapper = mount(<Annotation {...props} />)
+    const wrapper = shallow(<Annotation {...props} />)
     expect(wrapper.children()).toHaveLength(3)
   })
   
   test('should highlight background color should be #00e0ff when user is undefined', () => {
-    const wrapper = mount(<Annotation {...props} user={undefined} />)
+    const wrapper = shallow(<Annotation {...props} user={undefined} />)
     expect(wrapper.find('div').at(0).prop('style').backgroundColor).toEqual('#00e0ff')
   })
   
   describe('removing annotations', () => {
     test('should not show x icon if annotationModeEnabled is false', () => {
-      const wrapper = mount(<Annotation {...props} isClicked={true} annotationModeEnabled={false} />)
+      const wrapper = shallow(<Annotation {...props} isClicked annotationModeEnabled={false} />)
       expect(wrapper.find('.iconActions')).toHaveLength(0)
     })
     
-    test('should call handleClickAnnotation if an the first rect of an annotation is clicked', () => {
+    test('should call handleClickAnnotation if the first rect of an annotation is clicked', () => {
       const spy = jest.spyOn(props, 'handleClickAnnotation')
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
-      wrapper.children().at(0).simulate('click')
-      wrapper.update()
+      const wrapper = mount(<Annotation {...props} isClicked />)
+      wrapper.children(0).at(0).simulate('click')
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should call handleClickAnnotation if an the last rect of an annotation is clicked', () => {
+    test('should call handleClickAnnotation if the last rect of an annotation is clicked', () => {
       const spy = jest.spyOn(props, 'handleClickAnnotation')
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
+      const wrapper = mount(<Annotation {...props} isClicked />)
       wrapper.children().at(2).simulate('click')
-      wrapper.update()
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should call handleClickAnnotation if an the any rect of an annotation is clicked', () => {
+    test('should call handleClickAnnotation if any rect of an annotation is clicked', () => {
       const spy = jest.spyOn(props, 'handleClickAnnotation')
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
+      const wrapper = mount(<Annotation {...props} isClicked />)
       wrapper.children().at(1).simulate('click')
-      wrapper.update()
       expect(spy).toHaveBeenCalled()
     })
     
     test('should show x icon button if isClicked is true', () => {
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
+      const wrapper = mount(<Annotation {...props} isClicked />)
       expect(wrapper.find('.iconActions')).toHaveLength(1)
     })
     
@@ -81,13 +90,13 @@ describe('PDFViewer - Page - Annotation component', () => {
     })
     
     test('should only show the x icon button and not the checkmark icon button', () => {
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
+      const wrapper = mount(<Annotation {...props} isClicked />)
       expect(wrapper.find('.iconActions').children()).toHaveLength(1)
     })
     
     test('should call handleRemoveAnnotation if icon x button is clicked', () => {
       const spy = jest.spyOn(props, 'handleRemoveAnnotation')
-      const wrapper = mount(<Annotation {...props} isClicked={true} />)
+      const wrapper = mount(<Annotation {...props} isClicked />)
       wrapper.find('.iconActions').find('button').simulate('click')
       wrapper.update()
       expect(spy).toHaveBeenCalled()
@@ -101,12 +110,12 @@ describe('PDFViewer - Page - Annotation component', () => {
     })
     
     test('should display avatar if props.showAvatar is true', () => {
-      const wrapper = mount(<Annotation {...props} showAvatar />)
+      const wrapper = setup({ showAvatar: true })
       expect(wrapper.find('img').length).toEqual(1)
     })
     
     test('should have alt text with full annotation text', () => {
-      const wrapper = mount(<Annotation {...props} showAvatar />)
+      const wrapper = setup({ showAvatar: true })
       expect(wrapper.find('img').prop('alt')).toEqual(`Test User highlighted ${annotations[0].text}`)
     })
   })

@@ -102,11 +102,8 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
           }
           type="row"
         >
-          <Avatar
-            alt=""
+          <Connect(Avatar)
             avatar={1}
-            big={false}
-            cardAvatar={false}
             initials="TU"
             style={
               Object {
@@ -116,7 +113,6 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
                 "width": 25,
               }
             }
-            theme={Object {}}
             userName="test user"
           />
           <WithStyles(Typography)

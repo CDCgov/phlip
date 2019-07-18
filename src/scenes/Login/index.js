@@ -70,7 +70,7 @@ export class Login extends Component {
     }
     
     if (this.props.location.state !== undefined) {
-      if (this.props.location.state.sessionExpired === true) {
+      if (this.props.location.state.sessionExpired) {
         this.props.actions.logoutUser(true)
       }
     }
@@ -89,7 +89,12 @@ export class Login extends Component {
    * @param {object} values
    */
   handleSubmit = values => {
-    this.props.actions.loginUserRequest(values)
+    const { session, actions } = this.props
+    if (session) {
+      // clear the current session to start fresh
+      actions.logoutUser()
+    }
+    actions.loginUserRequest(values)
   }
   
   render() {
