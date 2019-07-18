@@ -12,7 +12,8 @@ import { Button, IconButton, Link, Icon, FlexGrid, Typography } from 'components
  */
 export const Header = props => {
   const {
-    empty, onJurisdictionChange, currentJurisdiction, onGoBack, pageTitle, project, onOpenBulkValidate, isValidation
+    empty, onJurisdictionChange, currentJurisdiction, onGoBack, pageTitle, project, onOpenBulkValidate, isValidation,
+    showValidate
   } = props
   
   return (
@@ -59,7 +60,7 @@ export const Header = props => {
           <span style={{ paddingRight: 5 }}>Protocol</span>
           <Icon color="black" size={20}><ClipboardCheckOutline style={{ fontSize: 20 }} /></Icon>
         </Button>
-        {(isValidation && !empty) &&
+        {(isValidation && !empty && showValidate) &&
         <Button
           style={{ backgroundColor: 'white', color: 'black', marginLeft: 10 }}
           onClick={onOpenBulkValidate}
@@ -82,7 +83,8 @@ Header.propTypes = {
   onGoBack: PropTypes.func,
   pageTitle: PropTypes.string,
   onOpenBulkValidate: PropTypes.func,
-  isValidation: PropTypes.bool
+  isValidation: PropTypes.bool,
+  showValidate: PropTypes.bool
 }
 
 export default withRouter(Header)

@@ -534,6 +534,7 @@ export class CodingValidation extends Component {
             onGoBack={this.onGoBack}
             isValidation={page === 'validation'}
             onOpenBulkValidate={this.handleOpenBulkValidate}
+            showValidate={schemeError === null && !projectLocked}
             empty={jurisdiction.id === null || questionOrder === null || questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
