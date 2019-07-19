@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Button, Icon, Avatar, RadioButtonLabel } from 'components'
+import { FlexGrid, Button, Icon, Avatar, RadioButtonLabel, CircularLoader } from 'components'
 import Modal, { ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import Stepper from '@material-ui/core/Stepper'
@@ -12,14 +12,14 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 
 export class BulkValidate extends Component {
   static propTypes = {
     open: PropTypes.bool,
     onConfirmValidate: PropTypes.func,
     onClose: PropTypes.func,
-    users: PropTypes.array
+    users: PropTypes.array,
+    validationInProgress: PropTypes.bool
   }
   
   state = {
@@ -61,7 +61,8 @@ export class BulkValidate extends Component {
           ...user,
           username: `${user.firstName} ${user.lastName}`
         }
-      }
+      },
+      activeStep: selections.user === null ? 2 : 1
     })
   }
   
@@ -69,13 +70,16 @@ export class BulkValidate extends Component {
    * For when the user is on the last step of the modal and confirms the bulk validate
    */
   handleConfirmValidate = () => {
-    const { onConfirmValidate } = this.props
-    this.setState({
-      selections: {
-        confirm: true
-      }
-    })
-    onConfirmValidate()
+    const { onConfirmValidate, validationInProgress } = this.props
+    if (!validationInProgress) {
+      this.setState({
+        selections: {
+          ...this.state.selections,
+          confirm: true
+        }
+      })
+      onConfirmValidate()
+    }
   }
   
   /**
@@ -115,7 +119,7 @@ export class BulkValidate extends Component {
   }
   
   render() {
-    const { open, onConfirmValidate, users } = this.props
+    const { open, users, validationInProgress } = this.props
     const { activeStep, selections } = this.state
     
     const steps = [
@@ -146,7 +150,7 @@ export class BulkValidate extends Component {
       {
         text: [
           'Validate every question and jurisdiction in the current project',
-          'every question in every jurisdiction.'
+          'every question in every jurisdiction'
         ],
         title: 'Project',
         scope: 'project'
@@ -154,10 +158,16 @@ export class BulkValidate extends Component {
     ]
     
     return (
-      <Modal open={true} onClose={this.handleClose} maxWidth="md" hideOverflow>
+      <Modal open={open} onClose={this.handleClose} maxWidth="md" hideOverflow>
         <ModalTitle
           title="Validate"
-          buttons={<Button raised={false} color="accent" onClick={this.handleClose}>Close</Button>}
+          buttons={<Button
+            raised={false}
+            color="accent"
+            disabled={validationInProgress}
+            onClick={this.handleClose}>
+            Close
+          </Button>}
         />
         <Divider />
         <ModalContent style={{ display: 'flex', padding: 0 }}>
@@ -251,7 +261,6 @@ export class BulkValidate extends Component {
                 </FlexGrid>
               </FlexGrid>}
               {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px">
-                {/*<Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>*/}
                 <FlexGrid container style={{ marginBottom: 35 }}>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
                   <FlexGrid padding="15px 0 0">
@@ -264,8 +273,8 @@ export class BulkValidate extends Component {
                     You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
                     <strong>{selections.user.username}</strong>
                     . {selections.user.firstName}'s coding data will be used
-                    for <strong>every</strong> question that {selections.user.firstName} has coded within the scope
-                    that you've chosen. If {selections.user.firstName} has not modified a particular question in
+                    for <strong>every</strong> question that {selections.user.firstName} has coded within the scope of{' '}
+                    {selections.scope}. If {selections.user.firstName} has not modified a particular question in
                     any way, then that question will be skipped. The current validated answer would remain the same for
                     that question.
                   </Typography>
@@ -283,13 +292,19 @@ export class BulkValidate extends Component {
                     <Typography variant="title" style={{ marginLeft: 4 }}>WARNING</Typography>
                   </FlexGrid>
                   <Typography variant="body1" style={{ paddingTop: 10 }}>
-                    This is will <strong>overwrite all</strong> current validated answers, annotations, and pincites if{' '}
+                    This will <strong>overwrite all</strong> current validated answers, annotations, and pincites if{' '}
                     {selections.user.username}{' '}has coded that question. There is no 'UNDO' option for this action.
-                    Please be sure you actually want to do this.
                   </Typography>
                 </FlexGrid>
                 <FlexGrid justify="center" container type="row">
-                  <Button onClick={this.handleConfirmValidate}>Validate</Button>
+                  <Button
+                    disabled={validationInProgress}
+                    style={{ color: validationInProgress ? 'rgb(61, 49, 106)' : 'white' }}
+                    color="primary"
+                    onClick={this.handleConfirmValidate}>
+                    <span style={{ marginRight: 4 }}>Validate</span>
+                    {validationInProgress && <CircularLoader style={{ height: 15, width: 15 }} />}
+                  </Button>
                 </FlexGrid>
               </FlexGrid>}
             </FlexGrid>

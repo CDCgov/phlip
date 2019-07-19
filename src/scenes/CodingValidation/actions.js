@@ -55,6 +55,10 @@ export const types = {
   GET_USER_VALIDATED_QUESTIONS_SUCCESS: 'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
   GET_USER_VALIDATED_QUESTIONS_FAIL: 'GET_USER_VALIDATED_QUESTIONS_FAIL',
 
+  BULK_VALIDATION_REQUEST: 'BULK_VALIDATION_REQUEST',
+  BULK_VALIDATION_SUCCESS: 'BULK_VALIDATION_SUCCESS',
+  BULK_VALIDATION_FAIL: 'BULK_VALIDATION_FAIL',
+  
   ON_SAVE_RED_FLAG_REQUEST: 'ON_SAVE_RED_FLAG_REQUEST',
   ON_SAVE_RED_FLAG_SUCCESS: 'ON_SAVE_RED_FLAG_SUCCESS',
   ON_SAVE_RED_FLAG_FAIL: 'ON_SAVE_RED_FLAG_FAIL',
@@ -101,6 +105,7 @@ export default {
   resetAnswer: makeActionCreator(types.RESET_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
   setUnsavedChanges: makeActionCreator(types.SET_UNSAVED_CHANGES, 'unsavedChanges'),
   closeApiErrorAlert: makeActionCreator(types.CLOSE_API_ERROR_ALERT),
+  bulkValidationRequest: makeActionCreator(types.BULK_VALIDATION_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'scope', 'user'),
   ...docListActions,
   ...cardActions
 }

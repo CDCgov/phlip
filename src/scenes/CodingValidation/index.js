@@ -52,6 +52,7 @@ export class CodingValidation extends Component {
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
     match: PropTypes.object,
+    validationInProgress: PropTypes.bool,
     /**
      * Text to show if the scheme or jurisdictions are empty
      */
@@ -484,11 +485,20 @@ export class CodingValidation extends Component {
     this.onSaveCodedQuestion()
   }
   
+  /**
+   * Handles when the user does a 'bulk' validation
+   */
+  handleConfirmValidate = (scope, user) => {
+    const { actions, project, question } = this.props
+    const { jurisdiction } = this.state
+    actions.bulkValidationRequest(project.id, jurisdiction.id, question.id, scope, user)
+  }
+  
   render() {
     const {
       showPageLoader, answerErrorContent, objectExists, actions, page, selectedCategory, questionOrder, isSchemeEmpty,
       schemeError, areJurisdictionsEmpty, gettingStartedText, getRequestInProgress, user, currentIndex, showNextButton,
-      question, project, projectLocked, apiErrorAlert
+      question, project, projectLocked, apiErrorAlert, validationInProgress
     } = this.props
     
     const { stillSavingAlertOpen, jurisdiction, bulkValidateOpen } = this.state
@@ -549,6 +559,8 @@ export class CodingValidation extends Component {
                   open={bulkValidateOpen}
                   onClose={this.handleCloseBulkValidate}
                   users={project.projectUsers}
+                  onConfirmValidate={this.handleConfirmValidate}
+                  validationInProgress={validationInProgress}
                 />
                 {getRequestInProgress
                   ? showPageLoader
@@ -671,7 +683,8 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     objectExists: pageState.objectExists || false,
     getRequestInProgress: pageState.getRequestInProgress,
-    apiErrorAlert: pageState.apiErrorAlert
+    apiErrorAlert: pageState.apiErrorAlert,
+    validationInProgress: pageState.validationInProgress
   }
 }
 

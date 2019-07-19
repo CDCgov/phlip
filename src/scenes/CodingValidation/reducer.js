@@ -51,7 +51,8 @@ export const INITIAL_STATE = {
   objectExists: false,
   page: '',
   getRequestInProgress: true,
-  gettingStartedText: ''
+  gettingStartedText: '',
+  validationInProgress: false
 }
 
 export const COMBINED_INITIAL_STATE = {
@@ -509,6 +510,27 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
                 }
             }
           }
+        }
+      }
+      
+    case types.BULK_VALIDATION_REQUEST:
+      return {
+        ...state,
+        validationInProgress: true
+      }
+      
+    case types.BULK_VALIDATION_SUCCESS:
+      return {
+        ...state,
+        validationInProgress: false
+      }
+      
+    case types.BULK_VALIDATION_FAIL:
+      return {
+        ...state,
+        apiErrorAlert: {
+          open: true,
+          text: 'We couldn\'t save your validation request.'
         }
       }
     
