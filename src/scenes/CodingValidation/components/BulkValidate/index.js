@@ -57,7 +57,10 @@ export class BulkValidate extends Component {
     this.setState({
       selections: {
         ...selections,
-        user
+        user: {
+          ...user,
+          username: `${user.firstName} ${user.lastName}`
+        }
       }
     })
   }
@@ -187,15 +190,14 @@ export class BulkValidate extends Component {
                   )
                 })}
               </FlexGrid>}
-              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 10px">
-                {/*<Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>*/}
-                <FlexGrid container style={{ marginTop: 10 }}>
-                  <FlexGrid container>
-                    <Typography variant="display1" style={{ color: 'black' }}>User</Typography>
-                    <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">
-                      Select the user whose coding data you would like to use as the validated codes.
-                    </Typography>
-                  </FlexGrid>
+              {activeStep === 1 && <FlexGrid container flex padding="0 10px 10px">
+                <FlexGrid container padding="2px 0 0">
+                  {/*<FlexGrid container>*/}
+                  {/*  <Typography variant="display1" style={{ color: 'black' }}>User</Typography>*/}
+                  {/*  <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">*/}
+                  {/*    Select the user whose coding data you would like to use as the validated codes.*/}
+                  {/*  </Typography>*/}
+                  {/*</FlexGrid>*/}
                   <List>
                     {users.map((user, i) => {
                       const isUserSelected = selections.user !== null && selections.user.userId === user.userId
@@ -237,7 +239,31 @@ export class BulkValidate extends Component {
                   </List>
                 </FlexGrid>
               </FlexGrid>}
-              {activeStep === 2 && <FlexGrid container flex type="row">
+              {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px">
+                {/*<Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>*/}
+                <FlexGrid container style={{ height: '50%' }}>
+                  <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
+                  <Typography variant="body1" style={{ paddingTop: 15 }}>
+                    You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
+                    <strong>{selections.user.username}</strong>. {selections.user.firstName}'s coding data will be used
+                    for{' '}<strong>every</strong>question that {selections.user.firstName} has coded within the scope
+                    that you've chosen. If {selections.user.firstName} has not modified a particular question in
+                    any way, then that question will be skipped. The current validated answer would remain the same for
+                    that question.
+                  </Typography>
+                  <FlexGrid padding="15px 0 0">
+                    <Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>
+                    <Typography variant="headline">
+                      User: {selections.user.username}
+                    </Typography>
+                  </FlexGrid>
+                  <FlexGrid padding="15px 0 0">
+                    <Icon color="error" size={25}>warning</Icon><Typography></Typography>
+                  </FlexGrid>
+                </FlexGrid>
+                <FlexGrid justify="center" container type="row">
+                  <Button onClick={this.handleConfirmValidate}>Validate</Button>
+                </FlexGrid>
               </FlexGrid>}
             </FlexGrid>
             <FlexGrid>
