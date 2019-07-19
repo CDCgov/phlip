@@ -126,24 +126,28 @@ export class BulkValidate extends Component {
     
     const scopes = [
       {
-        text: 'Validate only the current question. This will copy the selected answer choice or text answer, annotations, ' +
-          'and pincites from a user of your choosing and save those as the validated answer for just this question. To ' +
-          'validate another question, you\'ll need to navigate to that question and repeat these steps.',
+        text: [
+          'Validate only the current question',
+          'just this question',
+          'To validate another question, you’ll need to navigate to that question and repeat these steps.'
+        ],
         title: 'Question',
         scope: 'question'
       },
       {
-        text: 'Validate all questions in the current jurisdiction. This will copy the selected answer choices or text answer, ' +
-          'annotations, and pincites from ONE user every question in this jurisdiction and save that coder\'s data as ' +
-          'the validated data respectively. To validate another jurisdiction, you\'ll need to navigate to that' +
-          ' jurisdiction and repeat these steps.',
+        text: [
+          'Validate all questions in the current jurisdiction.',
+          'every question in this jurisdiction',
+          'To validate another jurisdiction, you’ll need to navigate to that jurisdiction and repeat these steps.'
+        ],
         title: 'Jurisdiction',
         scope: 'jurisdiction'
       },
       {
-        text: 'Validate the entire project - every question and every jurisdiction. This will copy the selected answer ' +
-          'choices or texts answers, annotations and pincites from ONE user for every question in every jurisdiction and ' +
-          'save those as the validated data respectively.',
+        text: [
+          'Validate every question and jurisdiction in the current project',
+          'every question in every jurisdiction.'
+        ],
         title: 'Project',
         scope: 'project'
       }
@@ -156,27 +160,34 @@ export class BulkValidate extends Component {
           buttons={<Button raised={false} color="accent" onClick={this.handleClose}>Close</Button>}
         />
         <Divider />
-        <ModalContent style={{ display: 'flex' }}>
+        <ModalContent style={{ display: 'flex', padding: 0 }}>
           <FlexGrid container flex style={{ height: '100%' }}>
-            <FlexGrid container flex padding="10px 0">
-              {activeStep === 0 && <FlexGrid container flex type="row">
+            <FlexGrid container flex padding="10px 24px">
+              {activeStep === 0 &&
+              <FlexGrid container flex type="column">
                 {scopes.map((scope, i) => {
                   const isScopeSelected = selections.scope === scope.scope
                   return (
                     <FlexGrid
                       container
+                      type="row"
                       key={`scope-${i}`}
                       flex
                       padding="20px 10px 10px"
                       style={{
-                        width: '33%',
-                        borderRight: `${i !== 2 ? 1 : 0}px solid rgba(0, 0, 0, 0.12)`,
+                        height: '33%',
+                        borderBottom: `${i !== 2 ? 1 : 0}px solid rgba(0, 0, 0, 0.12)`,
                         backgroundColor: isScopeSelected ? `rgba(233, 233, 233, 0.48)` : 'white'
                       }}
                       align="center">
-                      <Typography variant="display1" style={{ color: 'black' }}>{scope.title}</Typography>
-                      <FlexGrid padding="40px 20px 20px" style={{ height: '40%' }}>
-                        <Typography variant="body1" align="center">{scope.text}</Typography>
+                      <FlexGrid padding="0  20px 20px" container justify="space-evenly" style={{ height: '100%' }}>
+                        <Typography variant="display1" style={{ color: 'black' }}>{scope.title}</Typography>
+                        <Typography variant="body1">{scope.text[0]}</Typography>
+                        <Typography variant="body1">
+                          You will select one user. Their answer choices or text answers, annotations, and pincites will
+                          be copied and saved as the validated answers for <strong>{scope.text[1]}</strong>.
+                        </Typography>
+                        {scope.text[2] && <Typography variant="body1">{scope.text[2]}</Typography>}
                       </FlexGrid>
                       {!isScopeSelected && <Button onClick={this.handleSelectScope(scope.scope)}>
                         Select
@@ -190,14 +201,14 @@ export class BulkValidate extends Component {
                   )
                 })}
               </FlexGrid>}
-              {activeStep === 1 && <FlexGrid container flex padding="0 10px 10px">
+              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 30px">
                 <FlexGrid container padding="2px 0 0">
-                  {/*<FlexGrid container>*/}
-                  {/*  <Typography variant="display1" style={{ color: 'black' }}>User</Typography>*/}
-                  {/*  <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">*/}
-                  {/*    Select the user whose coding data you would like to use as the validated codes.*/}
-                  {/*  </Typography>*/}
-                  {/*</FlexGrid>*/}
+                  <FlexGrid container>
+                    <Typography variant="display1" style={{ color: 'black' }}>User</Typography>
+                    <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">
+                      Select the user whose coding data you would like to use as the validated codes.
+                    </Typography>
+                  </FlexGrid>
                   <List>
                     {users.map((user, i) => {
                       const isUserSelected = selections.user !== null && selections.user.userId === user.userId
@@ -241,33 +252,49 @@ export class BulkValidate extends Component {
               </FlexGrid>}
               {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px">
                 {/*<Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>*/}
-                <FlexGrid container style={{ height: '50%' }}>
+                <FlexGrid container style={{ marginBottom: 35 }}>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
-                  <Typography variant="body1" style={{ paddingTop: 15 }}>
-                    You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
-                    <strong>{selections.user.username}</strong>. {selections.user.firstName}'s coding data will be used
-                    for{' '}<strong>every</strong>question that {selections.user.firstName} has coded within the scope
-                    that you've chosen. If {selections.user.firstName} has not modified a particular question in
-                    any way, then that question will be skipped. The current validated answer would remain the same for
-                    that question.
-                  </Typography>
                   <FlexGrid padding="15px 0 0">
                     <Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>
                     <Typography variant="headline">
                       User: {selections.user.username}
                     </Typography>
                   </FlexGrid>
-                  <FlexGrid padding="15px 0 0">
-                    <Icon color="error" size={25}>warning</Icon><Typography></Typography>
+                  <Typography variant="body1" style={{ paddingTop: 15, marginBottom: 10 }}>
+                    You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
+                    <strong>{selections.user.username}</strong>
+                    . {selections.user.firstName}'s coding data will be used
+                    for <strong>every</strong> question that {selections.user.firstName} has coded within the scope
+                    that you've chosen. If {selections.user.firstName} has not modified a particular question in
+                    any way, then that question will be skipped. The current validated answer would remain the same for
+                    that question.
+                  </Typography>
+                  <Typography variant="body1">
+                    If you would like to select a different scope or user, use the 'Back' button at the bottom of this
+                    page to navigate to different steps.
+                  </Typography>
+                </FlexGrid>
+                <FlexGrid
+                  padding={15}
+                  container
+                  style={{ backgroundColor: 'rgba(202, 80, 114, 0.27)', marginBottom: 45 }}>
+                  <FlexGrid container type="row" align="center">
+                    <Icon color="error" size={25}>warning</Icon>
+                    <Typography variant="title" style={{ marginLeft: 4 }}>WARNING</Typography>
                   </FlexGrid>
+                  <Typography variant="body1" style={{ paddingTop: 10 }}>
+                    This is will <strong>overwrite all</strong> current validated answers, annotations, and pincites if{' '}
+                    {selections.user.username}{' '}has coded that question. There is no 'UNDO' option for this action.
+                    Please be sure you actually want to do this.
+                  </Typography>
                 </FlexGrid>
                 <FlexGrid justify="center" container type="row">
                   <Button onClick={this.handleConfirmValidate}>Validate</Button>
                 </FlexGrid>
               </FlexGrid>}
             </FlexGrid>
-            <FlexGrid>
-              <Stepper activeStep={activeStep} alternativeLabel>
+            <FlexGrid container>
+              <Stepper activeStep={activeStep} alternativeLabel style={{ paddingBottom: 15 }}>
                 {steps.map((step, i) => {
                   const isActive = activeStep === i
                   return (
@@ -283,6 +310,7 @@ export class BulkValidate extends Component {
                 container
                 type="row"
                 align="center"
+                padding="0px 24px 24px"
                 justify={activeStep === 1
                   ? 'space-between'
                   : activeStep === 0
