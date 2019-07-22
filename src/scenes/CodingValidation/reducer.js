@@ -120,11 +120,11 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         getRequestInProgress: true,
         schemeError: null
       }
-      
+    
     case types.GET_OUTLINE_SUCCESS:
       let payload = action.payload
       let error = generateError(payload.errors)
-  
+      
       const upState = {
         ...state,
         ...payload,
@@ -150,7 +150,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...upState,
         ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
       }
-      
+    
     case types.GET_OUTLINE_FAIL:
       return {
         ...state,
@@ -502,33 +502,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         validationInProgress: true
       }
     
-    case types.BULK_VALIDATE_QUESTION_SUCCESS:
-      const updatedUserAnswers = action.payload.hasCoderAnswered
-        ? initializeUserAnswers(
-          [action.payload.question],
-          state.scheme.byId,
-          action.payload.userId,
-          state.userAnswers
-        )
-        : state.userAnswers
-      
+    case types.BULK_VALIDATION_SUCCESS:
       return {
         ...state,
+        userAnswers: action.payload.updatedUserAnswers,
         validationInProgress: false,
-        userAnswers: updatedUserAnswers,
-        answerSnapshot: updatedUserAnswers[action.payload.question.id]
-      }
-    
-    case types.CLEAR_VALIDATION_PROGRESS:
-      return {
-        ...state,
-        validationInProgress: false
-      }
-    
-    case types.BULK_VALIDATE_PROJUR_SUCCESS:
-      return {
-        ...state,
-        validationInProgress: false
+        answerSnapshot: action.payload.updatedUserAnswers[action.payload.updatedUserAnswers[state.question.id]]
       }
     
     case types.BULK_VALIDATION_FAIL:
@@ -538,6 +517,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           open: true,
           text: 'We couldn\'t save your validation request.'
         }
+      }
+  
+    case types.CLEAR_VALIDATION_PROGRESS:
+      return {
+        ...state,
+        validationInProgress: false
       }
     
     case types.CLEAR_FLAG_FAIL:

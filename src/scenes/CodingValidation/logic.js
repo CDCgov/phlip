@@ -881,8 +881,12 @@ export const clearFlagLogic = createLogic({
 export const bulkValidateLogic = createLogic({
   type: types.BULK_VALIDATION_REQUEST,
   async process({ getState, action, api }, dispatch, done) {
+    const state = getState().scenes.codingValidation.coding
+    const byId = state.scheme.byId
+    const userAnswers = state.scheme.userAnswers
+    
     try {
-      let codedQuestions = []
+      let updatedUserAnswers = {}
       // Check the scope of the bulk validation
       if (action.scope === 'question') {
         const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
@@ -900,19 +904,7 @@ export const bulkValidateLogic = createLogic({
           )
           : {}
         
-        codedQuestions = [{ ...responsePayload, validatedBy: action.payload.user }]
-        dispatch({
-          type: types.BULK_VALIDATE_QUESTION_SUCCESS,
-          payload: {
-            ...action.payload,
-            hasCoderAnswered,
-            question: {
-              ...responsePayload,
-              validatedBy: action.payload.user
-            }
-          }
-        })
-        done()
+        updatedUserAnswers = initializeUserAnswers([responsePayload], byId, action.payload.userId, userAnswers)
       } else {
         const newValidatedAnswers = await api.bulkValidate(
           {},
@@ -924,24 +916,15 @@ export const bulkValidateLogic = createLogic({
           }
         )
         
-        console.log(newValidatedAnswers)
-        
-        dispatch({
-          type: types.BULK_VALIDATE_PROJUR_SUCCESS,
-          payload: {
-            questions: newValidatedAnswers,
-            validatedBy: { ...action.payload.user }
-          }
-        })
-        done()
+        updatedUserAnswers = initializeUserAnswers(newValidatedAnswers, byId, action.payload.userId, {})
       }
       
-      // dispatch({
-      //   type: types.BULK_VALIDATION_SUCCESS,
-      //   payload: {
-      //     updatedUserAnswers
-      //   }
-      // })
+      dispatch({
+        type: types.BULK_VALIDATION_SUCCESS,
+        payload: {
+          updatedUserAnswers
+        }
+      })
       done()
     } catch (err) {
       dispatch({ type: types.BULK_VALIDATION_FAIL })
