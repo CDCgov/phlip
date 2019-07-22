@@ -271,16 +271,16 @@ export class BulkValidate extends Component {
                   </FlexGrid>
                   <Typography variant="body1" style={{ paddingTop: 15, marginBottom: 10 }}>
                     You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
-                    <strong>{selections.user.username}</strong>
-                    . {selections.user.firstName}'s coding data will be used
-                    for <strong>every</strong> question that {selections.user.firstName} has coded within the scope of{' '}
-                    {selections.scope}. If {selections.user.firstName} has not modified a particular question in
-                    any way, then that question will be skipped. The current validated answer would remain the same for
-                    that question.
+                    <strong>{selections.user.username}</strong>.{' '}
+                    {selections.scope === 'question' &&
+                    `If ${selections.user.firstName} has not coded this question, the current validated answer will not change.`}
+                    {selections.scope !== 'question' &&
+                    `${selections.user.firstName}'s coding data will be to validate every question they have coded within this ${selections.scope}.
+                     For questions that ${selections.user.firstName} has not modified or coded, the current validated answers will remain the same.`}
                   </Typography>
                   <Typography variant="body1">
                     If you would like to select a different scope or user, use the 'Back' button at the bottom of this
-                    page to navigate to different steps.
+                    modal to navigate to different steps.
                   </Typography>
                 </FlexGrid>
                 <FlexGrid
@@ -292,8 +292,8 @@ export class BulkValidate extends Component {
                     <Typography variant="title" style={{ marginLeft: 4 }}>WARNING</Typography>
                   </FlexGrid>
                   <Typography variant="body1" style={{ paddingTop: 10 }}>
-                    This will <strong>overwrite all</strong> current validated answers, annotations, and pincites if{' '}
-                    {selections.user.username}{' '}has coded that question. There is no 'UNDO' option for this action.
+                    This will <strong>overwrite all</strong> current validated answers, annotations, comments, and pincites
+                    for questions that {selections.user.username} has coded. There is no ‘UNDO’ option for this action.
                   </Typography>
                 </FlexGrid>
                 <FlexGrid justify="center" container type="row">
@@ -313,7 +313,7 @@ export class BulkValidate extends Component {
                 {steps.map((step, i) => {
                   const isActive = activeStep === i
                   return (
-                    <Step key={step.label} completed={step.completed && !isActive} active={isActive}>
+                    <Step key={step.label} completed={step.completed && !isActive} active={isActive} disabled={!isActive}>
                       <StepLabel optional={false} disabled={!isActive}>
                         {step.label}
                       </StepLabel>
