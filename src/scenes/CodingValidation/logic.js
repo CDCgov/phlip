@@ -883,7 +883,7 @@ export const bulkValidateLogic = createLogic({
   async process({ getState, action, api }, dispatch, done) {
     const state = getState().scenes.codingValidation.coding
     const byId = state.scheme.byId
-    const userAnswers = state.scheme.userAnswers
+    const userAnswers = state.userAnswers
     
     try {
       let updatedUserAnswers = {}
@@ -925,6 +925,7 @@ export const bulkValidateLogic = createLogic({
           updatedUserAnswers
         }
       })
+      dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
       done()
     } catch (err) {
       dispatch({ type: types.BULK_VALIDATION_FAIL })

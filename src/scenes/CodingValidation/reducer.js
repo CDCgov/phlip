@@ -17,7 +17,7 @@ import {
 import documentListReducer, { INITIAL_STATE as docListInitialState } from './components/DocumentList/reducer'
 import cardReducer, { INITIAL_STATE as cardInitialState } from './components/QuestionCard/reducer'
 
-/** 
+/**
  * Initial state for codingValidation reducer
  */
 export const INITIAL_STATE = {

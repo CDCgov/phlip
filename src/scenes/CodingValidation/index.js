@@ -492,6 +492,7 @@ export class CodingValidation extends Component {
   handleConfirmValidate = (scope, user) => {
     const { actions, project, question } = this.props
     const { jurisdiction } = this.state
+    actions.toggleAnnotationMode(question.id, '', false)
     actions.bulkValidationRequest(project.id, jurisdiction.id, question.id, scope, user)
   }
   

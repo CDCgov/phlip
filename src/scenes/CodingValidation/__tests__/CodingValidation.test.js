@@ -27,9 +27,8 @@ const props = {
     replace: jest.fn()
   },
   actions: {
-    getCodingOutlineRequest: jest.fn(),
     setPage: jest.fn(),
-    getValidationOutlineRequest: jest.fn(),
+    getOutlineRequest: jest.fn(),
     onCloseScreen: jest.fn(),
     getPrevQuestion: jest.fn(),
     getNextQuestion: jest.fn(),
@@ -95,15 +94,9 @@ describe('CodingValidation', () => {
   })
   
   describe('getting outline', () => {
-    test('should get coding outline if page is coding', () => {
-      const spy = jest.spyOn(props.actions, 'getCodingOutlineRequest')
+    test('should get outline', () => {
+      const spy = jest.spyOn(props.actions, 'getOutlineRequest')
       shallow(<CodingValidation {...props} />)
-      expect(spy).toHaveBeenCalled()
-    })
-    
-    test('should get validation outline if page is validation', () => {
-      const spy = jest.spyOn(props.actions, 'getValidationOutlineRequest')
-      shallow(<CodingValidation {...props} isValidation page="validation" />)
       expect(spy).toHaveBeenCalled()
     })
   })
