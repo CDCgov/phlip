@@ -31,6 +31,20 @@ export class BulkValidate extends Component {
     }
   }
   
+  componentDidUpdate(prevProps) {
+    const { open } = this.props
+    if (prevProps.open && !open) {
+      this.setState({
+        selections: {
+          scope: null,
+          user: null,
+          confirm: false
+        },
+        activeStep: 0
+      })
+    }
+  }
+  
   /**
    * Choose between question, jurisdiction, or project
    * @param scope
