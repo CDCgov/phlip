@@ -206,7 +206,7 @@ export const getOutline = createLogic({
               [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy }
             }
           }
-  
+          
           // Get all the coded questions for this question
           const coderInfo = await getCoderInformation({
             api,
@@ -216,17 +216,17 @@ export const getOutline = createLogic({
           })
           
           mergedUserQuestions = coderInfo.codedQuestionObj
-  
+          
           // Update coders from the getCoderInformation method
           coders = { ...coders, ...coderInfo.coders }
-  
+          
           // Get all the user information for validated questions
           for (let valQuestion of codedValQuestions) {
             if (!checkIfExists(valQuestion.validatedBy, coders, 'userId')) {
               coders = { ...coders, [valQuestion.validatedBy.userId]: { ...valQuestion.validatedBy } }
             }
           }
-  
+          
           const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
           errors = { ...errors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
@@ -291,17 +291,11 @@ const validateSaveAndBulkRequest = createLogic({
         { ...action, userId: user.id },
         action.selectedCategoryId
       )
-    const put = questionObj.hasOwnProperty('id')
     
-    // Coding / Validation have different API routes and there are different routes for new coded / validated
-    // answers or updating existing
-    const apiMethod = isValidation
-      ? put
-        ? api.updateValidatedQuestion
-        : api.answerValidatedQuestion
-      : put
-        ? api.updateCodedQuestion
-        : api.answerCodedQuestion
+    const apiMethods = {
+      create: isValidation ? api.answerValidatedQuestion : api.answerCodedQuestion,
+      update: isValidation ? api.updateValidatedQuestion : api.updateCodedQuestion
+    }
     
     const payloadObject = {
       questionId: action.questionId,
@@ -326,7 +320,8 @@ const validateSaveAndBulkRequest = createLogic({
         payload: {
           ...payloadObject,
           selectedCategoryId: action.selectedCategoryId,
-          api: apiMethod,
+          api: apiMethods,
+          create: !questionObj.hasOwnProperty('id'),
           inQueue: false
         }
       })
@@ -348,10 +343,10 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
-    const state = getState().scenes.codingValidation.coding
+    const apiMethod = action.payload.create ? action.payload.api.create : action.payload.api.update
     
     try {
-      respCodedQuestion = await action.payload.api(
+      respCodedQuestion = await apiMethod(
         action.payload.questionObj,
         {},
         {
@@ -373,22 +368,17 @@ const answerQuestionLogic = createLogic({
       })
       
       dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
-      
-      if (state.messageQueue.length > 0) {
-        dispatch({
-          type: types.SEND_QUEUE_REQUESTS,
-          payload: {
-            selectedCategoryId: action.payload.selectedCategoryId,
-            questionId: action.payload.questionId,
-            id: respCodedQuestion.id,
-            queueId: action.payload.queueId,
-            timeQueued: action.payload.timeQueued
-          },
-          apiUpdateMethod: action.payload.apiMethods.update
-        })
-      } else {
-        dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
-      }
+      dispatch({
+        type: types.SEND_QUEUE_REQUESTS,
+        payload: {
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId,
+          id: respCodedQuestion.id,
+          queueId: action.payload.queueId,
+          timeQueued: action.payload.timeQueued
+        },
+        api: action.payload.api
+      })
       dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.payload.projectId })
       
     } catch (error) {
@@ -506,7 +496,7 @@ const sendMessageLogic = createLogic({
     const messageQueue = [...getState().scenes.codingValidation.coding.messageQueue]
     messageQueue.reverse()
     if (messageQueue.length === 0) {
-      reject()
+      reject({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } else {
       const index = messageQueue.findIndex(message => {
         return (message.queueId === action.payload.queueId) && (message.timeQueued >= action.payload.timeQueued)
@@ -519,7 +509,7 @@ const sendMessageLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     try {
-      const respCodedQuestion = await action.apiUpdateMethod({
+      const respCodedQuestion = await action.api.update({
         ...action.messageToSend.questionObj,
         id: action.payload.id
       }, {}, { ...action.messageToSend })
@@ -892,11 +882,12 @@ export const bulkValidateLogic = createLogic({
   type: types.BULK_VALIDATION_REQUEST,
   async process({ getState, action, api }, dispatch, done) {
     try {
+      let codedQuestions = []
       // Check the scope of the bulk validation
       if (action.scope === 'question') {
         const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
         const responsePayload = hasCoderAnswered
-          ? await action.payload.api(
+          ? await action.payload.api.update(
             requestObj,
             {},
             {
@@ -909,6 +900,7 @@ export const bulkValidateLogic = createLogic({
           )
           : {}
         
+        codedQuestions = [{ ...responsePayload, validatedBy: action.payload.user }]
         dispatch({
           type: types.BULK_VALIDATE_QUESTION_SUCCESS,
           payload: {
@@ -922,7 +914,18 @@ export const bulkValidateLogic = createLogic({
         })
         done()
       } else {
-        const newValidatedAnswers = await api.bulkValidate()
+        const newValidatedAnswers = await api.bulkValidate(
+          {},
+          {},
+          {
+            projectId: action.payload.projectId,
+            jurisdictionId: action.scope === 'jurisdiction' ? action.payload.jurisdictionId : -1,
+            userId: action.user.userId
+          }
+        )
+        
+        console.log(newValidatedAnswers)
+        
         dispatch({
           type: types.BULK_VALIDATE_PROJUR_SUCCESS,
           payload: {
@@ -932,6 +935,13 @@ export const bulkValidateLogic = createLogic({
         })
         done()
       }
+      
+      // dispatch({
+      //   type: types.BULK_VALIDATION_SUCCESS,
+      //   payload: {
+      //     updatedUserAnswers
+      //   }
+      // })
       done()
     } catch (err) {
       dispatch({ type: types.BULK_VALIDATION_FAIL })

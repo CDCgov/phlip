@@ -507,7 +507,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ? initializeUserAnswers(
           [action.payload.question],
           state.scheme.byId,
-          action.payload.question.validatedBy.userId,
+          action.payload.userId,
           state.userAnswers
         )
         : state.userAnswers
