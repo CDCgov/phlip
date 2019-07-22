@@ -141,7 +141,7 @@ export class Main extends Component {
    */
   handleLogoutUser = () => {
     this.props.actions.logoutUser()
-    this.props.history.push('/login')
+    //this.props.history.push('/login')
   }
   
   /**
