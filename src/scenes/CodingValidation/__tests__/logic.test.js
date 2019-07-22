@@ -144,34 +144,7 @@ describe('CodingValidation logic', () => {
         })
         
         store.whenComplete(() => {
-          expect(store.actions[2].type)
-            .toEqual(types.SAVE_USER_ANSWER_SUCCESS)
-          done()
-        })
-      })
-      
-      test('should dispatch REMOVE_REQUEST_FROM_QUEUE if question is not a new coded question', done => {
-        const store = setupStore({
-          unsavedChanges: true,
-          scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: { ...userAnswersCoded },
-          messageQueue: []
-        })
-        
-        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1')
-          .reply(200, userCodedQuestions[1])
-        
-        store.dispatch({
-          type: types.SAVE_USER_ANSWER_REQUEST,
-          projectId: 4,
-          jurisdictionId: 32,
-          selectedCategoryId: null,
-          questionId: 1
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions[1].type)
-            .toEqual(types.REMOVE_REQUEST_FROM_QUEUE)
+          expect(store.actions[1].type).toEqual(types.SAVE_USER_ANSWER_SUCCESS)
           done()
         })
       })
@@ -308,7 +281,7 @@ describe('CodingValidation logic', () => {
     })
   })
   
-  describe('GET_CODING_OUTLINE logic', () => {
+  describe('GET_OUTLINE logic', () => {
     describe('when a coding scheme exists and calls are successful', () => {
       const store = setupStore()
       
@@ -322,14 +295,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, codedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -382,14 +355,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, [])
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -413,14 +386,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, userCodedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -444,13 +417,13 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, codedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_FAIL', done => {
+      test('should dispatch GET_OUTLINE_FAIL', done => {
         store.whenComplete(() => {
-          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_FAIL)
+          expect(store.actions[1].type).toEqual(types.GET_OUTLINE_FAIL)
           done()
         })
       })
@@ -475,14 +448,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(500)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -499,9 +472,11 @@ describe('CodingValidation logic', () => {
     })
   })
   
-  describe('GET_VALIDATION_OUTLINE logic', () => {
+  describe('GET_OUTLINE logic for validation', () => {
     describe('when a coding scheme exists and calls are successful', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/api/projects/1/scheme').reply(200, {
@@ -516,14 +491,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/2/avatar').reply(200, '')
         
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[2].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -566,7 +541,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when the scheme is empty', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -576,14 +553,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/projects/1/jurisdictions/1/validatedquestions')
           .reply(200, [])
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -597,7 +574,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when jurisdictions are empty and scheme is not', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -611,14 +590,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/avatar').reply(200, '')
         mock.onGet('/users/2/avatar').reply(200, '')
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -632,7 +611,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when api scheme api request fails', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(500)
@@ -644,21 +625,21 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/avatar').reply(200, '')
         mock.onGet('/users/2/avatar').reply(200, '')
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_FAIL', done => {
+      test('should dispatch GET_OUTLINE_FAIL', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_FAIL)
+            .toEqual(types.GET_OUTLINE_FAIL)
           done()
         })
       })
       
       test('should return an error string', done => {
         store.whenComplete(() => {
-          expect(store.actions[1].payload).toEqual('Couldn\'t get outline')
+          expect(store.actions[1].payload).toEqual('Failed to get outline.')
           expect(store.actions[1].error).toEqual(true)
           done()
         })
@@ -666,7 +647,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when validated questions api request fails', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -679,14 +662,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/2/avatar').reply(200, '')
         mock.onGet('/projects/1/jurisdictions/1/validationquestions').reply(500)
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -703,7 +686,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when flags exist in the first question', () => {
-      const store = setupStore({}, reducer)
+      const store = setupStore({
+        page: 'validation'
+      }, reducer)
       
       beforeEach(() => {
         const questions = schemeFromApi
@@ -729,7 +714,7 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/3/avatar').reply(200, '')
         mock.onGet('/projects/1/jurisdictions/1/validationquestions').reply(500)
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       

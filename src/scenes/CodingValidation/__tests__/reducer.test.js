@@ -1317,9 +1317,9 @@ describe('CodingValidation reducer', () => {
     })
   })
   
-  describe('GET_CODING_OUTLINE_SUCCESS', () => {
+  describe('GET_OUTLINE_SUCCESS', () => {
     const action = {
-      type: types.GET_CODING_OUTLINE_SUCCESS,
+      type: types.GET_OUTLINE_SUCCESS,
       payload: {
         userAnswers: userAnswersCoded,
         scheme: {
@@ -1327,6 +1327,7 @@ describe('CodingValidation reducer', () => {
           tree: schemeTree,
           order: schemeOrder
         },
+        mergedUserQuestions: null,
         areJurisdictionsEmpty: false,
         isSchemeEmpty: false,
         outline: schemeOutline,
@@ -1394,7 +1395,7 @@ describe('CodingValidation reducer', () => {
     
     describe('handling errors', () => {
       const action = {
-        type: types.GET_CODING_OUTLINE_SUCCESS,
+        type: types.GET_OUTLINE_SUCCESS,
         payload: {
           userAnswers: userAnswersCoded,
           scheme: {
@@ -1430,7 +1431,7 @@ describe('CodingValidation reducer', () => {
     
     describe('setting the getting started text', () => {
       const baseAction = {
-        type: types.GET_CODING_OUTLINE_SUCCESS,
+        type: types.GET_OUTLINE_SUCCESS,
         payload: {
           userAnswers: userAnswersCoded,
           scheme: {
@@ -1527,9 +1528,9 @@ describe('CodingValidation reducer', () => {
     })
   })
   
-  describe('GET_VALIDATION_OUTLINE_SUCCESS', () => {
+  describe('GET_OUTLINE_SUCCESS Validation', () => {
     const action = {
-      type: types.GET_VALIDATION_OUTLINE_SUCCESS,
+      type: types.GET_OUTLINE_SUCCESS,
       payload: {
         userAnswers: userAnswersCoded,
         scheme: {
@@ -1612,7 +1613,7 @@ describe('CodingValidation reducer', () => {
     
     describe('handling errors', () => {
       const action = {
-        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
+        type: types.GET_OUTLINE_SUCCESS,
         payload: {
           userAnswers: userAnswersCoded,
           scheme: {
@@ -1650,7 +1651,7 @@ describe('CodingValidation reducer', () => {
     describe('setting the getting started text', () => {
       const currentState = getState({ page: 'validation' })
       const baseAction = {
-        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
+        type: types.GET_OUTLINE_SUCCESS,
         payload: {
           userAnswers: userAnswersCoded,
           scheme: {
@@ -1712,8 +1713,8 @@ describe('CodingValidation reducer', () => {
     })
   })
   
-  describe('GET_CODING_OUTLINE_REQUEST', () => {
-    const action = { type: types.GET_CODING_OUTLINE_REQUEST }
+  describe('GET_OUTLINE_REQUEST', () => {
+    const action = { type: types.GET_OUTLINE_REQUEST }
     const currentState = getState()
     const state = reducer(currentState, action)
     
@@ -1726,44 +1727,8 @@ describe('CodingValidation reducer', () => {
     })
   })
   
-  describe('GET_VALIDATION_OUTLINE_REQUEST', () => {
-    const action = { type: types.GET_VALIDATION_OUTLINE_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-    
-    test('should set state.isLoadingPage to true', () => {
-      expect(state.isLoadingPage).toEqual(true)
-    })
-    
-    test('should set state.getRequestInProgress to true', () => {
-      expect(state.getRequestInProgress).toEqual(true)
-    })
-  })
-  
-  describe('GET_CODING_OUTLINE_FAIL', () => {
-    const action = { type: types.GET_CODING_OUTLINE_FAIL, payload: 'Failed to get scheme' }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-    
-    test('should set state.schemeError to action.payload', () => {
-      expect(state.schemeError).toEqual('Failed to get scheme')
-    })
-    
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-    
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-    
-    test('should set state.getRequestInProgress to false', () => {
-      expect(state.getRequestInProgress).toEqual(false)
-    })
-  })
-  
-  describe('GET_VALIDATION_OUTLINE_FAIL', () => {
-    const action = { type: types.GET_VALIDATION_OUTLINE_FAIL, payload: 'Failed to get scheme' }
+  describe('GET_OUTLINE_FAIL', () => {
+    const action = { type: types.GET_OUTLINE_FAIL, payload: 'Failed to get scheme' }
     const currentState = getState()
     const state = reducer(currentState, action)
     

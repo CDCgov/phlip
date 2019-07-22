@@ -103,7 +103,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion({}, {}, {
       projectId: action.projectId,
       jurisdictionId: action.jurisdictionId,
-      questionId: questionId
+      questionId
     })
   } catch (e) {
     coderErrors = { allCodedQuestions: 'We couldn\'t retrieve all the coded answers for this question.' }
@@ -134,7 +134,6 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
 
 /**
  * Logic for getting scheme and outline
- * @type {Logic<object, undefined, undefined, {api?: *, action?: *, getState?: *}, undefined, string>}
  */
 export const getOutline = createLogic({
   type: types.GET_OUTLINE_REQUEST,
@@ -157,20 +156,16 @@ export const getOutline = createLogic({
         schemeError: null,
         isLoadingPage: false,
         showPageLoader: false,
-        errors: {},
-        user
+        errors: {}
       },
       isValidation: state.page === 'validation',
       api: apiMethod,
-      userId: user.id,
-      currentUser: user
+      user
     })
   },
   async process({ action, getState, api }, dispatch, done) {
     let payload = action.payload, mergedUserQuestions = null, errors = {}, coders = {}, userImages = {}
-    let allUserObjs = getState().data.user.byId
-    
-    console.log(action.payload)
+    const allUserObjs = getState().data.user.byId
     
     // Try to get the project coding scheme
     try {
@@ -190,7 +185,7 @@ export const getOutline = createLogic({
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
           action.projectId,
           action.jurisdictionId,
-          action.userId,
+          action.user.id,
           action.api
         )
         
@@ -200,7 +195,7 @@ export const getOutline = createLogic({
         const userAnswers = initializeUserAnswers(
           [initializeNextQuestion(firstQuestion), ...codedValQuestions],
           questionsById,
-          action.userId
+          action.user.id
         )
         
         if (action.isValidation) {
@@ -245,7 +240,7 @@ export const getOutline = createLogic({
           scheme: { byId: questionsById, tree, order },
           question: firstQuestion,
           currentIndex: questionIndex,
-          user: action.payload.user
+          user: action.user
         }
       }
       
@@ -367,18 +362,6 @@ const answerQuestionLogic = createLogic({
           projectId: action.payload.projectId
         }
       )
-      
-      if (action.payload.inQueue) {
-        dispatch({
-          type: types.REMOVE_REQUEST_FROM_QUEUE,
-          payload: {
-            questionId: action.payload.questionId,
-            categoryId: action.payload.selectedCategoryId,
-            queueId: action.payload.queueId,
-            timeQueued: action.payload.timeQueued
-          }
-        })
-      }
       
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
