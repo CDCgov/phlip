@@ -651,7 +651,6 @@ const saveRedFlagLogic = createLogic({
       dispatch({ type: types.ON_SAVE_RED_FLAG_SUCCESS, payload: { ...resp } })
       dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
       dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
-      
     } catch (error) {
       dispatch({ type: types.ON_SAVE_RED_FLAG_FAIL, payload: 'Failed to save red flag.' })
       dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })

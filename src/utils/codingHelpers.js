@@ -741,7 +741,7 @@ export const copyCoderAnswer = (state, action, selectedCategoryId = state.select
     userAnswer.id = currentValAnswer.id
   }
   
-  return { ...userAnswer, validatedBy: action.userId }
+  return { ...userAnswer, validatedBy: action.userId, categoryId: selectedCategoryId }
 }
 
 /**
