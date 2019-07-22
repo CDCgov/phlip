@@ -15,7 +15,8 @@ import {
   getSelectedQuestion,
   initializeNextQuestion,
   initializeUserAnswers,
-  initializeValues
+  initializeValues,
+  copyCoderAnswer
 } from 'utils/codingHelpers'
 import { handleUserImages } from 'utils/commonHelpers'
 import documentListLogic from './components/DocumentList/logic'
@@ -168,11 +169,15 @@ export const getOutlineLogic = createLogic({
     
     // Try to get the project coding scheme
     try {
-      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
-        action.projectId,
-        api,
-        action.questionId
-      )
+      const {
+        firstQuestion,
+        tree,
+        order,
+        outline,
+        questionsById,
+        isSchemeEmpty,
+        questionIndex
+      } = await getSchemeAndInitialize(action.projectId, api, action.questionId)
       
       // Get user coded questions for currently selected jurisdiction
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
@@ -186,9 +191,11 @@ export const getOutlineLogic = createLogic({
         )
         
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([
-          initializeNextQuestion(firstQuestion), ...codedValQuestions
-        ], questionsById, userId)
+        const userAnswers = initializeUserAnswers(
+          [initializeNextQuestion(firstQuestion), ...codedValQuestions],
+          questionsById,
+          userId
+        )
         
         payload = {
           ...payload,
@@ -250,9 +257,11 @@ export const getValidationOutlineLogic = createLogic({
         )
         
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([
-          initializeNextQuestion(firstQuestion), ...codedValQuestions
-        ], questionsById, userId)
+        const userAnswers = initializeUserAnswers(
+          [initializeNextQuestion(firstQuestion), ...codedValQuestions],
+          questionsById,
+          userId
+        )
         
         // Get all the coded questions for this question
         const coderInfo = await getCoderInformation({
@@ -303,12 +312,11 @@ export const getValidationOutlineLogic = createLogic({
 })
 
 /**
- * The logic is invoked when the user has made changes to a question.
+ * Updates the action for save / bulk validation
+ * @type {Logic<object, undefined, undefined, {api?: *, action?: *, getState?: *}, undefined, string[]>}
  */
-const answerQuestionLogic = createLogic({
-  type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 350,
-  
+const validateSaveAndBulkRequest = createLogic({
+  type: [types.SAVE_USER_ANSWER_REQUEST, types.BULK_VALIDATION_REQUEST],
   /**
    * It updates the action creator values and validates
    * that the action should follow through and be sent to the reducers. It updates the action creator values with the
@@ -323,34 +331,70 @@ const answerQuestionLogic = createLogic({
    */
   validate({ getState, action, api }, allow, reject) {
     const state = getState().scenes.codingValidation.coding
-    const userId = getState().data.user.currentUser.id
+    const user = getState().data.user.currentUser
     const isValidation = state.page === 'validation'
     
-    const apiMethods = isValidation
-      ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
-      : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
+    // Get the question answer object to be sent to the API
+    const questionObj = action.type === types.SAVE_USER_ANSWER_REQUEST
+      ? getFinalCodedObject(
+        state,
+        { ...action, userId: user.id },
+        isValidation,
+        action.selectedCategoryId
+      ) : copyCoderAnswer(
+        state,
+        { ...action, userId: user.id },
+        action.selectedCategoryId
+      )
+    const put = questionObj.hasOwnProperty('id')
     
-    const questionObj = getFinalCodedObject(state, { ...action, userId }, isValidation, action.selectedCategoryId)
+    // Coding / Validation have different API routes and there are different routes for new coded / validated
+    // answers or updating existing
+    const apiMethod = isValidation
+      ? put
+        ? api.updateValidatedQuestion
+        : api.answerValidatedQuestion
+      : put
+        ? api.updateCodedQuestion
+        : api.answerCodedQuestion
     
-    const answerObject = {
+    const payloadObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
       projectId: action.projectId,
-      userId,
+      userId: user.id,
+      user,
       questionObj,
       queueId: `${action.questionId}-${action.jurisdictionId}-${action.projectId}-${action.selectedCategoryId}`,
       timeQueued: Date.now()
     }
     
-    // The question hasn't been answered at all before, but a request has been made. move request to queue to
-    // wait for a response.
+    // Check if there's already a POST request in progress for this question.
     if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
-      reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
+      // The question hasn't been answered at all before, but a request has been made. Move request to queue to
+      // wait for a response.
+      reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: { ...payloadObject, inQueue: true } })
     } else {
-      allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId, apiMethods } })
+      // Allows the request to go through without putting it in the queue
+      allow({
+        ...action,
+        payload: {
+          ...payloadObject,
+          selectedCategoryId: action.selectedCategoryId,
+          api: apiMethod,
+          inQueue: false
+        }
+      })
     }
-  },
-  
+  }
+})
+
+/**
+ * The logic is invoked when the user has made changes to a question.
+ */
+const answerQuestionLogic = createLogic({
+  type: types.SAVE_USER_ANSWER_REQUEST,
+  debounce: 350,
   /**
    * Handles actually sending the requests to the API. If the final questionObj (that was created in the validate
    * function above) has an ID a PUT request is sent, otherwise a POST request is sent. This will also send or clear
@@ -362,17 +406,19 @@ const answerQuestionLogic = createLogic({
     const state = getState().scenes.codingValidation.coding
     
     try {
-      // check if we need to send a post or a put request
-      if (action.payload.questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await action.payload.apiMethods.update(action.payload.questionObj, {}, {
+      respCodedQuestion = await action.payload.api(
+        action.payload.questionObj,
+        {},
+        {
           questionId: action.payload.questionId,
           categoryId: action.payload.selectedCategoryId,
           jurisdictionId: action.payload.jurisdictionId,
           userId: action.payload.userId,
           projectId: action.payload.projectId
-        })
-        
-        // Remove any pending requests from the queue because this is the latest one and has an id
+        }
+      )
+      
+      if (action.payload.inQueue) {
         dispatch({
           type: types.REMOVE_REQUEST_FROM_QUEUE,
           payload: {
@@ -381,14 +427,6 @@ const answerQuestionLogic = createLogic({
             queueId: action.payload.queueId,
             timeQueued: action.payload.timeQueued
           }
-        })
-      } else {
-        respCodedQuestion = await action.payload.apiMethods.create(action.payload.questionObj, {}, {
-          questionId: action.payload.questionId,
-          categoryId: action.payload.selectedCategoryId,
-          jurisdictionId: action.payload.jurisdictionId,
-          userId: action.payload.userId,
-          projectId: action.payload.projectId
         })
       }
       
@@ -418,11 +456,8 @@ const answerQuestionLogic = createLogic({
       } else {
         dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
       }
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.payload.projectId })
       
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.payload.projectId
-      })
     } catch (error) {
       if (error.response && error.response.status === 303) {
         dispatch({
@@ -518,7 +553,7 @@ const applyAnswerToAllLogic = createLogic({
           selectedCategoryId: allCategoryObjects
         }
       })
-  
+      
       dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
@@ -586,7 +621,7 @@ const sendMessageLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId
         }
       })
-  
+      
       dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
@@ -649,9 +684,11 @@ export const getUserCodedQuestionsLogic = createLogic({
     )
     
     // Update the user answers object
-    const userAnswers = initializeUserAnswers([
-      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
-    ], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions],
+      updatedScheme.byId,
+      userId
+    )
     
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
@@ -751,6 +788,10 @@ const getQuestionLogic = createLogic({
       userId
     })
   },
+  /**
+   * Gets the updated scheme question content as well as the updated coded or validated question content. If the user
+   * is on the validation page, then it also gets updated coder information.
+   */
   async process({ getState, action, api }, dispatch, done) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
@@ -850,9 +891,11 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     
-    const userAnswers = initializeUserAnswers([
-      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
-    ], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions],
+      updatedScheme.byId,
+      userId
+    )
     
     const coderInfo = await getCoderInformation({
       api,
@@ -882,7 +925,8 @@ export const getUserValidatedQuestionsLogic = createLogic({
 })
 
 /**
- * Sends a request to the API to clear the flag based on the action.flagId, type 1 === red, type 2 === other
+ * Sends a request to the API to clear the flag based on the action.flagId, type 1 === red, type 2 === other. This is
+ * only used on the validation screen by coordinators or admins.
  */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
@@ -907,9 +951,67 @@ export const clearFlagLogic = createLogic({
   }
 })
 
+/**
+ * Handles the request to bulk validate. This can be bulk validation by question, jurisdiction or project level. If it's
+ * by project or jurisdiction level, there's a separate API call. If it's by question level, then we just use the update
+ * validated question API.
+ */
+export const bulkValidateLogic = createLogic({
+  type: types.BULK_VALIDATION_REQUEST,
+  async process({ getState, action, api }, dispatch, done) {
+    try {
+      // Check the scope of the bulk validation
+      if (action.scope === 'question') {
+        const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
+        const responsePayload = hasCoderAnswered
+          ? await action.payload.api(
+            requestObj,
+            {},
+            {
+              questionId: action.payload.questionId,
+              categoryId: action.payload.selectedCategoryId,
+              jurisdictionId: action.payload.jurisdictionId,
+              userId: action.payload.userId,
+              projectId: action.payload.projectId
+            }
+          )
+          : {}
+        
+        dispatch({
+          type: types.BULK_VALIDATE_QUESTION_SUCCESS,
+          payload: {
+            ...action.payload,
+            hasCoderAnswered,
+            question: {
+              ...responsePayload,
+              validatedBy: action.payload.user
+            }
+          }
+        })
+        done()
+      } else {
+        const newValidatedAnswers = await api.bulkValidate()
+        dispatch({
+          type: types.BULK_VALIDATE_PROJUR_SUCCESS,
+          payload: {
+            questions: newValidatedAnswers,
+            validatedBy: { ...action.payload.user }
+          }
+        })
+        done()
+      }
+      done()
+    } catch (err) {
+      dispatch({ type: types.BULK_VALIDATION_FAIL })
+      done()
+    }
+  }
+})
+
 export default [
   outlineLogic,
   getQuestionLogic,
+  validateSaveAndBulkRequest,
   answerQuestionLogic,
   applyAnswerToAllLogic,
   sendMessageLogic,
@@ -921,5 +1023,6 @@ export default [
   getUserValidatedQuestionsLogic,
   getValidationOutlineLogic,
   clearFlagLogic,
+  bulkValidateLogic,
   ...documentListLogic
 ]

@@ -118,7 +118,7 @@ export class CodingValidation extends Component {
   }
   
   componentDidUpdate(prevProps, prevState) {
-    const { schemeError, question, gettingStartedText, getRequestInProgress } = this.props
+    const { schemeError, question, gettingStartedText, getRequestInProgress, validationInProgress } = this.props
     const { jurisdiction } = this.state
     
     if (!getRequestInProgress && prevProps.getRequestInProgress) {
@@ -131,6 +131,10 @@ export class CodingValidation extends Component {
       if (prevProps.question.id !== question.id || prevState.jurisdiction.id !== jurisdiction.id) {
         this.changeRoutes()
       }
+    }
+    
+    if (prevProps.validationInProgress && !validationInProgress) {
+      this.handleCloseBulkValidate()
     }
   }
   
@@ -374,9 +378,9 @@ export class CodingValidation extends Component {
    * Handles closing the bulk validate modal
    */
   handleCloseBulkValidate = () => {
-    this.setState({
-      bulkValidateOpen: false
-    })
+    const { validationInProgress, actions } = this.props
+    if (validationInProgress) actions.clearValidationProgress()
+    this.setState({ bulkValidateOpen: false })
   }
   
   /**

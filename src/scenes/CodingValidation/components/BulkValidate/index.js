@@ -71,14 +71,16 @@ export class BulkValidate extends Component {
    */
   handleConfirmValidate = () => {
     const { onConfirmValidate, validationInProgress } = this.props
+    const { selections } = this.state
+    
     if (!validationInProgress) {
       this.setState({
         selections: {
-          ...this.state.selections,
+          ...selections,
           confirm: true
         }
       })
-      onConfirmValidate()
+      onConfirmValidate(selections.scope, selections.user)
     }
   }
   

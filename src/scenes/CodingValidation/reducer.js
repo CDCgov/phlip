@@ -11,7 +11,8 @@ import {
   generateError,
   updateCategoryCodedQuestion,
   updateCodedQuestion,
-  handleRemoveAnnotation
+  handleRemoveAnnotation,
+  initializeUserAnswers
 } from 'utils/codingHelpers'
 
 import documentListReducer, { INITIAL_STATE as docListInitialState } from './components/DocumentList/reducer'
@@ -112,6 +113,66 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     : handleUpdateUserCodedQuestion(state, action)
   
   switch (action.type) {
+    case types.GET_CODING_OUTLINE_REQUEST:
+    case types.GET_VALIDATION_OUTLINE_REQUEST:
+      return {
+        ...state,
+        isLoadingPage: true,
+        getRequestInProgress: true,
+        schemeError: null
+      }
+    
+    case types.GET_VALIDATION_OUTLINE_SUCCESS:
+    case types.GET_CODING_OUTLINE_SUCCESS:
+      let error = generateError(action.payload.errors)
+      const {
+        outline, scheme, question, userAnswers, areJurisdictionsEmpty, currentIndex, isSchemeEmpty, mergedUserQuestions,
+        user
+      } = action.payload
+      
+      const upState = {
+        ...state,
+        outline,
+        scheme,
+        question,
+        userAnswers,
+        gettingStartedText: getStartedText(
+          isSchemeEmpty,
+          areJurisdictionsEmpty,
+          user.role,
+          state.page === 'validation'
+        ),
+        areJurisdictionsEmpty,
+        mergedUserQuestions,
+        isSchemeEmpty,
+        schemeError: null,
+        apiErrorAlert: {
+          open: error.length > 0,
+          text: error
+        },
+        disableAll: action.payload.errors.hasOwnProperty('codedValQuestions'),
+        isLoadingPage: false,
+        showPageLoader: false,
+        getRequestInProgress: false,
+        currentIndex,
+        categories: undefined
+      }
+      
+      return {
+        ...upState,
+        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
+      }
+    
+    case types.GET_CODING_OUTLINE_FAIL:
+    case types.GET_VALIDATION_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload,
+        isLoadingPage: false,
+        showPageLoader: false,
+        getRequestInProgress: false
+      }
+    
     case types.UPDATE_USER_ANSWER:
       return {
         ...state,
@@ -182,6 +243,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: queue.length > 0
       }
     
+    case types.ON_SAVE_RED_FLAG_REQUEST:
     case types.SEND_QUEUE_REQUESTS:
       return {
         ...state,
@@ -319,66 +381,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: false
       }
     
-    case types.GET_CODING_OUTLINE_REQUEST:
-    case types.GET_VALIDATION_OUTLINE_REQUEST:
-      return {
-        ...state,
-        isLoadingPage: true,
-        getRequestInProgress: true,
-        schemeError: null
-      }
-    
-    case types.GET_VALIDATION_OUTLINE_SUCCESS:
-    case types.GET_CODING_OUTLINE_SUCCESS:
-      let error = generateError(action.payload.errors)
-      const {
-        outline, scheme, question, userAnswers, areJurisdictionsEmpty, currentIndex, isSchemeEmpty, mergedUserQuestions,
-        user
-      } = action.payload
-      
-      const upState = {
-        ...state,
-        outline,
-        scheme,
-        question,
-        userAnswers,
-        gettingStartedText: getStartedText(
-          isSchemeEmpty,
-          areJurisdictionsEmpty,
-          user.role,
-          state.page === 'validation'
-        ),
-        areJurisdictionsEmpty,
-        mergedUserQuestions,
-        isSchemeEmpty,
-        schemeError: null,
-        apiErrorAlert: {
-          open: error.length > 0,
-          text: error
-        },
-        disableAll: action.payload.errors.hasOwnProperty('codedValQuestions'),
-        isLoadingPage: false,
-        showPageLoader: false,
-        getRequestInProgress: false,
-        currentIndex,
-        categories: undefined
-      }
-      
-      return {
-        ...upState,
-        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
-      }
-    
-    case types.GET_CODING_OUTLINE_FAIL:
-    case types.GET_VALIDATION_OUTLINE_FAIL:
-      return {
-        ...state,
-        schemeError: action.payload,
-        isLoadingPage: false,
-        showPageLoader: false,
-        getRequestInProgress: false
-      }
-    
     case types.ON_SAVE_RED_FLAG_SUCCESS:
       const curQuestion = { ...state.scheme.byId[state.question.id] }
       return {
@@ -446,12 +448,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates
       }
     
-    case types.ON_SAVE_RED_FLAG_REQUEST:
-      return {
-        ...state,
-        unsavedChanges: true
-      }
-    
     case types.CLEAR_FLAG_SUCCESS:
       if (action.payload.type === 1) {
         return {
@@ -512,19 +508,42 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           }
         }
       }
-      
+    
     case types.BULK_VALIDATION_REQUEST:
       return {
         ...state,
         validationInProgress: true
       }
+    
+    case types.BULK_VALIDATE_QUESTION_SUCCESS:
+      const updatedUserAnswers = action.payload.hasCoderAnswered
+        ? initializeUserAnswers(
+          [action.payload.question],
+          state.scheme.byId,
+          action.payload.question.validatedBy.userId,
+          state.userAnswers
+        )
+        : state.userAnswers
       
-    case types.BULK_VALIDATION_SUCCESS:
+      return {
+        ...state,
+        validationInProgress: false,
+        userAnswers: updatedUserAnswers,
+        answerSnapshot: updatedUserAnswers[action.payload.question.id]
+      }
+    
+    case types.CLEAR_VALIDATION_PROGRESS:
       return {
         ...state,
         validationInProgress: false
       }
-      
+    
+    case types.BULK_VALIDATE_PROJUR_SUCCESS:
+      return {
+        ...state,
+        validationInProgress: false
+      }
+    
     case types.BULK_VALIDATION_FAIL:
       return {
         ...state,
@@ -542,7 +561,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           open: true
         }
       }
-      
+    
     case types.CLOSE_API_ERROR_ALERT:
       return {
         ...state,
