@@ -1,0 +1,348 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingValidation -- Bulk Validate modal should render correctly 1`] = `
+<WithStyles(Modal)
+  hideOverflow={true}
+  maxWidth="md"
+  onClose={[Function]}
+  open={true}
+>
+  <ModalTitle
+    buttons={
+      <WithTheme(Button)
+        color="accent"
+        disabled={false}
+        onClick={[Function]}
+        raised={false}
+      >
+        Close
+      </WithTheme(Button)>
+    }
+    title="Validate"
+  />
+  <WithStyles(Divider) />
+  <ModalContent
+    style={
+      Object {
+        "display": "flex",
+        "padding": 0,
+      }
+    }
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+      type="column"
+    >
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
+        flex={true}
+        justify="stretch"
+        padding="10px 24px"
+        raised={false}
+        style={Object {}}
+        type="column"
+      >
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
+          flex={true}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="column"
+        >
+          <FlexGrid
+            align="center"
+            circular={false}
+            container={true}
+            flex={true}
+            justify="stretch"
+            key="scope-0"
+            padding="20px 10px 10px"
+            raised={false}
+            style={
+              Object {
+                "backgroundColor": "white",
+                "borderBottom": "1px solid rgba(0, 0, 0, 0.12)",
+                "height": "33%",
+              }
+            }
+            type="row"
+          >
+            <FlexGrid
+              align="stretch"
+              circular={false}
+              container={true}
+              flex={false}
+              justify="space-evenly"
+              padding="0  20px 20px"
+              raised={false}
+              style={
+                Object {
+                  "height": "100%",
+                }
+              }
+              type="column"
+            >
+              <WithStyles(Typography)
+                style={
+                  Object {
+                    "color": "black",
+                  }
+                }
+                variant="display1"
+              >
+                Question
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                Validate only the current question
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                You will select one user. Their answer choices or text answers, annotations, and pincites will be copied and saved as the validated answers for 
+                <strong>
+                  just this question
+                </strong>
+                .
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                To validate another question, you’ll need to navigate to that question and repeat these steps.
+              </WithStyles(Typography)>
+            </FlexGrid>
+            <WithTheme(Button)
+              onClick={[Function]}
+            >
+              Select
+            </WithTheme(Button)>
+          </FlexGrid>
+          <FlexGrid
+            align="center"
+            circular={false}
+            container={true}
+            flex={true}
+            justify="stretch"
+            key="scope-1"
+            padding="20px 10px 10px"
+            raised={false}
+            style={
+              Object {
+                "backgroundColor": "white",
+                "borderBottom": "1px solid rgba(0, 0, 0, 0.12)",
+                "height": "33%",
+              }
+            }
+            type="row"
+          >
+            <FlexGrid
+              align="stretch"
+              circular={false}
+              container={true}
+              flex={false}
+              justify="space-evenly"
+              padding="0  20px 20px"
+              raised={false}
+              style={
+                Object {
+                  "height": "100%",
+                }
+              }
+              type="column"
+            >
+              <WithStyles(Typography)
+                style={
+                  Object {
+                    "color": "black",
+                  }
+                }
+                variant="display1"
+              >
+                Jurisdiction
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                Validate all questions in the current jurisdiction.
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                You will select one user. Their answer choices or text answers, annotations, and pincites will be copied and saved as the validated answers for 
+                <strong>
+                  every question in this jurisdiction
+                </strong>
+                .
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                To validate another jurisdiction, you’ll need to navigate to that jurisdiction and repeat these steps.
+              </WithStyles(Typography)>
+            </FlexGrid>
+            <WithTheme(Button)
+              onClick={[Function]}
+            >
+              Select
+            </WithTheme(Button)>
+          </FlexGrid>
+          <FlexGrid
+            align="center"
+            circular={false}
+            container={true}
+            flex={true}
+            justify="stretch"
+            key="scope-2"
+            padding="20px 10px 10px"
+            raised={false}
+            style={
+              Object {
+                "backgroundColor": "white",
+                "borderBottom": "0px solid rgba(0, 0, 0, 0.12)",
+                "height": "33%",
+              }
+            }
+            type="row"
+          >
+            <FlexGrid
+              align="stretch"
+              circular={false}
+              container={true}
+              flex={false}
+              justify="space-evenly"
+              padding="0  20px 20px"
+              raised={false}
+              style={
+                Object {
+                  "height": "100%",
+                }
+              }
+              type="column"
+            >
+              <WithStyles(Typography)
+                style={
+                  Object {
+                    "color": "black",
+                  }
+                }
+                variant="display1"
+              >
+                Project
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                Validate every question and jurisdiction in the current project
+              </WithStyles(Typography)>
+              <WithStyles(Typography)
+                variant="body1"
+              >
+                You will select one user. Their answer choices or text answers, annotations, and pincites will be copied and saved as the validated answers for 
+                <strong>
+                  every question in every jurisdiction
+                </strong>
+                .
+              </WithStyles(Typography)>
+            </FlexGrid>
+            <WithTheme(Button)
+              onClick={[Function]}
+            >
+              Select
+            </WithTheme(Button)>
+          </FlexGrid>
+        </FlexGrid>
+      </FlexGrid>
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={Object {}}
+        type="column"
+      >
+        <WithStyles(Stepper)
+          activeStep={0}
+          alternativeLabel={true}
+          style={
+            Object {
+              "paddingBottom": 15,
+            }
+          }
+        >
+          <WithStyles(Step)
+            active={true}
+            completed={false}
+            disabled={false}
+            key="Select Scope"
+          >
+            <WithStyles(StepLabel)
+              disabled={false}
+              optional={false}
+            >
+              Select Scope
+            </WithStyles(StepLabel)>
+          </WithStyles(Step)>
+          <WithStyles(Step)
+            active={false}
+            completed={false}
+            disabled={true}
+            key="Select User"
+          >
+            <WithStyles(StepLabel)
+              disabled={true}
+              optional={false}
+            >
+              Select User
+            </WithStyles(StepLabel)>
+          </WithStyles(Step)>
+          <WithStyles(Step)
+            active={false}
+            completed={false}
+            disabled={true}
+            key="Confirm"
+          >
+            <WithStyles(StepLabel)
+              disabled={true}
+              optional={false}
+            >
+              Confirm
+            </WithStyles(StepLabel)>
+          </WithStyles(Step)>
+        </WithStyles(Stepper)>
+        <FlexGrid
+          align="center"
+          circular={false}
+          container={true}
+          flex={false}
+          justify="flex-end"
+          padding="0px 24px 24px"
+          raised={false}
+          style={Object {}}
+          type="row"
+        />
+      </FlexGrid>
+    </FlexGrid>
+  </ModalContent>
+</WithStyles(Modal)>
+`;

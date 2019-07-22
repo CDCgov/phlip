@@ -96,8 +96,10 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
         }
       }
       empty={false}
+      isValidation={false}
       onGoBack={[Function]}
       onJurisdictionChange={[Function]}
+      onOpenBulkValidate={[Function]}
       pageTitle="Coding"
       project={
         Object {
@@ -117,6 +119,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
           ],
         }
       }
+      showValidate={true}
     />
     <FlexGrid
       align="stretch"
@@ -165,6 +168,11 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
           }
           type="row"
         >
+          <BulkValidate
+            onClose={[Function]}
+            onConfirmValidate={[Function]}
+            open={false}
+          />
           <Connect(QuestionCard)
             currentIndex={0}
             handleGetQuestion={[Function]}
