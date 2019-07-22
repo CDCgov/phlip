@@ -3,6 +3,10 @@ import { default as docListActions, types as docTypes } from './components/Docum
 import { default as cardActions, types as cardTypes } from './components/QuestionCard/actions'
 
 export const types = {
+  GET_OUTLINE_REQUEST: 'GET_OUTLINE_REQUEST',
+  GET_OUTLINE_SUCCESS: 'GET_OUTLINE_SUCCESS',
+  GET_OUTLINE_FAIL: 'GET_OUTLINE_FAIL',
+  
   UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
   ON_CLOSE_SCREEN: 'ON_CLOSE_SCREEN',
   ON_SHOW_PAGE_LOADER: 'ON_SHOW_PAGE_LOADER',
@@ -38,14 +42,6 @@ export const types = {
   GET_APPROVED_DOCUMENTS_REQUEST: 'GET_APPROVED_DOCUMENTS_REQUEST',
   GET_APPROVED_DOCUMENTS_SUCCESS: 'GET_APPROVED_DOCUMENTS_SUCCESS',
   GET_APPROVED_DOCUMENTS_FAIL: 'GET_APPROVED_DOCUMENTS_FAIL',
-
-  GET_CODING_OUTLINE_REQUEST: 'GET_CODING_OUTLINE_REQUEST',
-  GET_CODING_OUTLINE_SUCCESS: 'GET_CODING_OUTLINE_SUCCESS',
-  GET_CODING_OUTLINE_FAIL: 'GET_CODING_OUTLINE_FAIL',
-
-  GET_VALIDATION_OUTLINE_REQUEST: 'GET_VALIDATION_OUTLINE_REQUEST',
-  GET_VALIDATION_OUTLINE_SUCCESS: 'GET_VALIDATION_OUTLINE_SUCCESS',
-  GET_VALIDATION_OUTLINE_FAIL: 'GET_VALIDATION_OUTLINE_FAIL',
 
   GET_USER_CODED_QUESTIONS_REQUEST: 'GET_USER_CODED_QUESTIONS_REQUEST',
   GET_USER_CODED_QUESTIONS_SUCCESS: 'GET_USER_CODED_QUESTIONS_SUCCESS',
@@ -95,11 +91,10 @@ export default {
   saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId'),
   addRequestToQueue: makeActionCreator(types.ADD_REQUEST_TO_QUEUE, 'payload'),
   getQuestionRequest: makeActionCreator(types.GET_QUESTION_REQUEST, 'questionId', 'projectId'),
-  getCodingOutlineRequest: makeActionCreator(types.GET_CODING_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'questionId'),
+  getOutlineRequest: makeActionCreator(types.GET_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'questionId'),
   getUserCodedQuestions: makeActionCreator(types.GET_USER_CODED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId'),
   onSaveFlag: makeActionCreator(types.ON_SAVE_FLAG, 'projectId', 'jurisdictionId', 'questionId', 'flagInfo'),
   onSaveRedFlag: makeActionCreator(types.ON_SAVE_RED_FLAG_REQUEST, 'projectId', 'questionId', 'flagInfo'),
-  getValidationOutlineRequest: makeActionCreator(types.GET_VALIDATION_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'questionId'),
   getUserValidatedQuestionsRequest: makeActionCreator(types.GET_USER_VALIDATED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId'),
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),

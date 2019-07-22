@@ -113,58 +113,45 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     : handleUpdateUserCodedQuestion(state, action)
   
   switch (action.type) {
-    case types.GET_CODING_OUTLINE_REQUEST:
-    case types.GET_VALIDATION_OUTLINE_REQUEST:
+    case types.GET_OUTLINE_REQUEST:
       return {
         ...state,
         isLoadingPage: true,
         getRequestInProgress: true,
         schemeError: null
       }
-    
-    case types.GET_VALIDATION_OUTLINE_SUCCESS:
-    case types.GET_CODING_OUTLINE_SUCCESS:
-      let error = generateError(action.payload.errors)
-      const {
-        outline, scheme, question, userAnswers, areJurisdictionsEmpty, currentIndex, isSchemeEmpty, mergedUserQuestions,
-        user
-      } = action.payload
       
+    case types.GET_OUTLINE_SUCCESS:
+      let payload = action.payload
+      let error = generateError(payload.errors)
+  
       const upState = {
         ...state,
-        outline,
-        scheme,
-        question,
-        userAnswers,
+        ...payload,
         gettingStartedText: getStartedText(
-          isSchemeEmpty,
-          areJurisdictionsEmpty,
-          user.role,
+          payload.isSchemeEmpty,
+          payload.areJurisdictionsEmpty,
+          payload.user.role,
           state.page === 'validation'
         ),
-        areJurisdictionsEmpty,
-        mergedUserQuestions,
-        isSchemeEmpty,
-        schemeError: null,
         apiErrorAlert: {
           open: error.length > 0,
           text: error
         },
-        disableAll: action.payload.errors.hasOwnProperty('codedValQuestions'),
+        disableAll: payload.errors.hasOwnProperty('codedValQuestions'),
         isLoadingPage: false,
         showPageLoader: false,
         getRequestInProgress: false,
-        currentIndex,
-        categories: undefined
+        categories: undefined,
+        schemeError: null
       }
       
       return {
         ...upState,
         ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
       }
-    
-    case types.GET_CODING_OUTLINE_FAIL:
-    case types.GET_VALIDATION_OUTLINE_FAIL:
+      
+    case types.GET_OUTLINE_FAIL:
       return {
         ...state,
         schemeError: action.payload,

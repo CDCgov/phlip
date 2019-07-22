@@ -109,10 +109,7 @@ export class CodingValidation extends Component {
     
     document.title = `PHLIP - ${project.name} - ${isValidation ? 'Validate' : 'Code'} `
     actions.setPage(page)
-    
-    page === 'coding'
-      ? actions.getCodingOutlineRequest(project.id, jur, q)
-      : actions.getValidationOutlineRequest(project.id, jur, q)
+    actions.getOutlineRequest(project.id, jur, q)
     
     this.onShowPageLoader()
   }

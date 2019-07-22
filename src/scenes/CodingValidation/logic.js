@@ -131,10 +131,18 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
  * Updates the action creator values with the jurisdictionEmpty state and current userId before sending it to
  * the reducer for getting the coding scheme outline.
  */
-const outlineLogic = createLogic({
-  type: [types.GET_CODING_OUTLINE_REQUEST, types.GET_VALIDATION_OUTLINE_REQUEST],
-  transform({ getState, action }, next) {
+
+/**
+ * Logic for getting scheme and outline
+ * @type {Logic<object, undefined, undefined, {api?: *, action?: *, getState?: *}, undefined, string>}
+ */
+export const getOutline = createLogic({
+  type: types.GET_OUTLINE_REQUEST,
+  transform({ getState, action, api }, next) {
     const user = getState().data.user.currentUser
+    const state = getState().scenes.codingValidation.coding
+    const apiMethod = state.page === 'validation' ? api.getValidatedQuestions : api.getUserCodedQuestions
+    
     next({
       ...action,
       payload: {
@@ -152,20 +160,17 @@ const outlineLogic = createLogic({
         errors: {},
         user
       },
+      isValidation: state.page === 'validation',
+      api: apiMethod,
       userId: user.id,
       currentUser: user
     })
-  }
-})
-
-/**
- * Handles getting the coding scheme outline for the project
- */
-export const getOutlineLogic = createLogic({
-  type: types.GET_CODING_OUTLINE_REQUEST,
+  },
   async process({ action, getState, api }, dispatch, done) {
-    let payload = action.payload
-    const userId = action.userId
+    let payload = action.payload, mergedUserQuestions = null, errors = {}, coders = {}, userImages = {}
+    let allUserObjs = getState().data.user.byId
+    
+    console.log(action.payload)
     
     // Try to get the project coding scheme
     try {
@@ -179,131 +184,76 @@ export const getOutlineLogic = createLogic({
         questionIndex
       } = await getSchemeAndInitialize(action.projectId, api, action.questionId)
       
-      // Get user coded questions for currently selected jurisdiction
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
         payload = { ...payload, isSchemeEmpty }
       } else {
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
           action.projectId,
           action.jurisdictionId,
-          userId,
-          api.getUserCodedQuestions
+          action.userId,
+          action.api
         )
+        
+        errors = { ...errors, ...codedValErrors }
         
         // Initialize the user answers object
         const userAnswers = initializeUserAnswers(
           [initializeNextQuestion(firstQuestion), ...codedValQuestions],
           questionsById,
-          userId
+          action.userId
         )
         
-        payload = {
-          ...payload,
-          outline,
-          scheme: { byId: questionsById, tree, order },
-          userAnswers,
-          question: firstQuestion,
-          errors: { ...codedValErrors },
-          currentIndex: questionIndex,
-          mergedUserQuestions: null,
-          user: action.payload.user
-        }
-      }
-      
-      dispatch({ type: types.GET_CODING_OUTLINE_SUCCESS, payload })
-    } catch (e) {
-      dispatch({
-        type: types.GET_CODING_OUTLINE_FAIL,
-        payload: 'Failed to get outline.',
-        error: true
-      })
-    }
-    done()
-  }
-})
-
-/**
- * Logic for when the user first opens the validation screen
- */
-export const getValidationOutlineLogic = createLogic({
-  type: types.GET_VALIDATION_OUTLINE_REQUEST,
-  async process({ action, getState, api }, dispatch, done) {
-    let errors = {}, payload = action.payload, userImages = {}, coders = {}
-    const userId = action.userId
-    let allUserObjs = getState().data.user.byId
-    
-    try {
-      // Try to get the project coding scheme
-      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
-        action.projectId,
-        api,
-        action.questionId
-      )
-      
-      // Get user coded questions for currently selected jurisdiction
-      if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
-        payload = { ...payload, isSchemeEmpty }
-      } else {
-        // If there are flags for this question, then we need to add the flag raiser to our coders object
-        if (firstQuestion.flags.length > 0) {
-          coders = { ...coders, [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy } }
-        }
-        
-        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-          action.projectId,
-          action.jurisdictionId,
-          userId,
-          api.getValidatedQuestions
-        )
-        
-        // Initialize the user answers object
-        const userAnswers = initializeUserAnswers(
-          [initializeNextQuestion(firstQuestion), ...codedValQuestions],
-          questionsById,
-          userId
-        )
-        
-        // Get all the coded questions for this question
-        const coderInfo = await getCoderInformation({
-          api,
-          action,
-          questionId: firstQuestion.id,
-          userImages
-        })
-        
-        // Update coders from the getCoderInformation method
-        coders = { ...coders, ...coderInfo.coders }
-        
-        // Get all the user information for validated questions
-        for (let valQuestion of codedValQuestions) {
-          if (!checkIfExists(valQuestion.validatedBy, coders, 'userId')) {
-            coders = { ...coders, [valQuestion.validatedBy.userId]: { ...valQuestion.validatedBy } }
+        if (action.isValidation) {
+          // If there are flags for this question, then we need to add the flag raiser to our coders object
+          if (firstQuestion.flags.length > 0) {
+            coders = {
+              ...coders,
+              [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy }
+            }
           }
+  
+          // Get all the coded questions for this question
+          const coderInfo = await getCoderInformation({
+            api,
+            action,
+            questionId: firstQuestion.id,
+            userImages
+          })
+          
+          mergedUserQuestions = coderInfo.codedQuestionObj
+  
+          // Update coders from the getCoderInformation method
+          coders = { ...coders, ...coderInfo.coders }
+  
+          // Get all the user information for validated questions
+          for (let valQuestion of codedValQuestions) {
+            if (!checkIfExists(valQuestion.validatedBy, coders, 'userId')) {
+              coders = { ...coders, [valQuestion.validatedBy.userId]: { ...valQuestion.validatedBy } }
+            }
+          }
+  
+          const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
+          errors = { ...errors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
-        
-        const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
         
         payload = {
           ...payload,
           outline,
-          scheme: { byId: questionsById, tree, order },
           userAnswers,
-          mergedUserQuestions: coderInfo.codedQuestionObj,
+          errors,
+          mergedUserQuestions,
+          scheme: { byId: questionsById, tree, order },
           question: firstQuestion,
           currentIndex: questionIndex,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error },
           user: action.payload.user
         }
       }
       
-      dispatch({
-        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
-        payload
-      })
+      dispatch({ type: types.GET_OUTLINE_SUCCESS, payload })
     } catch (e) {
       dispatch({
-        type: types.GET_VALIDATION_OUTLINE_FAIL,
-        payload: 'Couldn\'t get outline',
+        type: types.GET_OUTLINE_FAIL,
+        payload: 'Failed to get outline.',
         error: true
       })
     }
@@ -1009,19 +959,17 @@ export const bulkValidateLogic = createLogic({
 })
 
 export default [
-  outlineLogic,
+  getOutline,
   getQuestionLogic,
   validateSaveAndBulkRequest,
   answerQuestionLogic,
   applyAnswerToAllLogic,
   sendMessageLogic,
   getCodedValQuestionsLogic,
-  getOutlineLogic,
   getUserCodedQuestionsLogic,
   saveRedFlagLogic,
   updateValidatorLogic,
   getUserValidatedQuestionsLogic,
-  getValidationOutlineLogic,
   clearFlagLogic,
   bulkValidateLogic,
   ...documentListLogic
