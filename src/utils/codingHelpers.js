@@ -396,6 +396,12 @@ export const handleUpdateAnnotations = (state, action) => {
   }
 }
 
+/**
+ * Removes an annotation from a coded answer
+ * @param state
+ * @param action
+ * @returns {*}
+ */
 export const handleRemoveAnnotation = (state, action) => {
   const currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
