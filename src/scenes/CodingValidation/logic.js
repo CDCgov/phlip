@@ -916,7 +916,11 @@ export const bulkValidateLogic = createLogic({
           }
         )
         
-        updatedUserAnswers = initializeUserAnswers(newValidatedAnswers, byId, action.payload.userId, {})
+        const thisJurAnswers = newValidatedAnswers.filter(
+          answer => answer.projectJurisdictionId === action.payload.jurisdictionId
+        )
+        
+        updatedUserAnswers = initializeUserAnswers(thisJurAnswers, byId, action.payload.userId, {})
       }
       
       dispatch({
@@ -925,6 +929,8 @@ export const bulkValidateLogic = createLogic({
           updatedUserAnswers
         }
       })
+      
+      dispatch({ type: types.SET_RESET_STATUS, canReset: false })
       dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
       done()
     } catch (err) {

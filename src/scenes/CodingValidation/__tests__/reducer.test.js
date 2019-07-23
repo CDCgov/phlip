@@ -2318,6 +2318,126 @@ describe('CodingValidation reducer', () => {
     })
   })
   
+  describe('BULK_VALIDATION_REQUEST', () => {
+    test('should set that a request is in progress', () => {
+      const action = { type: types.BULK_VALIDATION_REQUEST }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.validationInProgress).toEqual(true)
+    })
+  })
+  
+  describe('BULK_VALIDATION_SUCCESS', () => {
+    const updated = {
+      1: {
+        answers: {
+          234: {
+            id: 100,
+            schemeAnswerId: 234,
+            pincite: 'new pincite',
+            annotations: [],
+            textAnswer: null
+          }
+        },
+        schemeQuestionId: 1,
+        comment: '',
+        flag: {
+          notes: '',
+          raisedBy: {},
+          type: 0
+        },
+        hasMadePost: false,
+        id: 10019,
+        isNewCodedQuestion: false
+      }
+    }
+    
+    const action = {
+      type: types.BULK_VALIDATION_SUCCESS,
+      payload: {
+        updatedUserAnswers: updated
+      }
+    }
+    const currentState = getState({ validationInProgress: true, question: schemeById[1] })
+    const state = reducer(currentState, action)
+    
+    test('should set updated validator answers', () => {
+      expect(state.userAnswers).toEqual(updated)
+    })
+    
+    test('should set that the validation request has ended', () => {
+      expect(state.validationInProgress).toEqual(false)
+    })
+    
+    test('should take a snapshot of the new question', () => {
+      expect(state.answerSnapshot).toEqual(updated[1])
+    })
+    
+    test('should take a snapshot if the current question is a category question', () => {
+      const updatedCat = {
+        4: {
+          5: {
+            answers: {
+              432: { schemeAnswerId: 432, pincite: '', annotations: [], textAnswer: null }
+            },
+            categoryId: 5,
+            isNewCodedQuestion: false,
+            id: 22,
+            hasMadePost: false,
+            comment: '',
+            schemeQuestionId: 4,
+            flag: {
+              notes: '',
+              raisedBy: {},
+              type: 0
+            }
+          }
+        }
+      }
+      
+      const action = {
+        type: types.BULK_VALIDATION_SUCCESS,
+        payload: {
+          updatedUserAnswers: updatedCat
+        }
+      }
+      const currentState = getState({ validationInProgress: true, question: schemeById[4] })
+      const state = reducer(currentState, action)
+      expect(state.answerSnapshot).toEqual(updatedCat[4])
+    })
+  })
+  
+  describe('BULK_VALIDATION_FAIL', () => {
+    const action = {
+      type: types.BULK_VALIDATION_FAIL
+    }
+    
+    const currentState = getState({ validationInProgress: true })
+    const state = reducer(currentState, action)
+    
+    test('should open an alert to inform the user of the failure', () => {
+      expect(state.apiErrorAlert.open).toEqual(true)
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t save your validation request.')
+    })
+    
+    test('should set that the validation request has finished', () => {
+      expect(state.validationInProgress).toEqual(false)
+    })
+  })
+  
+  describe('CLEAR_VALIDATION_PROGRESS', () => {
+    const action = {
+      type: types.CLEAR_VALIDATION_PROGRESS
+    }
+  
+    const currentState = getState({ validationInProgress: true })
+    const state = reducer(currentState, action)
+    
+    test('should stop the validation request', () => {
+      expect(state.validationInProgress).toEqual(false)
+    })
+  })
+  
   describe('SET_PAGE', () => {
     test('should set state.page to action.page', () => {
       const action = {

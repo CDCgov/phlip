@@ -502,11 +502,16 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_VALIDATION_SUCCESS:
+      const updatedAnswers = action.payload.updatedUserAnswers
+      const question = state.question.isCategoryQuestion
+        ? updatedAnswers[state.question.id][state.selectedCategoryId]
+        : updatedAnswers[state.question.id]
+      
       return {
         ...state,
-        userAnswers: action.payload.updatedUserAnswers,
+        userAnswers: updatedAnswers,
         validationInProgress: false,
-        answerSnapshot: action.payload.updatedUserAnswers[action.payload.updatedUserAnswers[state.question.id]]
+        answerSnapshot: question
       }
     
     case types.BULK_VALIDATION_FAIL:
@@ -515,7 +520,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         apiErrorAlert: {
           open: true,
           text: 'We couldn\'t save your validation request.'
-        }
+        },
+        validationInProgress: false
       }
   
     case types.CLEAR_VALIDATION_PROGRESS:
