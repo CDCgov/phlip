@@ -180,7 +180,7 @@ export const getOutline = createLogic({
       } = await getSchemeAndInitialize(action.projectId, api, action.questionId)
       
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
-        payload = { ...payload, isSchemeEmpty }
+        payload = { ...payload, isSchemeEmpty, user: action.user }
       } else {
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
           action.projectId,
