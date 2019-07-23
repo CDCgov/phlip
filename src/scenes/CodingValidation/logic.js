@@ -886,7 +886,7 @@ export const bulkValidateLogic = createLogic({
     const userAnswers = state.userAnswers
     
     try {
-      let updatedUserAnswers = {}, otherStateUpdates = {}, questionId = action.payload.questionId
+      let updatedUserAnswers = {}, otherStateUpdates = {}, question = state.scheme.byId[action.payload.questionId]
       // Check the scope of the bulk validation
       if (action.scope === 'question') {
         const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
@@ -896,7 +896,7 @@ export const bulkValidateLogic = createLogic({
             requestObj,
             {},
             {
-              questionId,
+              questionId: question.id,
               categoryId: action.payload.selectedCategoryId,
               jurisdictionId: action.payload.jurisdictionId,
               userId: action.payload.userId,
@@ -936,11 +936,9 @@ export const bulkValidateLogic = createLogic({
       
       if (state.question.isCategoryQuestion) {
         if (!updatedUserAnswers[state.question.id].hasOwnProperty(state.selectedCategoryId)) {
-          const question = state.scheme.byId[state.question.parentId]
-          questionId = question.id
+          question = state.scheme.byId[state.question.parentId]
           otherStateUpdates = {
             ...otherStateUpdates,
-            question,
             currentIndex: state.scheme.order.findIndex(id => id === question.id),
             categories: undefined,
             selectedCategory: 0,
@@ -949,7 +947,13 @@ export const bulkValidateLogic = createLogic({
         }
       }
       
-      dispatch({ type: types.BULK_VALIDATION_SUCCESS, payload: { updatedUserAnswers, otherStateUpdates } })
+      dispatch({
+        type: types.BULK_VALIDATION_SUCCESS,
+        payload: {
+          updatedUserAnswers,
+          otherStateUpdates: { ...otherStateUpdates, question }
+        }
+      })
       dispatch({ type: types.SET_RESET_STATUS, canReset: false })
       done()
     } catch (err) {

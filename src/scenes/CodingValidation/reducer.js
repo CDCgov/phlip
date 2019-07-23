@@ -503,9 +503,10 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     
     case types.BULK_VALIDATION_SUCCESS:
       const updatedAnswers = action.payload.updatedUserAnswers
-      const question = state.question.isCategoryQuestion
-        ? updatedAnswers[state.question.id][state.selectedCategoryId]
-        : updatedAnswers[state.question.id]
+      const schemeQ = action.payload.otherStateUpdates.question
+      const question = schemeQ.isCategoryQuestion
+        ? updatedAnswers[schemeQ.id][state.selectedCategoryId]
+        : updatedAnswers[schemeQ.id]
       
       return {
         ...state,
