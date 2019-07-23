@@ -291,7 +291,7 @@ export class BulkValidate extends Component {
                     {selections.scope === 'question' &&
                     `If ${selections.user.firstName} has not coded this question, the current validated answer will not change.`}
                     {selections.scope !== 'question' &&
-                    `${selections.user.firstName}'s coding data will be to validate every question they have coded within this ${selections.scope}.
+                    `${selections.user.firstName}'s coding data will be used to validate every question they have coded within this ${selections.scope}.
                      For questions that ${selections.user.firstName} has not modified or coded, the current validated answers will remain the same.`}
                   </Typography>
                   <Typography variant="body1">
