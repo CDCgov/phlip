@@ -920,30 +920,38 @@ export const bulkValidateLogic = createLogic({
           }
         )
         
-        // Get only the jurisdiction that we're currently on if the did project validation
-        const thisJurAnswers = newValidatedAnswers.filter(
-          answer => answer.projectJurisdictionId === action.payload.jurisdictionId
-        )
-        
-        // Update the User Answer redux object with the user's new answers
-        updatedUserAnswers = initializeUserAnswers(
-          action.scope === 'project' ? thisJurAnswers : newValidatedAnswers,
-          byId,
-          action.payload.userId,
-          {}
-        )
-      }
-      
-      if (state.question.isCategoryQuestion) {
-        if (!updatedUserAnswers[state.question.id].hasOwnProperty(state.selectedCategoryId)) {
-          question = state.scheme.byId[state.question.parentId]
-          otherStateUpdates = {
-            ...otherStateUpdates,
-            currentIndex: state.scheme.order.findIndex(id => id === question.id),
-            categories: undefined,
-            selectedCategory: 0,
-            selectedCategoryId: null
+        // Check if the selected user actually coded anything -- if new validated answers were made
+        if (newValidatedAnswers.length > 0) {
+          // Get only the jurisdiction that we're currently on if the did project validation
+          const thisJurAnswers = newValidatedAnswers.filter(
+            answer => answer.projectJurisdictionId === action.payload.jurisdictionId
+          )
+          
+          if (state.question.isCategoryQuestion) {
+            // Check if they've even answered the parent category question
+            if (updatedUserAnswers.hasOwnProperty(state.question.id)) {
+              if (!updatedUserAnswers[state.question.id].hasOwnProperty(state.selectedCategoryId)) {
+                question = state.scheme.byId[state.question.parentId]
+                otherStateUpdates = {
+                  ...otherStateUpdates,
+                  currentIndex: state.scheme.order.findIndex(id => id === question.id),
+                  categories: undefined,
+                  selectedCategory: 0,
+                  selectedCategoryId: null
+                }
+              }
+            }
           }
+          
+          // Update the User Answer redux object with the user's new answers
+          updatedUserAnswers = initializeUserAnswers(
+            action.scope === 'project' ? thisJurAnswers : newValidatedAnswers,
+            byId,
+            action.payload.userId,
+            userAnswers
+          )
+        } else {
+          updatedUserAnswers = userAnswers
         }
       }
       
@@ -957,6 +965,7 @@ export const bulkValidateLogic = createLogic({
       dispatch({ type: types.SET_RESET_STATUS, canReset: false })
       done()
     } catch (err) {
+      console.log(err)
       dispatch({ type: types.BULK_VALIDATION_FAIL })
       done()
     }

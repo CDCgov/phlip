@@ -20,7 +20,8 @@ import {
   userAnswersValidation,
   schemeUserAnswersEmpty,
   schemeTreeAfterInitialization,
-  mergedUserQuestions
+  mergedUserQuestions,
+  bulkValidationQuestions
 } from 'utils/testData/coding'
 
 let history = {}, mock = {}
@@ -1287,9 +1288,15 @@ describe('CodingValidation logic', () => {
     describe('should get question selected in navigator based on action and state information', () => {
       test('should handle regular questions', done => {
         const currentState = {
-          question: schemeById[3], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[3],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
         
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/3')
@@ -1328,9 +1335,15 @@ describe('CodingValidation logic', () => {
       
       describe('when a category question is selected', () => {
         const currentState = {
-          question: schemeById[3], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[3],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
         const store = setupStore(currentState)
         
@@ -1378,21 +1391,30 @@ describe('CodingValidation logic', () => {
       
       describe('when a category is selected', () => {
         const currentState = {
-          question: schemeById[2], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[1],
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
+        
         const store = setupStore(currentState)
         
         beforeEach(() => {
-          mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
-            .reply(200, userCodedQuestions[3])
+          mock.onPut('/users/1/projects/1/jurisdictions/1/codedquestions/4').reply(200, userCodedQuestions[3])
           mock.onGet('/projects/1/scheme/4').reply(200, schemeFromApi[3])
           
           store.dispatch({
-            type: types.ON_QUESTION_SELECTED_IN_NAV, question: {
-              ...schemeTreeAfterInitialization[2].children[0].children[1], treeIndex: 1
-            }, projectId: 1, jurisdictionId: 1, page: 'coding'
+            type: types.ON_QUESTION_SELECTED_IN_NAV,
+            question: {
+              ...schemeTreeAfterInitialization[2].children[0].children[1],
+              treeIndex: 1
+            },
+            projectId: 1,
+            jurisdictionId: 1,
+            page: 'coding'
           })
         })
         
@@ -1421,6 +1443,292 @@ describe('CodingValidation logic', () => {
               .toHaveProperty('payload.question', schemeById[4])
             done()
           })
+        })
+      })
+    })
+  })
+  
+  describe('BULK_VALIDATION', () => {
+    describe('if the user chooses question level validation', () => {
+      beforeEach(() => {
+        mock.onPut('/projects/1/jurisdictions/1/validatedquestions/1').reply(200, bulkValidationQuestions[0])
+        mock.onPost('/projects/1/jurisdictions/1/validatedquestions/2')
+          .reply(200, [bulkValidationQuestions[2], bulkValidationQuestions[3]])
+        //mock.onPut('/projects/1/jurisdictions/1/validatedquestions/4').reply(200, bulkValidationQuestions[])
+      })
+      
+      test('should call the update API if the user has already validated the question', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {},
+          page: 'validation'
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'updateValidatedQuestion')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+      
+      test('should call the create API if the user has not already validated the question', done => {
+        const currentState = {
+          question: schemeById[2],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: {
+            ...userAnswersCoded,
+            2: {
+              schemeQuestionId: 2,
+              answers: {},
+              isNewCodedQuestion: true,
+              hasMadePost: false,
+              comment: ''
+            }
+          },
+          page: 'validation',
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'answerValidatedQuestion')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 2
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+      
+      test('should update the validated answer with the new answer', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.updatedUserAnswers).toEqual({
+            ...userAnswersCoded,
+            1: {
+              schemeQuestionId: 1,
+              answers: {
+                234: {
+                  id: 789,
+                  schemeAnswerId: 234,
+                  pincite: 'my pincite!!!',
+                  textAnswer: null,
+                  annotations: []
+                }
+              },
+              id: 1001,
+              hasMadePost: false,
+              isNewCodedQuestion: false,
+              flag: undefined,
+              projectJurisdictionId: 1,
+              comment: '',
+              validatedBy: { userId: 1 }
+            }
+          })
+          done()
+        })
+      })
+      
+      test(
+        'should not change the current user answers if the selected user has not coded the selected question',
+        done => {
+          const currentState = {
+            question: schemeById[1],
+            outline: schemeOutline,
+            scheme: {
+              byId: schemeById,
+              order: schemeOrder,
+              tree: schemeTree
+            },
+            userAnswers: {
+              ...userAnswersCoded
+            },
+            page: 'validation',
+            mergedUserQuestions: {},
+            errors: {}
+          }
+          
+          const store = setupStore(currentState)
+          
+          store.dispatch({
+            type: types.BULK_VALIDATION_REQUEST,
+            scope: 'question',
+            user: { userId: 22 },
+            projectId: 1,
+            jurisdictionId: 1,
+            questionId: 1
+          })
+          
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.updatedUserAnswers).toEqual(userAnswersCoded)
+            done()
+          })
+        }
+      )
+    })
+    
+    describe('if the user chooses jurisdiction level validation', () => {
+      beforeEach(() => {
+        mock.onPut('/projects/1/jurisdictions/1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+      })
+      
+      test('should call the bulk validation API with jurisdiction scope', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'bulkValidate')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'jurisdiction',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: 1, userId: 22 })
+          done()
+        })
+      })
+      
+      describe('if the current question is a category question', () => {
+        test(
+          'should move current question to be parent of current question if the the selected user has not coded the current category',
+          done => {
+            const currentState = {
+              question: schemeById[1],
+              outline: schemeOutline,
+              scheme: {
+                byId: schemeById,
+                order: schemeOrder,
+                tree: schemeTree
+              },
+              page: 'validation',
+              userAnswers: { ...userAnswersCoded },
+              mergedUserQuestions,
+              errors: {}
+            }
+            const store = setupStore(currentState)
+            const spy = jest.spyOn(api, 'bulkValidate')
+  
+            store.dispatch({
+              type: types.BULK_VALIDATION_REQUEST,
+              scope: 'jurisdiction',
+              user: { userId: 22 },
+              projectId: 1,
+              jurisdictionId: 1,
+              questionId: 1
+            })
+  
+            store.whenComplete(() => {
+              expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: 1, userId: 22 })
+              done()
+            })
+          }
+        )
+      })
+    })
+    
+    describe('if the user chooses project level validation', () => {
+      beforeEach(() => {
+        mock.onPut('/projects/1/jurisdictions/-1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+      })
+      
+      test('should call the bulk validation API with project scope', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'bulkValidate')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'project',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: -1, userId: 22 })
+          done()
         })
       })
     })

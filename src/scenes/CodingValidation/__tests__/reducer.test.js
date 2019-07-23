@@ -2355,7 +2355,10 @@ describe('CodingValidation reducer', () => {
     const action = {
       type: types.BULK_VALIDATION_SUCCESS,
       payload: {
-        updatedUserAnswers: updated
+        updatedUserAnswers: updated,
+        otherStateUpdates: {
+          question: { ...schemeById[1] }
+        }
       }
     }
     const currentState = getState({ validationInProgress: true, question: schemeById[1] })
@@ -2371,6 +2374,10 @@ describe('CodingValidation reducer', () => {
     
     test('should take a snapshot of the new question', () => {
       expect(state.answerSnapshot).toEqual(updated[1])
+    })
+    
+    test('should set any other state updates', () => {
+      expect(state.question).toEqual(schemeById[1])
     })
     
     test('should take a snapshot if the current question is a category question', () => {
@@ -2398,12 +2405,21 @@ describe('CodingValidation reducer', () => {
       const action = {
         type: types.BULK_VALIDATION_SUCCESS,
         payload: {
-          updatedUserAnswers: updatedCat
+          updatedUserAnswers: updatedCat,
+          otherStateUpdates: {
+            question: { ...schemeById[4] }
+          }
         }
       }
-      const currentState = getState({ validationInProgress: true, question: schemeById[4] })
+      
+      const currentState = getState({
+        validationInProgress: true,
+        question: schemeById[4],
+        selectedCategoryId: 5
+      })
+      
       const state = reducer(currentState, action)
-      expect(state.answerSnapshot).toEqual(updatedCat[4])
+      expect(state.answerSnapshot).toEqual(updatedCat[4][5])
     })
   })
   
@@ -2429,7 +2445,7 @@ describe('CodingValidation reducer', () => {
     const action = {
       type: types.CLEAR_VALIDATION_PROGRESS
     }
-  
+    
     const currentState = getState({ validationInProgress: true })
     const state = reducer(currentState, action)
     
