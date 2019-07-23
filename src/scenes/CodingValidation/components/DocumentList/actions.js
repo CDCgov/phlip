@@ -38,5 +38,6 @@ export default {
   toggleViewAnnotations: makeActionCreator(types.TOGGLE_VIEW_ANNOTATIONS, 'questionId', 'answerId', 'users'),
   hideAnnoModeAlert: makeActionCreator(types.HIDE_ANNO_MODE_ALERT),
   changeAnnotationIndex: makeActionCreator(types.CHANGE_ANNOTATION_INDEX, 'index'),
-  resetScrollTop: makeActionCreator(types.RESET_SCROLL_TOP)
+  resetScrollTop: makeActionCreator(types.RESET_SCROLL_TOP),
+  updateAnnotations: makeActionCreator(types.UPDATE_ANNOTATIONS, 'questionId')
 }

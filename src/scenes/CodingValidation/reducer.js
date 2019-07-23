@@ -511,7 +511,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: updatedAnswers,
         validationInProgress: false,
-        answerSnapshot: question
+        answerSnapshot: question,
+        ...action.payload.otherStateUpdates
       }
     
     case types.BULK_VALIDATION_FAIL:

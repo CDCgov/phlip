@@ -886,26 +886,30 @@ export const bulkValidateLogic = createLogic({
     const userAnswers = state.userAnswers
     
     try {
-      let updatedUserAnswers = {}
+      let updatedUserAnswers = {}, otherStateUpdates = {}, questionId = action.payload.questionId
       // Check the scope of the bulk validation
       if (action.scope === 'question') {
         const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
-        const responsePayload = hasCoderAnswered
-          ? await action.payload.api.update(
+        
+        if (hasCoderAnswered) {
+          const responsePayload = await action.payload.api.update(
             requestObj,
             {},
             {
-              questionId: action.payload.questionId,
+              questionId,
               categoryId: action.payload.selectedCategoryId,
               jurisdictionId: action.payload.jurisdictionId,
               userId: action.payload.userId,
               projectId: action.payload.projectId
             }
           )
-          : {}
-        
-        updatedUserAnswers = initializeUserAnswers([responsePayload], byId, action.payload.userId, userAnswers)
+          
+          updatedUserAnswers = initializeUserAnswers([responsePayload], byId, action.payload.userId, userAnswers)
+        } else {
+          updatedUserAnswers = userAnswers
+        }
       } else {
+        // bulk validate for project or jurisdiction, if project send -1 for jurisdiction in API
         const newValidatedAnswers = await api.bulkValidate(
           {},
           {},
@@ -916,22 +920,37 @@ export const bulkValidateLogic = createLogic({
           }
         )
         
+        // Get only the jurisdiction that we're currently on if the did project validation
         const thisJurAnswers = newValidatedAnswers.filter(
           answer => answer.projectJurisdictionId === action.payload.jurisdictionId
         )
         
-        updatedUserAnswers = initializeUserAnswers(thisJurAnswers, byId, action.payload.userId, {})
+        // Update the User Answer redux object with the user's new answers
+        updatedUserAnswers = initializeUserAnswers(
+          action.scope === 'project' ? thisJurAnswers : newValidatedAnswers,
+          byId,
+          action.payload.userId,
+          {}
+        )
       }
       
-      dispatch({
-        type: types.BULK_VALIDATION_SUCCESS,
-        payload: {
-          updatedUserAnswers
+      if (state.question.isCategoryQuestion) {
+        if (!updatedUserAnswers[state.question.id].hasOwnProperty(state.selectedCategoryId)) {
+          const question = state.scheme.byId[state.question.parentId]
+          questionId = question.id
+          otherStateUpdates = {
+            ...otherStateUpdates,
+            question,
+            currentIndex: state.scheme.order.findIndex(id => id === question.id),
+            categories: undefined,
+            selectedCategory: 0,
+            selectedCategoryId: null
+          }
         }
-      })
+      }
       
+      dispatch({ type: types.BULK_VALIDATION_SUCCESS, payload: { updatedUserAnswers, otherStateUpdates } })
       dispatch({ type: types.SET_RESET_STATUS, canReset: false })
-      dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
       done()
     } catch (err) {
       dispatch({ type: types.BULK_VALIDATION_FAIL })

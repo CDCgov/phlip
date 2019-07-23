@@ -116,7 +116,7 @@ export class CodingValidation extends Component {
   
   componentDidUpdate(prevProps, prevState) {
     const {
-      schemeError, question, gettingStartedText, getRequestInProgress, validationInProgress, apiErrorAlert
+      schemeError, question, gettingStartedText, getRequestInProgress, validationInProgress, apiErrorAlert, actions
     } = this.props
     const { jurisdiction } = this.state
     
@@ -134,6 +134,7 @@ export class CodingValidation extends Component {
     
     if (prevProps.validationInProgress && !validationInProgress) {
       if (!apiErrorAlert.open) {
+        actions.updateAnnotations(question.id)
         this.handleCloseBulkValidate()
       }
     }

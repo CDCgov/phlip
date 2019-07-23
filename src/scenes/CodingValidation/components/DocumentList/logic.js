@@ -14,14 +14,15 @@ const getQuestions = (questionId, state, isValidation) => {
   
   if (codingState.question.isCategoryQuestion) {
     coderQuestion = isValidation
-      ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
+      ? codingState.mergedUserQuestions[questionId].hasOwnProperty(codingState.selectedCategoryId)
         ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
         : null
       : null
+    
     userQuestion = codingState.userAnswers[questionId][codingState.selectedCategoryId]
   } else {
     coderQuestion = isValidation
-      ? codingState.mergedUserQuestions[questionId]
+      ? codingState.hasOwnProperty(questionId)
         ? codingState.mergedUserQuestions[questionId]
         : null
       : null

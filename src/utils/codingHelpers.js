@@ -204,7 +204,8 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     }, {})
     
     const userAnswers = {
-      ...base.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion }
+      ...base.userAnswers,
+      [newQuestion.id]: { ...answers, ...baseQuestion }
     }
     
     const selectedCatId = selectedCategories[state.selectedCategory].id
