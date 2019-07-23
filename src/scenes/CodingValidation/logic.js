@@ -128,11 +128,6 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
 }
 
 /**
- * Updates the action creator values with the jurisdictionEmpty state and current userId before sending it to
- * the reducer for getting the coding scheme outline.
- */
-
-/**
  * Logic for getting scheme and outline
  */
 export const getOutline = createLogic({
@@ -892,7 +887,7 @@ export const bulkValidateLogic = createLogic({
         const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
         
         if (hasCoderAnswered) {
-          const responsePayload = await action.payload.api.update(
+          const responsePayload = await action.payload.api[action.payload.create ? 'create' : 'update'](
             requestObj,
             {},
             {
