@@ -1622,7 +1622,8 @@ describe('CodingValidation logic', () => {
     
     describe('if the user chooses jurisdiction level validation', () => {
       beforeEach(() => {
-        mock.onPut('/projects/1/jurisdictions/1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+        mock.onPost('/projects/1/jurisdictions/1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+        mock.onPost('/projects/1/jurisdictions/1/bulkValidatedQuestions/5').reply(200, [])
       })
       
       test('should call the bulk validation API with jurisdiction scope', done => {
@@ -1657,12 +1658,43 @@ describe('CodingValidation logic', () => {
         })
       })
       
+      test('if the selected user hasn\'t coded anything should not change current validated answers', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'jurisdiction',
+          user: { userId: 5 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.updatedUserAnswers).toEqual(userAnswersCoded)
+          done()
+        })
+      })
+      
       describe('if the current question is a category question', () => {
         test(
           'should move current question to be parent of current question if the the selected user has not coded the current category',
           done => {
             const currentState = {
-              question: schemeById[1],
+              question: schemeById[4],
               outline: schemeOutline,
               scheme: {
                 byId: schemeById,
@@ -1672,32 +1704,80 @@ describe('CodingValidation logic', () => {
               page: 'validation',
               userAnswers: { ...userAnswersCoded },
               mergedUserQuestions,
+              categories:
+                [
+                  { id: 10, text: 'category 2', order: 2 },
+                  { id: 20, text: 'category 3', order: 3 }
+                ],
+              selectedCategoryId: 10,
               errors: {}
             }
             const store = setupStore(currentState)
-            const spy = jest.spyOn(api, 'bulkValidate')
-  
+            
             store.dispatch({
               type: types.BULK_VALIDATION_REQUEST,
               scope: 'jurisdiction',
               user: { userId: 22 },
               projectId: 1,
               jurisdictionId: 1,
-              questionId: 1
+              questionId: 4
             })
-  
+            
             store.whenComplete(() => {
-              expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: 1, userId: 22 })
+              expect(store.actions[1].payload.otherStateUpdates.categories).toEqual(undefined)
+              expect(store.actions[1].payload.otherStateUpdates.selectedCategoryId).toEqual(null)
+              expect(store.actions[1].payload.otherStateUpdates.selectedCategory).toEqual(0)
+              expect(store.actions[1].payload.otherStateUpdates.currentIndex).toEqual(2)
+              expect(store.actions[1].payload.otherStateUpdates.question).toEqual(schemeById[3])
               done()
             })
           }
         )
+        
+        test('should not change to the parent question if the coder has chosen the current category', done => {
+          const currentState = {
+            question: schemeById[4],
+            outline: schemeOutline,
+            scheme: {
+              byId: schemeById,
+              order: schemeOrder,
+              tree: schemeTree
+            },
+            page: 'validation',
+            userAnswers: {
+              ...userAnswersCoded
+            },
+            mergedUserQuestions,
+            categories:
+              [
+                { id: 10, text: 'category 2', order: 2 },
+                { id: 20, text: 'category 3', order: 3 }
+              ],
+            selectedCategoryId: 20,
+            errors: {}
+          }
+          const store = setupStore(currentState)
+          
+          store.dispatch({
+            type: types.BULK_VALIDATION_REQUEST,
+            scope: 'jurisdiction',
+            user: { userId: 22 },
+            projectId: 1,
+            jurisdictionId: 1,
+            questionId: 4
+          })
+          
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.otherStateUpdates.question).toEqual(schemeById[4])
+            done()
+          })
+        })
       })
     })
     
     describe('if the user chooses project level validation', () => {
       beforeEach(() => {
-        mock.onPut('/projects/1/jurisdictions/-1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+        mock.onPost('/projects/1/jurisdictions/-1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
       })
       
       test('should call the bulk validation API with project scope', done => {

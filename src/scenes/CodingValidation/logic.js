@@ -921,23 +921,7 @@ export const bulkValidateLogic = createLogic({
           const thisJurAnswers = newValidatedAnswers.filter(
             answer => answer.projectJurisdictionId === action.payload.jurisdictionId
           )
-          
-          if (state.question.isCategoryQuestion) {
-            // Check if they've even answered the parent category question
-            if (updatedUserAnswers.hasOwnProperty(state.question.id)) {
-              if (!updatedUserAnswers[state.question.id].hasOwnProperty(state.selectedCategoryId)) {
-                question = state.scheme.byId[state.question.parentId]
-                otherStateUpdates = {
-                  ...otherStateUpdates,
-                  currentIndex: state.scheme.order.findIndex(id => id === question.id),
-                  categories: undefined,
-                  selectedCategory: 0,
-                  selectedCategoryId: null
-                }
-              }
-            }
-          }
-          
+  
           // Update the User Answer redux object with the user's new answers
           updatedUserAnswers = initializeUserAnswers(
             action.scope === 'project' ? thisJurAnswers : newValidatedAnswers,
@@ -945,6 +929,22 @@ export const bulkValidateLogic = createLogic({
             action.payload.userId,
             userAnswers
           )
+          
+          // If the question is a category question, there are more checks that have to be done
+          if (state.question.isCategoryQuestion) {
+            // check to see if the user has selected the current category as an valid category
+            if (!updatedUserAnswers[state.question.parentId].answers.hasOwnProperty(state.selectedCategoryId)) {
+              // user hasn't chosen current category, so we move to the parent question
+              question = state.scheme.byId[state.question.parentId]
+              otherStateUpdates = {
+                ...otherStateUpdates,
+                categories: undefined,
+                selectedCategory: 0,
+                selectedCategoryId: null,
+                currentIndex: state.scheme.order.findIndex(id => id === question.id)
+              }
+            }
+          }
         } else {
           updatedUserAnswers = userAnswers
         }
@@ -960,7 +960,6 @@ export const bulkValidateLogic = createLogic({
       dispatch({ type: types.SET_RESET_STATUS, canReset: false })
       done()
     } catch (err) {
-      console.log(err)
       dispatch({ type: types.BULK_VALIDATION_FAIL })
       done()
     }
