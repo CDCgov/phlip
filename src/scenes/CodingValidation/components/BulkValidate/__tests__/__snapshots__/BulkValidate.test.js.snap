@@ -60,6 +60,7 @@ exports[`CodingValidation -- Bulk Validate modal should render correctly 1`] = `
           circular={false}
           container={true}
           flex={true}
+          id="scope-step"
           justify="stretch"
           padding={0}
           raised={false}

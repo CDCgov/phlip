@@ -104,7 +104,7 @@ export class BulkValidate extends Component {
   handleGoBackStep = () => {
     const { activeStep } = this.state
     this.setState({
-      activeStep: activeStep === 0 ? 0 : activeStep - 1
+      activeStep: activeStep - 1
     })
   }
   
@@ -114,7 +114,7 @@ export class BulkValidate extends Component {
   handleGoForwardStep = () => {
     const { activeStep } = this.state
     this.setState({
-      activeStep: activeStep === 2 ? 2 : activeStep + 1
+      activeStep: activeStep + 1
     })
   }
   
@@ -190,7 +190,7 @@ export class BulkValidate extends Component {
           <FlexGrid container flex style={{ height: '100%' }}>
             <FlexGrid container flex padding="10px 24px">
               {activeStep === 0 &&
-              <FlexGrid container flex type="column">
+              <FlexGrid container flex type="column" id="scope-step">
                 {scopes.map((scope, i) => {
                   const isScopeSelected = selections.scope === scope.scope
                   return (
@@ -227,7 +227,7 @@ export class BulkValidate extends Component {
                   )
                 })}
               </FlexGrid>}
-              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 30px">
+              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 30px" id="user-step">
                 <FlexGrid container padding="2px 0 0">
                   <FlexGrid container>
                     <Typography variant="display1" style={{ color: 'black' }}>User</Typography>
@@ -276,7 +276,7 @@ export class BulkValidate extends Component {
                   </List>
                 </FlexGrid>
               </FlexGrid>}
-              {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px">
+              {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px" id="confirm-step">
                 <FlexGrid container style={{ marginBottom: 35 }}>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
                   <FlexGrid padding="15px 0 0">
