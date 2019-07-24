@@ -66,7 +66,7 @@ describe('Document Management - Upload reducer tests', () => {
         type: types.UPLOAD_ONE_DOC_COMPLETE,
         payload: { failed: true }
       }
-  
+      
       const currentState = getState({ uploadProgress: { index: 4, total: 10, percentage: 40, failures: 1 } })
       const state = reducer(currentState, action)
       expect(state.uploadProgress.percentage).toEqual(50)
@@ -522,7 +522,7 @@ describe('Document Management - Upload reducer tests', () => {
     const action = {
       type: types.CLOSE_ALERT
     }
-  
+    
     const currentState = getState({
       alert: {
         open: true,
@@ -536,7 +536,7 @@ describe('Document Management - Upload reducer tests', () => {
         { name: 'North Carolina Register, Aug. 2018.pdf' }
       ]
     })
-  
+    
     const updatedState = reducer(currentState, action)
     
     test('should reset state.alertOpen, state.alertText and state.alertTitle', () => {
@@ -602,6 +602,42 @@ describe('Document Management - Upload reducer tests', () => {
     
     test('should reset state', () => {
       expect(updatedState).toEqual(initial)
+    })
+  })
+  
+  describe('SEARCH_FOR_SUGGESTIONS_REQUEST_JURISDICTION', () => {
+    test('should show the spinner if a request is being executed for the document at the index', () => {
+      const action = {
+        type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
+        index: 1
+      }
+      
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { suggestions: [] } } },
+          { name: 'doc 2', jurisdictions: { value: { suggestions: [] } } }
+        ]
+      })
+      
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.selectedDocs[1].jurisdictions.searching).toEqual(true)
+    })
+    
+    test('shouldn\'t do anything if it\'s for the global jurisdiction', () => {
+      const action = {
+        type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
+        index: undefined
+      }
+  
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { suggestions: [] } } },
+          { name: 'doc 2', jurisdictions: { value: { suggestions: [] } } }
+        ]
+      })
+  
+      const updatedState = reducer(currentState, action)
+      expect(updatedState).toEqual(currentState)
     })
   })
   

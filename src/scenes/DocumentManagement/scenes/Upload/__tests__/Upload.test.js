@@ -271,15 +271,10 @@ describe('Document Management - Upload scene', () => {
       />
     )
     
-    beforeEach(() => {
-      jest.resetAllMocks()
-    })
-    
     test('should create an array of all documents correctly formed', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      console.log(wrapper.prop('projectAutocompleteProps'))
-      expect(spy).toHaveBeenCalledWith(arrOfDocsTransport)
+      expect(spy).toHaveBeenCalledWith(arrOfDocsTransport, { id: 4 }, {})
     })
     
     test('should send a request to upload documents', () => {
@@ -302,7 +297,7 @@ describe('Document Management - Upload scene', () => {
         jurisdictions: [20]
       }))
       
-      expect(spy).toHaveBeenCalledWith(globalJur)
+      expect(spy).toHaveBeenCalledWith(globalJur, { id: 4 }, { id: 20 })
     })
   })
   

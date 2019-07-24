@@ -243,7 +243,6 @@ export class Upload extends Component {
    * Creates an object with all of the files to send to redux
    */
   onUploadFiles = () => {
-    console.log(this.props)
     const { selectedDocs, projectAutocompleteProps, jurisdictionAutocompleteProps, actions } = this.props
     const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
     const selectedProject = projectAutocompleteProps.selectedSuggestion

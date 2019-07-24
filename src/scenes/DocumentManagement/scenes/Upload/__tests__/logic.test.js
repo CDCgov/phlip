@@ -23,7 +23,6 @@ import apiCalls from 'services/api/calls'
 import { INITIAL_STATE as mainListState } from '../../../reducer'
 import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 describe('Document Management - Upload logic', () => {
   let mock, apiMock
