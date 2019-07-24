@@ -54,17 +54,17 @@ describe('Document Management - Upload logic', () => {
           docManage: {
             main: { list: { ...mainListState, ...mainListUpdates } },
             upload: {
-              list: { ...INITIAL_STATE, ...current },
-              projectSuggestions: {
-                ...AUTO_INITIAL_STATE,
-                ...projAuto
-              },
-              jurisdictionSuggestions: {
-                ...AUTO_INITIAL_STATE,
-                ...jurAuto
-              }
+              list: { ...INITIAL_STATE, ...current }
             }
           }
+        },
+        'autocomplete.project.upload': {
+          ...AUTO_INITIAL_STATE,
+          ...projAuto
+        },
+        'autocomplete.jurisdiction.upload': {
+          ...AUTO_INITIAL_STATE,
+          ...jurAuto
         }
       },
       reducer: mockReducer,
@@ -79,7 +79,7 @@ describe('Document Management - Upload logic', () => {
   describe('Upload Documents', () => {
     test('should reject action with type REJECT_NO_PROJECT_SELECTED when no project is selected', done => {
       const store = setupStore()
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs, project: {}, jurisdiction: {} })
       
       store.whenComplete(() => {
         expect(store.actions).toEqual([
@@ -104,7 +104,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'project' } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs,
+        project: { name: 'project' },
+        jurisdiction: {}
+      })
       store.whenComplete(() => {
         expect(store.actions).toEqual([
           {
@@ -130,7 +135,12 @@ describe('Document Management - Upload logic', () => {
           { selectedSuggestion: { name: 'project', id: 4 } }
         )
         
-        store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+        store.dispatch({
+          type: types.UPLOAD_DOCUMENTS_START,
+          selectedDocs,
+          project: { name: 'project', id: 4 },
+          jurisdiction: {}
+        })
         store.whenComplete(() => {
           expect(store.actions).toEqual([
             {
@@ -163,7 +173,12 @@ describe('Document Management - Upload logic', () => {
           { selectedSuggestion: { name: 'project', id: 4 } }
         )
         
-        store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+        store.dispatch({
+          type: types.UPLOAD_DOCUMENTS_START,
+          selectedDocs: docsWithFiles,
+          project: { name: 'project', id: 4 },
+          jurisdiction: {}
+        })
         store.whenComplete(() => {
           expect(store.actions[0].type).toEqual(types.UPLOAD_DOCUMENTS_START)
           done()
@@ -189,7 +204,12 @@ describe('Document Management - Upload logic', () => {
         }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: arrOfDocsTransport })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: arrOfDocsTransport,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.VERIFY_RETURN_DUPLICATE_FILES)
         done()
@@ -207,7 +227,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         expect(spy).toHaveBeenCalledTimes(4)
@@ -225,7 +250,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         const actions = store.actions
@@ -248,7 +278,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         expect(store.actions[3].payload.failed).toEqual(true)
@@ -273,7 +308,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         const actions = store.actions
@@ -462,96 +502,6 @@ describe('Document Management - Upload logic', () => {
         
         store.whenComplete(() => {
           expect(store.actions[1].type).toEqual(types.EXTRACT_INFO_FAIL)
-          done()
-        })
-      })
-    })
-  })
-  
-  describe('Autocomplete searches', () => {
-    describe('Search for Project suggestions', () => {
-      test('should allow the search if there is no project selected', done => {
-        const store = setupStore({}, { selectedSuggestion: {} })
-        
-        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` })
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` }
-          ])
-          done()
-        })
-      })
-      
-      test('should allow the action if the selected project\'s name is different than new search', done => {
-        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
-        
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-          searchString: 'Zero Dawn'
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`, searchString: 'Zero Dawn' }
-          ])
-          done()
-        })
-      })
-      
-      test('should not allow the action if the selected project\'s name is the same as the new search', done => {
-        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
-        
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-          searchString: 'Overwatch'
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([])
-          done()
-        })
-      })
-    })
-    
-    describe('Search for Jurisdiction suggestions', () => {
-      test('should allow the search if there is no jurisdiction selected', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: {} })
-    
-        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` })
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` }
-          ])
-          done()
-        })
-      })
-  
-      test('should allow the action if the selected jurisdictions\'s name is different than new search', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
-    
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-          searchString: 'Florida'
-        })
-    
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`, searchString: 'Florida' }
-          ])
-          done()
-        })
-      })
-  
-      test('should not allow the action if the selected jurisdictions\'s name is the same as the new search', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
-    
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-          searchString: 'Ohio'
-        })
-    
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([])
           done()
         })
       })

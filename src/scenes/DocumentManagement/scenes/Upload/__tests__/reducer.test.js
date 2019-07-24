@@ -605,12 +605,12 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
-  describe('ROW_SEARCH_JURISDICTION_LIST_SUCCESS', () => {
+  describe('ROW_SEARCH_JURISDICTION_LIST_SUCCESS_UPLOAD', () => {
     test(
       'should set jurisdictions.value.suggestions to action.payload.suggestions for doc at action.payload.index',
       () => {
         const action = {
-          type: types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION,
+          type: `${types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION}_UPLOAD`,
           payload: {
             suggestions: [{ name: 'juris' }, { name: 'jurisdiction' }],
             index: 1
@@ -631,7 +631,7 @@ describe('Document Management - Upload reducer tests', () => {
   })
   
   describe('CLEAR_ROW_JURISDICTION_SUGGESTIONS', () => {
-    test('should set jurisdictions.value.suggestions to [] for doc at action.index', () => {
+    test('should set clear suggestions for doc at action.index', () => {
       const action = {
         type: types.CLEAR_ROW_JURISDICTION_SUGGESTIONS,
         index: 0
@@ -811,7 +811,7 @@ describe('Document Management - Upload reducer tests', () => {
       'should populate the jurisdiction property for docs in state.selectedDocs with action.suggestion information',
       () => {
         const action = {
-          type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+          type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_UPLOAD`,
           suggestion: { id: 123, name: 'Ohio (state)' }
         }
         
@@ -832,7 +832,7 @@ describe('Document Management - Upload reducer tests', () => {
     
     test('should turn off editability for the jurisdiction property for docs in state.selectedDocs', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_UPLOAD`,
         suggestion: { id: 123, name: 'Ohio (state)' }
       }
       
@@ -856,7 +856,7 @@ describe('Document Management - Upload reducer tests', () => {
       'should clear the jurisdiction property for docs in state.selectedDocs if searchValue changed to empty',
       () => {
         const action = {
-          type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+          type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION_UPLOAD`,
           value: ''
         }
         
@@ -878,7 +878,7 @@ describe('Document Management - Upload reducer tests', () => {
       'should enable editing on jurisdiction property for docs in state.selectedDocs if search value is empty',
       () => {
         const action = {
-          type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+          type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION_UPLOAD`,
           value: ''
         }
         

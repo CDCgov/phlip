@@ -15,9 +15,6 @@ const ProJurSearch = props => {
     showProjectError
   } = props
   
-  console.log(showProjectError)
-  console.log(projectAutocompleteProps)
-  
   return (
     <FlexGrid container type="row" align="center" justify="center" onMouseDown={onMouseDown} id="upload-panel">
       <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }}>

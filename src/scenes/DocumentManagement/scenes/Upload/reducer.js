@@ -1,7 +1,6 @@
 import { types } from './actions'
 import { updateItemAtIndex } from 'utils/normalize'
 import { combineReducers } from 'redux'
-import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 export const INITIAL_STATE = {
@@ -87,7 +86,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           percentage: 100
         }
       }
-      
+    
     case types.ACKNOWLEDGE_UPLOAD_FAILURES:
       return {
         ...state,
@@ -265,32 +264,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
-    case types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION:
-      selectedDoc = { ...state.selectedDocs[action.payload.index] }
-      selectedDoc.jurisdictions.value.suggestions = action.payload.suggestions
-      
-      return {
-        ...state,
-        selectedDocs: updateItemAtIndex(
-          [...state.selectedDocs],
-          action.payload.index,
-          selectedDoc
-        )
-      }
-    
-    case types.CLEAR_ROW_JURISDICTION_SUGGESTIONS:
-      selectedDoc = { ...state.selectedDocs[action.index] }
-      selectedDoc.jurisdictions.value.suggestions = []
-      
-      return {
-        ...state,
-        selectedDocs: updateItemAtIndex(
-          [...state.selectedDocs],
-          action.index,
-          selectedDoc
-        )
-      }
-    
     case types.REJECT_NO_PROJECT_SELECTED:
       return {
         ...state,
@@ -348,6 +321,48 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         hasVerified: false
       }
     
+    case `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`:
+      const selected = { ...state.selectedDocs[action.index] }
+      const updated = { ...selected, jurisdictions: { ...selected.jurisdictions, searching: true } }
+      return (action.index !== undefined && action.index !== null)
+        ? {
+          ...state,
+          selectedDocs: updateItemAtIndex(
+            [...state.selectedDocs],
+            action.index,
+            updated
+          )
+        }
+        : { ...state }
+  
+    case `${types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION}_UPLOAD`:
+      selectedDoc = { ...state.selectedDocs[action.payload.index] }
+      selectedDoc.jurisdictions.value.suggestions = action.payload.suggestions
+      selectedDoc.jurisdictions.searching = false
+    
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.payload.index,
+          selectedDoc
+        )
+      }
+  
+    case types.CLEAR_ROW_JURISDICTION_SUGGESTIONS:
+      selectedDoc = { ...state.selectedDocs[action.index] }
+      selectedDoc.jurisdictions.value.suggestions = []
+      selectedDoc.jurisdictions.searching = false
+    
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.index,
+          selectedDoc
+        )
+      }
+    
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_UPLOAD`:
       return {
         ...state,
@@ -358,7 +373,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
               ...doc.jurisdictions,
               editable: false,
               inEditMode: false,
-              value: action.suggestion
+              value: action.suggestion,
+              searching: false
             }
           }
         })
@@ -376,7 +392,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
               jurisdictions: {
                 ...doc.jurisdictions,
                 editable: true,
-                value: { suggestions: [], searchValue: '', name: '' }
+                value: { suggestions: [], searchValue: '', name: '' },
+                searching: false
               }
             }
           })
@@ -392,14 +409,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export const COMBINED_INITIAL_STATE = {
-  list: INITIAL_STATE,
-  projectSuggestions: AUTO_INITIAL_STATE,
-  jurisdictionSuggestions: AUTO_INITIAL_STATE
-}
-
 export default combineReducers({
-  list: uploadReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT'),
-  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION')
+  list: uploadReducer
 })

@@ -20,18 +20,24 @@ const props = {
     clearSelectedFiles: jest.fn(),
     closeAlert: jest.fn(),
     openAlert: jest.fn(),
-    projectAutocomplete: {
-      clearAll: jest.fn()
-    },
-    jurisdictionAutocomplete: {
-      clearAll: jest.fn()
-    },
     uploadDocumentsStart: jest.fn(),
     verifyFiles: jest.fn(),
     addSelectedDocs: jest.fn(),
     mergeInfoWithDocs: jest.fn(),
     setInfoRequestProgress: jest.fn(),
     extractInfoRequest: jest.fn()
+  },
+  projectAutoActions: {
+    clearAll: jest.fn()
+  },
+  jurisdictionAutoActions: {
+    clearAll: jest.fn()
+  },
+  jurisdictionAutocompleteProps: {
+    selectedSuggestion: {}
+  },
+  projectAutocompleteProps: {
+    selectedSuggestion: {}
   },
   alert: {
     open: false,
@@ -134,14 +140,14 @@ describe('Document Management - Upload scene', () => {
       })
       
       test('should clear all jurisdiction suggestions', () => {
-        const spy = jest.spyOn(props.actions.jurisdictionAutocomplete, 'clearAll')
+        const spy = jest.spyOn(props.jurisdictionAutoActions, 'clearAll')
         const wrapper = shallow(<Upload {...props} />)
         wrapper.find('WithStyles(Modal)').prop('onClose')()
         expect(spy).toHaveBeenCalled()
       })
       
       test('should clear all project suggestions', () => {
-        const spy = jest.spyOn(props.actions.projectAutocomplete, 'clearAll')
+        const spy = jest.spyOn(props.projectAutoActions, 'clearAll')
         const wrapper = shallow(<Upload {...props} />)
         wrapper.find('WithStyles(Modal)').prop('onClose')()
         expect(spy).toHaveBeenCalled()
@@ -256,14 +262,23 @@ describe('Document Management - Upload scene', () => {
       <Upload
         {...props}
         selectedDocs={docs}
-        selectedProject={{ id: 4 }}
-        selectedJurisdiction={{}}
+        projectAutocompleteProps={{
+          selectedSuggestion: { id: 4 }
+        }}
+        jurisdictionAutocompleteProps={{
+          selectedSuggestion: {}
+        }}
       />
     )
+    
+    beforeEach(() => {
+      jest.resetAllMocks()
+    })
     
     test('should create an array of all documents correctly formed', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
+      console.log(wrapper.prop('projectAutocompleteProps'))
       expect(spy).toHaveBeenCalledWith(arrOfDocsTransport)
     })
     
@@ -276,7 +291,9 @@ describe('Document Management - Upload scene', () => {
     test('should use the global jurisdiction if selected', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.setProps({
-        selectedJurisdiction: { id: 20 }
+        jurisdictionAutocompleteProps: {
+          selectedSuggestion: { id: 20 }
+        }
       })
       
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()

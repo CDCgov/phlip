@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
+import upload, { INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types as uploadTypes } from './scenes/Upload/actions'
 import { types } from './actions'
 import { arrayToObject, createArrOfObj, mapArray } from 'utils/normalize'
@@ -387,7 +387,7 @@ const MAIN_COMBINED_STATE = {
 }
 
 const COMBINED_INITIAL_STATE = {
-  upload: UPLOAD_INITIAL_STATE,
+  upload: { list: UPLOAD_INITIAL_STATE },
   main: MAIN_COMBINED_STATE,
   search: SEARCH_INITIAL_STATE
 }

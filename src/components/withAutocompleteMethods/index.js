@@ -14,19 +14,23 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import theme from 'services/theme'
 
+const defaultAutocomplete = {
+  showSearchIcon: false, inputProps: {}
+}
+
 /**
  * Autocomplete HOC
  * @param type
  * @param suffix
  * @param initialRequest
- * @param otherAutocompleteProps
+ * @param otherAutoProps
  * @returns {function(*=)}
  */
 export const withAutocompleteMethods = (
   type,
   suffix,
-  initialRequest = true,
-  otherAutocompleteProps = { showSearchIcon: false, inputProps: {} }
+  otherAutoProps = defaultAutocomplete,
+  initialRequest = true
 ) =>
   WrappedComponent => {
     const reduxType = type.toUpperCase()
@@ -227,6 +231,11 @@ export const withAutocompleteMethods = (
       
       render() {
         const { suggestions, searching, searchValue, selectedSuggestion, classes, ...otherProps } = this.props
+        let otherAutocompleteProps = otherAutoProps
+        
+        if (Object.keys(otherAutocompleteProps).length === 0) {
+          otherAutocompleteProps = defaultAutocomplete
+        }
         
         const spinnerSize = otherAutocompleteProps.inputProps.style
           ? otherAutocompleteProps.inputProps.style.fontSize

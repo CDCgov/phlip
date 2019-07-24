@@ -1,6 +1,5 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 
@@ -384,7 +383,7 @@ const uploadRequestLogic = createLogic({
       const { failed } = await upload(docApi, action, dispatch, state, user)
       
       action.jurisdictions.forEach(jur => dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur }))
-      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...action.project } })
       if (failed.length > 0) {
         dispatch({
           type: types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS,
@@ -394,63 +393,6 @@ const uploadRequestLogic = createLogic({
       } else {
         dispatch({ type: types.UPLOAD_DOCUMENTS_FINISH_SUCCESS })
         done()
-      }
-    }
-  }
-})
-
-/**
- * Logic for handling searching of thr project list
- */
-const searchProjectListLogic = createLogic({
-  type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-  validate({ getState, action }, allow, reject) {
-    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
-    if (Object.keys(selectedProject).length === 0) {
-      allow(action)
-    } else {
-      if (selectedProject.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
-      }
-    }
-  }
-})
-
-/**
- * Logic for setting initial project list
- */
-const getInitialProjectListLogic = createLogic({
-  type: autocompleteTypes.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
-  validate({ getState, action }, allow, reject) {
-    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
-    if (Object.keys(selectedProject).length === 0) {
-      allow(action)
-    } else {
-      if (selectedProject.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
-      }
-    }
-  }
-})
-
-/**
- * Logic for handling searching of the jurisdiction list
- */
-const searchJurisdictionListLogic = createLogic({
-  type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-  validate({ getState, action }, allow, reject) {
-    const selectedJurisdiction = getState().scenes.docManage.upload.jurisdictionSuggestions.selectedSuggestion
-    if (Object.keys(selectedJurisdiction).length === 0) {
-      allow(action)
-    } else {
-      if (selectedJurisdiction.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
       }
     }
   }
@@ -508,9 +450,6 @@ const verifyFileContentLogic = createLogic({
 export default [
   uploadRequestLogic,
   extractInfoLogic,
-  searchProjectListLogic,
-  searchJurisdictionListLogic,
   mergeInfoWithDocsLogic,
-  verifyFileContentLogic,
-  getInitialProjectListLogic
+  verifyFileContentLogic
 ]

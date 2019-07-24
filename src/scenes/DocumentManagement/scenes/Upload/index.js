@@ -79,9 +79,17 @@ export class Upload extends Component {
      */
     projectAutocompleteProps: PropTypes.object,
     /**
+     * actions for the project autocomplete field
+     */
+    projectAutoActions: PropTypes.object,
+    /**
      * Props to pass to the autocomplete search for jurisdiction
      */
     jurisdictionAutocompleteProps: PropTypes.object,
+    /**
+     * actions for the jurisdiction autocomplete field
+     */
+    jurisdictionAutoActions: PropTypes.object,
     /**
      * Null or true if the no project error should be shown
      */
@@ -171,11 +179,11 @@ export class Upload extends Component {
    * Closes modal and goes back to main doc list
    */
   goBack = () => {
-    const { history, actions } = this.props
+    const { history, actions, jurisdictionAutoActions, projectAutoActions } = this.props
     
     history.push('/docs')
-    actions.projectAutocomplete.clearAll()
-    actions.jurisdictionAutocomplete.clearAll()
+    projectAutoActions.clearAll()
+    jurisdictionAutoActions.clearAll()
     actions.clearSelectedFiles()
     actions.closeAlert()
   }
@@ -235,6 +243,7 @@ export class Upload extends Component {
    * Creates an object with all of the files to send to redux
    */
   onUploadFiles = () => {
+    console.log(this.props)
     const { selectedDocs, projectAutocompleteProps, jurisdictionAutocompleteProps, actions } = this.props
     const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
     const selectedProject = projectAutocompleteProps.selectedSuggestion
@@ -271,54 +280,13 @@ export class Upload extends Component {
   }
   
   /**
-   * Get suggestions for some type of autocomplete search
-   * @param suggestionType
+   * Gets jurisdiction suggestions for a specific row
    * @param searchString
    * @param index
    */
-  handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      if (suggestionType === 'project') {
-        searchString === ''
-          ? this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id, 30)
-          : this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-        this.props.actions.projectAutocomplete.setSearchingStatus(true)
-      } else {
-        this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
-        this.props.actions.jurisdictionAutocomplete.setSearchingStatus(true)
-      }
-    }, 300)
-  }
-  
-  /**
-   * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
-   */
-  handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
-      : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
-  }
-  
-  /**
-   * Handles search value changes for autocomplete projects and jurisdictions
-   * @param suggestionType
-   * @param value
-   */
-  handleSearchValueChange = (suggestionType, value) => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
-      : this.props.actions.projectAutocomplete.updateSearchValue(value)
-  }
-  
-  /**
-   * Clears autocomplete suggestions for jurisdictions or projects
-   * @param suggestionType
-   */
-  handleClearSuggestions = suggestionType => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
-      : this.props.actions.projectAutocomplete.clearSuggestions()
+  handleGetRowSuggestions = ({ value: searchString }, index) => {
+    const { jurisdictionAutoActions } = this.props
+    jurisdictionAutoActions.searchForSuggestionsRequest(searchString, '_UPLOAD', index)
   }
   
   /**
@@ -376,8 +344,8 @@ export class Upload extends Component {
   
   render() {
     const {
-      selectedDocs, uploading, actions, invalidFiles, alert, infoSheet, jurisdictionSuggestions, noProjectError,
-      infoSheetSelected, uploadProgress, infoRequestInProgress, projectAutocompleteProps, jurisdictionAutocompleteProps
+      selectedDocs, uploading, actions, invalidFiles, alert, infoSheet, noProjectError, infoSheetSelected,
+      uploadProgress, infoRequestInProgress, projectAutocompleteProps, jurisdictionAutocompleteProps
     } = this.props
     
     const { alertActions, closeButton } = this.state
@@ -545,11 +513,11 @@ export class Upload extends Component {
             selectedDocs={selectedDocs}
             handleDocPropertyChange={this.handleDocPropertyChange}
             handleRemoveDoc={this.removeDoc}
-            onGetSuggestions={this.handleGetSuggestions}
-            jurisdictionSuggestions={jurisdictionSuggestions}
+            onGetSuggestions={this.handleGetRowSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={actions.clearRowJurisdictionSuggestions}
             invalidFiles={invalidFiles}
+            jurisdictionAutocompleteProps={jurisdictionAutocompleteProps}
           />}
         </ModalContent>
         <Divider />
@@ -596,7 +564,7 @@ const mapDispatchToProps = dispatch => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withAutocompleteMethods('project', 'upload')(
-    withAutocompleteMethods('jurisdiction', 'upload', false)(
+    withAutocompleteMethods('jurisdiction', 'upload', {}, false)(
       withFormAlert(Upload)
     )
   )
