@@ -18,10 +18,16 @@ import theme from 'services/theme'
  * Autocomplete HOC
  * @param type
  * @param suffix
+ * @param initialRequest
  * @param otherAutocompleteProps
  * @returns {function(*=)}
  */
-export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = { showSearchIcon: false, inputProps: {} }) =>
+export const withAutocompleteMethods = (
+  type,
+  suffix,
+  initialRequest = true,
+  otherAutocompleteProps = { showSearchIcon: false, inputProps: {} }
+) =>
   WrappedComponent => {
     const reduxType = type.toUpperCase()
     const reduxSuffix = `_${suffix.toUpperCase()}`
@@ -33,6 +39,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
      * Classes passed to Autosuggest
      * @param theme
      * @returns
+     * istanbul ignore next
      */
     const classes = theme => ({
       suggestionsContainerOpen: {
@@ -77,7 +84,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
       componentWillUnmount() {
         this.handleClearAll()
       }
-  
+      
       /**
        * Clears suggestions, searching value, spinner
        */
@@ -93,7 +100,13 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
        */
       handleGetSuggestions = ({ value: searchString }) => {
         const actions = this.props[`${type}AutoActions`]
-        actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+        const { user } = this.props
+        
+        if (searchString === '' && initialRequest) {
+          actions.getInitialSuggestionsRequest(user.id, 30, reduxSuffix)
+        } else {
+          actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+        }
         actions.setSearchingStatus(true)
       }
       
@@ -128,7 +141,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
        * @returns {boolean}
        */
       shouldRenderSuggestions = value => {
-        if (suffix !== 'project') {
+        if (!initialRequest) {
           return value !== undefined ? value.trim().length >= 3 : true
         } else {
           return true

@@ -18,7 +18,8 @@ import {
   PageHeader,
   Button,
   withProjectLocked,
-  withAutocompleteMethods, CircularLoader
+  withAutocompleteMethods,
+  CircularLoader
 } from 'components'
 import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'

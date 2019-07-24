@@ -348,7 +348,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         hasVerified: false
       }
     
-    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
+    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_UPLOAD`:
       return {
         ...state,
         selectedDocs: state.selectedDocs.map((doc) => {
@@ -364,7 +364,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         })
       }
     
-    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`:
+    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION_UPLOAD`:
       if (action.value !== '') {
         return state
       } else {

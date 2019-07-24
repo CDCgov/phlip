@@ -335,8 +335,8 @@ const uploadRequestLogic = createLogic({
   type: types.UPLOAD_DOCUMENTS_START,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.docManage.upload
-    const selectedProject = state.projectSuggestions.selectedSuggestion
-    const selectedJurisdiction = state.jurisdictionSuggestions.selectedSuggestion
+    const selectedProject = action.project
+    const selectedJurisdiction = action.jurisdiction
     let jurs = {}
     
     if (Object.keys(selectedProject).length === 0) {

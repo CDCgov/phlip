@@ -45,8 +45,11 @@ const getProjectSuggestionsLogic = createLogic({
   }
 })
 
+/**
+ * Returns a list of projects for the user
+ */
 const getProjectsByUserLogic = createLogic({
-  type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
+  type: [types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST, `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_PROJECT`],
   async process({ api, action }, dispatch, done) {
     try {
       let projects = await api.searchProjectListByUser({}, {
@@ -55,9 +58,9 @@ const getProjectsByUserLogic = createLogic({
           count: action.count
         }
       }, {})
-      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`, payload: projects })
+      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT${action.suffix}`, payload: projects })
     } catch (err) {
-      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_FAIL}_PROJECT` })
+      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_FAIL}_PROJECT${action.suffix}` })
     }
     done()
   }

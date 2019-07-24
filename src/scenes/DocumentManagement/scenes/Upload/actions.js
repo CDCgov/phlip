@@ -1,5 +1,4 @@
 import makeActionCreator from 'utils/makeActionCreator'
-import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 
 export const types = {
   UPLOAD_DOCUMENTS_START: 'UPLOAD_DOCUMENTS_START',
@@ -34,7 +33,7 @@ export const types = {
 }
 
 export default {
-  uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs'),
+  uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs', 'project', 'jurisdiction'),
   acknowledgeUploadFailures: makeActionCreator(types.ACKNOWLEDGE_UPLOAD_FAILURES),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
@@ -50,13 +49,5 @@ export default {
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
   verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs'),
   setInfoRequestProgress: makeActionCreator(types.SET_INFO_REQUEST_IN_PROGRESS)
-}
-
-export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT', '')
-}
-
-export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION', '')
 }
 
