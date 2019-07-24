@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 
+/* istanbul ignore next */
 const styles = theme => ({
   textFieldInput: {
     outline: 0,
@@ -51,10 +52,25 @@ export const InputBox = props => {
 }
 
 InputBox.propTypes = {
+  /**
+   * Passed in from material ui
+   */
   classes: PropTypes.object,
-  row: PropTypes.number,
+  /**
+   * Number of default rows to render
+   */
+  rows: PropTypes.number,
+  /**
+   * Text value
+   */
   value: PropTypes.string,
+  /**
+   * Name to give to the input field
+   */
   name: PropTypes.string,
+  /**
+   * Handles when the user makes changes to the text field
+   */
   onChange: PropTypes.func
 }
 
