@@ -14,7 +14,8 @@ const props = {
     enable: false,
     text: ''
   },
-  handleAddFiles: jest.fn()
+  handleAddFiles: jest.fn(),
+  allowFolderDrop: true
 }
 
 const dataTransfer = {

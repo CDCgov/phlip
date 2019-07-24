@@ -47,7 +47,15 @@ class FileUpload extends Component {
     overwriteAlert: PropTypes.shape({
       enable: PropTypes.bool,
       text: PropTypes.any
-    })
+    }),
+    /**
+     * A list of allowed extensions
+     */
+    allowedExtensions: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Whether folder dropping is allowed
+     */
+    allowFolderDrop: PropTypes.bool
   }
   
   static defaultProps = {
@@ -59,15 +67,22 @@ class FileUpload extends Component {
     numOfFiles: 0,
     overwriteAlert: {
       enable: false,
-      text: ''
-    }
+      text: '',
+      title: ''
+    },
+    allowedExtensions: [],
+    allowFolderDrop: true
   }
   
   constructor(props, context) {
     super(props, context)
     this.inputRef = React.createRef()
     this.state = {
-      alertOpen: false
+      alert: {
+        open: false,
+        type: '',
+        title: ''
+      }
     }
   }
   
@@ -86,7 +101,11 @@ class FileUpload extends Component {
     
     if (overwriteAlert.enable && numOfFiles > 0) {
       this.setState({
-        alertOpen: true
+        alert: {
+          open: true,
+          type: 'overwrite',
+          title: 'Warning'
+        }
       })
     } else {
       this.inputRef.current.click()
@@ -96,17 +115,16 @@ class FileUpload extends Component {
   /**
    * User clicked 'cancel' in overwrite alert
    */
-  onCancelSelect = () => {
-    this.setState({
-      alertOpen: false
-    })
+  onCloseAlert = () => {
+    const { alert } = this.state
+    this.setState({ alert: { ...alert, open: false } })
   }
   
   /**
    * User clicked 'continue' in overwrite alert
    */
   onContinueSelect = () => {
-    this.onCancelSelect()
+    this.onCloseAlert()
     this.inputRef.current.click()
   }
   
@@ -115,7 +133,7 @@ class FileUpload extends Component {
    * @param dataTransferItemList
    */
   getAllFileEntries = async dataTransferItemList => {
-    const { allowMultiple } = this.props
+    const { allowMultiple, allowFolderDrop } = this.props
     
     let fileEntries = []
     let queue = []
@@ -124,24 +142,35 @@ class FileUpload extends Component {
       return []
     }
     
-    if (allowMultiple) {
-      for (let i = 0; i < dataTransferItemList.length; i++) {
-        queue.push(dataTransferItemList[i].webkitGetAsEntry())
-      }
+    if (dataTransferItemList[0].webkitGetAsEntry().isDirectory && !allowFolderDrop) {
+      this.setState({
+        alert: {
+          open: true,
+          type: 'folder',
+          title: 'Folder drop is not allowed'
+        }
+      })
+      return []
     } else {
-      queue.push(dataTransferItemList[0].webkitGetAsEntry())
-    }
-    
-    while (queue.length > 0) {
-      let entry = queue.shift()
-      if (entry.isFile) {
-        fileEntries.push(entry)
-      } else if (entry.isDirectory) {
-        queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
+      if (allowMultiple) {
+        for (let i = 0; i < dataTransferItemList.length; i++) {
+          queue.push(dataTransferItemList[i].webkitGetAsEntry())
+        }
+      } else {
+        queue.push(dataTransferItemList[0].webkitGetAsEntry())
       }
+  
+      while (queue.length > 0) {
+        let entry = queue.shift()
+        if (entry.isFile) {
+          fileEntries.push(entry)
+        } else if (entry.isDirectory) {
+          queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
+        }
     
-      if (queue.length === 0) {
-        return fileEntries
+        if (queue.length === 0) {
+          return fileEntries
+        }
       }
     }
   }
@@ -179,18 +208,19 @@ class FileUpload extends Component {
    */
   onDrop = async e => {
     const { handleAddFiles, allowMultiple } = this.props
-    
     e.preventDefault()
     
     const fileEntries = await this.getAllFileEntries(e.dataTransfer.items)
     let files = []
-    for (let i = 0; i < fileEntries.length; i++) {
-      fileEntries[i].file(file => {
-        files.push(file)
-        if (i === fileEntries.length - 1) {
-          handleAddFiles(allowMultiple ? files : files[0])
-        }
-      })
+    if (fileEntries.length > 0) {
+      for (let i = 0; i < fileEntries.length; i++) {
+        fileEntries[i].file(file => {
+          files.push(file)
+          if (i === fileEntries.length - 1) {
+            handleAddFiles(allowMultiple ? files : files[0])
+          }
+        })
+      }
     }
   }
   
@@ -201,7 +231,7 @@ class FileUpload extends Component {
   onSelectFiles = e => {
     const { handleAddFiles, allowMultiple } = this.props
     e.preventDefault()
-  
+    
     let files = []
     Array.from(Array(e.target.files.length).keys()).map(x => files.push(e.target.files.item(x)))
     handleAddFiles(allowMultiple ? files : files[0])
@@ -227,15 +257,16 @@ class FileUpload extends Component {
       overwriteAlert
     } = this.props
     
-    const { alertOpen } = this.state
+    const { alert } = this.state
     
-    const alertActions = [
-      {
-        value: 'Continue',
-        type: 'button',
-        onClick: this.onContinueSelect
-      }
-    ]
+    const alertActions = alert.open && alert.type === 'overwrite'
+      ? [
+        {
+          value: 'Continue',
+          type: 'button',
+          onClick: this.onContinueSelect
+        }
+      ] : []
     
     return (
       <>
@@ -283,9 +314,15 @@ class FileUpload extends Component {
             </FlexGrid>
           </FlexGrid>
         </form>
-        <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelSelect} title="Warning">
+        <Alert
+          open={alert.open}
+          actions={alertActions}
+          closeButton={{ value: alert.type === 'overwrite' ? 'Cancel' : 'Dismiss' }}
+          onCloseAlert={this.onCloseAlert}
+          title={alert.title}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {overwriteAlert.text}
+            {alert.type === 'overwrite' && overwriteAlert.text}
+            {alert.type === 'folder' && 'Dragging and dropping a folder is not allowed for this input.'}
           </Typography>
         </Alert>
       </>

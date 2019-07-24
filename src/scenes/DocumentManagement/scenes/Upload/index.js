@@ -500,6 +500,7 @@ export class Upload extends Component {
               containerText={infoSheetSelected
                 ? `Selected file: ${infoSheet.name}`
                 : 'or drag and drop here'}
+              allowFolderDrop={false}
               numOfFiles={infoSheetSelected ? 1 : 0}
               overwriteAlert={{
                 enable: true,

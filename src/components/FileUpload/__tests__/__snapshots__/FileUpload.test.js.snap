@@ -86,20 +86,16 @@ exports[`File Upload component should render correctly 1`] = `
     </FlexGrid>
   </form>
   <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Continue",
-        },
-      ]
+    actions={Array []}
+    closeButton={
+      Object {
+        "value": "Dismiss",
+      }
     }
-    closeButton={Object {}}
     hideClose={false}
     onCloseAlert={[Function]}
     open={false}
-    title="Warning"
+    title=""
   >
     <WithStyles(Typography)
       style={

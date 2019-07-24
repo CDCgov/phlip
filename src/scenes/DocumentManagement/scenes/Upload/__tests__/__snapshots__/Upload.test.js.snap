@@ -89,7 +89,9 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       type="row"
     >
       <FileUpload
+        allowFolderDrop={true}
         allowMultiple={true}
+        allowedExtensions={Array []}
         allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         buttonText="Select Files"
         containerBgColor="#f5fafa"
@@ -115,7 +117,9 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
         type="column"
       />
       <FileUpload
+        allowFolderDrop={false}
         allowMultiple={false}
+        allowedExtensions={Array []}
         allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
         buttonText="Select excel file"
         containerBgColor="#f4f9ef"
