@@ -136,8 +136,6 @@ export const getFileType = file => {
     filereader.onload = evt => {
       if (evt.target.readyState === FileReader.DONE) {
         const uint = new Uint8Array(evt.target.result)
-        console.log(file.name, evt.target.result)
-        console.log(uint)
         const { extension } = removeExtension(file.name)
         let bytes = [], fileType = undefined
         uint.forEach(byte => bytes.push(byte.toString(16)))

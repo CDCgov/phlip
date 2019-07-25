@@ -15,13 +15,14 @@ const props = {
     text: ''
   },
   handleAddFiles: jest.fn(),
-  allowFolderDrop: true
+  allowFolderDrop: true,
+  allowedExtensions: ['pdf', 'docx', 'doc']
 }
 
 const dataTransfer = {
   items: [
-    new DataTransferItem('file1', 'file', []),
-    new DataTransferItem('file2', 'file', [])
+    new DataTransferItem('file1.pdf', 'file', [], 12000, true),
+    new DataTransferItem('file2.pdf', 'file', [], 12000, true)
   ]
 }
 
@@ -198,7 +199,7 @@ describe('File Upload component', () => {
     })
   })
   
-  describe('dropping files', () => {
+  describe.only('dropping files', () => {
     test('should prevent default from going to input component', () => {
       const wrapper = shallow(<FileUpload {...props} />)
       const event = {
@@ -213,7 +214,7 @@ describe('File Upload component', () => {
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should loop through all files found', async () => {
+    test('should loop through all files found', done => {
       const wrapper = shallow(<FileUpload {...props} allowMultiple />)
       const event = {
         preventDefault: jest.fn(),
@@ -222,21 +223,33 @@ describe('File Upload component', () => {
       
       const reader = getFileReader([37, 80, 68, 70])
       window.FileReader = reader
+      window.FileReader.DONE = 2
+      
       const spy = jest.spyOn(props, 'handleAddFiles')
-      await wrapper.find('form').simulate('drop', event)
-      expect(spy).toHaveBeenCalledWith([{ name: 'file1.pdf' }, { name: 'file2.pdf' }])
+      wrapper.find('form').simulate('drop', event)
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalledWith([{ name: 'file1.pdf', size: 12000 }, { name: 'file2.pdf', size: 12000 }])
+        done()
+      }, 2000)
     })
     
-    test('should only send back first file allow multiple is false', async () => {
+    test('should only send back first file allow multiple is false', done => {
       const wrapper = shallow(<FileUpload {...props} />)
       const event = {
         preventDefault: jest.fn(),
         dataTransfer
       }
       
+      const reader = getFileReader([37, 80, 68, 70])
+      window.FileReader = reader
+      window.FileReader.DONE = 2
+      
       const spy = jest.spyOn(props, 'handleAddFiles')
-      await wrapper.find('form').simulate('drop', event)
-      expect(spy).toHaveBeenCalledWith({ name: 'file1' })
+      wrapper.find('form').simulate('drop', event)
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalledWith({ name: 'file1.pdf', size: 12000 })
+        done()
+      }, 2000)
     })
     
     describe('if the user has dropped a folder', () => {
@@ -253,6 +266,7 @@ describe('File Upload component', () => {
             ]
           }
         }
+        
         await wrapper.find('form').simulate('drop', event)
         expect(wrapper.state().alert).toEqual({
           open: true,
@@ -264,24 +278,30 @@ describe('File Upload component', () => {
         done()
       })
       
-      test('should loop through the folder to get files', async done => {
+      test('should loop through the folder to get files', done => {
         const wrapper = shallow(<FileUpload {...props} allowMultiple />)
         const event = {
           preventDefault: jest.fn(),
           dataTransfer: {
             items: [
               new DataTransferItem('demo', 'dir', [
-                new FileEntry('file1', 'file', []),
-                new FileEntry('file2', 'file2', [])
+                new FileEntry('file1.pdf', 'file', [], 12000),
+                new FileEntry('file2.pdf', 'file2', [], 12000)
               ])
             ]
           }
         }
         
+        const reader = getFileReader([37, 80, 68, 70])
+        window.FileReader = reader
+        window.FileReader.DONE = 2
+        
         const spy = jest.spyOn(props, 'handleAddFiles')
-        await wrapper.find('form').simulate('drop', event)
-        expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
-        done()
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalledWith([{ name: 'file1.pdf', size: 12000 }, { name: 'file2.pdf', size: 12000 }])
+          done()
+        }, 2000)
       })
     })
   })

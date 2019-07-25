@@ -13,31 +13,30 @@ export class Reader {
 
 export const getFileReader = arrayBufferOutput => {
   return class FileReader {
-    DONE = 2
-  
     constructor() {}
-    readAsArrayBuffer = () => arrayBufferOutput
+    readAsArrayBuffer = () => {
+      this.onload({ target: { result: arrayBufferOutput, readyState: 2 } })
+    }
     onload = () => {}
   }
 }
 
 export class File {
-  constructor(name, size, blob) {
+  constructor(name, size) {
     this.name = name
     this.size = size
-    this.blob = blob
   }
   
   slice() {
-    return this.blob
+    return ''
   }
 }
 
 export class FileEntry {
-  constructor(name, type, children, size, valid) {
+  constructor(name, type, children, size) {
     this.type = type
     this.children = children
-    this.File = new File(name, size, valid)
+    this.File = new File(name, size)
   }
   
   get isFile() {
@@ -60,13 +59,14 @@ export class DataTransferItem {
   type = ''
   items = []
   
-  constructor(name, itemType, items) {
+  constructor(name, itemType, items, size, valid) {
     this.name = name
     this.type = itemType
     this.items = items
+    this.fileEntry = new FileEntry(name, itemType, items, size, valid)
   }
   
   webkitGetAsEntry() {
-    return new FileEntry(this.name, this.type, this.items)
+    return this.fileEntry
   }
 }
