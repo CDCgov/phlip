@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { Upload } from '../index'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { CircularLoader } from 'components'
-import { selectedDocs, arrOfDocsTransport } from 'utils/testData/upload'
+import { selectedDocs, arrOfDocsTransport, fullMerged } from 'utils/testData/upload'
 
 const props = {
   selectedDocs: [],
@@ -246,7 +246,7 @@ describe('Document Management - Upload scene', () => {
         ...doc.jurisdictions,
         value: {
           ...doc.jurisdictions.value,
-          id: i === selectedDocs.length - 1 ? null : i + 1
+          id: i + 1
         }
       }
     }))
@@ -255,12 +255,8 @@ describe('Document Management - Upload scene', () => {
       <Upload
         {...props}
         selectedDocs={docs}
-        projectAutocompleteProps={{
-          selectedSuggestion: { id: 4 }
-        }}
-        jurisdictionAutocompleteProps={{
-          selectedSuggestion: {}
-        }}
+        projectAutocompleteProps={{ selectedSuggestion: { id: 4 } }}
+        jurisdictionAutocompleteProps={{ selectedSuggestion: {} }}
       />
     )
     
@@ -278,20 +274,33 @@ describe('Document Management - Upload scene', () => {
     
     test('should use the global jurisdiction if the doc doesn\'t has one selected', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
+      const selectedDocs = docs.slice(0, docs.length - 1)
+      const lastDoc = docs[docs.length - 1]
       wrapper.setProps({
         jurisdictionAutocompleteProps: {
           selectedSuggestion: { id: 20 }
-        }
+        },
+        selectedDocs: [
+          ...selectedDocs,
+          {
+            ...lastDoc,
+            jurisdictions: {
+              ...lastDoc.jurisdictions,
+              value: {
+                id: undefined
+              }
+            }
+          }
+        ]
       })
       
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      const transport = arrOfDocsTransport.slice(0, length - 1)
-      console.log(transport)
-      expect(spy)
-        .toHaveBeenCalledWith([...transport, { ...arrOfDocsTransport[length - 1], jurisdictions: [20] }],
-          { id: 4 },
-          { id: 20 }
-        )
+      const transport = arrOfDocsTransport.slice(0, arrOfDocsTransport.length - 1)
+      expect(spy).toHaveBeenCalledWith(
+        [...transport, { ...arrOfDocsTransport[arrOfDocsTransport.length - 1], jurisdictions: [20] }],
+        { id: 4 },
+        { id: 20 }
+      )
     })
   })
   

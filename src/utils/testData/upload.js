@@ -238,7 +238,8 @@ export const fullMerged = [
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Washington (state)'
+        name: 'Washington (state)',
+        id: 1
       },
       error: '',
       inEditMode: false,
@@ -269,7 +270,8 @@ export const fullMerged = [
     jurisdictions: {
       editable: false,
       value: {
-        name: 'North Carolina (state)'
+        name: 'North Carolina (state)',
+        id: 2
       },
       error: '',
       inEditMode: false,
@@ -300,7 +302,8 @@ export const fullMerged = [
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Washington, DC (federal district)'
+        name: 'Washington, DC (federal district)',
+        id: 3
       },
       error: '',
       inEditMode: false,
@@ -331,7 +334,8 @@ export const fullMerged = [
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Ohio (state)'
+        name: 'Ohio (state)',
+        id: 4
       },
       error: '',
       inEditMode: false,
