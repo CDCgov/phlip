@@ -26,8 +26,6 @@ export const types = {
   CLEAR_ROW_JURISDICTION_SUGGESTIONS: 'CLEAR_ROW_JURISDICTION_SUGGESTIONS',
   EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
   MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS',
-  VERIFY_VALID_FILES: 'VERIFY_VALID_FILES',
-  ALL_FILES_VALID: 'ALL_FILES_VALID',
   INVALID_FILES_FOUND: 'INVALID_FILES_FOUND',
   FLUSH_STATE: 'FLUSH_STATE'
 }
@@ -47,7 +45,6 @@ export default {
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs'),
   setInfoRequestProgress: makeActionCreator(types.SET_INFO_REQUEST_IN_PROGRESS)
 }
 

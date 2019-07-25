@@ -2,6 +2,7 @@ import { createLogic } from 'redux-logic'
 import { types } from './actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
+import { removeExtension } from 'utils/commonHelpers'
 
 const stateLookup = {
   'AL': 'Alabama',
@@ -147,23 +148,6 @@ export const determineSearchString = jurisdictionName => {
 }
 
 /**
- * Removes the extension, if it exists from string
- * @param string
- * @returns {*}
- */
-export const removeExtension = string => {
-  const pieces = [...string.split('.')]
-  let name = string
-  if (pieces.length > 0) {
-    if (allowedTypes.includes(pieces[pieces.length - 1])) {
-      pieces.pop()
-      name = pieces.join('.')
-    }
-  }
-  return name
-}
-
-/**
  * Merges Excel upload sheet with documents selected
  * @param info
  * @param docs
@@ -174,7 +158,10 @@ export const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
     let merged = [], jurLookup = {}
     for (const doc of docs) {
-      const nameWithoutExt = removeExtension(doc.name.value)
+      let { name: nameWithoutExt, extension } = removeExtension(doc.name.value)
+      if (!allowedTypes.includes(extension)) {
+        nameWithoutExt = doc.name.value
+      }
       if (info.hasOwnProperty(nameWithoutExt)) {
         let d = { ...doc }, jurs = []
         const docInfo = info[nameWithoutExt]
@@ -217,51 +204,6 @@ export const mergeInfoWithDocs = (info, docs, api) => {
     }
     resolve(merged)
   })
-}
-
-/**
- * Determines the file type of a document selected for upload
- * @param doc
- * @returns {Promise<any>}
- */
-export const getFileType = doc => {
-  return new Promise(async (resolve, reject) => {
-    const validMimeTypes = [
-      {
-        mime: ['pdf'],
-        pattern: '25504446'
-      },
-      {
-        mime: ['doc', '.rtf'],
-        pattern: '7B5C7274'
-      },
-      {
-        mime: ['docx', '.odt'],
-        pattern: '504B34'
-      }
-    ]
-    let matchedOne = {}
-    const filereader = new FileReader()
-    filereader.onload = evt => {
-      if (evt.target.readyState === FileReader.DONE) {
-        const uint = new Uint8Array(evt.target.result)
-        let bytes = []
-        uint.forEach(byte => bytes.push(byte.toString(16)))
-        const hex = bytes.join('').toUpperCase()
-        matchedOne = validMimeTypes.find(oneType => oneType.pattern === hex)
-        resolve({
-          doc: { ...doc, docHex: hex, docType: matchedOne || undefined },
-          docHex: hex,
-          docType: matchedOne || undefined,
-          size: doc.file.size
-        })
-      }
-    }
-    
-    const blob = doc.file.slice(0, 4)
-    filereader.readAsArrayBuffer(blob)
-  })
-  
 }
 
 /**
@@ -347,11 +289,9 @@ const uploadRequestLogic = createLogic({
       })
     } else if (Object.keys(selectedJurisdiction).length === 0) {
       const noJurs = state.list.selectedDocs.filter(doc => {
-        
         if (doc.jurisdictions.value.hasOwnProperty('id') && !jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
           jurs[doc.jurisdictions.value.id] = doc.jurisdictions.value
         }
-        
         return !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id
       })
       
@@ -398,58 +338,9 @@ const uploadRequestLogic = createLogic({
   }
 })
 
-/**
- * Logic for handling file type verification
- */
-const verifyFileContentLogic = createLogic({
-  type: types.VERIFY_VALID_FILES,
-  async validate({ getState, action }, reject, allow) {
-    let promises = []
-    let invalidFiles = []
-    let invalidType = false, invalidSize = false
-    action.docs.map(doc => {
-      promises.push(getFileType(doc))
-    })
-    
-    Promise.all(promises).then(results => {
-      results.map(result => {
-        let file = { ...result.doc }
-        if (result.docType === undefined) {
-          file.badType = true
-          invalidType = true
-        }
-        if (result.size > 16000000) {
-          file.badSize = true
-          invalidSize = true
-        }
-        if (file.badSize || file.badType) invalidFiles.push(file)
-      })
-      
-      if (invalidType || invalidSize) {
-        reject({
-          type: types.INVALID_FILES_FOUND,
-          text: invalidSize
-            ? invalidType
-              ? 'The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are .pdf, .doc, .docx, .odt and .rtf. Maximum file size is 16 MB.'
-              : 'The files listed below exceed the maximum allowed size of 16 MB. These files will be removed from the list.'
-            : 'The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are .pdf, .doc, .docx, .odt and .rtf.',
-          invalidFiles,
-          title: invalidSize
-            ? invalidType
-              ? 'Invalid Files Found'
-              : 'Maximum File Size Exceeded'
-            : 'Invalid File Types'
-        })
-      } else {
-        allow({ type: types.ALL_FILES_VALID })
-      }
-    })
-  }
-})
 
 export default [
   uploadRequestLogic,
   extractInfoLogic,
-  mergeInfoWithDocsLogic,
-  verifyFileContentLogic
+  mergeInfoWithDocsLogic
 ]

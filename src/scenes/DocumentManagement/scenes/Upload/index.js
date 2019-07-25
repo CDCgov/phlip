@@ -234,8 +234,6 @@ export class Upload extends Component {
       } else {
         actions.addSelectedDocs(files)
       }
-      
-      actions.verifyFiles(files)
     }
   }
   
@@ -380,33 +378,6 @@ export class Upload extends Component {
           title={alert.title}
           id="uploadAlert">
           <Typography variant="body1">{alert.text}</Typography>
-          {alert.type !== 'basic' &&
-          <FlexGrid type="row" style={{ overflow: 'auto', paddingTop: 20 }}>
-            {invalidFiles.map((item, index) => {
-              return (
-                <FlexGrid
-                  container
-                  type="row"
-                  justify="space-between"
-                  align="center"
-                  key={`doc-${index}`}
-                  style={{
-                    padding: 8,
-                    backgroundColor: index % 2 === 0
-                      ? '#f9f9f9'
-                      : 'white',
-                    minHeight: 24
-                  }}>
-                  <Typography style={{ fontSize: '.9125rem' }}>
-                    {item.name}
-                  </Typography>
-                  {item.badSize && <Typography style={{ fontSize: '.9125rem' }}>
-                    {(item.file.size / (1000 * 1000)).toFixed(1)} MB
-                  </Typography>}
-                </FlexGrid>
-              )
-            })}
-          </FlexGrid>}
         </Alert>}
         
         {(uploading || infoRequestInProgress) &&
@@ -485,9 +456,8 @@ export class Upload extends Component {
               allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               allowMultiple
               numOfFiles={selectedDocs.length}
-              overwriteAlert={{
-                enable: false
-              }}
+              overwriteAlert={{ enable: false }}
+              allowedExtensions={['doc', 'docx', 'pdf', 'rtf', 'odt']}
             />
             <FlexGrid padding={10} />
             <FileUpload
@@ -502,6 +472,7 @@ export class Upload extends Component {
                 : 'or drag and drop here'}
               allowFolderDrop={false}
               numOfFiles={infoSheetSelected ? 1 : 0}
+              allowedExtensions={['xlsx']}
               overwriteAlert={{
                 enable: true,
                 text: 'Selecting a new Excel file will erase existing information. Do you want to continue?'

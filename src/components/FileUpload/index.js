@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { Alert, FlexGrid, Button } from 'components'
+import { getFileType } from 'utils/commonHelpers'
 
 class FileUpload extends Component {
   static propTypes = {
@@ -55,7 +56,11 @@ class FileUpload extends Component {
     /**
      * Whether folder dropping is allowed
      */
-    allowFolderDrop: PropTypes.bool
+    allowFolderDrop: PropTypes.bool,
+    /**
+     * Maximum size allowed per file
+     */
+    maxSize: PropTypes.number
   }
   
   static defaultProps = {
@@ -71,7 +76,8 @@ class FileUpload extends Component {
       title: ''
     },
     allowedExtensions: [],
-    allowFolderDrop: true
+    allowFolderDrop: true,
+    maxSize: 16000000
   }
   
   constructor(props, context) {
@@ -81,8 +87,10 @@ class FileUpload extends Component {
       alert: {
         open: false,
         type: '',
-        title: ''
-      }
+        title: '',
+        text: ''
+      },
+      files: []
     }
   }
   
@@ -113,11 +121,49 @@ class FileUpload extends Component {
   }
   
   /**
+   * User tried to upload invalid files. This determines the content of the alert to show to the user about the
+   * invalid files found
+   * @param invalidFiles
+   * @param invalidType
+   * @param invalidSize
+   */
+  showInvalidFileAlert = (invalidFiles, invalidType, invalidSize) => {
+    const { allowedExtensions, maxSize } = this.props
+    let extensions = allowedExtensions.map(extension => extension.startsWith('.') ? extension : `.${extension}`)
+    extensions = allowedExtensions.length > 1 ? extensions.join(', ') : extensions[0]
+    const size = maxSize / 1000
+    
+    this.setState({
+      alert: {
+        text: invalidSize
+          ? invalidType
+            ? `The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are ${extensions}. Maximum file size is ${size} MB.`
+            : `The files listed below exceed the maximum allowed size of ${size} MB. These files will be removed from the list.`
+          : `The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are ${extensions}.`,
+        type: 'files',
+        title: invalidSize
+          ? invalidType
+            ? 'Invalid Files Found'
+            : 'Maximum File Size Exceeded'
+          : 'Invalid File Types',
+        open: true
+      },
+      files: invalidFiles
+    })
+  }
+  
+  /**
    * User clicked 'cancel' in overwrite alert
    */
   onCloseAlert = () => {
     const { alert } = this.state
-    this.setState({ alert: { ...alert, open: false } })
+    this.setState({
+      alert: {
+        ...alert,
+        open: false
+      },
+      files: []
+    })
   }
   
   /**
@@ -134,9 +180,7 @@ class FileUpload extends Component {
    */
   getAllFileEntries = async dataTransferItemList => {
     const { allowMultiple, allowFolderDrop } = this.props
-    
-    let fileEntries = []
-    let queue = []
+    let fileEntries = [], queue = []
     
     if (dataTransferItemList.length === 0) {
       return []
@@ -147,19 +191,16 @@ class FileUpload extends Component {
         alert: {
           open: true,
           type: 'folder',
-          title: 'Folder drop is not allowed'
+          title: 'Folder drop is not allowed',
+          text: 'Dragging and dropping a folder is not allowed for this input.'
         }
       })
       return []
     } else {
-      if (allowMultiple) {
-        for (let i = 0; i < dataTransferItemList.length; i++) {
-          queue.push(dataTransferItemList[i].webkitGetAsEntry())
-        }
-      } else {
-        queue.push(dataTransferItemList[0].webkitGetAsEntry())
+      for (let i = 0; i < dataTransferItemList.length; i++) {
+        queue.push(dataTransferItemList[i].webkitGetAsEntry())
       }
-  
+      
       while (queue.length > 0) {
         let entry = queue.shift()
         if (entry.isFile) {
@@ -167,9 +208,9 @@ class FileUpload extends Component {
         } else if (entry.isDirectory) {
           queue.push(...await this.readAllDirectoryEntries(entry.createReader()))
         }
-    
+        
         if (queue.length === 0) {
-          return fileEntries
+          return allowMultiple ? fileEntries : fileEntries.slice(0, 1)
         }
       }
     }
@@ -203,6 +244,25 @@ class FileUpload extends Component {
   }
   
   /**
+   * Verifies the file is of an allowed type and does not exceed the maximum size
+   * @param file
+   */
+  verifyFile = async file => {
+    let invalidType = false
+    const { allowedExtensions, maxSize } = this.props
+    const { fileType } = await getFileType(file)
+    if (fileType !== undefined) {
+      if (!allowedExtensions.includes(fileType)) {
+        invalidType = true
+      }
+    } else {
+      invalidType = true
+    }
+    
+    return { file, invalidSize: file.size > maxSize, invalidType }
+  }
+  
+  /**
    * Handle if the drag is a file or folder
    * @param e
    */
@@ -211,12 +271,23 @@ class FileUpload extends Component {
     e.preventDefault()
     
     const fileEntries = await this.getAllFileEntries(e.dataTransfer.items)
-    let files = []
+    let files = [], invalid = [], invalidTypes = false, invalidSizes = false
     if (fileEntries.length > 0) {
       for (let i = 0; i < fileEntries.length; i++) {
-        fileEntries[i].file(file => {
-          files.push(file)
+        fileEntries[i].file(async file => {
+          const { file: doc, invalidSize, invalidType } = await this.verifyFile(file)
+          if (invalidSize || invalidType) {
+            invalidSizes = invalidSize ? true : invalidSizes
+            invalidTypes = invalidType ? true : invalidTypes
+            invalid.push(doc)
+          } else {
+            files.push(file)
+          }
+          
           if (i === fileEntries.length - 1) {
+            if (invalid.length > 0) {
+              this.showInvalidFileAlert(invalid, invalidType, invalidSize)
+            }
             handleAddFiles(allowMultiple ? files : files[0])
           }
         })
@@ -257,7 +328,7 @@ class FileUpload extends Component {
       overwriteAlert
     } = this.props
     
-    const { alert } = this.state
+    const { alert, files } = this.state
     
     const alertActions = alert.open && alert.type === 'overwrite'
       ? [
@@ -267,7 +338,7 @@ class FileUpload extends Component {
           onClick: this.onContinueSelect
         }
       ] : []
-  
+    
     return (
       <>
         <form
@@ -322,8 +393,34 @@ class FileUpload extends Component {
           title={alert.title}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.type === 'overwrite' && overwriteAlert.text}
-            {alert.type === 'folder' && 'Dragging and dropping a folder is not allowed for this input.'}
+            {['folder', 'files'].includes(alert.type) && alert.text}
           </Typography>
+          {alert.type === 'files' && <FlexGrid type="row" style={{ overflow: 'auto', paddingTop: 20 }}>
+            {files.map((item, index) => {
+              return (
+                <FlexGrid
+                  container
+                  type="row"
+                  justify="space-between"
+                  align="center"
+                  key={`doc-${index}`}
+                  style={{
+                    padding: 8,
+                    backgroundColor: index % 2 === 0
+                      ? '#f9f9f9'
+                      : 'white',
+                    minHeight: 24
+                  }}>
+                  <Typography style={{ fontSize: '.9125rem' }}>
+                    {item.name}
+                  </Typography>
+                  {item.badSize && <Typography style={{ fontSize: '.9125rem' }}>
+                    {(item.file.size / (1000 * 1000)).toFixed(1)} MB
+                  </Typography>}
+                </FlexGrid>
+              )
+            })}
+          </FlexGrid>}
         </Alert>
       </>
     )
