@@ -225,13 +225,15 @@ export const fullMerged = [
       editable: false,
       value: '2012-12-12T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ark. Code R. § 016.06.18-219.000',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -239,7 +241,8 @@ export const fullMerged = [
         name: 'Washington (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -253,13 +256,15 @@ export const fullMerged = [
       editable: false,
       value: '2002-04-10T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'NC. Gen. Stat. § 19a-111j',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -267,7 +272,8 @@ export const fullMerged = [
         name: 'North Carolina (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -281,13 +287,15 @@ export const fullMerged = [
       editable: false,
       value: '2002-10-01T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'DC Code § 34.1452.1',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -295,7 +303,8 @@ export const fullMerged = [
         name: 'Washington, DC (federal district)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -309,13 +318,15 @@ export const fullMerged = [
       editable: false,
       value: '2015-04-11T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ohio Admin. Code 3701-30-07',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -323,7 +334,8 @@ export const fullMerged = [
         name: 'Ohio (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   }
 ]
@@ -375,13 +387,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2012-12-12T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ark. Code R. § 016.06.18-219.000',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: true,
@@ -391,7 +405,8 @@ export const mergedWithMissing = [
         searchValue: ''
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     }
   },
   {
@@ -405,13 +420,15 @@ export const mergedWithMissing = [
       editable: true,
       value: '',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     },
     citation: {
       editable: false,
       value: 'NC. Gen. Stat. § 19a-111j',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -419,7 +436,8 @@ export const mergedWithMissing = [
         name: 'North Carolina (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -433,13 +451,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2002-10-01T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: true,
       value: '',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     },
     jurisdictions: {
       editable: false,
@@ -447,7 +467,8 @@ export const mergedWithMissing = [
         name: 'Washington, DC (federal district)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -461,13 +482,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2015-04-11T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ohio Admin. Code 3701-30-07',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -475,7 +498,8 @@ export const mergedWithMissing = [
         name: 'Ohio (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   }
 ]

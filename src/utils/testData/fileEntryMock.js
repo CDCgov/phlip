@@ -11,11 +11,33 @@ export class Reader {
   }
 }
 
-export class FileEntry {
-  constructor(name, type, children) {
+export const getFileReader = arrayBufferOutput => {
+  return class FileReader {
+    DONE = 2
+  
+    constructor() {}
+    readAsArrayBuffer = () => arrayBufferOutput
+    onload = () => {}
+  }
+}
+
+export class File {
+  constructor(name, size, blob) {
     this.name = name
+    this.size = size
+    this.blob = blob
+  }
+  
+  slice() {
+    return this.blob
+  }
+}
+
+export class FileEntry {
+  constructor(name, type, children, size, valid) {
     this.type = type
     this.children = children
+    this.File = new File(name, size, valid)
   }
   
   get isFile() {
@@ -27,7 +49,7 @@ export class FileEntry {
   }
   
   file = cb => {
-    cb({ name: this.name })
+    cb(this.File)
   }
   
   createReader = () => new Reader(this.children)

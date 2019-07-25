@@ -187,7 +187,8 @@ export const mergeInfoWithDocs = (info, docs, api) => {
                 inEditMode: true,
                 error: '',
                 value: { ...valueDefaults['jurisdictions'], searchValue: docInfo.jurisdictions.name },
-                editable: true
+                editable: true,
+                fromMetaFile: false
               }
               missingJurisdiction = true
             } else {
@@ -197,7 +198,14 @@ export const mergeInfoWithDocs = (info, docs, api) => {
             }
           }
         } else {
-          d.jurisdictions = { inEditMode: false, error: '', value: valueDefaults['jurisdictions'], editable: true }
+          d.jurisdictions = {
+            inEditMode: false,
+            error: '',
+            value: valueDefaults['jurisdictions'],
+            editable: true,
+            fromMetaFile: false
+          }
+          missingJurisdiction = true
         }
         merged = [...merged, d]
       } else {
@@ -267,7 +275,11 @@ const mergeInfoWithDocsLogic = createLogic({
       })
       return d
     })
-    const { merged, missingJurisdiction } = await mergeInfoWithDocs(getState().scenes.docManage.upload.list.extractedInfo, docs, api)
+    const { merged, missingJurisdiction } = await mergeInfoWithDocs(
+      getState().scenes.docManage.upload.list.extractedInfo,
+      docs,
+      api
+    )
     next({ ...action, payload: { merged, missingJurisdiction } })
   }
 })

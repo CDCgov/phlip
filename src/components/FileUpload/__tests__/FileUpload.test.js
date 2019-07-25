@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import FileUpload from '../index'
-import { DataTransferItem, FileEntry } from 'utils/testData/fileEntryMock'
+import { DataTransferItem, FileEntry, getFileReader } from 'utils/testData/fileEntryMock'
 
 const props = {
   containerBorderColor: '#99D0E9',
@@ -220,9 +220,11 @@ describe('File Upload component', () => {
         dataTransfer
       }
       
+      const reader = getFileReader([37, 80, 68, 70])
+      window.FileReader = reader
       const spy = jest.spyOn(props, 'handleAddFiles')
       await wrapper.find('form').simulate('drop', event)
-      expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
+      expect(spy).toHaveBeenCalledWith([{ name: 'file1.pdf' }, { name: 'file2.pdf' }])
     })
     
     test('should only send back first file allow multiple is false', async () => {
@@ -255,7 +257,8 @@ describe('File Upload component', () => {
         expect(wrapper.state().alert).toEqual({
           open: true,
           title: 'Folder drop is not allowed',
-          type: 'folder'
+          type: 'folder',
+          text: 'Dragging and dropping a folder is not allowed for this input.'
         })
         expect(wrapper.find('Alert').prop('open')).toEqual(true)
         done()

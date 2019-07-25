@@ -10,6 +10,14 @@ const getState = (other = {}) => ({
   ...other
 })
 
+const emptyDocProperty = {
+  value: '',
+  fromMetaFile: false,
+  editable: true,
+  inEditMode: false,
+  error: ''
+}
+
 describe('Document Management - Upload reducer tests', () => {
   test('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual(initial)
@@ -296,10 +304,13 @@ describe('Document Management - Upload reducer tests', () => {
   describe('MERGE_INFO_WITH_DOCS', () => {
     const action = {
       type: types.MERGE_INFO_WITH_DOCS,
-      payload: [
-        { name: 'filename1', citation: '1' },
-        { name: 'filename2', citation: '1' }
-      ]
+      payload: {
+        merged: [
+          { name: 'filename1', citation: '1' },
+          { name: 'filename2', citation: '1' }
+        ],
+        missingJurisdiction: false
+      }
     }
     
     const currentState = getState({
@@ -399,22 +410,12 @@ describe('Document Management - Upload reducer tests', () => {
         const updatedState = reducer(currentState, action)
         expect(updatedState.selectedDocs).toEqual([
           {
-            name: {
-              editable: true,
-              inEditMode: false,
-              value: 'Doc 1',
-              error: ''
-            },
-            citation: { editable: true, inEditMode: false, value: '', error: '' }
+            name: { ...emptyDocProperty, value: 'Doc 1' },
+            citation: { ...emptyDocProperty }
           },
           {
-            name: {
-              editable: true,
-              inEditMode: false,
-              value: 'Doc 2',
-              error: ''
-            },
-            citation: { editable: true, inEditMode: false, value: '', error: '' }
+            name: { ...emptyDocProperty, value: 'Doc 2' },
+            citation: { ...emptyDocProperty }
           }
         ])
       }
@@ -430,22 +431,12 @@ describe('Document Management - Upload reducer tests', () => {
         { name: 'existing1' },
         { name: 'existing2' },
         {
-          name: {
-            editable: true,
-            inEditMode: false,
-            value: 'Doc 1',
-            error: ''
-          },
-          citation: { editable: true, inEditMode: false, value: '', error: '' }
+          name: { ...emptyDocProperty, value: 'Doc 1' },
+          citation: { ...emptyDocProperty }
         },
         {
-          name: {
-            editable: true,
-            inEditMode: false,
-            value: 'Doc 2',
-            error: ''
-          },
-          citation: { editable: true, inEditMode: false, value: '', error: '' }
+          name: { ...emptyDocProperty, value: 'Doc 2' },
+          citation: { ...emptyDocProperty }
         }
       ])
     })
@@ -628,14 +619,14 @@ describe('Document Management - Upload reducer tests', () => {
         type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
         index: undefined
       }
-  
+      
       const currentState = getState({
         selectedDocs: [
           { name: 'doc 1', jurisdictions: { value: { suggestions: [] } } },
           { name: 'doc 2', jurisdictions: { value: { suggestions: [] } } }
         ]
       })
-  
+      
       const updatedState = reducer(currentState, action)
       expect(updatedState).toEqual(currentState)
     })

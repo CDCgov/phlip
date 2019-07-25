@@ -75,7 +75,7 @@ describe('Document Management - Upload logic', () => {
     })
   }
   
-  describe('Upload Documents', () => {
+  describe.only('Upload Documents', () => {
     test('should reject action with type REJECT_NO_PROJECT_SELECTED when no project is selected', done => {
       const store = setupStore()
       store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs, project: {}, jurisdiction: {} })
@@ -187,7 +187,7 @@ describe('Document Management - Upload logic', () => {
     
     test('should dispatch that there are duplicates if duplicates are found', done => {
       const store = setupStore(
-        { selectedDocs },
+        { selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } },
         {
@@ -209,7 +209,9 @@ describe('Document Management - Upload logic', () => {
         project: { name: 'project', id: 4 },
         jurisdiction: { name: 'jurisdiction 10', id: 10 }
       })
+      
       store.whenComplete(() => {
+        console.log(store.actions)
         expect(store.actions[1].type).toEqual(types.VERIFY_RETURN_DUPLICATE_FILES)
         done()
       })
@@ -221,7 +223,7 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
@@ -244,7 +246,7 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
@@ -272,7 +274,7 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
@@ -302,7 +304,7 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
@@ -359,7 +361,7 @@ describe('Document Management - Upload logic', () => {
         
         apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
         
-        const response = await mergeInfoWithDocs(excelWithoutState, selectedWithDup, api)
+        const { merged: response } = await mergeInfoWithDocs(excelWithoutState, selectedWithDup, api)
         expect(response[response.length - 1].jurisdictions.value.searchValue).toEqual('butler county')
       })
     })
@@ -382,9 +384,7 @@ describe('Document Management - Upload logic', () => {
         
         mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
         
-        const store = setupStore({
-          extractedInfo: excelInfoFull
-        })
+        const store = setupStore({ extractedInfo: excelInfoFull })
         
         store.dispatch({
           type: types.MERGE_INFO_WITH_DOCS,
@@ -392,7 +392,7 @@ describe('Document Management - Upload logic', () => {
         })
         
         store.whenComplete(() => {
-          expect(store.actions[0].payload).toEqual(fullMerged)
+          expect(store.actions[0].payload.merged).toEqual(fullMerged)
           done()
         })
       })

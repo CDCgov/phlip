@@ -207,13 +207,6 @@ describe('Document Management - Upload scene', () => {
       }
     ]
     
-    test('should send a request to verify files', () => {
-      const wrapper = shallow(<Upload {...props} />)
-      const spy = jest.spyOn(props.actions, 'verifyFiles')
-      wrapper.find('FileUpload').at(0).dive().find('input').simulate('change', fileList)
-      expect(spy).toHaveBeenCalledWith(fileArr)
-    })
-    
     test('should open an alert if user selects more documents than allowed', () => {
       const spy = jest.spyOn(props.actions, 'openAlert')
       const wrapper = shallow(<Upload {...props} />)
@@ -253,7 +246,7 @@ describe('Document Management - Upload scene', () => {
         ...doc.jurisdictions,
         value: {
           ...doc.jurisdictions.value,
-          id: i + 1
+          id: i === selectedDocs.length - 1 ? null : i + 1
         }
       }
     }))
@@ -283,7 +276,7 @@ describe('Document Management - Upload scene', () => {
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should use the global jurisdiction if selected', () => {
+    test('should use the global jurisdiction if the doc doesn\'t has one selected', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.setProps({
         jurisdictionAutocompleteProps: {
@@ -292,12 +285,13 @@ describe('Document Management - Upload scene', () => {
       })
       
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      const globalJur = arrOfDocsTransport.map(doc => ({
-        ...doc,
-        jurisdictions: [20]
-      }))
-      
-      expect(spy).toHaveBeenCalledWith(globalJur, { id: 4 }, { id: 20 })
+      const transport = arrOfDocsTransport.slice(0, length - 1)
+      console.log(transport)
+      expect(spy)
+        .toHaveBeenCalledWith([...transport, { ...arrOfDocsTransport[length - 1], jurisdictions: [20] }],
+          { id: 4 },
+          { id: 20 }
+        )
     })
   })
   
@@ -350,7 +344,7 @@ describe('Document Management - Upload scene', () => {
           uploadProgress={{ index: 3, total: 3, failures: 0, percentage: 100 }}
         />
       )
-  
+      
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('All documents successfully uploaded!')
     })
@@ -363,7 +357,7 @@ describe('Document Management - Upload scene', () => {
           uploadProgress={{ index: 3, total: 3, failures: 1, percentage: 100 }}
         />
       )
-  
+      
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Some of the documents failed to upload. They are still present in the list if you wish to retry.')
     })
@@ -434,7 +428,8 @@ describe('Document Management - Upload scene', () => {
       const wrapper = shallow(<Upload {...props} infoRequestInProgress />)
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Processing document... This could take a couple of minutes...')
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />)).toEqual(true)
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />))
+        .toEqual(true)
     })
     
     test('handle if there\'s an error while submitting', () => {
