@@ -222,7 +222,6 @@ describe('File Upload component', () => {
       
       const spy = jest.spyOn(props, 'handleAddFiles')
       await wrapper.find('form').simulate('drop', event)
-      console.log(wrapper)
       expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
     })
     
@@ -235,11 +234,33 @@ describe('File Upload component', () => {
       
       const spy = jest.spyOn(props, 'handleAddFiles')
       await wrapper.find('form').simulate('drop', event)
-      console.log(wrapper)
       expect(spy).toHaveBeenCalledWith({ name: 'file1' })
     })
     
     describe('if the user has dropped a folder', () => {
+      test('should show an alert if foldering dropping is not allowed', async done => {
+        const wrapper = shallow(<FileUpload {...props} allowFolderDrop={false} />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('demo', 'dir', [
+                new FileEntry('file1', 'file', []),
+                new FileEntry('file2', 'file2', [])
+              ])
+            ]
+          }
+        }
+        await wrapper.find('form').simulate('drop', event)
+        expect(wrapper.state().alert).toEqual({
+          open: true,
+          title: 'Folder drop is not allowed',
+          type: 'folder'
+        })
+        expect(wrapper.find('Alert').prop('open')).toEqual(true)
+        done()
+      })
+      
       test('should loop through the folder to get files', async done => {
         const wrapper = shallow(<FileUpload {...props} allowMultiple />)
         const event = {

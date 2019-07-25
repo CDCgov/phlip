@@ -267,7 +267,7 @@ class FileUpload extends Component {
           onClick: this.onContinueSelect
         }
       ] : []
-    
+  
     return (
       <>
         <form
