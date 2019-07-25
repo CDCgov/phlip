@@ -105,7 +105,11 @@ export class Upload extends Component {
     /**
      * Progress for uploading
      */
-    uploadProgress: PropTypes.object
+    uploadProgress: PropTypes.object,
+    /**
+     * Whether the jurisdiction search at the top should be visible
+     */
+    showJurSearch: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -255,9 +259,9 @@ export class Upload extends Component {
         }
       }, {})
       
-      md[doc.name.value].jurisdictions = selectedJurisdiction.id
-        ? [selectedJurisdiction.id]
-        : [doc.jurisdictions.value.id]
+      md[doc.name.value].jurisdictions = doc.jurisdictions.value.id
+        ? [doc.jurisdictions.value.id]
+        : [selectedJurisdiction.id]
       
       md[doc.name.value].projects = [selectedProject.id]
       sd = [...sd, md[doc.name.value]]
@@ -308,10 +312,11 @@ export class Upload extends Component {
    * @param text
    */
   getButtonText = text => {
+    const { uploading } = this.props
     return (
       <>
         {text}
-        {this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
+        {uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
       </>
     )
   }
@@ -342,7 +347,7 @@ export class Upload extends Component {
   render() {
     const {
       selectedDocs, uploading, actions, invalidFiles, alert, infoSheet, noProjectError, infoSheetSelected,
-      uploadProgress, infoRequestInProgress, projectAutocompleteProps, jurisdictionAutocompleteProps
+      uploadProgress, infoRequestInProgress, projectAutocompleteProps, jurisdictionAutocompleteProps, showJurSearch
     } = this.props
     
     const { alertActions, closeButton } = this.state
@@ -437,7 +442,7 @@ export class Upload extends Component {
                   jurisdictionAutocompleteProps={jurisdictionAutocompleteProps}
                   projectAutocompleteProps={projectAutocompleteProps}
                   showProjectError={noProjectError === true}
-                  showJurSearch={!infoSheetSelected}
+                  showJurSearch={showJurSearch}
                   onMouseDown={this.onMouseDown}
                 />}
             />
@@ -521,7 +526,8 @@ const mapStateToProps = state => {
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
     maxFileCount: uploadState.maxFileCount || 20,
-    uploadProgress: uploadState.list.uploadProgress
+    uploadProgress: uploadState.list.uploadProgress,
+    showJurSearch: uploadState.list.showJurSearch
   }
 }
 

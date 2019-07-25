@@ -91,13 +91,22 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       <FileUpload
         allowFolderDrop={true}
         allowMultiple={true}
-        allowedExtensions={Array []}
+        allowedExtensions={
+          Array [
+            "doc",
+            "docx",
+            "pdf",
+            "rtf",
+            "odt",
+          ]
+        }
         allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         buttonText="Select Files"
         containerBgColor="#f5fafa"
         containerBorderColor="#99D0E9"
         containerText="or drag and drop here"
         handleAddFiles={[Function]}
+        maxSize={16000000}
         numOfFiles={0}
         overwriteAlert={
           Object {
@@ -119,7 +128,11 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       <FileUpload
         allowFolderDrop={false}
         allowMultiple={false}
-        allowedExtensions={Array []}
+        allowedExtensions={
+          Array [
+            "xlsx",
+          ]
+        }
         allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
         buttonText="Select excel file"
         containerBgColor="#f4f9ef"
@@ -127,6 +140,7 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
         containerText="or drag and drop here"
         handleAddFiles={[Function]}
         infoSheetSelected={false}
+        maxSize={16000000}
         numOfFiles={0}
         overwriteAlert={
           Object {

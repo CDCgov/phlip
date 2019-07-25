@@ -156,7 +156,7 @@ export const determineSearchString = jurisdictionName => {
  */
 export const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
-    let merged = [], jurLookup = {}
+    let merged = [], jurLookup = {}, missingJurisdiction = false
     for (const doc of docs) {
       let { name: nameWithoutExt, extension } = removeExtension(doc.name.value)
       if (!allowedTypes.includes(extension)) {
@@ -171,7 +171,8 @@ export const mergeInfoWithDocs = (info, docs, api) => {
             editable: docInfo[key] === null,
             inEditMode: false,
             value: docInfo[key] === null ? valueDefaults[key] : docInfo[key],
-            error: ''
+            error: '',
+            fromMetaFile: docInfo[key] !== null
           }
         })
         
@@ -188,6 +189,7 @@ export const mergeInfoWithDocs = (info, docs, api) => {
                 value: { ...valueDefaults['jurisdictions'], searchValue: docInfo.jurisdictions.name },
                 editable: true
               }
+              missingJurisdiction = true
             } else {
               jurs = await api.searchJurisdictionList({}, { params: { name: searchString } }, {})
               jurLookup[searchString] = jurs[0]
@@ -199,10 +201,11 @@ export const mergeInfoWithDocs = (info, docs, api) => {
         }
         merged = [...merged, d]
       } else {
+        missingJurisdiction = true
         merged = [...merged, doc]
       }
     }
-    resolve(merged)
+    resolve({ merged, missingJurisdiction })
   })
 }
 
@@ -241,8 +244,8 @@ const extractInfoLogic = createLogic({
       if (docs.length === 0) {
         dispatch({ type: types.EXTRACT_INFO_SUCCESS_NO_DOCS, payload: info })
       } else {
-        const merged = await mergeInfoWithDocs(info, docs, api)
-        dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged } })
+        const { merged, missingJurisdiction } = await mergeInfoWithDocs(info, docs, api)
+        dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged, missingJurisdiction } })
       }
     } catch (err) {
       dispatch({ type: types.EXTRACT_INFO_FAIL })
@@ -264,8 +267,8 @@ const mergeInfoWithDocsLogic = createLogic({
       })
       return d
     })
-    const merged = await mergeInfoWithDocs(getState().scenes.docManage.upload.list.extractedInfo, docs, api)
-    next({ ...action, payload: merged })
+    const { merged, missingJurisdiction } = await mergeInfoWithDocs(getState().scenes.docManage.upload.list.extractedInfo, docs, api)
+    next({ ...action, payload: { merged, missingJurisdiction } })
   }
 })
 
@@ -278,7 +281,7 @@ const uploadRequestLogic = createLogic({
     const state = getState().scenes.docManage.upload
     const selectedProject = action.project
     const selectedJurisdiction = action.jurisdiction
-    let jurs = {}
+    let jurs = selectedJurisdiction.hasOwnProperty('id') ? { [selectedJurisdiction.id]: selectedJurisdiction } : {}
     
     if (Object.keys(selectedProject).length === 0) {
       reject({ type: types.REJECT_NO_PROJECT_SELECTED, error: 'You must associate these documents with a project.' })
@@ -287,7 +290,8 @@ const uploadRequestLogic = createLogic({
         type: types.REJECT_NO_PROJECT_SELECTED,
         error: 'You must select a valid project from the autocomplete list.'
       })
-    } else if (Object.keys(selectedJurisdiction).length === 0) {
+    } else {
+      // Go through each file in the list and check if they have a jurisdiction associated with it
       const noJurs = state.list.selectedDocs.filter(doc => {
         if (doc.jurisdictions.value.hasOwnProperty('id') && !jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
           jurs[doc.jurisdictions.value.id] = doc.jurisdictions.value
@@ -296,19 +300,18 @@ const uploadRequestLogic = createLogic({
       })
       
       if (noJurs.length === 0) {
+        // all files have a jurisdiction, so allow the upload
         allow({ ...action, jurisdictions: Object.values(jurs) })
       } else {
+        // some files do not have a jurisdiction so disallow the upload
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
           error: 'You must select a jurisdiction from the drop-down list at the top to apply to all files or select a jurisdiction from the drop-down list for each file.',
           invalidDocs: noJurs
         })
       }
-    } else {
-      allow({ ...action, jurisdictions: [selectedJurisdiction] })
     }
   },
-  
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
     const user = getState().data.user.currentUser
@@ -337,7 +340,6 @@ const uploadRequestLogic = createLogic({
     }
   }
 })
-
 
 export default [
   uploadRequestLogic,
