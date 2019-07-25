@@ -1,8 +1,9 @@
 export class Reader {
   hasRead = false
   
-  constructor(entries) {
+  constructor(entries, hasRead = false) {
     this.entries = entries
+    this.hasRead = hasRead
   }
   
   readEntries = (scb, fcb) => {
@@ -36,7 +37,8 @@ export class FileEntry {
   constructor(name, type, children, size) {
     this.type = type
     this.children = children
-    this.File = new File(name, size)
+    this.size = size
+    this.name = name
   }
   
   get isFile() {
@@ -48,7 +50,7 @@ export class FileEntry {
   }
   
   file = cb => {
-    cb(this.File)
+    cb(new File(this.name, this.size))
   }
   
   createReader = () => new Reader(this.children)
@@ -59,14 +61,14 @@ export class DataTransferItem {
   type = ''
   items = []
   
-  constructor(name, itemType, items, size, valid) {
+  constructor(name, itemType, items, size) {
     this.name = name
     this.type = itemType
     this.items = items
-    this.fileEntry = new FileEntry(name, itemType, items, size, valid)
+    this.size = size
   }
   
   webkitGetAsEntry() {
-    return this.fileEntry
+    return new FileEntry(this.name, this.type, this.items, this.size)
   }
 }

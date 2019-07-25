@@ -251,6 +251,7 @@ class FileUpload extends Component {
     let invalidType = false
     const { allowedExtensions, maxSize } = this.props
     const { fileType } = await getFileType(file)
+    console.log(fileType)
     if (fileType !== undefined) {
       if (!allowedExtensions.includes(fileType)) {
         invalidType = true
@@ -267,6 +268,7 @@ class FileUpload extends Component {
    * @param e
    */
   onDrop = async e => {
+    console.log()
     const { handleAddFiles, allowMultiple } = this.props
     e.preventDefault()
     
