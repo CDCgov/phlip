@@ -107,8 +107,8 @@ const deleteDocLogic = createLogic({
         payload: action.id
       })
       dispatch({
-        type: docManageTypes.ON_DELETE_ONE_FILE,
-        id: action.id
+        type: docManageTypes.DELETE_DOC_SUCCESS,
+        payload: { docsDeleted: [action.id] }
       })
       done()
     } catch (err) {

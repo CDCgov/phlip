@@ -69,8 +69,8 @@ export class Login extends Component {
       const parsedToken2 = parsedTokens[1].split('token2=')[1]
       const parsedToken3 = parsedTokens[2].split('token3=')[1]
       const parsedToken4 = parsedTokens[3].split('token4=')[1]
-      const samlToken = `'{"nameID" : "${parsedToken2}","sessionIndex": "${parsedToken3}","nameIDFormat" : "${parsedToken4}"}'`
-      const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken, samlToken:samlToken }
+      const samlToken = `'{"nameID": "${parsedToken2}","sessionIndex": "${parsedToken3}","nameIDFormat": "${parsedToken4}"}'`
+      const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken, samlToken: samlToken }
       this.props.actions.checkPivUserRequest(tokenObject)
     }
     

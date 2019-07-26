@@ -214,6 +214,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_DELETE_SUCCESS:
+    case types.DELETE_DOC_SUCCESS:
       let updatedDocs = { ...state.documents.byId }
       let matches = state.documents.matches.slice()
       userDocs = state.documents.userDocs.slice()
@@ -343,7 +344,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
-  
+    
     case types.SELECT_ALL_DOCS:
       return {
         ...state,
@@ -353,17 +354,17 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         allSelected: !state.allSelected
       }
-  
+    
     case types.SELECT_ONE_DOC:
       let updatedChecked = [...state.documents.checked]
-    
+      
       if (state.documents.checked.includes(action.id)) {
         const index = state.documents.checked.indexOf(action.id)
         updatedChecked.splice(index, 1)
       } else {
         updatedChecked = [...updatedChecked, action.id]
       }
-    
+      
       return {
         ...state,
         documents: {
