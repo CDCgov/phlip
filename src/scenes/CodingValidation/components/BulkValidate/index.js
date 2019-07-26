@@ -12,6 +12,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemText from '@material-ui/core/ListItemText'
+import theme from 'services/theme'
 
 export class BulkValidate extends Component {
   static propTypes = {
@@ -147,26 +148,26 @@ export class BulkValidate extends Component {
     const scopes = [
       {
         text: [
-          'Validate only the current question',
-          'just this question',
-          'To validate another question, you’ll need to navigate to that question and repeat these steps.'
+          'Validate the current question.'
+          // 'just this question',
+          // 'To validate another question, you’ll need to navigate to that question and repeat these steps.'
         ],
         title: 'Question',
         scope: 'question'
       },
       {
         text: [
-          'Validate all questions in the current jurisdiction.',
-          'every question in this jurisdiction',
-          'To validate another jurisdiction, you’ll need to navigate to that jurisdiction and repeat these steps.'
+          'Validate every question in the current jurisdiction.'
+          // 'every question in this jurisdiction',
+          // 'To validate another jurisdiction, you’ll need to navigate to that jurisdiction and repeat these steps.'
         ],
         title: 'Jurisdiction',
         scope: 'jurisdiction'
       },
       {
         text: [
-          'Validate every question and jurisdiction in the current project',
-          'every question in every jurisdiction'
+          'Validate every question and jurisdiction in the current project.'
+          // 'every question in every jurisdiction'
         ],
         title: 'Project',
         scope: 'project'
@@ -174,7 +175,7 @@ export class BulkValidate extends Component {
     ]
     
     return (
-      <Modal open={open} onClose={this.handleClose} maxWidth="md" hideOverflow>
+      <Modal open={true} onClose={this.handleClose} maxWidth="md" hideOverflow>
         <ModalTitle
           title="Validate"
           buttons={<Button
@@ -188,47 +189,56 @@ export class BulkValidate extends Component {
         <Divider />
         <ModalContent style={{ display: 'flex', padding: 0 }}>
           <FlexGrid container flex style={{ height: '100%' }}>
-            <FlexGrid container flex padding="10px 24px">
+            <FlexGrid container flex padding="24px 12px" style={{ backgroundColor: '#f4f4f4' }}>
               {activeStep === 0 &&
-              <FlexGrid container flex type="column" id="scope-step">
+              <FlexGrid container flex type="row" id="scope-step">
                 {scopes.map((scope, i) => {
                   const isScopeSelected = selections.scope === scope.scope
                   return (
                     <FlexGrid
                       container
-                      type="row"
-                      key={`scope-${i}`}
                       flex
-                      padding="20px 10px 10px"
+                      key={`scope-${i}`}
+                      padding={35}
                       style={{
-                        height: '33%',
-                        borderBottom: `${i !== 2 ? 1 : 0}px solid rgba(0, 0, 0, 0.12)`,
-                        backgroundColor: isScopeSelected ? `rgba(233, 233, 233, 0.48)` : 'white'
-                      }}
-                      align="center">
-                      <FlexGrid padding="0  20px 20px" container justify="space-evenly" style={{ height: '100%' }}>
-                        <Typography variant="display1" style={{ color: 'black' }}>{scope.title}</Typography>
-                        <Typography variant="body1">{scope.text[0]}</Typography>
-                        <Typography variant="body1">
-                          You will select one user. Their answer choices or text answers, annotations, and pincites will
-                          be copied and saved as the validated answers for <strong>{scope.text[1]}</strong>.
-                        </Typography>
-                        {scope.text[2] && <Typography variant="body1">{scope.text[2]}</Typography>}
+                        border: isScopeSelected
+                          ? `2px solid ${theme.palette.secondary.main}`
+                          : `1px solid rgba(0, 0, 0, 0.12)`,
+                        backgroundColor: 'white',
+                        margin: '0 12px',
+                        width: '33%'
+                      }}>
+                      <FlexGrid container style={{ height: '100%' }}>
+                        <Typography
+                          variant="display1"
+                          align="center"
+                          style={{ color: 'black', marginBottom: 25 }}>{scope.title}</Typography>
+                        <Typography variant="body1" align="center">{scope.text[0]}</Typography>
                       </FlexGrid>
-                      {!isScopeSelected && <Button onClick={this.handleSelectScope(scope.scope)}>
+                      {!isScopeSelected &&
+                      <Button
+                        color="secondary"
+                        onClick={this.handleSelectScope(scope.scope)}
+                        style={{ alignSelf: 'center', width: '75%' }}>
                         Select
                       </Button>}
                       {isScopeSelected &&
-                      <FlexGrid container type="row" align="center">
-                        <Icon color="primary" size={25}>check_circle</Icon>
-                        <Typography variant="title" style={{ marginLeft: 4 }}>Selected!</Typography>
+                      <FlexGrid container type="row" align="center" justify="center">
+                        <Icon color="secondary" size={24}>check_circle</Icon>
+                        <Typography variant="title" align="center" style={{ marginLeft: 4 }}>Selected!</Typography>
                       </FlexGrid>}
                     </FlexGrid>
                   )
                 })}
               </FlexGrid>}
-              {activeStep === 1 && <FlexGrid container flex padding="20px 30px 30px" id="user-step">
-                <FlexGrid container padding="2px 0 0">
+              {activeStep === 1 &&
+              <FlexGrid
+                container
+                flex
+                padding={35}
+                id="user-step"
+                style={{ backgroundColor: 'white', margin: '0 12px', border: `1px solid rgba(0, 0, 0, 0.12)` }}>
+                <FlexGrid container>
                   <FlexGrid container>
                     <Typography variant="display1" style={{ color: 'black' }}>User</Typography>
                     <Typography style={{ paddingTop: 7, paddingBottom: 15 }} variant="body1">
@@ -244,7 +254,7 @@ export class BulkValidate extends Component {
                           key={`select-user-${i}`}
                           style={{
                             padding: 10,
-                            backgroundColor: isUserSelected ? `rgba(233, 233, 233, 0.48)` : ''
+                            backgroundColor: isUserSelected ? `rgba(233, 233, 233, 0.68)` : ''
                           }}
                           onClick={this.handleSelectUser(user)}>
                           <ListItemAvatar>
@@ -276,80 +286,89 @@ export class BulkValidate extends Component {
                   </List>
                 </FlexGrid>
               </FlexGrid>}
-              {activeStep === 2 && <FlexGrid container flex padding="20px 30px 10px" id="confirm-step">
-                <FlexGrid container style={{ marginBottom: 35 }}>
+              {activeStep === 2 && <FlexGrid
+                container
+                flex
+                padding={35}
+                id="confirm-step"
+                style={{ backgroundColor: 'white', margin: '0 12px', border: `1px solid rgba(0, 0, 0, 0.12)` }}>
+                <FlexGrid container flex>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
-                  <FlexGrid padding="15px 0 0">
-                    <Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>
-                    <Typography variant="headline">
-                      User: {selections.user.username}
-                    </Typography>
-                  </FlexGrid>
-                  <Typography variant="body1" style={{ paddingTop: 15, marginBottom: 10 }}>
-                    You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
-                    <strong>{selections.user.username}</strong>.{' '}
-                    {selections.scope === 'question' &&
-                    `If ${selections.user.firstName} has not coded this question, the current validated answer will not change.`}
-                    {selections.scope !== 'question' &&
-                    `${selections.user.firstName}'s coding data will be used to validate every question they have coded within this ${selections.scope}.
+                  <FlexGrid container type="row" padding="20px 0 0">
+                    <FlexGrid container style={{ marginRight: 50 }}>
+                      <FlexGrid>
+                        <Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>
+                        <Typography variant="headline">
+                          User: {selections.user.username}
+                        </Typography>
+                      </FlexGrid>
+                      <Typography variant="body1" style={{ paddingTop: 20, marginBottom: 10 }}>
+                        You are going to validate this <strong>{selections.scope}</strong> using the coding data from{' '}
+                        <strong>{selections.user.username}</strong>
+                        .{' '}
+                        {selections.scope === 'question' &&
+                        `If ${selections.user.firstName} has not coded this question, the current validated answer will not change.`}
+                        {selections.scope !== 'question' &&
+                        `${selections.user.firstName}'s coding data will be used to validate every question they have coded within this ${selections.scope}.
                      For questions that ${selections.user.firstName} has not modified or coded, the current validated answers will remain the same.`}
-                  </Typography>
-                  <Typography variant="body1">
-                    If you would like to select a different scope or user, use the 'Back' button at the bottom of this
-                    modal to navigate to different steps.
-                  </Typography>
-                </FlexGrid>
-                <FlexGrid
-                  padding={15}
-                  container
-                  style={{ backgroundColor: 'rgba(202, 80, 114, 0.27)', marginBottom: 45 }}>
-                  <FlexGrid container type="row" align="center">
-                    <Icon color="error" size={25}>warning</Icon>
-                    <Typography variant="title" style={{ marginLeft: 4 }}>WARNING</Typography>
+                      </Typography>
+                      <Typography variant="body1">
+                        If you would like to select a different scope or user, use the 'Back' button at the bottom of this
+                        modal to navigate to different steps.
+                      </Typography>
+                    </FlexGrid>
+                    <FlexGrid
+                      padding={25}
+                      container
+                      style={{ backgroundColor: 'rgba(202, 80, 114, 0.28)' }}>
+                      <FlexGrid container type="row" align="center">
+                        <Icon color="error" size={25}>warning</Icon>
+                        <Typography variant="headline" style={{ marginLeft: 4 }}>WARNING</Typography>
+                      </FlexGrid>
+                      <Typography variant="body1" style={{ paddingTop: 25 }}>
+                        This will <strong>overwrite all</strong> current validated answers, annotations, comments, and pincites
+                        for questions that {selections.user.username} has coded. There is no ‘UNDO’ option for this action.
+                      </Typography>
+                    </FlexGrid>
                   </FlexGrid>
-                  <Typography variant="body1" style={{ paddingTop: 10 }}>
-                    This will <strong>overwrite all</strong> current validated answers, annotations, comments, and pincites
-                    for questions that {selections.user.username} has coded. There is no ‘UNDO’ option for this action.
-                  </Typography>
                 </FlexGrid>
-                <FlexGrid justify="center" container type="row">
+                <FlexGrid justify="center" container type="row" style={{ marginBottom: 20 }}>
                   <Button
                     disabled={validationInProgress}
-                    style={{ color: validationInProgress ? 'rgb(61, 49, 106)' : 'white' }}
-                    color="primary"
+                    style={{ color: validationInProgress ? theme.palette.secondary.main : 'white', width: '25%' }}
+                    color="secondary"
                     onClick={this.handleConfirmValidate}>
                     <span style={{ marginRight: 4 }}>Validate</span>
-                    {validationInProgress && <CircularLoader style={{ height: 15, width: 15 }} />}
+                    {validationInProgress && <CircularLoader color="secondary" style={{ height: 15, width: 15 }} />}
                   </Button>
                 </FlexGrid>
               </FlexGrid>}
             </FlexGrid>
-            <FlexGrid container>
-              <Stepper activeStep={activeStep} alternativeLabel style={{ paddingBottom: 15 }}>
-                {steps.map((step, i) => {
-                  const isActive = activeStep === i
-                  return (
-                    <Step key={step.label} completed={step.completed && !isActive} active={isActive} disabled={!isActive}>
-                      <StepLabel optional={false} disabled={!isActive}>
-                        {step.label}
-                      </StepLabel>
-                    </Step>
-                  )
-                })}
-              </Stepper>
-              <FlexGrid
-                container
-                type="row"
-                align="center"
-                padding="0px 24px 24px"
-                justify={activeStep === 1
-                  ? 'space-between'
-                  : activeStep === 0
-                    ? 'flex-end'
-                    : 'flex-start'}>
-                {activeStep !== 0 && <Button onClick={this.handleGoBackStep}>Back</Button>}
+            <Divider />
+            <FlexGrid container type="row" padding="0 24px" style={{ backgroundColor: 'white' }}>
+              <FlexGrid flex container type="row" align="center" justify="flex-start" style={{ flexBasis: '25%' }}>
+                {activeStep !== 0 &&
+                <Button color="white" style={{ color: 'black' }} onClick={this.handleGoBackStep}>Back</Button>}
+              </FlexGrid>
+              <FlexGrid flex style={{ flexBasis: '50%' }}>
+                <Stepper activeStep={activeStep} alternativeLabel style={{ paddingBottom: 15 }}>
+                  {steps.map((step, i) => {
+                    const isActive = activeStep === i
+                    return (
+                      <Step
+                        key={step.label}
+                        completed={step.completed && !isActive}
+                        active={isActive}
+                        disabled={!isActive}>
+                        <StepLabel optional={false} disabled={!isActive} />
+                      </Step>
+                    )
+                  })}
+                </Stepper>
+              </FlexGrid>
+              <FlexGrid flex container type="row" align="center" justify="flex-end" style={{ flexBasis: '25%' }}>
                 {(activeStep !== 2 && steps[activeStep].completed) &&
-                <Button onClick={this.handleGoForwardStep}>Next</Button>}
+                <Button color="white" style={{ color: 'black' }} onClick={this.handleGoForwardStep}>Next</Button>}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
