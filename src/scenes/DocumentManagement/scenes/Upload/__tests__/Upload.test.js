@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { Upload } from '../index'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { CircularLoader } from 'components'
-import { selectedDocs, arrOfDocsTransport, fullMerged } from 'utils/testData/upload'
+import { selectedDocs, arrOfDocsTransport } from 'utils/testData/upload'
 
 const props = {
   selectedDocs: [],
@@ -185,27 +185,6 @@ describe('Document Management - Upload scene', () => {
       preventDefault: jest.fn(),
       persist: jest.fn()
     }
-    
-    const fileArr = [
-      {
-        name: 'file1.txt',
-        lastModifiedDate: undefined,
-        tags: [],
-        effectiveDate: '',
-        file: file1,
-        citation: '',
-        jurisdictions: { searchValue: '', suggestions: [], name: '' }
-      },
-      {
-        name: 'file2.txt',
-        lastModifiedDate: undefined,
-        tags: [],
-        file: file2,
-        effectiveDate: '',
-        citation: '',
-        jurisdictions: { searchValue: '', suggestions: [], name: '' }
-      }
-    ]
     
     test('should open an alert if user selects more documents than allowed', () => {
       const spy = jest.spyOn(props.actions, 'openAlert')

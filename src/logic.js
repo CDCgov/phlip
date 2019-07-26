@@ -45,6 +45,7 @@ const samsLogout = async () => {
       location.href = logoutURL
     })
   } catch (err) {
+    /*istanbul ignore next */
     return err
   }
 }
