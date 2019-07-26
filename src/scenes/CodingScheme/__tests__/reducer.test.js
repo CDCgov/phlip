@@ -1163,7 +1163,7 @@ describe('Coding Scheme reducer', () => {
     })
   })
   
-  xdescribe('COPY_CODING_SCHEME_SUCCESS', () => {
+  describe.skip('COPY_CODING_SCHEME_SUCCESS', () => {
     const action = { type: types.COPY_CODING_SCHEME_SUCCESS, payload: 'couldnt copy coding scheme' }
     const currentState = getState({ copying: true, empty: true })
     const state = reducer(currentState, action)

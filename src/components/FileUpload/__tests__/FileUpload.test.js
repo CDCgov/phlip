@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import FileUpload from '../index'
-import { DataTransferItem, FileEntry, getFileReader, File } from 'utils/testData/fileEntryMock'
+import { DataTransferItem, FileEntry, FileReader } from 'utils/testData/fileEntryMock'
 
 const props = {
   containerBorderColor: '#99D0E9',
@@ -21,8 +21,8 @@ const props = {
 
 const dataTransfer = {
   items: [
-    new DataTransferItem('file1.pdf', 'file', [], 12000, true),
-    new DataTransferItem('file2.pdf', 'file', [], 12000, true)
+    new DataTransferItem('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+    new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
   ]
 }
 
@@ -225,14 +225,17 @@ describe('File Upload component', () => {
         dataTransfer
       }
       
-      const reader = getFileReader([37, 80, 68, 70])
-      window.FileReader = reader
+      window.FileReader = FileReader
       window.FileReader.DONE = 2
       
       const spy = jest.spyOn(props, 'handleAddFiles')
       wrapper.find('form').simulate('drop', event)
       setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith([{ name: 'file1.pdf', size: 12000 }, { name: 'file2.pdf', size: 12000 }])
+        expect(spy)
+          .toHaveBeenCalledWith([
+            { name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] },
+            { name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }
+          ])
         done()
       }, 2000)
     })
@@ -244,14 +247,13 @@ describe('File Upload component', () => {
         dataTransfer
       }
       
-      const reader = getFileReader([37, 80, 68, 70])
-      window.FileReader = reader
+      window.FileReader = FileReader
       window.FileReader.DONE = 2
       
       const spy = jest.spyOn(props, 'handleAddFiles')
       wrapper.find('form').simulate('drop', event)
       setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith({ name: 'file1.pdf', size: 12000 })
+        expect(spy).toHaveBeenCalledWith({ name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] })
         done()
       }, 2000)
     })
@@ -267,20 +269,19 @@ describe('File Upload component', () => {
           preventDefault: jest.fn(),
           dataTransfer: {
             items: [
-              new DataTransferItem('file1.pdf', 'file', [], 20000000),
-              new DataTransferItem('file2.pdf', 'file', [], 12000)
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
             ]
           }
         }
         
-        const reader = getFileReader([37, 80, 68, 70])
-        window.FileReader = reader
+        window.FileReader = FileReader
         window.FileReader.DONE = 2
         
         const spy = jest.spyOn(props, 'handleAddFiles')
         wrapper.find('form').simulate('drop', event)
         setTimeout(() => {
-          expect(spy).toHaveBeenCalledWith([{ name: 'file2.pdf', size: 12000 }])
+          expect(spy).toHaveBeenCalledWith([{ name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }])
           done()
         }, 2000)
       })
@@ -291,14 +292,13 @@ describe('File Upload component', () => {
           preventDefault: jest.fn(),
           dataTransfer: {
             items: [
-              new DataTransferItem('file1.pdf', 'file', [], 20000000),
-              new DataTransferItem('file2.pdf', 'file', [], 12000)
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
             ]
           }
         }
         
-        const reader = getFileReader([37, 80, 68, 70])
-        window.FileReader = reader
+        window.FileReader = FileReader
         window.FileReader.DONE = 2
         
         wrapper.find('form').simulate('drop', event)
@@ -313,7 +313,66 @@ describe('File Upload component', () => {
           done()
         }, 1000)
       })
+      
+      test('should show an alert if the user tries to upload documents that have an invalid type', done => {
+        const wrapper = shallow(<FileUpload {...props} allowMultiple />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.txt', 'file', [], 12000, [23, 423, 545, 234])
+            ]
+          }
+        }
+        
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(wrapper.state().alert).toEqual({
+            open: true,
+            title: 'Invalid File Types',
+            text: 'The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are .pdf, .docx, .doc.',
+            type: 'files'
+          })
+          clearTimeout()
+          done()
+        }, 1000)
+      })
     })
+    
+    test(
+      'should show an alert if the user tries to upload documents that have an invalid type and invalid size',
+      done => {
+        const wrapper = shallow(<FileUpload {...props} allowMultiple allowedExtensions={['.xlsx']} />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.txt', 'file', [], 12000, [23, 423, 545, 234])
+            ]
+          }
+        }
+        
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(wrapper.state().alert).toEqual({
+            open: true,
+            title: 'Invalid Files Found',
+            text: 'The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are .xlsx. Maximum file size is 16 MB.',
+            type: 'files'
+          })
+          clearTimeout()
+          done()
+        }, 1000)
+      }
+    )
   })
   
   describe('if the user has dropped a folder', () => {
@@ -342,23 +401,24 @@ describe('File Upload component', () => {
         dataTransfer: {
           items: [
             new DataTransferItem('demo', 'dir', [
-              new FileEntry('file1.pdf', 'file', [], 12000, true),
-              new FileEntry('file2.pdf', 'file', [], 12000, true)
+              new FileEntry('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+              new FileEntry('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
             ], 1, true)
           ]
         }
       }
       
-      const reader = getFileReader([37, 80, 68, 70])
-      window.FileReader = reader
+      window.FileReader = FileReader
       window.FileReader.DONE = 2
       
       const spy = jest.spyOn(props, 'handleAddFiles')
       wrapper.find('form').simulate('drop', event)
-      const file1 = new File('file1.pdf', 12000)
-      const file2 = new File('file2.pdf', 12000)
       setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith([file1, file2])
+        expect(spy)
+          .toHaveBeenCalledWith([
+            { name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] },
+            { name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }
+          ])
         done()
       }, 2000)
     })

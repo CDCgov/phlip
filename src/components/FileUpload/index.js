@@ -131,7 +131,7 @@ class FileUpload extends Component {
     const { allowedExtensions, maxSize } = this.props
     let extensions = allowedExtensions.map(extension => extension.startsWith('.') ? extension : `.${extension}`)
     extensions = allowedExtensions.length > 1 ? extensions.join(', ') : extensions[0]
-    const size = maxSize / 1000
+    const size = maxSize / 1000000
     
     this.setState({
       alert: {
@@ -251,7 +251,6 @@ class FileUpload extends Component {
     let invalidType = false
     const { allowedExtensions, maxSize } = this.props
     const { fileType } = await getFileType(file)
-    console.log(fileType)
     if (fileType !== undefined) {
       if (!allowedExtensions.includes(fileType)) {
         invalidType = true
@@ -268,7 +267,6 @@ class FileUpload extends Component {
    * @param e
    */
   onDrop = async e => {
-    console.log()
     const { handleAddFiles, allowMultiple } = this.props
     e.preventDefault()
     
@@ -281,14 +279,14 @@ class FileUpload extends Component {
           if (invalidSize || invalidType) {
             invalidSizes = invalidSize ? true : invalidSizes
             invalidTypes = invalidType ? true : invalidTypes
-            invalid.push(doc)
+            invalid.push({ file: doc, invalidSize, invalidType })
           } else {
             files.push(file)
           }
           
           if (i === fileEntries.length - 1) {
             if (invalid.length > 0) {
-              this.showInvalidFileAlert(invalid, invalidType, invalidSize)
+              this.showInvalidFileAlert(invalid, invalidTypes, invalidSizes)
             }
             handleAddFiles(allowMultiple ? files : files[0])
           }
@@ -398,7 +396,7 @@ class FileUpload extends Component {
             {['folder', 'files'].includes(alert.type) && alert.text}
           </Typography>
           {alert.type === 'files' && <FlexGrid type="row" style={{ overflow: 'auto', paddingTop: 20 }}>
-            {files.map((item, index) => {
+            {files.map((doc, index) => {
               return (
                 <FlexGrid
                   container
@@ -414,10 +412,10 @@ class FileUpload extends Component {
                     minHeight: 24
                   }}>
                   <Typography style={{ fontSize: '.9125rem' }}>
-                    {item.name}
+                    {doc.file.name}
                   </Typography>
-                  {item.badSize && <Typography style={{ fontSize: '.9125rem' }}>
-                    {(item.file.size / (1000 * 1000)).toFixed(1)} MB
+                  {doc.invalidSize && <Typography style={{ fontSize: '.9125rem' }}>
+                    {(doc.file.size / (1000 * 1000)).toFixed(1)} MB
                   </Typography>}
                 </FlexGrid>
               )

@@ -7,7 +7,8 @@ const props = {
   classes: {},
   InputProps: {},
   inputProps: {
-    value: ''
+    value: '',
+    onChange: jest.fn()
   },
   handleGetSuggestions: jest.fn(),
   handleClearSuggestions: jest.fn(),
