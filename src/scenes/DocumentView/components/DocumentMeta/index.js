@@ -9,7 +9,7 @@ import actions, { projectAutocomplete, jurisdictionAutocomplete } from 'scenes/D
 import ProJurSearch from './components/ProJurSearch'
 import { convertToLocalDate } from 'utils/normalize'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
-import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
+import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert, withAutocompleteMethods } from 'components'
 
 export class DocumentMeta extends Component {
   static propTypes = {
@@ -40,9 +40,13 @@ export class DocumentMeta extends Component {
     /**
      * Whether or not the app is searching jurisdictions
      */
-    searchingJurisdictions: PropTypes.bool
+    searchingJurisdictions: PropTypes.bool,
+    /**
+     * current user
+     */
+    currentUser: PropTypes.object
   }
-  
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -61,30 +65,30 @@ export class DocumentMeta extends Component {
       searchType: ''
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     const { documentDeleteInProgress, documentDeleteError, apiErrorOpen, documentUpdateInProgress, goBack } = this.props
-    
+
     if (prevProps.documentDeleteInProgress && !documentDeleteInProgress) {
       if (!documentDeleteError) {
         goBack()
       }
     }
-    
+
     if (prevProps.documentUpdateInProgress && !documentUpdateInProgress) {
       if (!apiErrorOpen) {
         this.handleCloseProJurModal()
       }
     }
   }
-  
+
   /**
    * Shows the modal for adding a project or jurisdiction
    */
   showProJurSearch = searchType => {
     this.setState({ searchType, showModal: true })
   }
-  
+
   /**
    * Handles change to the document status drop down
    * @param selectedOption
@@ -92,28 +96,28 @@ export class DocumentMeta extends Component {
   onChangeStatusField = selectedOption => {
     this.props.actions.updateDocumentProperty('status', selectedOption)
   }
-  
+
   /**
    * Enables editing for the document metadata
    */
   handleEdit = () => {
     this.props.actions.editDocument()
   }
-  
+
   /**
    * Handles when an update has been made to the document metadata
    */
   handleUpdate = () => {
     this.props.actions.updateDocRequest(null, null)
   }
-  
+
   /**
    * Closes an alert on the page
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
-  
+
   /**
    * Handles when a user has updated a document property
    * @param propName
@@ -122,7 +126,7 @@ export class DocumentMeta extends Component {
   handleDocPropertyChange = (propName, value) => {
     this.props.actions.updateDocumentProperty(propName, value)
   }
-  
+
   /**
    * Get suggestions for some type of autocomplete search
    * @param suggestionType
@@ -131,22 +135,27 @@ export class DocumentMeta extends Component {
    */
   handleGetSuggestions = (suggestionType, { value: searchString }) => {
     const { actions } = this.props
-    
+
     clearTimeout(this.timeout)
     actions[`${suggestionType}Autocomplete`].setSearchingStatus(true)
     this.timeout = setTimeout(() => {
-      actions[`${suggestionType}Autocomplete`].searchForSuggestionsRequest(searchString, '_META')
+      if (suggestionType === 'project'){
+        console.log('check here')
+        actions[`${suggestionType}Autocomplete`].getInitialSuggestionsRequest(this.props.currentUser.id,30, '_META')
+      } else {
+        actions[`${suggestionType}Autocomplete`].searchForSuggestionsRequest(searchString, '_META')
+      }
     }, 500)
-    
+
   }
-  
+
   /**
    * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
    */
   handleSuggestionSelected = suggestionType => (event, { suggestionValue }) => {
     this.props.actions[`${suggestionType}Autocomplete`].onSuggestionSelected(suggestionValue)
   }
-  
+
   /**
    * Handles when a user has made a change in an autocomplete search for project or jurisdiction
    * @param suggestionType
@@ -155,7 +164,7 @@ export class DocumentMeta extends Component {
   handleSearchValueChange = (suggestionType, value) => {
     this.props.actions[`${suggestionType}Autocomplete`].updateSearchValue(value)
   }
-  
+
   /**
    * Handles clearing autocomplete suggestions for project or jurisdiction
    * @param suggestionType
@@ -163,7 +172,7 @@ export class DocumentMeta extends Component {
   handleClearSuggestions = suggestionType => {
     this.props.actions[`${suggestionType}Autocomplete`].clearSuggestions()
   }
-  
+
   /**
    * Opens a confirmation alert asking the user to confirm deletion of a project or jurisdiction
    * @param type
@@ -171,7 +180,7 @@ export class DocumentMeta extends Component {
    */
   handleShowDeleteConfirm = (type, index) => {
     const list = this.props[`${type}List`]
-    
+
     this.setState({
       typeToDelete: type,
       [`${type}ToDelete`]: list[index],
@@ -183,7 +192,7 @@ export class DocumentMeta extends Component {
       alertType: 'delete'
     })
   }
-  
+
   /**
    * Opens a confirmation alert asking the user to confirm deletion of document
    * @param type
@@ -201,39 +210,39 @@ export class DocumentMeta extends Component {
       alertType: 'delete'
     })
   }
-  
+
   /**
    * Closes the modal for autocomplete for adding project or jurisdiction
    */
   handleCloseProJurModal = () => {
     const { actions, selectedProject, selectedJurisdiction } = this.props
-    
+
     if (selectedJurisdiction !== null) {
       this.handleClearSuggestions('jurisdiction')
       actions.jurisdictionAutocomplete.clearAll()
     }
-    
+
     if (selectedProject !== null) {
       this.handleClearSuggestions('project')
       actions.projectAutocomplete.clearAll()
     }
-    
+
     this.setState({
       showModal: false,
       searchType: ''
     })
   }
-  
+
   /**
    * When the user chooses a project or jurisdiction to add to a document
    */
   addProJur = () => {
     const { selectedProject, selectedJurisdiction, actions } = this.props
     const { searchType } = this.state
-    
+
     const selected = searchType === 'project' ? selectedProject : selectedJurisdiction
     const error = !selected
-    
+
     if (error) {
       this.setState({
         alertOpen: true,
@@ -248,13 +257,13 @@ export class DocumentMeta extends Component {
       actions.updateDocRequest(`${searchType}s`, selected, 'add')
     }
   }
-  
+
   /**
    * Handles when the user cancels out of deleting a jurisdiction or project
    */
   onCancelDelete = () => {
     const { typeToDelete } = this.state
-    
+
     this.setState({
       alertOpen: false,
       alertInfo: {},
@@ -263,7 +272,7 @@ export class DocumentMeta extends Component {
       alertType: ''
     })
   }
-  
+
   /**
    * Handles when the user cancels out of deleting a jurisdiction or project
    */
@@ -274,14 +283,14 @@ export class DocumentMeta extends Component {
       alertType: ''
     })
   }
-  
+
   /**
    * User continues with deletion in the confirmation modal
    */
   onContinueDelete = () => {
     const { typeToDelete } = this.state
     const { actions, document } = this.props
-    
+
     if (typeToDelete === 'document') {
       actions.deleteDocRequest(document._id)
     } else {
@@ -294,7 +303,7 @@ export class DocumentMeta extends Component {
     }
     this.onCancelDelete()
   }
-  
+
   /**
    * Handles when a user hovers over a row in the jurisdiction or project card info
    * @param card
@@ -306,7 +315,7 @@ export class DocumentMeta extends Component {
       hoverIndex: index
     })
   }
-  
+
   /**
    * Determines the text for the modal button at the bottom
    * @param text
@@ -319,7 +328,7 @@ export class DocumentMeta extends Component {
       </>
     )
   }
-  
+
   /**
    * Check if the mouse click event valid for this component
    * @param e
@@ -329,7 +338,7 @@ export class DocumentMeta extends Component {
       e.preventDefault()
     }
   }
-  
+
   /**
    * Gets button info for add project / jurisdiction
    * @returns {{inProgress: DocumentMeta.props.documentUpdateInProgress, disabled: boolean}}
@@ -338,34 +347,34 @@ export class DocumentMeta extends Component {
     const { searchType } = this.state
     const { selectedProject, selectedJurisdiction, documentUpdateInProgress } = this.props
     const selected = searchType === 'project' ? selectedProject : selectedJurisdiction
-    
+
     let info = {
       disabled: Object.keys(selected).length === 0 || documentUpdateInProgress,
       inProgress: documentUpdateInProgress
     }
-    
+
     return info
   }
-  
+
   render() {
     const {
       apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole, searchingProjects,
-      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions
+      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions,projectAutocompleteProps, jurisdictionAutocompleteProps
     } = this.props
-    
+
     const { alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, alertType, searchType } = this.state
-    
+
     const suggestionProps = {
       suggestions: searchType === 'project' ? projectSuggestions : jurisdictionSuggestions,
       searchValue: searchType === 'project' ? projectSearchValue : jurisdictionSearchValue,
       searching: searchType === 'project' ? searchingProjects : searchingJurisdictions
     }
-    
+
     const options = [
       { value: 'Draft', label: 'Draft' },
       { value: 'Approved', label: 'Approved' }
     ]
-    
+
     const alertActions = [
       {
         value: 'Delete',
@@ -373,7 +382,7 @@ export class DocumentMeta extends Component {
         onClick: this.onContinueDelete
       }
     ]
-    
+
     const projurActions = [
       {
         value: 'Dismiss',
@@ -381,11 +390,11 @@ export class DocumentMeta extends Component {
         onClick: this.onCancelUpdateProJur
       }
     ]
-    
+
     const metaStyling = { fontSize: '.8125rem', padding: '0 5px' }
     const iconStyle = { color: '#757575', fontSize: 18 }
     const colStyle = { fontSize: 14, border: 'none', borderBottom: '1px solid green' }
-    
+
     return (
       <>
         <ApiErrorAlert open={apiErrorOpen} content={apiErrorInfo.text} onCloseAlert={this.closeAlert} />
@@ -625,11 +634,11 @@ export class DocumentMeta extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const docState = state.scenes.docView
-  
+
   const document = docState.meta.inEditMode
     ? docState.meta.documentForm
     : docState.meta.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
-  
+
   return {
     document,
     projectList: document.projects.map(proj => {
@@ -654,7 +663,8 @@ const mapStateToProps = state => {
     apiErrorInfo: docState.meta.apiErrorInfo,
     apiErrorOpen: docState.meta.apiErrorOpen || false,
     documentUpdateInProgress: docState.meta.documentUpdateInProgress || false,
-    userRole: state.data.user.currentUser.role
+    userRole: state.data.user.currentUser.role,
+    currentUser: state.data.user.currentUser
   }
 }
 
@@ -667,4 +677,10 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentMeta)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'meta')(
+    withAutocompleteMethods('jurisdiction', 'meta', {}, false)(
+      DocumentMeta
+    )
+  )
+)
