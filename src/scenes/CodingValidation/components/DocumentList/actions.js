@@ -18,7 +18,11 @@ export const types = {
   CLEAR_DOC_SELECTED: 'CLEAR_DOC_SELECTED',
   FLUSH_STATE: 'FLUSH_STATE',
   UPDATE_ANNOTATIONS: 'UPDATE_ANNOTATIONS',
-  TOGGLE_OFF_VIEW: 'TOGGLE_OFF_VIEW'
+  TOGGLE_OFF_VIEW: 'TOGGLE_OFF_VIEW',
+  DOWNLOAD_DOCUMENTS_REQUEST: 'DOWNLOAD_DOCUMENTS_REQUEST',
+  DOWNLOAD_DOCUMENTS_SUCCESS: 'DOWNLOAD_DOCUMENTS_SUCCESS',
+  DOWNLOAD_DOCUMENTS_FAIL: 'DOWNLOAD_DOCUMENTS_FAIL',
+  CLEAR_API_ERROR: 'CLEAR_API_ERROR'
 }
 
 export default {
@@ -39,5 +43,7 @@ export default {
   hideAnnoModeAlert: makeActionCreator(types.HIDE_ANNO_MODE_ALERT),
   changeAnnotationIndex: makeActionCreator(types.CHANGE_ANNOTATION_INDEX, 'index'),
   resetScrollTop: makeActionCreator(types.RESET_SCROLL_TOP),
-  updateAnnotations: makeActionCreator(types.UPDATE_ANNOTATIONS, 'questionId')
+  updateAnnotations: makeActionCreator(types.UPDATE_ANNOTATIONS, 'questionId'),
+  downloadDocumentsRequest: makeActionCreator(types.DOWNLOAD_DOCUMENTS_REQUEST, 'docId'),
+  clearApiError: makeActionCreator(types.CLEAR_API_ERROR)
 }

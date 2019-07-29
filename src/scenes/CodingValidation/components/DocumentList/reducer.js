@@ -45,12 +45,14 @@ export const INITIAL_STATE = {
   apiError: {
     title: '',
     text: '',
-    open: false
+    open: false,
+    alertOrView: 'alert'
   },
   shouldShowAnnoModeAlert: true,
   currentAnnotationIndex: 0,
   scrollTop: false,
-  gettingDocs: false
+  gettingDocs: false,
+  downloading: ''
 }
 
 const mergeName = docObj => ({
@@ -84,9 +86,10 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         apiError: {
-          text: 'Failed to get the list of approved documents.',
+          text: 'We couldn\'t get the list of approved documents.',
           title: 'Request failed',
-          open: true
+          open: true,
+          alertOrView: 'view'
         },
         gettingDocs: false
       }
@@ -134,8 +137,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         docSelected: true,
         apiError: {
           title: '',
-          text: 'Failed to retrieve document contents.',
-          open: true
+          text: 'We couldn\'t get the document contents.',
+          open: true,
+          alertOrView: 'view'
         }
       }
       
@@ -267,7 +271,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiError: {
           title: '',
           text: '',
-          open: false
+          open: false,
+          alertOrView: 'alert'
         },
         annotations: {
           ...state.annotations,
@@ -345,6 +350,39 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         scrollTop: false
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_REQUEST:
+      return {
+        ...state,
+        downloading: action.docId
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_SUCCESS:
+      return {
+        ...state,
+        downloading: ''
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        apiError: {
+          title: '',
+          text: action.payload,
+          open: true,
+          alertOrView: 'alert'
+        },
+        downloading: ''
+      }
+      
+    case types.CLEAR_API_ERROR:
+      return {
+        ...state,
+        apiError: {
+          ...state.apiError,
+          open: false
+        }
       }
     
     default:

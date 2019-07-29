@@ -56,25 +56,25 @@ describe('DocumentList', () => {
     expect(spy).toHaveBeenCalled()
   })
   
-  describe('this.onSaveAnnotation', () => {
+  describe('this.handleSaveAnnotation', () => {
     test('should call this.props.actions.saveAnnotation', () => {
       const spy = jest.spyOn(props.actions, 'saveAnnotation')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+      wrapper.instance().handleSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalledWith({ text: 'test annotation' }, 4, 3)
     })
     
     test('should call this.props.saveUserAnswer', () => {
       const spy = jest.spyOn(props, 'saveUserAnswer')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+      wrapper.instance().handleSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalled()
     })
     
     test('should disable annotation mode', () => {
       const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+      wrapper.instance().handleSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalledWith(3, 4, false)
       spy.mockReset()
     })
@@ -84,21 +84,21 @@ describe('DocumentList', () => {
     test('should remove the annotation', () => {
       const spy = jest.spyOn(props.actions, 'removeAnnotation')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onRemoveAnnotation(5)
+      wrapper.instance().handleRemoveAnnotation(5)
       expect(spy).toHaveBeenCalledWith(5, 4, 3)
     })
     
     test('should save the user\'s answer', () => {
       const spy = jest.spyOn(props, 'saveUserAnswer')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onRemoveAnnotation(5)
+      wrapper.instance().handleRemoveAnnotation(5)
       expect(spy).toHaveBeenCalled()
     })
     
     test('should disable annotation mode', () => {
       const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onRemoveAnnotation(5)
+      wrapper.instance().handleRemoveAnnotation(5)
       expect(spy).toHaveBeenCalledWith(3, 4, false)
       spy.mockReset()
     })
@@ -125,18 +125,18 @@ describe('DocumentList', () => {
     )
   })
   
-  describe('this.onRemoveAnnotation', () => {
+  describe('this.handleRemoveAnnotation', () => {
     test('should call this.props.actions.removeAnnotation', () => {
       const spy = jest.spyOn(props.actions, 'removeAnnotation')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onRemoveAnnotation(1)
+      wrapper.instance().handleRemoveAnnotation(1)
       expect(spy).toHaveBeenCalledWith(1, 4, 3)
     })
     
     test('should call this.props.saveUserAnswer', () => {
       const spy = jest.spyOn(props, 'saveUserAnswer')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-      wrapper.instance().onRemoveAnnotation(1)
+      wrapper.instance().handleRemoveAnnotation(1)
       expect(spy).toHaveBeenCalled()
     })
   })
@@ -160,21 +160,21 @@ describe('DocumentList', () => {
   describe('this.checkTextContent', () => {
     test('should set state.noTextContent to 0 if all items in noTextArr are true', () => {
       const wrapper = shallow(<DocumentList {...props} />)
-      wrapper.instance().onCheckTextContent([true, true, true])
+      wrapper.instance().handleCheckTextContent([true, true, true])
       wrapper.update()
       expect(wrapper.state('noTextContent')).toEqual(0)
     })
     
     test('should set state.noTextContent to 2 if all items in noTextArr are false', () => {
       const wrapper = shallow(<DocumentList {...props} />)
-      wrapper.instance().onCheckTextContent([false, false, false])
+      wrapper.instance().handleCheckTextContent([false, false, false])
       wrapper.update()
       expect(wrapper.state('noTextContent')).toEqual(2)
     })
     
     test('should set state.noTextContent to 1 if there is a mix of true and false items in noTextArr', () => {
       const wrapper = shallow(<DocumentList {...props} />)
-      wrapper.instance().onCheckTextContent([true, true, false])
+      wrapper.instance().handleCheckTextContent([true, true, false])
       wrapper.update()
       expect(wrapper.state('noTextContent')).toEqual(1)
     })
@@ -182,7 +182,7 @@ describe('DocumentList', () => {
   
   describe('showing errors', () => {
     test('should show ApiErrorView component if there is an error', () => {
-      const wrapper = shallow(<DocumentList {...props} apiError={{ text: '', open: true }} />)
+      const wrapper = shallow(<DocumentList {...props} apiError={{ text: '', open: true, alertOrView: 'view' }} />)
       expect(wrapper.find('ApiErrorView').length).toEqual(1)
     })
     
@@ -190,7 +190,7 @@ describe('DocumentList', () => {
       const wrapper = shallow(
         <DocumentList
           {...props}
-          apiError={{ text: 'Failed to get documents.', open: true }}
+          apiError={{ text: 'Failed to get documents.', open: true, alertOrView: 'view' }}
           documents={[]}
         />
       )
@@ -268,39 +268,3 @@ describe('DocumentList', () => {
     })
   })
 })
-
-// const setupState = (other = {}) => {
-//   return {
-//     data: {
-//       user: {
-//         currentUser: {
-//           id: 5
-//         }
-//       }
-//     },
-//     scenes: {
-//       codingValidation: {
-//         coding: {
-//           page: 'coding',
-//           scheme: { byId: schemeById },
-//           userAnswers: userAnswersCoded,
-//           question: schemeById[3]
-//         },
-//         documentList: {
-//           ...INITIAL_STATE,
-//           enabledAnswerId: 10,
-//           annotationModeEnabled: true,
-//           documents: {
-//             ordered: [{ name: 'doc1', _id: 12344 }],
-//             allIds: [12344],
-//             byId: {
-//               12344: { name: 'doc1', _id: 12344 }
-//             }
-//           },
-//           openedDoc: { _id: '12344' },
-//           ...other
-//         }
-//       }
-//     }
-//   }
-// }

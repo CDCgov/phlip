@@ -125,8 +125,9 @@ describe('CodingValidation - DocumentList reducer', () => {
     const state = reducer(currentState, action)
     
     test('should set error information object', () => {
-      expect(state.apiError.text).toEqual('Failed to get the list of approved documents.')
+      expect(state.apiError.text).toEqual('We couldn\'t get the list of approved documents.')
       expect(state.apiError.title).toEqual('Request failed')
+      expect(state.apiError.alertOrView).toEqual('view')
     })
     
     test('should display error', () => {
@@ -187,7 +188,8 @@ describe('CodingValidation - DocumentList reducer', () => {
     
     test('should set error information', () => {
       expect(state.apiError.title).toEqual('')
-      expect(state.apiError.text).toEqual('Failed to retrieve document contents.')
+      expect(state.apiError.text).toEqual('We couldn\'t get the document contents.')
+      expect(state.apiError.alertOrView).toEqual('view')
     })
     
     test('should display error', () => {

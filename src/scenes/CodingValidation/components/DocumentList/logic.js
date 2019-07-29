@@ -181,9 +181,26 @@ const toggleAnnoModeLogic = createLogic({
   }
 })
 
+/**
+ * Handles when a user requests to download documents
+ */
+const downloadLogic = createLogic({
+  type: types.DOWNLOAD_DOCUMENTS_REQUEST,
+  async process({ getState, action, docApi }, dispatch, done) {
+    try {
+      throw 'error'
+      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS })
+    } catch (err) {
+      dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
+    }
+    done()
+  }
+})
+
 export default [
   toggleViewAnnotations,
   toggleAnnoModeLogic,
   getApprovedDocumentsLogic,
-  addCitationLogic
+  addCitationLogic,
+  downloadLogic
 ]

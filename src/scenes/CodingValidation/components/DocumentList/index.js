@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader } from 'components'
+import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader, ApiErrorAlert, IconButton } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 import AnnotationFinder from './components/AnnotationFinder'
 
@@ -30,7 +30,8 @@ export class DocumentList extends Component {
     apiError: PropTypes.shape({
       text: PropTypes.string,
       title: PropTypes.string,
-      open: PropTypes.bool
+      open: PropTypes.bool,
+      alertOrView: PropTypes.oneOf(['alert', 'view'])
     }),
     shouldShowAnnoModeAlert: PropTypes.bool,
     currentAnnotationIndex: PropTypes.number,
@@ -38,7 +39,8 @@ export class DocumentList extends Component {
     scrollTop: PropTypes.bool,
     gettingDocs: PropTypes.bool,
     annotationUsers: PropTypes.array,
-    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    downloading: PropTypes.string
   }
   
   static defaultProps = {
@@ -49,11 +51,13 @@ export class DocumentList extends Component {
     apiError: {
       text: '',
       title: '',
-      open: false
+      open: false,
+      alertOrView: 'view'
     },
     currentAnnotationIndex: 0,
     scrollTop: false,
-    gettingDocs: false
+    gettingDocs: false,
+    downloading: ''
   }
   
   constructor(props, context) {
@@ -65,12 +69,15 @@ export class DocumentList extends Component {
   }
   
   componentDidMount() {
-    this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
+    const { actions, projectId, jurisdictionId, page } = this.props
+    actions.getApprovedDocumentsRequest(projectId, jurisdictionId, page)
   }
   
   componentDidUpdate(prevProps) {
-    if (!prevProps.scrollTop && this.props.scrollTop && this.props.docSelected) {
-      if (!this.props.annotationModeEnabled) {
+    const { scrollTop, docSelected, annotationModeEnabled } = this.props
+    
+    if (!prevProps.scrollTop && scrollTop && docSelected) {
+      if (!annotationModeEnabled) {
         this.scrollTop()
       }
     }
@@ -83,7 +90,7 @@ export class DocumentList extends Component {
   /*
    * Called when user chooses to save an annotation
    */
-  onSaveAnnotation = annotation => {
+  handleSaveAnnotation = annotation => {
     const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
     
     actions.saveAnnotation(annotation, enabledAnswerId, questionId)
@@ -95,7 +102,7 @@ export class DocumentList extends Component {
    * Remove annotation
    * @param index
    */
-  onRemoveAnnotation = index => {
+  handleRemoveAnnotation = index => {
     const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
     
     actions.removeAnnotation(index, enabledAnswerId, questionId)
@@ -106,8 +113,9 @@ export class DocumentList extends Component {
   /**
    * Scrolls to top of document
    */
-  onFinishedRendering = () => {
-    if (!this.props.annotationModeEnabled) {
+  handleFinishedRendering = () => {
+    const { annotationModeEnabled } = this.props
+    if (!annotationModeEnabled) {
       this.scrollTop()
     }
   }
@@ -132,7 +140,7 @@ export class DocumentList extends Component {
   /**
    * Handles when a user has selected a document that is not text-selectable
    */
-  onCheckTextContent = noTextArr => {
+  handleCheckTextContent = noTextArr => {
     this.setState({
       noTextContent: noTextArr.every(noText => noText)
         ? 0
@@ -175,6 +183,7 @@ export class DocumentList extends Component {
    * @param position
    */
   handleScrollAnnotation = position => {
+    const { actions } = this.props
     let el = this.checkIfRendered(position)
     
     while (!el) {
@@ -186,7 +195,7 @@ export class DocumentList extends Component {
     clearTimeout()
     const container = document.getElementById('viewContainer')
     const pageEl = el.offsetParent.offsetParent
-    this.props.actions.changeAnnotationIndex(position)
+    actions.changeAnnotationIndex(position)
     container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
   }
   
@@ -194,7 +203,9 @@ export class DocumentList extends Component {
    * Scrolls the document to the top of the page. Used when the user toggles a different coder for annotations
    */
   scrollTop = () => {
-    if (this.props.annotations.length === 0) {
+    const { annotations } = this.props
+    
+    if (annotations.length === 0) {
       const container = document.getElementById('viewContainer')
       container.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
@@ -206,8 +217,27 @@ export class DocumentList extends Component {
   /*
    * Toggles a coder's annotations for view
    */
-  onToggleCoderAnnotations = (userId, isValidator) => () => {
+  handleToggleCoderAnnotations = (userId, isValidator) => () => {
     this.props.actions.toggleCoderAnnotations(userId, isValidator)
+  }
+  
+  /**
+   * Closes the API error alert
+   * @returns {*}
+   */
+  handleCloseApiAlert = () => {
+    const { actions } = this.props
+    actions.clearApiError()
+  }
+  
+  /**
+   * Handles when the user has requested to download documents
+   * @param docs
+   * @returns {Function}
+   */
+  handleDownloadDocs = docs => () => {
+    const { actions } = this.props
+    actions.downloadDocumentsRequest(docs)
   }
   
   render() {
@@ -266,12 +296,14 @@ export class DocumentList extends Component {
             current={currentAnnotationIndex}
             allEnabled={enabledUserId === 'All'}
             handleScrollAnnotation={this.handleScrollAnnotation}
-            handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.onToggleCoderAnnotations : null}
+            handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.handleToggleCoderAnnotations : null}
           />}
         </FlexGrid>
         <Divider />
         <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
-          {apiError.open && <ApiErrorView error={apiError.text} />}
+          {(apiError.open && apiError.alertOrView === 'view') && <ApiErrorView error={apiError.text} />}
+          {(apiError.open && apiError.alertOrView === 'alert') &&
+          <ApiErrorAlert onCloseAlert={this.handleCloseApiAlert} content={apiError.text} open={apiError.open} />}
           {(showEmptyDocs || gettingDocs) && <FlexGrid container align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
               {showEmptyDocs
@@ -324,12 +356,12 @@ export class DocumentList extends Component {
             allowSelection={annotationModeEnabled}
             document={openedDoc}
             annotations={annotations}
-            saveAnnotation={this.onSaveAnnotation}
-            removeAnnotation={this.onRemoveAnnotation}
-            onCheckTextContent={this.onCheckTextContent}
+            saveAnnotation={this.handleSaveAnnotation}
+            removeAnnotation={this.handleRemoveAnnotation}
+            onCheckTextContent={this.handleCheckTextContent}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
             annotationModeEnabled={annotationModeEnabled}
-            onFinishRendering={this.onFinishedRendering}
+            onFinishRendering={this.handleFinishedRendering}
             showAnnoModeAlert={shouldShowAnnoModeAlert}
             showAvatars
             isView={false}
@@ -412,7 +444,8 @@ export const mapStateToProps = state => {
     isValidation,
     gettingDocs: pageState.gettingDocs,
     annotationUsers: users,
-    enabledUserId: pageState.enabledUserId
+    enabledUserId: pageState.enabledUserId,
+    downloading: pageState.downloading
   }
 }
 
