@@ -88,7 +88,11 @@ export class SearchBox extends Component {
     const { actions } = this.props
 
     if (suggestionType === 'project') {
-      actions.projectAutocomplete.getInitialSuggestionsRequest(this.props.currentUser.id,30 , '_MAIN')
+      if (searchString === '') {
+        actions.projectAutocomplete.getInitialSuggestionsRequest(this.props.currentUser.id, 30, '_MAIN')
+      } else {
+        actions.projectAutocomplete.searchForSuggestionsRequest(searchString, 30, '_MAIN')
+      }
       actions.projectAutocomplete.setSearchingStatus(true)
     } else {
       actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN', index)
