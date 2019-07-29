@@ -327,7 +327,7 @@ export class DocumentList extends Component {
               onClick={this.handleDownloadDocs('all')}>
               file_download
             </IconButton>}
-            {downloading.id === 'all' && <CircularLoader color="primary" style={{ height: 24, width: 24 }} />}
+            {downloading.id === 'all' && <CircularLoader color="primary" size={20} />}
           </FlexGrid>}
           {(docSelected && annotations.length > 0) && <AnnotationFinder
             users={annotationUsers}
@@ -343,14 +343,15 @@ export class DocumentList extends Component {
           {(apiError.open && apiError.alertOrView === 'view') && <ApiErrorView error={apiError.text} />}
           {(apiError.open && apiError.alertOrView === 'alert') &&
           <ApiErrorAlert onCloseAlert={this.handleCloseApiAlert} content={apiError.text} open={apiError.open} />}
-          {(showEmptyDocs || gettingDocs) && <FlexGrid container align="center" justify="center" padding={10} flex>
+          {(showEmptyDocs || gettingDocs) &&
+          <FlexGrid container type="row" align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
               {showEmptyDocs
                 ? 'There are no approved or assigned documents for this project and jurisdiction.'
                 : 'Loading...'}
-              {gettingDocs &&
-              <span style={{ marginLeft: 10 }}><CircularLoader color="primary" thickness={5} size={28} /></span>}
             </Typography>
+            {gettingDocs &&
+            <span style={{ marginLeft: 10 }}><CircularLoader color="primary" thickness={5} size={28} /></span>}
           </FlexGrid>}
           {(!showEmptyDocs && annotationModeEnabled) &&
           <FlexGrid
@@ -409,32 +410,31 @@ export class DocumentList extends Component {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
             return (
               <Fragment key={`${doc._id}`}>
-                <FlexGrid container type="row" align="center" padding={10}>
-                  <Typography>{i + 1}.</Typography>
-                  <Typography
-                    style={{
-                      ...docNameStyle,
-                      color: isRetrieving ? '#757575' : theme.palette.secondary.main
-                    }}>
-                    <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}</span>
-                  </Typography>
-                  {isRetrieving &&
-                  <div style={{ height: 17, width: 17 }}>
-                    <CircularLoader color="primary" thickness={5} size={16} />
-                  </div>}
-                  {annotatedDocs.includes(doc._id) &&
-                  <Icon color="error" size={20}>
-                    <FormatQuoteClose style={{ fontSize: 20 }} />
-                  </Icon>}
-                  {downloading.id !== doc.id &&
+                <FlexGrid container type="row" align="center" padding="10px 15px">
+                  <FlexGrid flex container type="row" align="center">
+                    <Typography>{i + 1}.</Typography>
+                    <Typography
+                      style={{
+                        ...docNameStyle,
+                        color: isRetrieving ? '#757575' : theme.palette.secondary.main
+                      }}>
+                      <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}</span>
+                    </Typography>
+                    {isRetrieving && <CircularLoader color="primary" thickness={5} size={16} />}
+                    {annotatedDocs.includes(doc._id) &&
+                    <Icon color="error" size={20}>
+                      <FormatQuoteClose style={{ fontSize: 20 }} />
+                    </Icon>}
+                  </FlexGrid>
+                  {downloading.id !== doc._id &&
                   <IconButton
                     color="#757575"
                     tooltipText="Download"
                     onClick={this.handleDownloadDocs(doc._id)}
-                    iconSize={19}>
+                    iconSize={20}>
                     file_download
                   </IconButton>}
-                  {downloading.id === doc.id && <CircularLoader color="primary" style={{ height: 20, width: 20 }} />}
+                  {downloading.id === doc._id && <CircularLoader color="primary" size={16} />}
                 </FlexGrid>
                 <Divider />
               </Fragment>
