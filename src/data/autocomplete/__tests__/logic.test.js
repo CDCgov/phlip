@@ -60,8 +60,7 @@ describe('Autocomplete logic', () => {
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
             searchString: 'project',
-            suffix: '_BULK',
-            stateSuffix: 'bulk'
+            suffix: '_BULK'
           },
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT_BULK`,
