@@ -11,6 +11,13 @@ const docManageCalls = [
     headers: () => ({ 'Content-Type': 'multipart/form-data' })
   },
   {
+    name: 'download',
+    method: 'get',
+    path: ({ docList }) => `/docs/download?${docList.map((doc, i) => `docs[]=${doc}${i !== docList.length - 1
+      ? '&'
+      : ''}`).join('')}`
+  },
+  {
     name: 'getDocs',
     method: 'get',
     path: (projectList = '') => projectList !== '' ? `/docs?${projectList}` : '/docs'

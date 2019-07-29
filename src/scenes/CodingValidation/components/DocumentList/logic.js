@@ -188,7 +188,11 @@ const downloadLogic = createLogic({
   type: types.DOWNLOAD_DOCUMENTS_REQUEST,
   async process({ getState, action, docApi }, dispatch, done) {
     try {
-      throw 'error'
+      const docList = action.docId === 'all'
+        ? getState().scenes.codingValidation.documentList.documents.allIds
+        : [action.docId]
+      const contents = await docApi.download({}, {}, { docList })
+      console.log(contents)
       dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS })
     } catch (err) {
       dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })

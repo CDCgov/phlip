@@ -254,7 +254,7 @@ export class DocumentList extends Component {
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex,
       showEmptyDocs, apiError, documents, annotatedDocs, gettingDocs, annotationUsers, isValidation,
-      shouldShowAnnoModeAlert, enabledUserId
+      shouldShowAnnoModeAlert, enabledUserId, downloading
     } = this.props
     
     const { noTextContent } = this.state
@@ -290,6 +290,17 @@ export class DocumentList extends Component {
               {docSelected ? openedDoc.name : 'Assigned Documents'}
             </Typography>
           </FlexGrid>
+          {!docSelected &&
+          <FlexGrid>
+            {downloading !== 'all' && <IconButton
+              color="black"
+              tooltipText="Download All Documents"
+              placement="left-start"
+              onClick={this.handleDownloadDocs('all')}>
+              file_download
+            </IconButton>}
+            {downloading === 'all' && <CircularLoader color="primary" style={{ height: 24, width: 24 }} />}
+          </FlexGrid>}
           {(docSelected && annotations.length > 0) && <AnnotationFinder
             users={annotationUsers}
             count={annotations.length}
