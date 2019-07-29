@@ -6,6 +6,7 @@ import Divider from '@material-ui/core/Divider'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
+import StepConnector from '@material-ui/core/StepConnector'
 import Typography from '@material-ui/core/Typography'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import List from '@material-ui/core/List'
@@ -13,6 +14,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemText from '@material-ui/core/ListItemText'
 import theme from 'services/theme'
+import { withStyles } from '@material-ui/core/styles'
 
 export class BulkValidate extends Component {
   static propTypes = {
@@ -199,7 +201,7 @@ export class BulkValidate extends Component {
                       container
                       flex
                       key={`scope-${i}`}
-                      padding={35}
+                      padding="35px 35px 60px"
                       style={{
                         border: isScopeSelected
                           ? `2px solid ${theme.palette.secondary.main}`
@@ -292,7 +294,7 @@ export class BulkValidate extends Component {
                 padding={35}
                 id="confirm-step"
                 style={{ backgroundColor: 'white', margin: '0 12px', border: `1px solid rgba(0, 0, 0, 0.12)` }}>
-                <FlexGrid container flex>
+                <FlexGrid container style={{ marginBottom: 100 }}>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
                   <FlexGrid container type="row" padding="20px 0 0">
                     <FlexGrid container style={{ marginRight: 50 }}>
@@ -332,7 +334,7 @@ export class BulkValidate extends Component {
                     </FlexGrid>
                   </FlexGrid>
                 </FlexGrid>
-                <FlexGrid justify="center" container type="row" style={{ marginBottom: 20 }}>
+                <FlexGrid justify="center" container type="row">
                   <Button
                     disabled={validationInProgress}
                     style={{ color: validationInProgress ? theme.palette.secondary.main : 'white', width: '25%' }}
@@ -345,30 +347,49 @@ export class BulkValidate extends Component {
               </FlexGrid>}
             </FlexGrid>
             <Divider />
-            <FlexGrid container type="row" padding="0 24px" style={{ backgroundColor: 'white' }}>
+            <FlexGrid container type="row" padding="24px 24px" style={{ backgroundColor: 'white', minHeight: 36 }}>
               <FlexGrid flex container type="row" align="center" justify="flex-start" style={{ flexBasis: '25%' }}>
                 {activeStep !== 0 &&
-                <Button color="white" style={{ color: 'black' }} onClick={this.handleGoBackStep}>Back</Button>}
+                <Button
+                  color="white"
+                  style={{ color: 'black', width: '40%' }}
+                  onClick={this.handleGoBackStep}>
+                  Back
+                </Button>}
               </FlexGrid>
-              <FlexGrid flex style={{ flexBasis: '50%' }}>
-                <Stepper activeStep={activeStep} alternativeLabel style={{ paddingBottom: 15 }}>
-                  {steps.map((step, i) => {
-                    const isActive = activeStep === i
-                    return (
-                      <Step
-                        key={step.label}
-                        completed={step.completed && !isActive}
-                        active={isActive}
-                        disabled={!isActive}>
-                        <StepLabel optional={false} disabled={!isActive} />
-                      </Step>
-                    )
-                  })}
-                </Stepper>
+              <FlexGrid flex container type="row" justify="center" style={{ flexBasis: '50%' }}>
+                {steps.map((step, i) => {
+                  return (
+                    <FlexGrid container type="row" align="center" key={step.label}>
+                      {i !== 0 &&
+                      <FlexGrid
+                        style={{
+                          width: 150,
+                          margin: '0 10px',
+                          borderTop: `1px solid ${i <= activeStep ? theme.palette.primary.main : '#aeaeae'}`
+                        }}
+                      />}
+                      <FlexGrid
+                        circular
+                        style={{
+                          backgroundColor: i <= activeStep ? theme.palette.primary.main : '#aeaeae',
+                          width: 20,
+                          height: 20,
+                          padding: 0
+                        }}
+                      />
+                    </FlexGrid>
+                  )
+                })}
               </FlexGrid>
               <FlexGrid flex container type="row" align="center" justify="flex-end" style={{ flexBasis: '25%' }}>
                 {(activeStep !== 2 && steps[activeStep].completed) &&
-                <Button color="white" style={{ color: 'black' }} onClick={this.handleGoForwardStep}>Next</Button>}
+                <Button
+                  color="white"
+                  style={{ color: 'black', width: '40%' }}
+                  onClick={this.handleGoForwardStep}>
+                  Next
+                </Button>}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
