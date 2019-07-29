@@ -17,6 +17,7 @@ export class SearchBox extends Component {
   static propTypes = {
     form: PropTypes.object,
     searchValue: PropTypes.string,
+    searchBarValue: PropTypes.string,
     projectSuggestions: PropTypes.array,
     jurisdictionSuggestions: PropTypes.array,
     projectSearchValue: PropTypes.string,
@@ -91,7 +92,7 @@ export class SearchBox extends Component {
       if (searchString === '') {
         actions.projectAutocomplete.getInitialSuggestionsRequest(this.props.currentUser.id, 30, '_MAIN')
       } else {
-        actions.projectAutocomplete.searchForSuggestionsRequest(searchString, 30, '_MAIN')
+        actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN')
       }
       actions.projectAutocomplete.setSearchingStatus(true)
     } else {
@@ -291,13 +292,13 @@ export class SearchBox extends Component {
         name,
         uploadedDate2
       },
-      searchValue,
       projectSuggestions,
       jurisdictionSuggestions,
       projectSearchValue,
       jurisdictionSearchValue,
       searchingProjects,
-      searchingJurisdictions
+      searchingJurisdictions,
+      searchBarValue
     } = this.props
 
     const { showFilterForm, isFocused } = this.state
@@ -355,7 +356,7 @@ export class SearchBox extends Component {
                 <SearchBar
                   placeholder="Search documents"
                   fullWidth
-                  searchValue={searchValue}
+                  searchValue={searchBarValue}
                   handleSearchValueChange={this.handleSearchFieldChange}
                   searchIcon="search"
                   InputProps={{
@@ -571,7 +572,7 @@ const mapStateToProps = state => {
   const currentUser = state.data.user.currentUser
   return {
     form: searchState.form.params,
-    searchValue: searchState.form.searchValue,
+    searchBarValue: searchState.form.searchValue,
     projectSuggestions: searchState.projectSuggestions.suggestions,
     jurisdictionSuggestions: searchState.jurisdictionSuggestions.suggestions,
     projectSearchValue: searchState.projectSuggestions.searchValue,
