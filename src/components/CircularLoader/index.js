@@ -28,8 +28,8 @@ CircularLoader.defaultProps = {
   type: 'indeterminate',
   color: 'primary',
   thickness: 5,
-  size: 24,
-  style: { height: 24, width: 24 }
+  size: 40,
+  style: { height: 40, width: 40 }
 }
 
 CircularLoader.propTypes = {
