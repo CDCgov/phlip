@@ -13,8 +13,8 @@ import AnnotationFinder from './components/AnnotationFinder'
 export class DocumentList extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    jurisdiction: PropTypes.object,
+    project: PropTypes.object,
     page: PropTypes.oneOf(['coding', 'validation']),
     documents: PropTypes.array,
     annotatedDocs: PropTypes.array,
@@ -40,7 +40,11 @@ export class DocumentList extends Component {
     gettingDocs: PropTypes.bool,
     annotationUsers: PropTypes.array,
     enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    downloading: PropTypes.string
+    downloading: PropTypes.shape({
+      name: PropTypes.string,
+      content: PropTypes.any,
+      id: PropTypes.string
+    })
   }
   
   static defaultProps = {
@@ -62,6 +66,7 @@ export class DocumentList extends Component {
   
   constructor(props, context) {
     super(props, context)
+    this.downloadRef = React.createRef()
   }
   
   state = {
@@ -69,17 +74,21 @@ export class DocumentList extends Component {
   }
   
   componentDidMount() {
-    const { actions, projectId, jurisdictionId, page } = this.props
-    actions.getApprovedDocumentsRequest(projectId, jurisdictionId, page)
+    const { actions, project, jurisdiction, page } = this.props
+    actions.getApprovedDocumentsRequest(project.id, jurisdiction.jurisdictionId, page)
   }
   
   componentDidUpdate(prevProps) {
-    const { scrollTop, docSelected, annotationModeEnabled } = this.props
+    const { scrollTop, docSelected, annotationModeEnabled, downloading } = this.props
     
     if (!prevProps.scrollTop && scrollTop && docSelected) {
       if (!annotationModeEnabled) {
         this.scrollTop()
       }
+    }
+    
+    if (prevProps.downloading.content === '' && downloading.content !== '') {
+      this.prepareDocumentDownload()
     }
   }
   
@@ -240,6 +249,21 @@ export class DocumentList extends Component {
     actions.downloadDocumentsRequest(docs)
   }
   
+  /**
+   * Prepares the actual file download
+   */
+  prepareDocumentDownload = () => {
+    const { downloading, project, jurisdiction } = this.props
+    
+    const pdfBlob = new Blob([downloading.content], { type: 'application/pdf' })
+    this.url = URL.createObjectURL(pdfBlob)
+    this.downloadRef.current.href = this.url
+    this.downloadRef.current.download = downloading.id === 'all'
+      ? `${project.name}-${jurisdiction.name}-documents.zip`
+      : downloading.name
+    this.downloadRef.current.click()
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -292,14 +316,14 @@ export class DocumentList extends Component {
           </FlexGrid>
           {!docSelected &&
           <FlexGrid>
-            {downloading !== 'all' && <IconButton
+            {downloading.id !== 'all' && <IconButton
               color="black"
               tooltipText="Download All Documents"
               placement="left-start"
               onClick={this.handleDownloadDocs('all')}>
               file_download
             </IconButton>}
-            {downloading === 'all' && <CircularLoader color="primary" style={{ height: 24, width: 24 }} />}
+            {downloading.id === 'all' && <CircularLoader color="primary" style={{ height: 24, width: 24 }} />}
           </FlexGrid>}
           {(docSelected && annotations.length > 0) && <AnnotationFinder
             users={annotationUsers}
@@ -398,12 +422,16 @@ export class DocumentList extends Component {
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
+                  <IconButton color="black" onClick={this.handleDownloadDocs(doc._id)}>
+                    file_download
+                  </IconButton>
                 </FlexGrid>
                 <Divider />
               </Fragment>
             )
           })}
         </FlexGrid>
+        <a style={{ display: 'none' }} ref={this.downloadRef} />
       </FlexGrid>
     )
   }

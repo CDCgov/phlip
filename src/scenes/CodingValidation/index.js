@@ -641,8 +641,8 @@ export class CodingValidation extends Component {
                           }}>
                           <FlexGrid style={{ minWidth: 17, maxWidth: 17, width: 17 }} />
                           <DocumentList
-                            projectId={project.id}
-                            jurisdictionId={jurisdiction.jurisdictionId}
+                            project={project}
+                            jurisdiction={jurisdiction}
                             page={page}
                             questionId={question.id}
                             saveUserAnswer={this.onSaveCodedQuestion}

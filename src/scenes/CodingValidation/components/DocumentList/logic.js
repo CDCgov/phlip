@@ -188,12 +188,16 @@ const downloadLogic = createLogic({
   type: types.DOWNLOAD_DOCUMENTS_REQUEST,
   async process({ getState, action, docApi }, dispatch, done) {
     try {
-      const docList = action.docId === 'all'
-        ? getState().scenes.codingValidation.documentList.documents.allIds
-        : [action.docId]
-      const contents = await docApi.download({}, {}, { docList })
-      console.log(contents)
-      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS })
+      let payload = ''
+      if (action.docId === 'all') {
+        // download a zip file
+        const allIds = getState().scenes.codingValidation.documentList.documents.allIds
+        payload = await docApi.downloadZip({}, {}, { docList: allIds })
+      } else {
+        // download just one file
+        payload = await docApi.download({}, { responseType: 'arraybuffer' }, { docId: action.docId })
+      }
+      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload })
     } catch (err) {
       dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
     }

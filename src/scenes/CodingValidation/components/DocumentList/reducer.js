@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
-import { sortListOfObjects } from 'utils/commonHelpers'
+import { sortListOfObjects, removeExtension } from 'utils/commonHelpers'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage/session'
 import { persistReducer } from 'redux-persist'
@@ -52,7 +52,11 @@ export const INITIAL_STATE = {
   currentAnnotationIndex: 0,
   scrollTop: false,
   gettingDocs: false,
-  downloading: ''
+  downloading: {
+    name: '',
+    id: '',
+    content: ''
+  }
 }
 
 const mergeName = docObj => ({
@@ -355,13 +359,20 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case types.DOWNLOAD_DOCUMENTS_REQUEST:
       return {
         ...state,
-        downloading: action.docId
+        downloading: {
+          name: action.docId === 'all' ? '' : `${removeExtension(state.documents.byId[action.docId].name).name}.pdf`,
+          id: action.docId,
+          content: ''
+        }
       }
       
     case types.DOWNLOAD_DOCUMENTS_SUCCESS:
       return {
         ...state,
-        downloading: ''
+        downloading: {
+          ...state.downloading,
+          content: action.payload
+        }
       }
       
     case types.DOWNLOAD_DOCUMENTS_FAIL:
@@ -373,7 +384,11 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           open: true,
           alertOrView: 'alert'
         },
-        downloading: ''
+        downloading: {
+          name: '',
+          id: '',
+          content: ''
+        }
       }
       
     case types.CLEAR_API_ERROR:
