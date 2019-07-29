@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 import { FlexGrid, Button, Icon, Avatar, RadioButtonLabel, CircularLoader } from 'components'
 import Modal, { ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
-import Stepper from '@material-ui/core/Stepper'
-import Step from '@material-ui/core/Step'
-import StepLabel from '@material-ui/core/StepLabel'
-import StepConnector from '@material-ui/core/StepConnector'
 import Typography from '@material-ui/core/Typography'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import List from '@material-ui/core/List'
@@ -14,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemText from '@material-ui/core/ListItemText'
 import theme from 'services/theme'
-import { withStyles } from '@material-ui/core/styles'
 
 export class BulkValidate extends Component {
   static propTypes = {
@@ -151,8 +146,6 @@ export class BulkValidate extends Component {
       {
         text: [
           'Validate the current question.'
-          // 'just this question',
-          // 'To validate another question, you’ll need to navigate to that question and repeat these steps.'
         ],
         title: 'Question',
         scope: 'question'
@@ -160,8 +153,6 @@ export class BulkValidate extends Component {
       {
         text: [
           'Validate every question in the current jurisdiction.'
-          // 'every question in this jurisdiction',
-          // 'To validate another jurisdiction, you’ll need to navigate to that jurisdiction and repeat these steps.'
         ],
         title: 'Jurisdiction',
         scope: 'jurisdiction'
@@ -169,7 +160,6 @@ export class BulkValidate extends Component {
       {
         text: [
           'Validate every question and jurisdiction in the current project.'
-          // 'every question in every jurisdiction'
         ],
         title: 'Project',
         scope: 'project'
@@ -177,7 +167,7 @@ export class BulkValidate extends Component {
     ]
     
     return (
-      <Modal open={true} onClose={this.handleClose} maxWidth="md" hideOverflow>
+      <Modal open={open} onClose={this.handleClose} maxWidth="md" hideOverflow>
         <ModalTitle
           title="Validate"
           buttons={<Button
@@ -296,8 +286,8 @@ export class BulkValidate extends Component {
                 style={{ backgroundColor: 'white', margin: '0 12px', border: `1px solid rgba(0, 0, 0, 0.12)` }}>
                 <FlexGrid container style={{ marginBottom: 100 }}>
                   <Typography variant="display1" style={{ color: 'black' }}>Confirmation</Typography>
-                  <FlexGrid container type="row" padding="20px 0 0">
-                    <FlexGrid container style={{ marginRight: 50 }}>
+                  <FlexGrid container type="row" padding="30px 0 0">
+                    <FlexGrid container flex style={{ marginRight: 50, flexBasis: '60%' }}>
                       <FlexGrid>
                         <Typography variant="headline">Scope: {capitalizeFirstLetter(selections.scope)}</Typography>
                         <Typography variant="headline">
@@ -320,9 +310,10 @@ export class BulkValidate extends Component {
                       </Typography>
                     </FlexGrid>
                     <FlexGrid
+                      flex
                       padding={25}
                       container
-                      style={{ backgroundColor: 'rgba(202, 80, 114, 0.28)' }}>
+                      style={{ backgroundColor: 'rgba(202, 80, 114, 0.28)', flexBasis: '40%' }}>
                       <FlexGrid container type="row" align="center">
                         <Icon color="error" size={25}>warning</Icon>
                         <Typography variant="headline" style={{ marginLeft: 4 }}>WARNING</Typography>
