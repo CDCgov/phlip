@@ -1,36 +1,52 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
 
+const JURISDICTION_SUGGESTION_REQUEST = `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`
+const PROJECT_SUGGESTION_REQUEST = `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`
+const INITIAL_PROJECT_SUGGESTION_REQUEST = `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_PROJECT`
+
+const actionToType = {
+  [`${JURISDICTION_SUGGESTION_REQUEST}`]: 'jurisdiction',
+  [`${PROJECT_SUGGESTION_REQUEST}`]: 'project',
+  [`${INITIAL_PROJECT_SUGGESTION_REQUEST}`]: 'project'
+}
+
+/**
+ * Validates that the request should go through
+ * @type {Logic<object, undefined, undefined, {action?: *, getState?: *}, undefined, string>}
+ */
 const getStateSuffix = createLogic({
-  type: [
-    `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-    `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-    `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_PROJECT`
-  ],
-  transform({ action }, next) {
-    const suffix = action.suffix.slice(1)
-    next({
-      ...action,
-      stateSuffix: suffix.toLowerCase()
-    })
+  type: [JURISDICTION_SUGGESTION_REQUEST, PROJECT_SUGGESTION_REQUEST, INITIAL_PROJECT_SUGGESTION_REQUEST],
+  latest: true,
+  validate({ action, getState }, allow, reject) {
+    const suffix = action.suffix.slice(1).toLowerCase()
+    const type = actionToType[action.type]
+    const state = getState()[`autocomplete.${type}.${suffix}`]
+    let selected
+    if (state !== undefined) {
+      selected = state.selectedSuggestion
+      if (Object.keys(selected).length === 0) {
+        allow(action)
+      } else {
+        if (selected.name !== action.searchString) {
+          allow(action)
+        } else {
+          reject()
+        }
+      }
+    } else {
+      allow(action)
+    }
   }
 })
 
+/**
+ * Gets suggestions for jurisdiction
+ * @type {Logic<object, undefined, undefined, {api?: *, action?: *}, undefined, string>}
+ */
 const getJurisdictionSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
   latest: true,
-  validate({ action, getState }, allow, reject) {
-    const selected = getState()[`autocomplete.jurisdiction.${action.stateSuffix}`].selectedSuggestion
-    if (Object.keys(selected).length === 0) {
-      allow(action)
-    } else {
-      if (selected.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
-      }
-    }
-  },
   async process({ action, api }, dispatch, done) {
     try {
       const jurisdictions = await api.searchJurisdictionList({}, {
@@ -56,21 +72,13 @@ const getJurisdictionSuggestionsLogic = createLogic({
   }
 })
 
+/**
+ * Gets project suggestions
+ * @type {Logic<object, undefined, undefined, {api?: *, action?: *}, undefined, string>}
+ */
 const getProjectSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
   latest: true,
-  validate({ action, getState }, allow, reject) {
-    const selected = getState()[`autocomplete.project.${action.stateSuffix}`].selectedSuggestion
-    if (Object.keys(selected).length === 0) {
-      allow(action)
-    } else {
-      if (selected.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
-      }
-    }
-  },
   async process({ api, action }, dispatch, done) {
     try {
       let projects = await api.searchProjectList({}, {
@@ -91,18 +99,7 @@ const getProjectSuggestionsLogic = createLogic({
  */
 const getProjectsByUserLogic = createLogic({
   type: [types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST, `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_PROJECT`],
-  validate({ action, getState }, allow, reject) {
-    const selected = getState()[`autocomplete.project.${action.stateSuffix}`].selectedSuggestion
-    if (Object.keys(selected).length === 0) {
-      allow(action)
-    } else {
-      if (selected.name !== action.searchString) {
-        allow(action)
-      } else {
-        reject()
-      }
-    }
-  },
+  latest: true,
   async process({ api, action }, dispatch, done) {
     try {
       let projects = await api.searchProjectListByUser({}, {

@@ -76,18 +76,18 @@ describe('CodingValidation -- Bulk Validate modal', () => {
       wrapper.find('WithTheme(Button)').at(1).simulate('click')
       expect(wrapper.state().selections.scope).toEqual('jurisdiction')
     })
-  
+    
     test('should not changes steps if the user comes back and selects a different scope', () => {
       const wrapper = setup()
       wrapper.setState({
-        activeStep: 1,
+        activeStep: 0,
         selections: {
           scope: 'question',
           user: null,
           confirm: false
         }
       })
-  
+      
       wrapper.find('WithTheme(Button)').at(0).simulate('click')
       expect(wrapper.state().activeStep).toEqual(0)
     })
@@ -100,8 +100,8 @@ describe('CodingValidation -- Bulk Validate modal', () => {
           user: {}
         }
       })
-      expect(wrapper.find('#scope-step').childAt(1).prop('style').backgroundColor).toEqual('rgba(233, 233, 233, 0.48)')
-      expect(wrapper.find('#scope-step').childAt(1).find('WithStyles(Typography)').at(4).childAt(0).text())
+      expect(wrapper.find('#scope-step').childAt(1).prop('style').border).toEqual('2px solid #048484')
+      expect(wrapper.find('#scope-step').childAt(1).find('WithStyles(Typography)').at(2).childAt(0).text())
         .toEqual('Selected!')
     })
     
@@ -181,7 +181,7 @@ describe('CodingValidation -- Bulk Validate modal', () => {
           confirm: false
         }
       })
-  
+      
       wrapper.find('WithStyles(ListItem)').at(1).simulate('click')
       expect(wrapper.state().activeStep).toEqual(1)
     })
@@ -201,7 +201,7 @@ describe('CodingValidation -- Bulk Validate modal', () => {
         activeStep: 1
       })
       expect(wrapper.find('WithStyles(ListItem)').at(1).prop('style').backgroundColor)
-        .toEqual('rgba(233, 233, 233, 0.48)')
+        .toEqual('rgba(233, 233, 233, 0.68)')
     })
   })
   
