@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Button, Icon, DatePicker, Typography, Autocomplete } from 'components'
+import { FlexGrid, Button, Icon, DatePicker, Typography, Autocomplete, withAutocompleteMethods } from 'components'
 import SearchBar from 'components/SearchBox'
 import TextField from '@material-ui/core/TextField'
 import ButtonBase from '@material-ui/core/ButtonBase'
@@ -23,7 +23,8 @@ export class SearchBox extends Component {
     jurisdictionSearchValue: PropTypes.string,
     actions: PropTypes.object,
     searchingProjects: PropTypes.bool,
-    searchingJurisdictions: PropTypes.bool
+    searchingJurisdictions: PropTypes.bool,
+    currentUser: PropTypes.object
   }
 
   constructor(props, context) {
@@ -42,7 +43,7 @@ export class SearchBox extends Component {
     this.clearForm()
     this.props.actions.clearSearchString()
   }
-  
+
   /**
    * Users focus changes
    * @param focused
@@ -53,7 +54,7 @@ export class SearchBox extends Component {
       showFilterForm: false
     })
   }
-  
+
   /**
    * User has changed a search field in the advanced form
    * @param property
@@ -65,7 +66,7 @@ export class SearchBox extends Component {
     }
     this.props.actions.updateFormValue(property, value)
   }
-  
+
   /**
    * User has enter a search value in the basic search form
    * @param e
@@ -76,7 +77,7 @@ export class SearchBox extends Component {
     }
     this.props.actions.updateSearchValue(e.target.value, this.props.form)
   }
-  
+
   /**
    * Handles getting autocomplete suggestions for project / jurisdictions
    * @param suggestionType
@@ -85,16 +86,16 @@ export class SearchBox extends Component {
    */
   handleGetSuggestions = (suggestionType, index = null) => ({ value: searchString }) => {
     const { actions } = this.props
-    
+
     if (suggestionType === 'project') {
-      actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN')
+      actions.projectAutocomplete.getInitialSuggestionsRequest(this.props.currentUser.id,30 , '_MAIN')
       actions.projectAutocomplete.setSearchingStatus(true)
     } else {
       actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN', index)
       actions.jurisdictionAutocomplete.setSearchingStatus(true)
     }
   }
-  
+
   /**
    * Handles when an autocomplete suggestion is selected for project / jurisdiction
    * @param suggestionType
@@ -105,7 +106,7 @@ export class SearchBox extends Component {
       ? this.props.actions.updateFormValue('project', suggestionValue)
       : this.props.actions.updateFormValue('jurisdiction', suggestionValue)
   }
-  
+
   /**
    * Handles search value changes for autocomplete project / jurisdictions
    * @param suggestionType
@@ -116,7 +117,7 @@ export class SearchBox extends Component {
       ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
       : this.props.actions.projectAutocomplete.updateSearchValue(value)
   }
-  
+
   /**
    * Clears autocomplete suggestions for jurisdiction / project
    * @param suggestionType
@@ -127,7 +128,7 @@ export class SearchBox extends Component {
       ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
       : this.props.actions.projectAutocomplete.clearSuggestions()
   }
-  
+
   /**
    * User has clicked 'enter' or clicked the submit button on the form
    */
@@ -136,7 +137,7 @@ export class SearchBox extends Component {
     this.props.actions.updateSearchValue(searchString, this.props.form)
     this.handleToggleForm()
   }
-  
+
   /**
    * Closes the form if the date pickers aren't open
    * @param e
@@ -149,7 +150,7 @@ export class SearchBox extends Component {
       }
     }
   }
-  
+
   /**
    * Clears the search form
    */
@@ -158,7 +159,7 @@ export class SearchBox extends Component {
     this.props.actions.projectAutocomplete.clearAll()
     this.props.actions.jurisdictionAutocomplete.clearAll()
   }
-  
+
   /**
    * Opens / closes the form
    */
@@ -167,14 +168,14 @@ export class SearchBox extends Component {
       showFilterForm: !this.state.showFilterForm
     })
   }
-  
+
   /**
    * Builds the search string based on what the user has populated
    * @returns {string}
    */
   buildSearchFilter = () => {
     const { form, projectSearchValue, jurisdictionSearchValue } = this.props
-    
+
     const params = ['name', 'uploadedBy']
 
     let searchTerms = []
@@ -235,7 +236,7 @@ export class SearchBox extends Component {
 
     return searchTerms.join(' | ')
   }
-  
+
   /**
    * Opens the date picker for start date
    */
@@ -244,7 +245,7 @@ export class SearchBox extends Component {
       datePicker2Open: true
     })
   }
-  
+
   /**
    * Closes the date picker for end date
    */
@@ -253,7 +254,7 @@ export class SearchBox extends Component {
       datePicker2Open: false
     })
   }
-  
+
   /**
    * Opens the date picker for start date
    */
@@ -262,7 +263,7 @@ export class SearchBox extends Component {
       datePicker1Open: true
     })
   }
-  
+
   /**
    * Closes the date picker for start date
    */
@@ -294,7 +295,7 @@ export class SearchBox extends Component {
       searchingProjects,
       searchingJurisdictions
     } = this.props
-    
+
     const { showFilterForm, isFocused } = this.state
 
     const iconColor = '#949494'
@@ -510,6 +511,7 @@ export class SearchBox extends Component {
                           ...inputProps
                         }}
                         handleSuggestionSelected={this.handleSuggestionSelected('project')}
+                        suggestionType={'project'}
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
@@ -562,6 +564,7 @@ export class SearchBox extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const searchState = state.scenes.docManage.search
+  const currentUser = state.data.user.currentUser
   return {
     form: searchState.form.params,
     searchValue: searchState.form.searchValue,
@@ -572,7 +575,8 @@ const mapStateToProps = state => {
     selectedJurisdiction: searchState.jurisdictionSuggestions.selectedSuggestion,
     selectedProject: searchState.projectSuggestions.selectedSuggestion,
     searchingProjects: searchState.projectSuggestions.searching,
-    searchingJurisdictions: searchState.jurisdictionSuggestions.searching
+    searchingJurisdictions: searchState.jurisdictionSuggestions.searching,
+    currentUser: currentUser
   }
 }
 
@@ -585,4 +589,10 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBox)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'main')(
+    withAutocompleteMethods('jurisdiction', 'main', {}, false)(
+      SearchBox
+    )
+  )
+)
