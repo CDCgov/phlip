@@ -253,15 +253,19 @@ export class DocumentList extends Component {
    * Prepares the actual file download
    */
   prepareDocumentDownload = () => {
-    const { downloading, project, jurisdiction } = this.props
+    const { downloading, project, jurisdiction, actions } = this.props
     
-    const pdfBlob = new Blob([downloading.content], { type: 'application/pdf' })
+    const pdfBlob = new Blob(
+      [downloading.content],
+      { type: downloading.id === 'all' ? 'application/zip' : 'application/pdf' }
+    )
     this.url = URL.createObjectURL(pdfBlob)
     this.downloadRef.current.href = this.url
     this.downloadRef.current.download = downloading.id === 'all'
       ? `${project.name}-${jurisdiction.name}-documents.zip`
       : downloading.name
     this.downloadRef.current.click()
+    actions.clearDownload()
   }
   
   render() {
@@ -422,9 +426,10 @@ export class DocumentList extends Component {
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
-                  <IconButton color="black" onClick={this.handleDownloadDocs(doc._id)}>
+                  {downloading.id !== doc.id && <IconButton color="black" onClick={this.handleDownloadDocs(doc._id)}>
                     file_download
-                  </IconButton>
+                  </IconButton>}
+                  {downloading.id === doc.id && <CircularLoader color="primary" style={{ height: 20, width: 20 }} />}
                 </FlexGrid>
                 <Divider />
               </Fragment>

@@ -391,6 +391,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         }
       }
       
+    case types.CLEAR_DOWNLOAD:
+      return {
+        ...state,
+        downloading: {
+          name: '',
+          id: '',
+          content: ''
+        }
+      }
+      
     case types.CLEAR_API_ERROR:
       return {
         ...state,

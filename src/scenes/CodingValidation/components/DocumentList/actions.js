@@ -22,6 +22,7 @@ export const types = {
   DOWNLOAD_DOCUMENTS_REQUEST: 'DOWNLOAD_DOCUMENTS_REQUEST',
   DOWNLOAD_DOCUMENTS_SUCCESS: 'DOWNLOAD_DOCUMENTS_SUCCESS',
   DOWNLOAD_DOCUMENTS_FAIL: 'DOWNLOAD_DOCUMENTS_FAIL',
+  CLEAR_DOWNLOAD: 'CLEAR_DOWNLOAD',
   CLEAR_API_ERROR: 'CLEAR_API_ERROR'
 }
 
@@ -45,5 +46,6 @@ export default {
   resetScrollTop: makeActionCreator(types.RESET_SCROLL_TOP),
   updateAnnotations: makeActionCreator(types.UPDATE_ANNOTATIONS, 'questionId'),
   downloadDocumentsRequest: makeActionCreator(types.DOWNLOAD_DOCUMENTS_REQUEST, 'docId'),
-  clearApiError: makeActionCreator(types.CLEAR_API_ERROR)
+  clearApiError: makeActionCreator(types.CLEAR_API_ERROR),
+  clearDownload: makeActionCreator(types.CLEAR_DOWNLOAD)
 }
