@@ -321,7 +321,7 @@ export class DocumentList extends Component {
           {!docSelected &&
           <FlexGrid>
             {downloading.id !== 'all' && <IconButton
-              color="black"
+              color="#757575"
               tooltipText="Download All Documents"
               placement="left-start"
               onClick={this.handleDownloadDocs('all')}>
@@ -426,7 +426,12 @@ export class DocumentList extends Component {
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
-                  {downloading.id !== doc.id && <IconButton color="black" onClick={this.handleDownloadDocs(doc._id)}>
+                  {downloading.id !== doc.id &&
+                  <IconButton
+                    color="#757575"
+                    tooltipText="Download"
+                    onClick={this.handleDownloadDocs(doc._id)}
+                    iconSize={19}>
                     file_download
                   </IconButton>}
                   {downloading.id === doc.id && <CircularLoader color="primary" style={{ height: 20, width: 20 }} />}
