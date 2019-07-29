@@ -264,8 +264,30 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
               type="column"
             />
             <Connect(DocumentList)
+              jurisdiction={
+                Object {
+                  "id": 11,
+                }
+              }
               page="coding"
-              projectId={1}
+              project={
+                Object {
+                  "id": 1,
+                  "name": "Project Test",
+                  "projectJurisdictions": Array [
+                    Object {
+                      "id": 11,
+                    },
+                    Object {
+                      "id": 10,
+                    },
+                    Object {
+                      "id": 20,
+                      "name": "florida",
+                    },
+                  ],
+                }
+              }
               questionId={1}
               saveUserAnswer={[Function]}
             />

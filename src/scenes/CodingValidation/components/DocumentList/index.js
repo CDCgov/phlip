@@ -43,7 +43,7 @@ export class DocumentList extends Component {
     downloading: PropTypes.shape({
       name: PropTypes.string,
       content: PropTypes.any,
-      id: PropTypes.string
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     })
   }
   
@@ -61,7 +61,11 @@ export class DocumentList extends Component {
     currentAnnotationIndex: 0,
     scrollTop: false,
     gettingDocs: false,
-    downloading: ''
+    downloading: {
+      name: '',
+      id: '',
+      content: ''
+    }
   }
   
   constructor(props, context) {
@@ -242,7 +246,6 @@ export class DocumentList extends Component {
   /**
    * Handles when the user has requested to download documents
    * @param docs
-   * @returns {Function}
    */
   handleDownloadDocs = docs => () => {
     const { actions } = this.props
@@ -447,8 +450,8 @@ export class DocumentList extends Component {
   }
 }
 
-/* istanbul-ignore-next */
-export const mapStateToProps = state => {
+/* istanbul ignore next */
+const mapStateToProps = state => {
   const pageState = state.scenes.codingValidation.documentList
   const annotations = pageState.annotations.filtered
   const users = pageState.annotationUsers.filtered
@@ -498,7 +501,7 @@ export const mapStateToProps = state => {
   }
 }
 
-/* istanbul-ignore-next */
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: { ...bindActionCreators(actions, dispatch) }
 })

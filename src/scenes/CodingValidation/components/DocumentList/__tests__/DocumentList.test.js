@@ -1,9 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { DocumentList } from '../index'
-// import { INITIAL_STATE } from '../reducer'
-// import { schemeById, userAnswersCoded } from 'utils/testData/coding'
-import { CircularLoader } from 'components'
 
 const props = {
   actions: {
@@ -13,14 +10,17 @@ const props = {
     clearDocSelected: jest.fn(),
     removeAnnotation: jest.fn(),
     toggleCoderAnnotations: jest.fn(),
-    toggleAnnotationMode: jest.fn()
+    toggleAnnotationMode: jest.fn(),
+    downloadDocumentsRequest: jest.fn(),
+    clearDownload: jest.fn(),
+    clearApiError: jest.fn()
   },
-  jurisdictionId: 1,
-  projectId: 1,
+  jurisdiction: { jurisdictionId: 1 },
+  project: { id: 1 },
   page: 'coding',
   documents: [
     { name: 'doc1', _id: 12344 },
-    { name: 'doc1', _id: 44321 }
+    { name: 'doc2', _id: 44321 }
   ],
   answerSelected: null,
   questionId: 3,
@@ -31,7 +31,12 @@ const props = {
   annotationModeEnabled: false,
   annotations: [],
   annotationUsers: [],
-  isValidation: false
+  isValidation: false,
+  downloading: {
+    id: '',
+    content: '',
+    name: ''
+  }
 }
 
 describe('DocumentList', () => {
@@ -108,8 +113,8 @@ describe('DocumentList', () => {
     test('should call props.getContents', () => {
       const spy = jest.spyOn(props.actions, 'getDocumentContentsRequest')
       const wrapper = shallow(<DocumentList {...props} />)
-      wrapper.find('FlexGrid').at(3).childAt(0).find('span').simulate('click')
-      wrapper.update()
+      const doc = wrapper.find('span').filterWhere(node => node.text() === 'doc1')
+      doc.simulate('click')
       expect(spy).toHaveBeenCalledWith(12344)
     })
   })
@@ -119,8 +124,10 @@ describe('DocumentList', () => {
       'should show a view with text "There are no approved and/or assigned documents for this project and jurisdiction."',
       () => {
         const wrapper = shallow(<DocumentList {...props} showEmptyDocs documents={[]} />)
-        expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(0).childAt(0).text())
-          .toEqual('There are no approved or assigned documents for this project and jurisdiction.')
+        const view = wrapper.find('WithStyles(Typography)')
+          .filterWhere(node => node.childAt(0).text() ===
+            'There are no approved or assigned documents for this project and jurisdiction.')
+        expect(view.length).toEqual(1)
       }
     )
   })
@@ -196,23 +203,75 @@ describe('DocumentList', () => {
       )
       expect(wrapper.find('ApiErrorView').prop('error')).toEqual('Failed to get documents.')
     })
+    
+    test('should show an alert if the error is an alert error', () => {
+      const wrapper = shallow(<DocumentList {...props} apiError={{ text: 'alert', open: true, alertOrView: 'alert' }} />)
+      expect(wrapper.find('ApiErrorAlert').prop('open')).toEqual(true)
+    })
+    
+    test('should close the alert when the user clicks the dismiss button', () => {
+      const spy = jest.spyOn(props.actions, 'clearApiError')
+      const wrapper = shallow(<DocumentList {...props} apiError={{ text: 'alert', open: true, alertOrView: 'alert' }} />)
+      wrapper.find('ApiErrorAlert').prop('onCloseAlert')()
+      expect(spy).toHaveBeenCalled()
+    })
   })
   
   describe('when a document has been selected but content is not available', () => {
     test('should change document name text color to #757575 for matching document', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(1).prop('style').color).toEqual('#757575')
+      expect(wrapper.find('FlexGrid').at(6).childAt(1).prop('style').color).toEqual('#757575')
     })
     
     test('should not change document name text color for not matching documents', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(3).childAt(2).childAt(1).prop('style').color).toEqual('#048484')
+      expect(wrapper.find('FlexGrid').at(8).childAt(1).prop('style').color).toEqual('#048484')
     })
     
     test('should add a spinner next to the selected document name', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(2).childAt(0).matchesElement(<CircularLoader />))
-        .toEqual(true)
+      expect(wrapper.find('FlexGrid').at(6).find('CircularLoader').length).toEqual(1)
+    })
+  })
+  
+  describe('downloading documents', () => {
+    test('should send a request to download all documents when the user clicks the download icon in the header', () => {
+      const wrapper = shallow(<DocumentList {...props} />)
+      const spy = jest.spyOn(props.actions, 'downloadDocumentsRequest')
+      wrapper.find('IconButton').at(0).simulate('click')
+      expect(spy).toHaveBeenCalledWith('all')
+    })
+    
+    test(
+      'should send a request to download a specific document when the user clicks the download icon next to a doc',
+      () => {
+        const wrapper = shallow(<DocumentList {...props} />)
+        const spy = jest.spyOn(props.actions, 'downloadDocumentsRequest')
+        wrapper.find('IconButton').at(2).simulate('click')
+        expect(spy).toHaveBeenCalledWith(44321)
+      }
+    )
+    
+    test('should show a spinner next to a document to indicate that it is being downloaded', () => {
+      const wrapper = shallow(<DocumentList {...props} downloading={{ id: 'all' }} />)
+      expect(wrapper.find('FlexGrid').at(3).find('CircularLoader').length).toEqual(1)
+    })
+    
+    test('should show a spinner to indicate that all are being downloaded', () => {
+      const wrapper = shallow(<DocumentList {...props} downloading={{ id: 44321 }} />)
+      expect(wrapper.find('FlexGrid').at(7).find('CircularLoader').length).toEqual(1)
+    })
+  })
+  
+  describe('loading documents', () => {
+    const wrapper = shallow(<DocumentList {...props} gettingDocs />)
+    
+    test('should show \'Loading...\' text', () => {
+      expect(wrapper.find('FlexGrid').at(5).childAt(0).childAt(0).text()).toEqual('Loading...')
+    })
+    
+    test('should show a spinner to indicate that documents are being loaded', () => {
+      expect(wrapper.find('FlexGrid').at(5).find('CircularLoader').length).toEqual(1)
     })
   })
   
