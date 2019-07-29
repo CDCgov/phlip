@@ -7,6 +7,7 @@ import Header from './components/Header'
 import QuestionCard from './components/QuestionCard'
 import Navigator from './components/Navigator'
 import DocumentList from './components/DocumentList'
+import BulkValidate from './components/BulkValidate'
 import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid, withProjectLocked
@@ -21,6 +22,9 @@ const ResizeHandle = () => (
   </Icon>
 )
 
+/**
+ * The base component for the Code or Validate screens
+ */
 export class CodingValidation extends Component {
   static propTypes = {
     project: PropTypes.object,
@@ -36,21 +40,23 @@ export class CodingValidation extends Component {
     selectedCategory: PropTypes.number,
     schemeError: PropTypes.string,
     answerErrorContent: PropTypes.any,
-    saveFlagErrorContent: PropTypes.string,
-    getQuestionErrors: PropTypes.string,
     isLoadingPage: PropTypes.bool,
     pageLoadingMessage: PropTypes.string,
+    apiErrorAlert: PropTypes.object,
     showPageLoader: PropTypes.bool,
     actions: PropTypes.object,
     unsavedChanges: PropTypes.bool,
     isChangingQuestion: PropTypes.bool,
     selectedCategoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     history: PropTypes.object,
-    hasTouchedQuestion: PropTypes.bool,
-    classes: PropTypes.object,
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
     match: PropTypes.object,
+    validationInProgress: PropTypes.bool,
+    /**
+     * Text to show if the scheme or jurisdictions are empty
+     */
+    gettingStartedText: PropTypes.string,
     /**
      * Whether or not the project has been finalized (locked) by an admin or coordinator. Different from being 'checked
      * out'
@@ -67,31 +73,18 @@ export class CodingValidation extends Component {
           ? props.project.projectJurisdictions.find(j => parseInt(props.match.params.jid) === parseInt(j.id))
           : props.project.projectJurisdictions[0]
         : { id: null },
-      navOpen: false,
-      applyAllAlertOpen: false,
       changeProps: [],
-      stillSavingAlertOpen: false,
       changeMethod: null,
-      flagConfirmAlertOpen: false,
-      flagToDelete: null,
-      startedText: '',
-      showNav: false
+      stillSavingAlertOpen: false,
+      bulkValidateOpen: false
     }
     
-    this.confirmAlertActions = [
-      { value: 'Clear Flag', type: 'button', onClick: this.onClearFlag }
-    ]
-    
-    this.modalActions = [
+    this.stillSavingActions = [
       {
         value: 'Continue',
         type: 'button',
-        onClick: this.onApplyToAll
+        onClick: this.onContinueStillSavingAlert
       }
-    ]
-    
-    this.stillSavingActions = [
-      { ...this.modalActions[0], onClick: this.onContinueStillSavingAlert }
     ]
     
     this.saveFailedActions = [
@@ -116,46 +109,39 @@ export class CodingValidation extends Component {
     
     document.title = `PHLIP - ${project.name} - ${isValidation ? 'Validate' : 'Code'} `
     actions.setPage(page)
+    actions.getOutlineRequest(project.id, jur, q)
     
-    if (page === 'coding') {
-      actions.getCodingOutlineRequest(project.id, jur, q)
-    } else {
-      actions.getValidationOutlineRequest(project.id, jur, q)
-    }
     this.onShowPageLoader()
   }
   
   componentDidUpdate(prevProps, prevState) {
-    const { getRequestInProgress, areJurisdictionsEmpty, isSchemeEmpty, schemeError, question } = this.props
+    const {
+      schemeError, question, gettingStartedText, getRequestInProgress, validationInProgress, apiErrorAlert, actions
+    } = this.props
     const { jurisdiction } = this.state
     
     if (!getRequestInProgress && prevProps.getRequestInProgress) {
-      if (areJurisdictionsEmpty || isSchemeEmpty) {
-        this.onShowGetStartedView()
-      } else {
-        if (schemeError === null) {
-          this.onShowCodeView()
-          this.changeRoutes()
-        }
+      if (schemeError === null && gettingStartedText === '') {
+        this.changeRoutes()
       }
     }
     
-    if (!areJurisdictionsEmpty && !isSchemeEmpty) {
+    if (gettingStartedText === '') {
       if (prevProps.question.id !== question.id || prevState.jurisdiction.id !== jurisdiction.id) {
         this.changeRoutes()
+      }
+    }
+    
+    if (prevProps.validationInProgress && !validationInProgress) {
+      if (!apiErrorAlert.open) {
+        actions.updateAnnotations(question.id)
+        this.handleCloseBulkValidate()
       }
     }
   }
   
   componentWillUnmount() {
     this.props.actions.onCloseScreen()
-  }
-  
-  /**
-   * @public
-   */
-  onToggleNavigator = () => {
-    this.setState({ navOpen: !this.state.navOpen })
   }
   
   /**
@@ -171,83 +157,66 @@ export class CodingValidation extends Component {
   }
   
   /**
-   * @public
-   * @param index
+   * Handles getting a question depending on the source of the action
+   * @returns {Function}
    */
-  getNextQuestion = index => {
-    const { actions, question, questionOrder, unsavedChanges, project } = this.props
+  getQuestion = (source, itemOrIndex) => {
+    const { actions, questionOrder, unsavedChanges, project, question } = this.props
     const { jurisdiction } = this.state
     
+    let action = '', qItem = itemOrIndex, changeProps = []
     actions.toggleAnnotationMode(question.id, '', false)
     
+    switch (source) {
+      case 'nav':
+        action = actions.onQuestionSelectedInNav
+        changeProps = [itemOrIndex, null]
+        break
+      case 'prev':
+        action = actions.getPrevQuestion
+        qItem = questionOrder[itemOrIndex]
+        changeProps = [qItem, itemOrIndex]
+        break
+      case 'next':
+        action = actions.getNextQuestion
+        qItem = questionOrder[itemOrIndex]
+        changeProps = [qItem, itemOrIndex]
+        break
+    }
+    
     if (unsavedChanges) {
-      this.onShowStillSavingAlert(index, actions.getNextQuestion)
+      this.onShowStillSavingAlert(itemOrIndex, action, changeProps)
     } else {
-      actions.getNextQuestion(questionOrder[index], index, project.id, jurisdiction.id)
+      action(qItem, itemOrIndex, project.id, jurisdiction.id)
       this.onShowQuestionLoader()
     }
   }
   
   /**
-   * @public
-   * @param index
-   */
-  getPrevQuestion = index => {
-    const { actions, question, project, questionOrder, unsavedChanges } = this.props
-    const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
-    
-    if (unsavedChanges) {
-      this.onShowStillSavingAlert(index, actions.getPrevQuestion)
-    } else {
-      actions.getPrevQuestion(questionOrder[index], index, project.id, jurisdiction.id)
-      this.onShowQuestionLoader()
-    }
-  }
-  
-  /**
-   * @public
-   * @param item
-   */
-  onQuestionSelectedInNav = item => {
-    const { actions, question, project, unsavedChanges } = this.props
-    const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
-    
-    if (unsavedChanges) {
-      this.onShowStillSavingAlert(item, actions.onQuestionSelectedInNav)
-    } else {
-      actions.onQuestionSelectedInNav(item, project.id, jurisdiction.id)
-      this.onShowQuestionLoader()
-    }
-  }
-  
-  /**
+   * Shows a question loader spinner
    * @public
    */
   onShowQuestionLoader = () => {
+    const { isChangingQuestion, actions } = this.props
+    
     setTimeout(() => {
-      if (this.props.isChangingQuestion) {
-        this.props.actions.showQuestionLoader()
+      if (isChangingQuestion) {
+        actions.showQuestionLoader()
       }
     }, 1000)
   }
   
   /**
+   * Handles when the user changes part of their answer that's not a text field
    * @public
    * @param id
-   * @returns {Function}
+   * @param value
    */
-  onAnswer = id => (event, value) => {
+  onAnswer = (id, value) => {
     const { actions, question, project } = this.props
     const { jurisdiction } = this.state
     
-    actions.toggleAnnotationMode(question.id, '', false)
-    
     actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
   
@@ -260,49 +229,40 @@ export class CodingValidation extends Component {
     const { jurisdiction } = this.state
     
     actions.saveUserAnswerRequest(project.id, jurisdiction.id, question.id, selectedCategoryId)
+    actions.setHeaderText('Saving...')
   }
   
   /**
    * @public
-   * @param id
    * @param field
+   * @param value
+   * @param id
    * @returns {Function}
    */
-  onChangeTextAnswer = (id, field) => event => {
-    const { project, question, actions } = this.props
+  onChangeTextAnswer = (field, id, value) => {
+    const { actions, project, question } = this.props
     const { jurisdiction } = this.state
-    
-    actions.toggleAnnotationMode(question.id, '', false)
     
     switch (field) {
       case 'textAnswer':
-        actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, event.target.value)
+        actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
         break
-      
       case 'comment':
-        actions.onChangeComment(project.id, jurisdiction.id, question.id, event.target.value)
+        actions.onChangeComment(project.id, jurisdiction.id, question.id, value)
         break
-      
       case 'pincite':
-        actions.onChangePincite(project.id, jurisdiction.id, question.id, id, event.target.value)
+        actions.onChangePincite(project.id, jurisdiction.id, question.id, id, value)
         break
     }
     
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
   
   /**
    * @public
-   * @returns {*}
-   */
-  onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
-  
-  /**
-   * @public
    * @returns {*|{type, args}}
    */
-  onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
+  onCloseSaveFailedAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
   
   /**
    * @public
@@ -310,7 +270,6 @@ export class CodingValidation extends Component {
    * @param selection
    */
   onChangeCategory = (event, selection) => {
-    this.onSaveCodedQuestion()
     this.props.actions.onChangeCategory(selection)
   }
   
@@ -319,18 +278,19 @@ export class CodingValidation extends Component {
    */
   onTryAgain = () => {
     this.onSaveCodedQuestion()
-    this.onCloseAlert()
+    this.onCloseSaveFailedAlert()
   }
   
   /**
    * @public
    * @param question
    * @param method
+   * @param changeProps
    */
-  onShowStillSavingAlert = (question, method) => {
+  onShowStillSavingAlert = (question, method, changeProps) => {
     this.setState({
       stillSavingAlertOpen: true,
-      changeProps: typeof question === 'object' ? [question] : [this.props.questionOrder[question], question],
+      changeProps,
       changeMethod: { type: 0, method: method }
     })
   }
@@ -378,7 +338,6 @@ export class CodingValidation extends Component {
     const { jurisdiction } = this.state
     
     actions.onClearAnswer(project.id, jurisdiction.id, question.id)
-    this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
   
@@ -398,23 +357,6 @@ export class CodingValidation extends Component {
     }
   }
   
-  /***
-   * @public
-   */
-  onChangeTouchedStatus = () => {
-    const { hasTouchedQuestion, actions } = this.props
-    
-    if (!hasTouchedQuestion) {
-      actions.changeTouchedStatus()
-    }
-  }
-  
-  /**
-   * @public
-   * @returns {*}
-   */
-  onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
-  
   /**
    * @public
    */
@@ -422,57 +364,25 @@ export class CodingValidation extends Component {
     const { actions, project, question } = this.props
     const { jurisdiction } = this.state
     
-    this.onCloseApplyAllAlert()
-    this.onChangeTouchedStatus()
     actions.applyAnswerToAll(project.id, jurisdiction.id, question.id)
   }
   
   /**
-   * @public
-   * @returns {*}
+   * Handles opening the bulk validate modal
    */
-  onShowGetStartedView = () => {
-    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation, projectLocked } = this.props
-    const noScheme = isSchemeEmpty
-    const noJurisdictions = areJurisdictionsEmpty
-    
-    let startedText = ''
-    if (projectLocked) {
-      startedText = 'This project is locked. No changes can be made.'
-    } else if (isValidation) {
-      if (noScheme && !noJurisdictions) {
-        startedText = 'This project doesn\'t have a coding scheme.'
-      } else if (!noScheme && noJurisdictions) {
-        startedText = 'This project doesn\'t have jurisdictions.'
-      } else {
-        startedText = 'This project does not have a coding scheme or jurisdictions.'
-      }
-    } else {
-      if (user.role === 'Coder') {
-        startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
-      } else if (noScheme && !noJurisdictions) {
-        startedText = 'You must add questions to the coding scheme before coding.'
-      } else if (!noScheme && noJurisdictions) {
-        startedText = 'You must add jurisdictions to the project before coding.'
-      } else {
-        startedText = 'You must add jurisdictions and questions to the coding scheme before coding.'
-      }
-    }
-    
+  handleOpenBulkValidate = () => {
     this.setState({
-      startedText
+      bulkValidateOpen: true
     })
   }
   
   /**
-   * @public
-   * @returns {*}
+   * Handles closing the bulk validate modal
    */
-  onShowCodeView = () => {
-    this.setState({
-      navOpen: true,
-      showNav: true
-    })
+  handleCloseBulkValidate = () => {
+    const { validationInProgress, actions } = this.props
+    if (validationInProgress) actions.clearValidationProgress()
+    this.setState({ bulkValidateOpen: false })
   }
   
   /**
@@ -480,9 +390,11 @@ export class CodingValidation extends Component {
    * @public
    */
   onShowPageLoader = () => {
+    const { isLoadingPage, actions } = this.props
+    
     setTimeout(() => {
-      if (this.props.isLoadingPage) {
-        this.props.actions.showPageLoader()
+      if (isLoadingPage) {
+        actions.showPageLoader()
       }
     }, 1000)
   }
@@ -527,6 +439,8 @@ export class CodingValidation extends Component {
         }
         
         this.onShowQuestionLoader()
+        actions.changeTouchedStatus(false)
+        actions.setHeaderText('')
         actions.getApprovedDocumentsRequest(project.id, newJur.jurisdictionId, page)
       }
     }
@@ -538,43 +452,15 @@ export class CodingValidation extends Component {
    * @param flagInfo
    */
   onSaveFlag = flagInfo => {
-    const { actions, project, question, user, selectedCategoryId } = this.props
+    const { actions, project, question, selectedCategoryId } = this.props
     const { jurisdiction } = this.state
     
-    const flag = {
-      raisedBy: {
-        userId: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName
-      },
-      ...flagInfo
-    }
-    
     if (flagInfo.type === 3) {
-      actions.onSaveRedFlag(project.id, question.id, flag)
+      actions.onSaveRedFlag(project.id, question.id, flagInfo)
     } else {
-      actions.onSaveFlag(project.id, jurisdiction.id, question.id, flag)
+      actions.onSaveFlag(project.id, jurisdiction.id, question.id, flagInfo)
       actions.saveUserAnswerRequest(project.id, jurisdiction.id, question.id, selectedCategoryId)
     }
-    
-    this.onChangeTouchedStatus()
-  }
-  
-  /**
-   * Opens an alert to ask the user to confirm deleting a flag from the Flags & Comments validation table
-   * @public
-   * @param flagId
-   * @param type
-   */
-  onOpenFlagConfirmAlert = (flagId, type) => {
-    const { question, actions } = this.props
-    
-    actions.toggleAnnotationMode(question.id, '', false)
-    
-    this.setState({
-      flagConfirmAlertOpen: true,
-      flagToDelete: { id: flagId, type }
-    })
   }
   
   /**
@@ -582,43 +468,47 @@ export class CodingValidation extends Component {
    * depending on flag type. Closes delete flag confirm alert
    * @public
    */
-  onClearFlag = () => {
+  onClearFlag = (id, type) => {
     const { actions, question, project } = this.props
-    const { flagToDelete, jurisdiction } = this.state
+    const { jurisdiction } = this.state
     
-    if (flagToDelete.type === 3) {
-      actions.clearRedFlag(flagToDelete.id, question.id, project.id)
+    if (type === 3) {
+      actions.clearRedFlag(id, question.id, project.id)
     } else {
-      actions.clearFlag(flagToDelete.id, project.id, jurisdiction.id, question.id)
+      actions.clearFlag(id, project.id, jurisdiction.id, question.id)
     }
-    
-    this.setState({
-      flagConfirmAlertOpen: false,
-      flagToDelete: null
-    })
   }
   
   /**
-   * Closes the delete flag confirm alert after the user decided to they don't want to delete the flag
-   * @public
+   * Resets users answer to initial state when they came to the question
    */
-  onCloseFlagConfigAlert = () => {
-    this.setState({
-      flagConfirmAlertOpen: false,
-      flagToDelete: null
-    })
+  onResetAnswer = () => {
+    const { actions, question, project } = this.props
+    const { jurisdiction } = this.state
+    
+    actions.resetAnswer(project.id, jurisdiction.id, question.id)
+    actions.setUnsavedChanges(true)
+    this.onSaveCodedQuestion()
+  }
+  
+  /**
+   * Handles when the user does a 'bulk' validation
+   */
+  handleConfirmValidate = (scope, user) => {
+    const { actions, project, question } = this.props
+    const { jurisdiction } = this.state
+    actions.toggleAnnotationMode(question.id, '', false)
+    actions.bulkValidationRequest(project.id, jurisdiction.id, question.id, scope, user)
   }
   
   render() {
     const {
-      showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
-      questionOrder, isSchemeEmpty, schemeError, areJurisdictionsEmpty, saveFlagErrorContent,
-      getRequestInProgress, user, currentIndex, showNextButton, question, project, projectLocked
+      showPageLoader, answerErrorContent, objectExists, actions, page, selectedCategory, questionOrder, isSchemeEmpty,
+      schemeError, areJurisdictionsEmpty, gettingStartedText, getRequestInProgress, user, currentIndex, showNextButton,
+      question, project, projectLocked, apiErrorAlert, validationInProgress
     } = this.props
     
-    const {
-      applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
-    } = this.state
+    const { stillSavingAlertOpen, jurisdiction, bulkValidateOpen } = this.state
     
     const containerStyle = {
       width: '100%',
@@ -630,15 +520,6 @@ export class CodingValidation extends Component {
     
     return (
       <FlexGrid container type="row" flex style={containerStyle}>
-        <Alert
-          open={applyAllAlertOpen}
-          actions={this.modalActions}
-          title="Warning"
-          onCloseAlert={this.onCloseApplyAllAlert}>
-          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Your answer will apply to ALL categories. Previous answers will be overwritten.
-          </Typography>
-        </Alert>
         <Alert
           open={stillSavingAlertOpen}
           onCloseAlert={this.onCancelStillSavingAlert}
@@ -652,15 +533,15 @@ export class CodingValidation extends Component {
           open={answerErrorContent !== null}
           content={answerErrorContent}
           actions={objectExists ? [] : this.saveFailedActions}
-          onCloseAlert={this.onCloseAlert}
+          onCloseAlert={this.onCloseSaveFailedAlert}
         />
         <ApiErrorAlert
-          open={getQuestionErrors !== null}
-          content={getQuestionErrors}
-          onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
+          open={apiErrorAlert.open}
+          content={apiErrorAlert.text}
+          onCloseAlert={() => actions.closeApiErrorAlert()}
         />
-        {showNav &&
-        <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.onQuestionSelectedInNav} />}
+        {(gettingStartedText === '' && !getRequestInProgress) &&
+        <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.getQuestion} />}
         <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             project={project}
@@ -668,6 +549,9 @@ export class CodingValidation extends Component {
             pageTitle={capitalizeFirstLetter(page)}
             currentJurisdiction={jurisdiction}
             onGoBack={this.onGoBack}
+            isValidation={page === 'validation'}
+            onOpenBulkValidate={this.handleOpenBulkValidate}
+            showValidate={schemeError === null && !projectLocked}
             empty={jurisdiction.id === null || questionOrder === null || questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
@@ -678,6 +562,13 @@ export class CodingValidation extends Component {
                 flex
                 style={{ padding: '1px 15px 20px 3px', overflow: 'auto', minHeight: 500 }}>
                 {schemeError !== null && <ApiErrorView error="We couldn't get the coding scheme for this project." />}
+                <BulkValidate
+                  open={bulkValidateOpen}
+                  onClose={this.handleCloseBulkValidate}
+                  users={project.projectUsers}
+                  onConfirmValidate={this.handleConfirmValidate}
+                  validationInProgress={validationInProgress}
+                />
                 {getRequestInProgress
                   ? showPageLoader
                     ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
@@ -685,13 +576,16 @@ export class CodingValidation extends Component {
                   : (isSchemeEmpty || areJurisdictionsEmpty)
                     ? (
                       <FlexGrid container flex align="center" justify="center" padding={30}>
-                        <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-                        {!projectLocked && <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
+                        <Typography
+                          variant="display1"
+                          style={{ marginBottom: '20px' }}>{gettingStartedText}</Typography>
+                        {!projectLocked &&
+                        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
                           {(isSchemeEmpty && user.role !== 'Coder') &&
                           <TextLink to={{ pathname: `/project/${project.id}/coding-scheme` }}>
                             <Button value="Create Coding Scheme" color="accent" />
                           </TextLink>}
-                          {(areJurisdictionsEmpty && user.role) !== 'Coder' &&
+                          {(areJurisdictionsEmpty && user.role !== 'Coder') &&
                           <TextLink to={{ pathname: `/project/${project.id}/jurisdictions` }}>
                             <Button value="Add Jurisdictions" color="accent" />
                           </TextLink>}
@@ -701,22 +595,22 @@ export class CodingValidation extends Component {
                     : (schemeError === null && (
                       <>
                         <QuestionCard
-                          page={page}
                           onChange={this.onAnswer}
                           onChangeTextAnswer={this.onChangeTextAnswer}
                           onChangeCategory={this.onChangeCategory}
                           onAnswer={this.onAnswer}
                           onClearAnswer={this.onClearAnswer}
-                          onOpenAlert={this.onOpenApplyAllAlert}
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
-                          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-                          currentIndex={currentIndex}
-                          disableAll={projectLocked}
-                          getNextQuestion={this.getNextQuestion}
-                          getPrevQuestion={this.getPrevQuestion}
+                          onResetAnswer={this.onResetAnswer}
+                          onClearFlag={this.onClearFlag}
+                          handleGetQuestion={this.getQuestion}
+                          onApplyAll={this.onApplyToAll}
                           totalLength={questionOrder.length}
                           showNextButton={showNextButton}
+                          currentIndex={currentIndex}
+                          disableAll={projectLocked}
+                          page={page}
                         />
                         <Resizable
                           style={{ display: 'flex' }}
@@ -761,19 +655,6 @@ export class CodingValidation extends Component {
             </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-        <Alert
-          open={flagConfirmAlertOpen}
-          onCloseAlert={this.onCloseFlagConfigAlert}
-          actions={this.confirmAlertActions}
-          title="Confirm Clear Flag">
-          <Typography variant="body1">Do you want to clear this flag?</Typography>
-        </Alert>
-        
-        <ApiErrorAlert
-          content={saveFlagErrorContent}
-          open={saveFlagErrorContent !== null}
-          onCloseAlert={() => actions.dismissApiAlert('saveFlagErrorContent')}
-        />
       </FlexGrid>
     )
   }
@@ -793,6 +674,7 @@ const mapStateToProps = (state, ownProps) => {
       ? {}
       : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
     currentIndex: pageState.currentIndex || 0,
+    gettingStartedText: pageState.gettingStartedText,
     questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
     showNextButton: pageState.showNextButton,
     isSchemeEmpty: pageState.isSchemeEmpty,
@@ -801,16 +683,15 @@ const mapStateToProps = (state, ownProps) => {
     selectedCategory: pageState.selectedCategory,
     schemeError: pageState.schemeError || null,
     answerErrorContent: pageState.answerErrorContent || null,
-    saveFlagErrorContent: pageState.saveFlagErrorContent || null,
-    getQuestionErrors: pageState.getQuestionErrors || null,
     isLoadingPage: pageState.isLoadingPage,
     showPageLoader: pageState.showPageLoader,
     isChangingQuestion: pageState.isChangingQuestion || false,
     selectedCategoryId: pageState.selectedCategoryId || null,
     unsavedChanges: pageState.unsavedChanges || false,
-    hasTouchedQuestion: pageState.hasTouchedQuestion || false,
     objectExists: pageState.objectExists || false,
-    getRequestInProgress: pageState.getRequestInProgress
+    getRequestInProgress: pageState.getRequestInProgress,
+    apiErrorAlert: pageState.apiErrorAlert,
+    validationInProgress: pageState.validationInProgress
   }
 }
 

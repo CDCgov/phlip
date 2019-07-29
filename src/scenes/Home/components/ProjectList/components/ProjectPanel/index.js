@@ -293,14 +293,14 @@ export class ProjectPanel extends Component {
                         Protocol
                         <ClipboardCheckOutline style={iconStyle} />
                       </Button>
-                      <Button
+                      {!isCoder && <Button
                         aria-label="Export validated questions"
                         onClick={this.onClickExport}
                         id={`export-validated-${project.id}`}
                         {...panelButtonProps}>
                         Export
                         <FileExport style={iconStyle} />
-                      </Button>
+                      </Button>}
                     </FlexGrid>
                   </FlexGrid>
                   <FlexGrid container type="row">
@@ -349,7 +349,7 @@ export class ProjectPanel extends Component {
                         aria-label="Code project"
                         component={Link}
                         to={{ pathname: `/project/${project.id}/code` }}
-                        style={{ width: 150, height: 50, marginRight: 20, borderRadius: 3 }}
+                        style={{ width: 150, height: 50, borderRadius: 3 }}
                       />
                       {!isCoder &&
                       <Button
@@ -359,7 +359,7 @@ export class ProjectPanel extends Component {
                         aria-label="Validate project"
                         component={Link}
                         to={{ pathname: `/project/${project.id}/validate` }}
-                        style={{ width: 150, height: 50, borderRadius: 3 }}
+                        style={{ width: 150, height: 50, marginLeft: 20, borderRadius: 3 }}
                       />}
                     </FlexGrid>
                   </FlexGrid>

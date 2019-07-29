@@ -15,7 +15,8 @@ import {
   getSelectedQuestion,
   initializeNextQuestion,
   initializeUserAnswers,
-  initializeValues
+  initializeValues,
+  copyCoderAnswer
 } from 'utils/codingHelpers'
 import { handleUserImages } from 'utils/commonHelpers'
 import documentListLogic from './components/DocumentList/logic'
@@ -102,7 +103,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion({}, {}, {
       projectId: action.projectId,
       jurisdictionId: action.jurisdictionId,
-      questionId: questionId
+      questionId
     })
   } catch (e) {
     coderErrors = { allCodedQuestions: 'We couldn\'t retrieve all the coded answers for this question.' }
@@ -127,13 +128,15 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
 }
 
 /**
- * Updates the action creator values with the jurisdictionEmpty state and current userId before sending it to
- * the reducer for getting the coding scheme outline.
+ * Logic for getting scheme and outline
  */
-const outlineLogic = createLogic({
-  type: [types.GET_CODING_OUTLINE_REQUEST, types.GET_VALIDATION_OUTLINE_REQUEST],
-  transform({ getState, action }, next) {
+export const getOutline = createLogic({
+  type: types.GET_OUTLINE_REQUEST,
+  transform({ getState, action, api }, next) {
     const user = getState().data.user.currentUser
+    const state = getState().scenes.codingValidation.coding
+    const apiMethod = state.page === 'validation' ? api.getValidatedQuestions : api.getUserCodedQuestions
+    
     next({
       ...action,
       payload: {
@@ -150,62 +153,96 @@ const outlineLogic = createLogic({
         showPageLoader: false,
         errors: {}
       },
-      userId: user.id,
-      currentUser: user
+      isValidation: state.page === 'validation',
+      api: apiMethod,
+      user
     })
-  }
-})
-
-/**
- * Handles getting the coding scheme outline for the project
- */
-export const getOutlineLogic = createLogic({
-  type: types.GET_CODING_OUTLINE_REQUEST,
+  },
   async process({ action, getState, api }, dispatch, done) {
-    let payload = action.payload
-    const userId = action.userId
+    let payload = action.payload, mergedUserQuestions = null, errors = {}, coders = {}, userImages = {}
+    const allUserObjs = getState().data.user.byId
     
     // Try to get the project coding scheme
     try {
-      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
-        action.projectId,
-        api,
-        action.questionId
-      )
+      const {
+        firstQuestion,
+        tree,
+        order,
+        outline,
+        questionsById,
+        isSchemeEmpty,
+        questionIndex
+      } = await getSchemeAndInitialize(action.projectId, api, action.questionId)
       
-      // Get user coded questions for currently selected jurisdiction
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
-        payload = { ...payload, isSchemeEmpty }
+        payload = { ...payload, isSchemeEmpty, user: action.user }
       } else {
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
           action.projectId,
           action.jurisdictionId,
-          userId,
-          api.getUserCodedQuestions
+          action.user.id,
+          action.api
         )
         
+        errors = { ...errors, ...codedValErrors }
+        
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([
-          initializeNextQuestion(firstQuestion), ...codedValQuestions
-        ], questionsById, userId)
+        const userAnswers = initializeUserAnswers(
+          [initializeNextQuestion(firstQuestion), ...codedValQuestions],
+          questionsById,
+          action.user.id
+        )
+        
+        if (action.isValidation) {
+          // If there are flags for this question, then we need to add the flag raiser to our coders object
+          if (firstQuestion.flags.length > 0) {
+            coders = {
+              ...coders,
+              [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy }
+            }
+          }
+          
+          // Get all the coded questions for this question
+          const coderInfo = await getCoderInformation({
+            api,
+            action,
+            questionId: firstQuestion.id,
+            userImages
+          })
+          
+          mergedUserQuestions = coderInfo.codedQuestionObj
+          
+          // Update coders from the getCoderInformation method
+          coders = { ...coders, ...coderInfo.coders }
+          
+          // Get all the user information for validated questions
+          for (let valQuestion of codedValQuestions) {
+            if (!checkIfExists(valQuestion.validatedBy, coders, 'userId')) {
+              coders = { ...coders, [valQuestion.validatedBy.userId]: { ...valQuestion.validatedBy } }
+            }
+          }
+          
+          const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
+          errors = { ...errors, ...coderInfo.coderErrors, ...imagesResult.error }
+        }
         
         payload = {
           ...payload,
           outline,
-          scheme: { byId: questionsById, tree, order },
           userAnswers,
+          errors,
+          mergedUserQuestions,
+          scheme: { byId: questionsById, tree, order },
           question: firstQuestion,
-          errors: { ...codedValErrors },
-          currentIndex: questionIndex
+          currentIndex: questionIndex,
+          user: action.user
         }
       }
-      dispatch({
-        type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload
-      })
+      
+      dispatch({ type: types.GET_OUTLINE_SUCCESS, payload })
     } catch (e) {
       dispatch({
-        type: types.GET_CODING_OUTLINE_FAIL,
+        type: types.GET_OUTLINE_FAIL,
         payload: 'Failed to get outline.',
         error: true
       })
@@ -215,98 +252,11 @@ export const getOutlineLogic = createLogic({
 })
 
 /**
- * Logic for when the user first opens the validation screen
+ * Updates the action for save / bulk validation
+ * @type {Logic<object, undefined, undefined, {api?: *, action?: *, getState?: *}, undefined, string[]>}
  */
-export const getValidationOutlineLogic = createLogic({
-  type: types.GET_VALIDATION_OUTLINE_REQUEST,
-  async process({ action, getState, api }, dispatch, done) {
-    let errors = {}, payload = action.payload, userImages = {}, coders = {}
-    const userId = action.userId
-    let allUserObjs = getState().data.user.byId
-    
-    try {
-      // Try to get the project coding scheme
-      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
-        action.projectId,
-        api,
-        action.questionId
-      )
-      
-      // Get user coded questions for currently selected jurisdiction
-      if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
-        payload = { ...payload, isSchemeEmpty }
-      } else {
-        // If there are flags for this question, then we need to add the flag raiser to our coders object
-        if (firstQuestion.flags.length > 0) {
-          coders = { ...coders, [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy } }
-        }
-        
-        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-          action.projectId,
-          action.jurisdictionId,
-          userId,
-          api.getValidatedQuestions
-        )
-        
-        // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([
-          initializeNextQuestion(firstQuestion), ...codedValQuestions
-        ], questionsById, userId)
-        
-        // Get all the coded questions for this question
-        const coderInfo = await getCoderInformation({
-          api,
-          action,
-          questionId: firstQuestion.id,
-          userImages
-        })
-        
-        // Update coders from the getCoderInformation method
-        coders = { ...coders, ...coderInfo.coders }
-        
-        // Get all the user information for validated questions
-        for (let valQuestion of codedValQuestions) {
-          if (!checkIfExists(valQuestion.validatedBy, coders, 'userId')) {
-            coders = { ...coders, [valQuestion.validatedBy.userId]: { ...valQuestion.validatedBy } }
-          }
-        }
-        
-        const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
-        
-        payload = {
-          ...payload,
-          outline,
-          scheme: { byId: questionsById, tree, order },
-          userAnswers,
-          mergedUserQuestions: coderInfo.codedQuestionObj,
-          question: firstQuestion,
-          currentIndex: questionIndex,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
-        }
-      }
-      
-      dispatch({
-        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
-        payload
-      })
-    } catch (e) {
-      dispatch({
-        type: types.GET_VALIDATION_OUTLINE_FAIL,
-        payload: 'Couldn\'t get outline',
-        error: true
-      })
-    }
-    done()
-  }
-})
-
-/**
- * The logic is invoked when the user has made changes to a question.
- */
-const answerQuestionLogic = createLogic({
-  type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 350,
-  
+const validateSaveAndBulkRequest = createLogic({
+  type: [types.SAVE_USER_ANSWER_REQUEST, types.BULK_VALIDATION_REQUEST],
   /**
    * It updates the action creator values and validates
    * that the action should follow through and be sent to the reducers. It updates the action creator values with the
@@ -321,34 +271,65 @@ const answerQuestionLogic = createLogic({
    */
   validate({ getState, action, api }, allow, reject) {
     const state = getState().scenes.codingValidation.coding
-    const userId = getState().data.user.currentUser.id
+    const user = getState().data.user.currentUser
     const isValidation = state.page === 'validation'
     
-    const apiMethods = isValidation
-      ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
-      : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
+    // Get the question answer object to be sent to the API
+    const questionObj = action.type === types.SAVE_USER_ANSWER_REQUEST
+      ? getFinalCodedObject(
+        state,
+        { ...action, userId: user.id },
+        isValidation,
+        action.selectedCategoryId
+      ) : copyCoderAnswer(
+        state,
+        { ...action, userId: user.id },
+        action.selectedCategoryId
+      )
     
-    const questionObj = getFinalCodedObject(state, { ...action, userId }, isValidation, action.selectedCategoryId)
+    const apiMethods = {
+      create: isValidation ? api.answerValidatedQuestion : api.answerCodedQuestion,
+      update: isValidation ? api.updateValidatedQuestion : api.updateCodedQuestion
+    }
     
-    const answerObject = {
+    const payloadObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
       projectId: action.projectId,
-      userId,
+      userId: user.id,
+      user,
       questionObj,
       queueId: `${action.questionId}-${action.jurisdictionId}-${action.projectId}-${action.selectedCategoryId}`,
       timeQueued: Date.now()
     }
     
-    // The question hasn't been answered at all before, but a request has been made. move request to queue to
-    // wait for a response.
+    // Check if there's already a POST request in progress for this question.
     if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
-      reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
+      // The question hasn't been answered at all before, but a request has been made. Move request to queue to
+      // wait for a response.
+      reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: { ...payloadObject, inQueue: true } })
     } else {
-      allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId, apiMethods } })
+      // Allows the request to go through without putting it in the queue
+      allow({
+        ...action,
+        payload: {
+          ...payloadObject,
+          selectedCategoryId: action.selectedCategoryId,
+          api: apiMethods,
+          create: !questionObj.hasOwnProperty('id'),
+          inQueue: false
+        }
+      })
     }
-  },
-  
+  }
+})
+
+/**
+ * The logic is invoked when the user has made changes to a question.
+ */
+const answerQuestionLogic = createLogic({
+  type: types.SAVE_USER_ANSWER_REQUEST,
+  debounce: 350,
   /**
    * Handles actually sending the requests to the API. If the final questionObj (that was created in the validate
    * function above) has an ID a PUT request is sent, otherwise a POST request is sent. This will also send or clear
@@ -357,37 +338,20 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
+    const apiMethod = action.payload.create ? action.payload.api.create : action.payload.api.update
     
     try {
-      // check if we need to send a post or a put request
-      if (action.payload.questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await action.payload.apiMethods.update(action.payload.questionObj, {}, {
+      respCodedQuestion = await apiMethod(
+        action.payload.questionObj,
+        {},
+        {
           questionId: action.payload.questionId,
           categoryId: action.payload.selectedCategoryId,
           jurisdictionId: action.payload.jurisdictionId,
           userId: action.payload.userId,
           projectId: action.payload.projectId
-        })
-        
-        // Remove any pending requests from the queue because this is the latest one and has an id
-        dispatch({
-          type: types.REMOVE_REQUEST_FROM_QUEUE,
-          payload: {
-            questionId: action.payload.questionId,
-            categoryId: action.payload.selectedCategoryId,
-            queueId: action.payload.queueId,
-            timeQueued: action.payload.timeQueued
-          }
-        })
-      } else {
-        respCodedQuestion = await action.payload.apiMethods.create(action.payload.questionObj, {}, {
-          questionId: action.payload.questionId,
-          categoryId: action.payload.selectedCategoryId,
-          jurisdictionId: action.payload.jurisdictionId,
-          userId: action.payload.userId,
-          projectId: action.payload.projectId
-        })
-      }
+        }
+      )
       
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
@@ -398,6 +362,7 @@ const answerQuestionLogic = createLogic({
         }
       })
       
+      dispatch({ type: types.UPDATE_ANNOTATIONS, questionId: action.payload.questionId })
       dispatch({
         type: types.SEND_QUEUE_REQUESTS,
         payload: {
@@ -407,15 +372,12 @@ const answerQuestionLogic = createLogic({
           queueId: action.payload.queueId,
           timeQueued: action.payload.timeQueued
         },
-        apiUpdateMethod: action.payload.apiMethods.update
+        api: action.payload.api
       })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.payload.projectId })
       
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.payload.projectId
-      })
     } catch (error) {
-      if (error.response.status === 303) {
+      if (error.response && error.response.status === 303) {
         dispatch({
           type: types.OBJECT_EXISTS,
           payload: {
@@ -434,6 +396,8 @@ const answerQuestionLogic = createLogic({
             questionId: action.payload.questionId
           }
         })
+        
+        dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
       }
     }
     done()
@@ -494,10 +458,9 @@ const applyAnswerToAllLogic = createLogic({
           payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
         })
       }
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
-      })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
@@ -508,6 +471,8 @@ const applyAnswerToAllLogic = createLogic({
           selectedCategoryId: allCategoryObjects
         }
       })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -526,7 +491,7 @@ const sendMessageLogic = createLogic({
     const messageQueue = [...getState().scenes.codingValidation.coding.messageQueue]
     messageQueue.reverse()
     if (messageQueue.length === 0) {
-      reject()
+      reject({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } else {
       const index = messageQueue.findIndex(message => {
         return (message.queueId === action.payload.queueId) && (message.timeQueued >= action.payload.timeQueued)
@@ -538,9 +503,8 @@ const sendMessageLogic = createLogic({
    * Actually sends the requests in the queue and then removest the request from the queue.
    */
   async process({ getState, action, api }, dispatch, done) {
-    console.log(action)
     try {
-      const respCodedQuestion = await action.apiUpdateMethod({
+      const respCodedQuestion = await action.api.update({
         ...action.messageToSend.questionObj,
         id: action.payload.id
       }, {}, { ...action.messageToSend })
@@ -553,6 +517,8 @@ const sendMessageLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId
         }
       })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
       
       dispatch({
         type: types.REMOVE_REQUEST_FROM_QUEUE,
@@ -573,6 +539,8 @@ const sendMessageLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId
         }
       })
+      
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -634,22 +602,23 @@ export const getUserCodedQuestionsLogic = createLogic({
     )
     
     // Update the user answers object
-    const userAnswers = initializeUserAnswers([
-      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
-    ], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions],
+      updatedScheme.byId,
+      userId
+    )
     
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       userAnswers,
       scheme: updatedScheme,
+      mergedUserQuestions: null,
       otherUpdates,
       errors: { ...errors, ...codedValErrors, ...schemeErrors }
     }
     
-    dispatch({
-      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_CODED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })
@@ -663,19 +632,13 @@ const saveRedFlagLogic = createLogic({
     try {
       const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
       const resp = await api.saveRedFlag(flag, {}, { questionId: action.questionId })
-      dispatch({
-        type: types.ON_SAVE_RED_FLAG_SUCCESS,
-        payload: { ...resp }
-      })
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
-      })
+      
+      dispatch({ type: types.ON_SAVE_RED_FLAG_SUCCESS, payload: { ...resp } })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } catch (error) {
-      dispatch({
-        type: types.ON_SAVE_RED_FLAG_FAIL,
-        payload: 'Failed to save red flag.'
-      })
+      dispatch({ type: types.ON_SAVE_RED_FLAG_FAIL, payload: 'Failed to save red flag.' })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'Save failed!' })
     }
     done()
   }
@@ -742,6 +705,10 @@ const getQuestionLogic = createLogic({
       userId
     })
   },
+  /**
+   * Gets the updated scheme question content as well as the updated coded or validated question content. If the user
+   * is on the validation page, then it also gets updated coder information.
+   */
   async process({ getState, action, api }, dispatch, done) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
@@ -757,7 +724,6 @@ const getQuestionLogic = createLogic({
         api.getCodedQuestion
       )
       dispatch({ type: types.GET_QUESTION_SUCCESS, payload: response })
-      done()
     } else {
       const {
         updatedState,
@@ -793,9 +759,12 @@ const getQuestionLogic = createLogic({
           errors: { ...errors, ...coderErrors, ...otherErrors, ...imageResult.errors }
         }
       })
-      
-      done()
     }
+    
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
+    dispatch({ type: types.SET_HEADER_TEXT, text: '' })
+    dispatch({ type: types.CHANGE_TOUCHED_STATUS, touched: false })
+    done()
   }
 })
 
@@ -839,9 +808,11 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     
-    const userAnswers = initializeUserAnswers([
-      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
-    ], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions],
+      updatedScheme.byId,
+      userId
+    )
     
     const coderInfo = await getCoderInformation({
       api,
@@ -864,16 +835,15 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     
-    dispatch({
-      type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-      payload
-    })
+    dispatch({ type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS, payload })
+    dispatch({ type: types.SET_RESET_STATUS, canReset: false })
     done()
   }
 })
 
 /**
- * Sends a request to the API to clear the flag based on the action.flagId, type 1 === red, type 2 === other
+ * Sends a request to the API to clear the flag based on the action.flagId, type 1 === red, type 2 === other. This is
+ * only used on the validation screen by coordinators or admins.
  */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
@@ -887,6 +857,7 @@ export const clearFlagLogic = createLogic({
         }
       })
       dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+      dispatch({ type: types.SET_HEADER_TEXT, text: 'All changes saved' })
     } catch (error) {
       dispatch({
         type: types.CLEAR_FLAG_FAIL,
@@ -897,19 +868,117 @@ export const clearFlagLogic = createLogic({
   }
 })
 
+/**
+ * Handles the request to bulk validate. This can be bulk validation by question, jurisdiction or project level. If it's
+ * by project or jurisdiction level, there's a separate API call. If it's by question level, then we just use the update
+ * validated question API.
+ */
+export const bulkValidateLogic = createLogic({
+  type: types.BULK_VALIDATION_REQUEST,
+  async process({ getState, action, api }, dispatch, done) {
+    const state = getState().scenes.codingValidation.coding
+    const byId = state.scheme.byId
+    const userAnswers = state.userAnswers
+    
+    try {
+      let updatedUserAnswers = {}, otherStateUpdates = {}, question = state.scheme.byId[action.payload.questionId]
+      // Check the scope of the bulk validation
+      if (action.scope === 'question') {
+        const { hasCoderAnswered, answers, ...requestObj } = action.payload.questionObj
+        
+        if (hasCoderAnswered) {
+          const responsePayload = await action.payload.api[action.payload.create ? 'create' : 'update'](
+            requestObj,
+            {},
+            {
+              questionId: question.id,
+              categoryId: action.payload.selectedCategoryId,
+              jurisdictionId: action.payload.jurisdictionId,
+              userId: action.payload.userId,
+              projectId: action.payload.projectId
+            }
+          )
+          
+          updatedUserAnswers = initializeUserAnswers([responsePayload], byId, action.payload.userId, userAnswers)
+        } else {
+          updatedUserAnswers = userAnswers
+        }
+      } else {
+        // bulk validate for project or jurisdiction, if project send -1 for jurisdiction in API
+        const newValidatedAnswers = await api.bulkValidate(
+          {},
+          {},
+          {
+            projectId: action.payload.projectId,
+            jurisdictionId: action.scope === 'jurisdiction' ? action.payload.jurisdictionId : -1,
+            userId: action.user.userId
+          }
+        )
+        
+        // Check if the selected user actually coded anything -- if new validated answers were made
+        if (newValidatedAnswers.length > 0) {
+          // Get only the jurisdiction that we're currently on if the did project validation
+          const thisJurAnswers = newValidatedAnswers.filter(
+            answer => answer.projectJurisdictionId === action.payload.jurisdictionId
+          )
+  
+          // Update the User Answer redux object with the user's new answers
+          updatedUserAnswers = initializeUserAnswers(
+            action.scope === 'project' ? thisJurAnswers : newValidatedAnswers,
+            byId,
+            action.payload.userId,
+            userAnswers
+          )
+          
+          // If the question is a category question, there are more checks that have to be done
+          if (state.question.isCategoryQuestion) {
+            // check to see if the user has selected the current category as an valid category
+            if (!updatedUserAnswers[state.question.parentId].answers.hasOwnProperty(state.selectedCategoryId)) {
+              // user hasn't chosen current category, so we move to the parent question
+              question = state.scheme.byId[state.question.parentId]
+              otherStateUpdates = {
+                ...otherStateUpdates,
+                categories: undefined,
+                selectedCategory: 0,
+                selectedCategoryId: null,
+                currentIndex: state.scheme.order.findIndex(id => id === question.id)
+              }
+            }
+          }
+        } else {
+          updatedUserAnswers = userAnswers
+        }
+      }
+      
+      dispatch({
+        type: types.BULK_VALIDATION_SUCCESS,
+        payload: {
+          updatedUserAnswers,
+          otherStateUpdates: { ...otherStateUpdates, question }
+        }
+      })
+      dispatch({ type: types.SET_RESET_STATUS, canReset: false })
+      done()
+    } catch (err) {
+      dispatch({ type: types.BULK_VALIDATION_FAIL })
+      done()
+    }
+  }
+})
+
 export default [
-  outlineLogic,
+  getOutline,
   getQuestionLogic,
+  validateSaveAndBulkRequest,
   answerQuestionLogic,
   applyAnswerToAllLogic,
   sendMessageLogic,
   getCodedValQuestionsLogic,
-  getOutlineLogic,
   getUserCodedQuestionsLogic,
   saveRedFlagLogic,
   updateValidatorLogic,
   getUserValidatedQuestionsLogic,
-  getValidationOutlineLogic,
   clearFlagLogic,
+  bulkValidateLogic,
   ...documentListLogic
 ]

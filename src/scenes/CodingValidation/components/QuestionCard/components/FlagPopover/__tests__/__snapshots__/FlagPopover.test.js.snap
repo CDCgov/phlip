@@ -29,8 +29,6 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
         "id": "stop-coding-question",
         "style": Object {
           "maxHeight": 500,
-          "paddingLeft": 15,
-          "paddingRight": 15,
         },
         "tooltip": "Stop coding this question",
       }

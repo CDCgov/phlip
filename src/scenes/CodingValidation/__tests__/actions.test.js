@@ -29,11 +29,12 @@ describe('CodingValidation scene actions creators', () => {
     const expectedAction = {
       type: types.ON_QUESTION_SELECTED_IN_NAV,
       question: {},
+      newIndex: null,
       projectId: 1,
       jurisdictionId: 1
     }
 
-    expect(actions.onQuestionSelectedInNav({}, 1, 1)).toEqual(expectedAction)
+    expect(actions.onQuestionSelectedInNav({}, null, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to apply answer to all', () => {
@@ -192,11 +193,11 @@ describe('CodingValidation scene actions creators', () => {
 
   test('should create an action to get outline', () => {
     const expectedAction = {
-      type: types.GET_CODING_OUTLINE_REQUEST,
+      type: types.GET_OUTLINE_REQUEST,
       projectId: 1,
       jurisdictionId: 1
     }
-    expect(actions.getCodingOutlineRequest(1, 1)).toEqual(expectedAction)
+    expect(actions.getOutlineRequest(1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to get user coded questions', () => {
@@ -230,16 +231,6 @@ describe('CodingValidation scene actions creators', () => {
     }
 
     expect(actions.onSaveRedFlag(1, 1, { notes: 'lalala', type: 3 })).toEqual(expectedAction)
-  })
-
-  test('should create an action to get validation outline', () => {
-    const expectedAction = {
-      type: types.GET_VALIDATION_OUTLINE_REQUEST,
-      projectId: 2,
-      jurisdictionId: 42
-    }
-
-    expect(actions.getValidationOutlineRequest(2,42)).toEqual(expectedAction)
   })
 
   test('should create an action to get user validated questions', () => {

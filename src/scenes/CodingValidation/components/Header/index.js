@@ -7,9 +7,15 @@ import styles from './header-styles.scss'
 import JurisdictionSelect from 'components/JurisdictionSelect'
 import { Button, IconButton, Link, Icon, FlexGrid, Typography } from 'components'
 
+/**
+ * Headers for Coding / Validation screens
+ */
 export const Header = props => {
-  const { empty, onJurisdictionChange, currentJurisdiction, onGoBack, pageTitle, project } = props
-
+  const {
+    empty, onJurisdictionChange, currentJurisdiction, onGoBack, pageTitle, project, onOpenBulkValidate, isValidation,
+    showValidate
+  } = props
+  
   return (
     <FlexGrid
       container
@@ -52,8 +58,16 @@ export const Header = props => {
           to={`/project/${project.id}/protocol`}
           aria-label="View and edit protocol">
           <span style={{ paddingRight: 5 }}>Protocol</span>
-          <Icon color="black"><ClipboardCheckOutline /></Icon>
+          <Icon color="black" size={20}><ClipboardCheckOutline style={{ fontSize: 20 }} /></Icon>
         </Button>
+        {(isValidation && !empty && showValidate) &&
+        <Button
+          style={{ backgroundColor: 'white', color: 'black', marginLeft: 10 }}
+          onClick={onOpenBulkValidate}
+          aria-label="Validate this project, question or jurisdiction">
+          <span style={{ paddingRight: 5 }}>Validate</span>
+          <Icon color="rgb(128, 209, 52)" size={20}>check_circle</Icon>
+        </Button>}
       </FlexGrid>
     </FlexGrid>
   )
@@ -67,7 +81,10 @@ Header.propTypes = {
   onJurisdictionChange: PropTypes.func,
   currentJurisdiction: PropTypes.object,
   onGoBack: PropTypes.func,
-  pageTitle: PropTypes.string
+  pageTitle: PropTypes.string,
+  onOpenBulkValidate: PropTypes.func,
+  isValidation: PropTypes.bool,
+  showValidate: PropTypes.bool
 }
 
 export default withRouter(Header)

@@ -396,6 +396,96 @@ export const userAnswersValidation = {
   }
 }
 
+export const bulkValidationQuestions = [
+  {
+    id: 1001,
+    validatedBy: { userId: 1 },
+    comment: '',
+    codedAnswers: [{ id: 789, schemeAnswerId: 234, pincite: 'my pincite!!!', textAnswer: null, annotations: [] }],
+    schemeQuestionId: 1,
+    projectJurisdictionId: 1
+  },
+  {
+    id: 1002,
+    validatedBy: { userId: 1 },
+    comment: '',
+    codedAnswers: [
+      { id: 888, schemeAnswerId: 5, pincite: 'my pincite', annotations: [], textAnswer: null },
+      { id: 898, schemeAnswerId: 20, pincite: 'my 20 pincite', annotations: [], textAnswer: null }
+    ],
+    schemeQuestionId: 3,
+    projectJurisdictionId: 1
+  },
+  {
+    id: 1003,
+    validatedBy: { userId: 1 },
+    codedAnswers: [
+      {
+        id: 998,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 9,
+        pincite: 'blooooop'
+      }, {
+        id: 999,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 8,
+        pincite: 'blep',
+        schemeQuestionId: 2
+      }
+    ],
+    schemeQuestionId: 2,
+    projectJurisdictionId: 1
+  },
+  {
+    id: 1005,
+    codedAnswers: [
+      {
+        textAnswer: null,
+        schemeAnswerId: 8,
+        pincite: 'blepppp',
+        annotations: []
+      }
+    ],
+    schemeQuestionId: 2,
+    validatedBy: { userId: 1 },
+    projectJurisdictionId: 10
+  },
+  {
+    categoryId: 5,
+    id: 1006,
+    codedAnswers: [
+      {
+        textAnswer: null,
+        schemeAnswerId: 5,
+        pincite: 'category 5 pincite',
+        annotations: [],
+        id: 997
+      }
+    ],
+    schemeQuestionId: 4,
+    validatedBy: { userId: 1 },
+    projectJurisdictionId: 1
+  },
+  {
+    categoryId: 20,
+    id: 1007,
+    codedAnswers: [
+      {
+        textAnswer: null,
+        schemeAnswerId: 20,
+        pincite: 'category 20 pincite',
+        annotations: [],
+        id: 996
+      }
+    ],
+    schemeQuestionId: 4,
+    validatedBy: { userId: 1 },
+    projectJurisdictionId: 1
+  }
+]
+
 export const mergedUserQuestions = {
   1: {
     answers: [
@@ -414,9 +504,38 @@ export const mergedUserQuestions = {
         textAnswer: null,
         schemeAnswerId: 123,
         pincite: 'my pincite lala'
+      },
+      {
+        id: 100,
+        userId: 22,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 234,
+        pincite: 'my pincite!!!'
       }
     ],
     flagsComments: [{ id: 4, type: 2, notes: 'flag notes here', raisedBy: { userId: 3 } }]
+  },
+  2: {
+    answers: [
+      {
+        id: 101,
+        userId: 22,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 9,
+        pincite: 'blooooop'
+      },
+      {
+        id: 102,
+        userId: 22,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 8,
+        pincite: 'blep'
+      }
+    ],
+    flagsComments: []
   },
   3: {
     answers: [

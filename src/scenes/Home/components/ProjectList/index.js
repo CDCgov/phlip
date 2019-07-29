@@ -29,21 +29,15 @@ export class ProjectList extends Component {
     page: PropTypes.number,
     rowsPerPage: PropTypes.string,
     projectCount: PropTypes.number,
-    sortBy: PropTypes.string,
-    direction: PropTypes.string,
-    sortBookmarked: PropTypes.bool,
-    searchValue: PropTypes.string,
     handlePageChange: PropTypes.func,
     handleRowsChange: PropTypes.func,
-    handleRequestSort: PropTypes.func,
-    handleSortBookmarked: PropTypes.func,
-    handleSearchValueChange: PropTypes.func,
+    handleToggleProject: PropTypes.func,
     handleExport: PropTypes.func,
     getProjectUsers: PropTypes.func,
     location: PropTypes.object,
     history: PropTypes.object,
     openProject: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    handleToggleProject: PropTypes.func
+    allowExpandCollapse: PropTypes.bool
   }
   
   state = {
@@ -81,7 +75,7 @@ export class ProjectList extends Component {
    */
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
-    const regex = /([Bb]utton)|(icons?)|([sS]elect)|([iI]nput)/g
+    const regex = /([Bb]utton)|(icons?)|([sS]elect)|([iI]nput)|([dD]ialog)|([mM]odal)/g
     return !stopOpenEls.includes(target.tagName)
       && (target.tagName !== 'svg' ? target.className.search(regex) === -1 : true)
       && target.id !== 'avatar-menu-button'
@@ -94,22 +88,24 @@ export class ProjectList extends Component {
    * @param event
    */
   handleExpandProject = (id, event) => {
-    const { location, history, handleToggleProject } = this.props
+    const { location, history, handleToggleProject, allowExpandCollapse } = this.props
     
-    if (location.pathname === '/home' && isRouteOk(history)) {
-      const expand = this.checkExpand(event.target) &&
-        this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
-      
-      if (expand) {
-        handleToggleProject(id)
-      }
-      
-      this.setState({
-        mouse: {
-          x: 0,
-          y: 0
+    if (allowExpandCollapse) {
+      if (location.pathname === '/home' && isRouteOk(history)) {
+        const expand = this.checkExpand(event.target) &&
+          this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
+    
+        if (expand) {
+          handleToggleProject(id)
         }
-      })
+    
+        this.setState({
+          mouse: {
+            x: 0,
+            y: 0
+          }
+        })
+      }
     }
   }
   
@@ -118,37 +114,39 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    const { openProject, location, history, handleToggleProject } = this.props
+    const { openProject, location, history, handleToggleProject, allowExpandCollapse } = this.props
     const { mouse } = this.state
     
     let check = true
     
-    if (mouse.x !== 0 || mouse.y !== 0) {
-      if (event.clientX !== mouse.x && event.clientY !== mouse.y) {
-        check = false
+    if (allowExpandCollapse) {
+      if (mouse.x !== 0 || mouse.y !== 0) {
+        if (event.clientX !== mouse.x && event.clientY !== mouse.y) {
+          check = false
+        }
       }
-    }
-    
-    if (check) {
-      if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
-        if (location.pathname === '/home' && isRouteOk(history)) {
-          const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
-          const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
-            && this.checkTargetPath(event.path)
-          
-          if (expand) {
-            handleToggleProject(openProject)
+  
+      if (check) {
+        if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
+          if (location.pathname === '/home' && isRouteOk(history)) {
+            const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
+            const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
+              && this.checkTargetPath(event.path)
+        
+            if (expand) {
+              handleToggleProject(openProject)
+            }
           }
         }
       }
+  
+      this.setState({
+        mouse: {
+          x: 0,
+          y: 0
+        }
+      })
     }
-    
-    this.setState({
-      mouse: {
-        x: 0,
-        y: 0
-      }
-    })
   }
   
   /**
@@ -176,11 +174,24 @@ export class ProjectList extends Component {
     })
   }
   
+  /**
+   * Handles a change in the current page
+   */
+  handlePageChange = (event, page) => {
+    const { handlePageChange } = this.props
+    handlePageChange(page)
+  }
+  
+  /**
+   * Handles change in rows per page
+   */
+  handleRowsPerPageChange = event => {
+    const { handleRowsChange } = this.props
+    handleRowsChange(event.target.value)
+  }
+  
   render() {
-    const {
-      projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
-      getProjectUsers, openProject
-    } = this.props
+    const { projectIds, user, page, rowsPerPage, projectCount, handleExport, getProjectUsers, openProject } = this.props
     
     return (
       <FlexGrid style={{ overflow: 'auto' }} onMouseDown={this.onMouseDown}>
@@ -209,8 +220,8 @@ export class ProjectList extends Component {
                 count={projectCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
+                onChangePage={this.handlePageChange}
+                onChangeRowsPerPage={this.handleRowsPerPageChange}
               />
             </TableRow>
           </TableFooter>

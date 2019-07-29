@@ -51,6 +51,7 @@ export const initializeValues = question => {
     isNewCodedQuestion: !question.hasOwnProperty('id'),
     hasMadePost: false
   }
+  
   return initializedQuestion
 }
 
@@ -180,16 +181,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           ...state.userAnswers,
           [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
         }
-    
-  }
-  
-  if (newQuestion.parentId === 0) {
-    return {
-      ...base,
-      categories: undefined,
-      selectedCategory: 0,
-      selectedCategoryId: null
-    }
   }
   
   if (newQuestion.isCategoryQuestion) {
@@ -212,20 +203,29 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       }
     }, {})
     
+    const userAnswers = {
+      ...base.userAnswers,
+      [newQuestion.id]: { ...answers, ...baseQuestion }
+    }
+    
+    const selectedCatId = selectedCategories[state.selectedCategory].id
+    
     return {
       ...base,
       question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion } },
-      selectedCategoryId: selectedCategories[state.selectedCategory].id
+      userAnswers,
+      answerSnapshot: { ...userAnswers[newQuestion.id][selectedCatId] },
+      selectedCategoryId: selectedCatId
     }
   } else {
     return {
       ...base,
       categories: undefined,
       selectedCategory: 0,
-      selectedCategoryId: null
+      selectedCategoryId: null,
+      answerSnapshot: { ...base.userAnswers[newQuestion.id] }
     }
   }
 }
@@ -397,6 +397,12 @@ export const handleUpdateAnnotations = (state, action) => {
   }
 }
 
+/**
+ * Removes an annotation from a coded answer
+ * @param state
+ * @param action
+ * @returns {*}
+ */
 export const handleRemoveAnnotation = (state, action) => {
   const currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
@@ -556,8 +562,11 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
           ? initializeNavigator(
-            commonHelpers.sortListOfObjects(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            commonHelpers.sortListOfObjects(
+              Object.values(scheme).filter(question => question.parentId === item.id),
+              'positionInParent',
+              'asc'
+            ),
             { ...scheme },
             codedQuestions,
             currentQuestion
@@ -685,6 +694,61 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
   }
   
   return answerObject
+}
+
+/**
+ * Used for bulk validation. Copies a user's coded answer object to be used as the validated
+ * object.
+ */
+export const copyCoderAnswer = (state, action, selectedCategoryId = state.selectedCategoryId) => {
+  const isCatQ = state.scheme.byId[action.questionId].isCategoryQuestion
+  let coderAnswer = state.mergedUserQuestions[action.questionId]
+  const currentValAnswer = isCatQ
+    ? state.userAnswers[action.questionId][selectedCategoryId]
+    : state.userAnswers[action.questionId]
+  
+  let hasCoderAnswered = false, hasAnswers = false
+  let userAnswer = { codedAnswers: [] }
+  
+  if (state.mergedUserQuestions.hasOwnProperty(action.questionId)) {
+    hasAnswers = true
+    if (isCatQ) {
+      if (coderAnswer.hasOwnProperty(selectedCategoryId)) {
+        // Check if any coder has answered the question and select category Id
+        hasAnswers = true
+        coderAnswer = coderAnswer[selectedCategoryId]
+      } else {
+        // No coders have coded the selected category Id
+        hasAnswers = false
+      }
+    }
+    
+    if (hasAnswers) {
+      // check if the coder the validator selected to use for bulk validation has answered
+      const answers = coderAnswer.answers.filter(answer => answer.userId === action.user.userId)
+      if (answers.length > 0) {
+        answers.forEach(answer => {
+          const { id, userId, ...answerObj } = answer
+          userAnswer.codedAnswers.push(answerObj)
+        })
+        hasCoderAnswered = true
+      }
+      
+      const commIndex = coderAnswer.flagsComments.findIndex(flagComm => flagComm.raisedBy.userId === action.user.userId)
+      
+      if (commIndex !== -1) {
+        userAnswer.comment = coderAnswer.flagsComments[commIndex].comment || ''
+        hasCoderAnswered = true
+      }
+    }
+  }
+  
+  userAnswer.hasCoderAnswered = hasCoderAnswered
+  if (currentValAnswer.hasOwnProperty('id') && currentValAnswer.id) {
+    userAnswer.id = currentValAnswer.id
+  }
+  
+  return { ...userAnswer, validatedBy: action.userId, categoryId: selectedCategoryId }
 }
 
 /**
@@ -976,5 +1040,6 @@ export default {
   getFinalCodedObject,
   getNextQuestion,
   getPreviousQuestion,
-  getQuestionNumbers
+  getQuestionNumbers,
+  copyCoderAnswer
 }

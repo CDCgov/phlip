@@ -1,6 +1,18 @@
 import moment from 'moment'
 
 /**
+ * Creates an array of objects
+ * @param byIdLookup
+ * @param arrOfIds
+ * @returns {*}
+ */
+export const createArrOfObj = (byIdLookup, arrOfIds) => {
+  return arrOfIds.reduce((arr, id) => {
+    return [...arr, { ...byIdLookup[id] }]
+  }, [])
+}
+
+/**
  * Makes an array the items in the array are a property from items in the array
  *
  * @param {Array} arr
@@ -96,5 +108,6 @@ export default {
   updateItemAtIndex,
   convertToLocalDateTime,
   convertToLocalDate,
-  makeDistinct
+  makeDistinct,
+  createArrOfObj
 }

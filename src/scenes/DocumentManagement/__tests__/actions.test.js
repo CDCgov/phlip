@@ -10,10 +10,10 @@ describe('Document management actions creators', () => {
   
   test('should create an action to select all documents', () => {
     const expectedAction = {
-      type: types.ON_SELECT_ALL
+      type: types.SELECT_ALL_DOCS
     }
     
-    expect(actions.handleSelectAll()).toEqual(expectedAction)
+    expect(actions.handleSelectAllDocs()).toEqual(expectedAction)
   })
   
   test('should create an action to change table page', () => {
@@ -36,20 +36,11 @@ describe('Document management actions creators', () => {
   
   test('should create an action to select one file', () => {
     const expectedAction = {
-      type: types.ON_SELECT_ONE_FILE,
+      type: types.SELECT_ONE_DOC,
       id: '134354324526'
     }
     
-    expect(actions.handleSelectOneFile('134354324526')).toEqual(expectedAction)
-  })
-  
-  test('should create an action to unselect one file', () => {
-    const expectedAction = {
-      type: types.ON_DELETE_ONE_FILE,
-      id: '134354324526'
-    }
-    
-    expect(actions.handleDeleteOneFile('134354324526')).toEqual(expectedAction)
+    expect(actions.handleSelectOneDoc('134354324526')).toEqual(expectedAction)
   })
   
   test('should create an action to sort the documents', () => {

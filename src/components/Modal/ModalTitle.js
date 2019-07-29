@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
 import FlexGrid from 'components/FlexGrid'
 
@@ -13,7 +12,7 @@ export const ModalTitle = ({ title, search, buttons, SearchBarProps, style }) =>
     <FlexGrid padding="24px 24px 20px">
       <FlexGrid type="row" container align="center">
         <DialogTitle style={{ ...style, padding: 0, flex: 1 }}>
-          <Row flex displayFlex style={{ alignItems: 'center' }}>{title}</Row>
+          <FlexGrid container type="row" flex align="center">{title}</FlexGrid>
         </DialogTitle>
         <FlexGrid container type="row" align="center" justify="flex-end">
           {search && <SearchBar {...SearchBarProps} />}

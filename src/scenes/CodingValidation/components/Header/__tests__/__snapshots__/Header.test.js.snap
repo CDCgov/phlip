@@ -159,8 +159,15 @@ exports[`CodingValidation scene -- Header component should render correctly 1`] 
       </span>
       <WithTheme(Icon)
         color="black"
+        size={20}
       >
-        <Icon />
+        <Icon
+          style={
+            Object {
+              "fontSize": 20,
+            }
+          }
+        />
       </WithTheme(Icon)>
     </WithTheme(Button)>
   </FlexGrid>
