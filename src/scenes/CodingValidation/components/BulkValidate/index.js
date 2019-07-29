@@ -250,15 +250,15 @@ export class BulkValidate extends Component {
                           }}
                           onClick={this.handleSelectUser(user)}>
                           <ListItemAvatar>
-                            <Avatar userId={user.userId} />
+                            <Avatar userId={user.userId} style={{ width: 25, height: 25 }} />
                           </ListItemAvatar>
                           <ListItemText
                             style={{ padding: 0 }}
                             primaryTypographyProps={{
-                              variant: 'subheading',
+                              variant: 'body1',
                               style: {
                                 marginLeft: 10,
-                                fontSize: '1.2rem',
+                                fontSize: '1rem',
                                 fontWeight: 300,
                                 lineHeight: 'normal'
                               }
