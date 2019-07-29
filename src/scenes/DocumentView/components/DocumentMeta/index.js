@@ -359,7 +359,7 @@ export class DocumentMeta extends Component {
   render() {
     const {
       apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole, searchingProjects,
-      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions,projectAutocompleteProps, jurisdictionAutocompleteProps
+      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions
     } = this.props
 
     const { alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, alertType, searchType } = this.state
