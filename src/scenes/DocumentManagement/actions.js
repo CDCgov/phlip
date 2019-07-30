@@ -1,5 +1,4 @@
 import makeActionCreator from 'utils/makeActionCreator'
-import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 import {
   default as searchActions,
   types as searchTypes
@@ -50,12 +49,4 @@ export default {
   cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST, 'projectMeta'),
   handleBulkProjectRemove: makeActionCreator(types.BULK_REMOVE_PROJECT_REQUEST, 'projectMeta', 'selectedDocs'),
   toggleAllDocs: makeActionCreator(types.ON_TOGGLE_ALL_DOCS)
-}
-
-export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT', '_BULK')
-}
-
-export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION', '_BULK')
 }

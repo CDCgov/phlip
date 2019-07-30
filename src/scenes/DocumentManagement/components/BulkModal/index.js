@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import Icon from 'components/Icon'
-import Autocomplete from 'components/Autocomplete'
 import Typography from '@material-ui/core/Typography'
 import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
@@ -35,12 +34,6 @@ const getButtonText = (text, inProgress) => {
  */
 export const BulkModal = props => {
   const {
-    suggestions,
-    searchValue,
-    onClearSuggestions,
-    onGetSuggestions,
-    onSearchValueChange,
-    onSuggestionSelected,
     bulkType,
     docCount,
     onCloseModal,
@@ -48,7 +41,6 @@ export const BulkModal = props => {
     buttonInfo,
     onConfirmAction,
     ownerList,
-    searching,
     autocompleteProps
   } = props
   
@@ -106,27 +98,6 @@ export const BulkModal = props => {
               {bulkType === 'jurisdiction' ? 'account_balance' : 'dvr'}
             </Icon>
             <Autosuggest {...autocompleteProps} />
-            {/*<Autocomplete*/}
-            {/*  suggestions={suggestions}*/}
-            {/*  handleGetSuggestions={val => onGetSuggestions(bulkType.includes('project') ? 'project' : bulkType, val)}*/}
-            {/*  handleClearSuggestions={() => onClearSuggestions(bulkType.includes('project') ? 'project' : bulkType)}*/}
-            {/*  isSearching={searching}*/}
-            {/*  inputProps={{*/}
-            {/*    value: searchValue,*/}
-            {/*    onChange: (e, { newValue }) => {*/}
-            {/*      e.target.value === undefined*/}
-            {/*        ? onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, newValue.name)*/}
-            {/*        : onSearchValueChange(bulkType.includes('project') ? 'project' : bulkType, e.target.value)*/}
-            {/*    },*/}
-            {/*    id: `${bulkType.includes('project') ? 'project' : bulkType}-name`*/}
-            {/*  }}*/}
-            {/*  handleSuggestionSelected={onSuggestionSelected(bulkType.includes('project') ? 'project' : bulkType)}*/}
-            {/*  InputProps={{*/}
-            {/*    placeholder: `Search ${bulkType.includes('project') ? 'project' : bulkType}s`,*/}
-            {/*    fullWidth: true*/}
-            {/*  }}*/}
-            {/*  suggestionType = {bulkType.includes('project') ? 'project' : bulkType}*/}
-            {/*/>*/}
           </FlexGrid>}
           <FlexGrid>
             {ownerList.length > 0 &&
@@ -160,19 +131,12 @@ export const BulkModal = props => {
 
 BulkModal.propTypes = {
   open: PropTypes.bool,
-  suggestions: PropTypes.array,
-  searchValue: PropTypes.string,
-  onClearSuggestions: PropTypes.func,
-  onGetSuggestions: PropTypes.func,
-  onSearchValueChange: PropTypes.func,
-  onSuggestionSelected: PropTypes.func,
   bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve', 'removeproject']),
   docCount: PropTypes.number,
   onCloseModal: PropTypes.func,
   onConfirmAction: PropTypes.func,
   buttonInfo: PropTypes.object,
   ownerList: PropTypes.array,
-  searching: PropTypes.bool,
   autocompleteProps: PropTypes.object
 }
 

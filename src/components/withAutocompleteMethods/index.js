@@ -274,7 +274,6 @@ export const withAutocompleteMethods = (
           renderSuggestion: this.renderSuggestion,
           renderSuggestionsContainer: this.renderSuggestionsContainer,
           renderInputComponent: this.renderInput,
-          alwaysRenderSuggestions: true,
           inputProps: {
             TextFieldProps: {
               placeholder: `Search ${type}s`,
@@ -301,9 +300,11 @@ export const withAutocompleteMethods = (
                 ? this.handleSearchValueChange(newValue.name)
                 : this.handleSearchValueChange(e.target.value)
             },
-            id: `${suffix}-${type}-name-search`
+            id: `${suffix}-${type}-name-search`,
+            ...otherAutocompleteProps.inputProps
           },
-          selectedSuggestion
+          selectedSuggestion,
+          searchValue
         }
         
         return (
