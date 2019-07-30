@@ -93,4 +93,38 @@ describe('CodingValidation - DocumentList logic', () => {
       })
     })
   })
+  
+  describe('Downloading documents', () => {
+    test('should download a zip file if the user clicked the download all button', done => {
+      mock.onGet('/docs/download').reply(200)
+      const store = setupStore()
+      const spy = jest.spyOn(docApi, 'downloadZip')
+      store.dispatch({ type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 'all' })
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should download one file if the user clicked to download only one', done => {
+      mock.onGet('/docs/1/download').reply(200)
+      const store = setupStore()
+      const spy = jest.spyOn(docApi, 'download')
+      store.dispatch({ type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 1 })
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should show the user the error if the request fails', done => {
+      mock.onGet('/docs/1/download').reply(500)
+      const store = setupStore()
+      store.dispatch({ type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 1 })
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.DOWNLOAD_DOCUMENTS_FAIL)
+        done()
+      })
+    })
+  })
 })
