@@ -118,7 +118,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
             state.rowsPerPage,
             state.sortBy,
             state.sortDirection
-          )
+          ),
+          matches: action.isSearch ? mapArray(action.payload, '_id') : state.documents.matches
         },
         count: action.payload.length,
         page: 0

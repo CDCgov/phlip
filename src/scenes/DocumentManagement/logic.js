@@ -122,7 +122,7 @@ const pageRowChageLogic = createLogic({
     const docState = getState().scenes.docManage.main.list
     const userDocs = normalize.createArrOfObj(docState.documents.byId, docState.documents.userDocs)
     const matches = normalize.createArrOfObj(docState.documents.byId, docState.documents.matches)
-    
+
     next({
       ...action,
       payload: isSearch
@@ -145,6 +145,7 @@ const toggleDocsLogic = createLogic({
     const userDocs = normalize.createArrOfObj(docState.documents.byId, docState.documents.userDocs)
     
     next({
+      isSearch: searchState.form.searchValue !== '',
       form: searchState.form.params,
       value: searchState.form.searchValue,
       userDocs,
