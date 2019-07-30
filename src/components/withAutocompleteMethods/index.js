@@ -48,13 +48,14 @@ export const withAutocompleteMethods = (
     const classes = theme => ({
       suggestionsContainerOpen: {
         width: '100%',
-        position: 'absolute',
         maxHeight: 500,
         overflow: 'auto',
         '& div:last-child': {
           borderBottom: 'none'
         },
-        display: 'block'
+        display: 'flex',
+        flexDirection: 'column',
+        flex: '0 1 auto'
       },
       suggestion: {
         display: 'block'
@@ -71,7 +72,9 @@ export const withAutocompleteMethods = (
       },
       container: {
         width: '100%',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column'
       }
     })
     
@@ -104,14 +107,23 @@ export const withAutocompleteMethods = (
        */
       handleGetSuggestions = ({ value: searchString }) => {
         const actions = this.props[`${type}AutoActions`]
-        const { user } = this.props
+        const { user, currentUser } = this.props
         
-        if (searchString === '' && initialRequest) {
-          actions.getInitialSuggestionsRequest(user.id, 30, reduxSuffix)
+        const userId = user === undefined
+          ? currentUser === undefined
+            ? null
+            : currentUser.id
+          : user.id
+        
+        if (searchString === '') {
+          if (initialRequest) {
+            actions.getInitialSuggestionsRequest(userId, 30, reduxSuffix)
+            actions.setSearchingStatus(true)
+          }
         } else {
           actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+          actions.setSearchingStatus(true)
         }
-        actions.setSearchingStatus(true)
       }
       
       /**
@@ -262,6 +274,7 @@ export const withAutocompleteMethods = (
           renderSuggestion: this.renderSuggestion,
           renderSuggestionsContainer: this.renderSuggestionsContainer,
           renderInputComponent: this.renderInput,
+          alwaysRenderSuggestions: true,
           inputProps: {
             TextFieldProps: {
               placeholder: `Search ${type}s`,
