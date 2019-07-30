@@ -58,6 +58,29 @@ exports[`Document Management scene should render correctly 1`] = `
     />
   </FlexGrid>
   <BulkModal
+    autocompleteProps={
+      Object {
+        "searchValue": "",
+        "selectedSuggestion": Object {},
+        "suggestions": Array [
+          Object {
+            "id": 2932,
+          },
+          Object {
+            "id": 25332,
+          },
+          Object {
+            "id": 1,
+          },
+          Object {
+            "id": 2,
+          },
+          Object {
+            "id": 3,
+          },
+        ],
+      }
+    }
     bulkType=""
     buttonInfo={
       Object {
@@ -65,12 +88,8 @@ exports[`Document Management scene should render correctly 1`] = `
         "inProgress": undefined,
       }
     }
-    onClearSuggestions={[Function]}
     onCloseModal={[Function]}
     onConfirmAction={[Function]}
-    onGetSuggestions={[Function]}
-    onSearchValueChange={[Function]}
-    onSuggestionSelected={[Function]}
     open={false}
   />
   <Route
