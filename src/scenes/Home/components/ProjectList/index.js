@@ -39,14 +39,14 @@ export class ProjectList extends Component {
     openProject: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     allowExpandCollapse: PropTypes.bool
   }
-  
+
   state = {
     mouse: {
       x: 0,
       y: 0
     }
   }
-  
+
   /**
    * Checks the target node for a click away event
    * @param path
@@ -67,7 +67,7 @@ export class ProjectList extends Component {
     })
     return valid
   }
-  
+
   /**
    * Checks whether or not the project should expand based on what was clicked
    * @param target
@@ -81,7 +81,7 @@ export class ProjectList extends Component {
       && target.id !== 'avatar-menu-button'
       && target.tagName !== 'INPUT'
   }
-  
+
   /**
    * Sets a project to expanded or closed based on criteria
    * @param id
@@ -89,16 +89,16 @@ export class ProjectList extends Component {
    */
   handleExpandProject = (id, event) => {
     const { location, history, handleToggleProject, allowExpandCollapse } = this.props
-    
+
     if (allowExpandCollapse) {
       if (location.pathname === '/home' && isRouteOk(history)) {
         const expand = this.checkExpand(event.target) &&
           this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
-    
+
         if (expand) {
           handleToggleProject(id)
         }
-    
+
         this.setState({
           mouse: {
             x: 0,
@@ -108,7 +108,7 @@ export class ProjectList extends Component {
       }
     }
   }
-  
+
   /**
    * Handles closing a project is the user clicks away
    * @param event
@@ -116,30 +116,30 @@ export class ProjectList extends Component {
   handleClickAway = event => {
     const { openProject, location, history, handleToggleProject, allowExpandCollapse } = this.props
     const { mouse } = this.state
-    
+
     let check = true
-    
+
     if (allowExpandCollapse) {
       if (mouse.x !== 0 || mouse.y !== 0) {
         if (event.clientX !== mouse.x && event.clientY !== mouse.y) {
           check = false
         }
       }
-  
+
       if (check) {
         if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
           if (location.pathname === '/home' && isRouteOk(history)) {
             const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
             const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
               && this.checkTargetPath(event.path)
-        
+
             if (expand) {
               handleToggleProject(openProject)
             }
           }
         }
       }
-  
+
       this.setState({
         mouse: {
           x: 0,
@@ -148,7 +148,7 @@ export class ProjectList extends Component {
       })
     }
   }
-  
+
   /**
    * Sets the coordinates of the mouse when clicking down to check the position when mouse up for whether the project
    * needs to be closed or hided
@@ -162,7 +162,7 @@ export class ProjectList extends Component {
       }
     })
   }
-  
+
   /**
    * Changes route to edit modal for project
    * @param project
@@ -173,7 +173,7 @@ export class ProjectList extends Component {
       state: { projectDefined: { ...project }, modal: true }
     })
   }
-  
+
   /**
    * Handles a change in the current page
    */
@@ -181,7 +181,7 @@ export class ProjectList extends Component {
     const { handlePageChange } = this.props
     handlePageChange(page)
   }
-  
+
   /**
    * Handles change in rows per page
    */
@@ -189,14 +189,14 @@ export class ProjectList extends Component {
     const { handleRowsChange } = this.props
     handleRowsChange(event.target.value)
   }
-  
+
   render() {
     const { projectIds, user, page, rowsPerPage, projectCount, handleExport, getProjectUsers, openProject } = this.props
-    
+
     return (
       <FlexGrid style={{ overflow: 'auto' }} onMouseDown={this.onMouseDown}>
         <ClickAwayListener onClickAway={this.handleClickAway}>
-          <div style={{ padding: 3 }}>
+          <div style={{ padding: 3 }} id='project-list'>
             {projectIds.map((id, i) => (
               <ProjectPanel
                 key={id}

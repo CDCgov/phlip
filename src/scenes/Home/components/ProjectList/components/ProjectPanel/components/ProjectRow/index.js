@@ -9,9 +9,9 @@ export const ProjectRow = props => {
   const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
   const greyIcon = theme.palette.greyText
   const isLocked = project.status === 2
-  
+
   return (
-    <FlexGrid type="row" container flex style={{ minHeight: 60 }} onClick={handleExpandProject}>
+    <FlexGrid type="row" container flex style={{ minHeight: 60 }} onClick={handleExpandProject} id={project.name.replace(' ','_')}>
       <FlexGrid container type="row" align="center" padding="0 0 0 24px">
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
