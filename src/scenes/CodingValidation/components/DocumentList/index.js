@@ -22,7 +22,6 @@ export class DocumentList extends Component {
     openedDoc: PropTypes.object,
     enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     annotations: PropTypes.array,
-    annotationsForAnswer: PropTypes.array,
     annotationModeEnabled: PropTypes.bool,
     isValidation: PropTypes.bool,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -137,17 +136,17 @@ export class DocumentList extends Component {
    * Gets the actual document contents when a document is clicked
    */
   getContents = id => () => {
-    this.props.actions.getDocumentContentsRequest(id)
+    const { actions } = this.props
+    actions.getDocumentContentsRequest(id)
   }
   
   /**
    * Clears what document is selected
    */
   clearDocSelected = () => {
-    this.props.actions.clearDocSelected()
-    this.setState({
-      noTextContent: 2
-    })
+    const { actions } = this.props
+    actions.clearDocSelected()
+    this.setState({ noTextContent: 2 })
   }
   
   /**
@@ -167,21 +166,24 @@ export class DocumentList extends Component {
    * Toggles whether or not to show the annotation mode not enabeld alert
    */
   hideAnnoModeAlert = () => {
-    this.props.actions.hideAnnoModeAlert()
+    const { actions } = this.props
+    actions.hideAnnoModeAlert()
   }
   
   /**
    * Handles changing current annotation index in annotation finder
    */
   changeAnnotationIndex = index => {
-    this.props.actions.changeAnnotationIndex(index)
+    const { actions } = this.props
+    actions.changeAnnotationIndex(index)
   }
   
   /**
    * Sets scroll top to false after changing it to true
    */
   resetScrollTop = () => {
-    this.props.actions.resetScrollTop()
+    const { actions } = this.props
+    actions.resetScrollTop()
   }
   
   /*
@@ -196,7 +198,6 @@ export class DocumentList extends Component {
    * @param position
    */
   handleScrollAnnotation = position => {
-    const { actions } = this.props
     let el = this.checkIfRendered(position)
     
     while (!el) {
@@ -208,7 +209,7 @@ export class DocumentList extends Component {
     clearTimeout()
     const container = document.getElementById('viewContainer')
     const pageEl = el.offsetParent.offsetParent
-    actions.changeAnnotationIndex(position)
+    this.changeAnnotationIndex(position)
     container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
   }
   
@@ -231,7 +232,8 @@ export class DocumentList extends Component {
    * Toggles a coder's annotations for view
    */
   handleToggleCoderAnnotations = (userId, isValidator) => () => {
-    this.props.actions.toggleCoderAnnotations(userId, isValidator)
+    const { actions } = this.props
+    actions.toggleCoderAnnotations(userId, isValidator)
   }
   
   /**
@@ -337,8 +339,8 @@ export class DocumentList extends Component {
             count={annotations.length}
             current={currentAnnotationIndex}
             allEnabled={enabledUserId === 'All'}
-            handleScrollAnnotation={this.handleScrollAnnotation}
-            handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.handleToggleCoderAnnotations : null}
+            onScrollAnnotation={this.handleScrollAnnotation}
+            onClickAvatar={(isValidation && !annotationModeEnabled) ? this.handleToggleCoderAnnotations : null}
           />}
         </FlexGrid>
         <Divider />

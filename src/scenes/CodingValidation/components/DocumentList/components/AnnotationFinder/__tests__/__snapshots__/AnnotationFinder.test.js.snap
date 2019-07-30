@@ -30,7 +30,119 @@ exports[`PDFViewer - AnnotationFinder should render correctly 1`] = `
     raised={false}
     style={Object {}}
     type="row"
-  />
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      key="undefined-anno-avatar-0"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "marginRight": 5,
+        }
+      }
+      type="column"
+    >
+      <CodingValidationAvatar
+        enabled={false}
+        isValidator={false}
+        onClick={[MockFunction]}
+        size="medium"
+        style={Object {}}
+        user={
+          Object {
+            "enabled": false,
+            "isValidator": false,
+            "userId": 1,
+          }
+        }
+      />
+    </FlexGrid>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      key="undefined-anno-avatar-1"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "marginRight": 5,
+        }
+      }
+      type="column"
+    >
+      <CodingValidationAvatar
+        enabled={true}
+        isValidator={false}
+        onClick={null}
+        size="medium"
+        style={Object {}}
+        user={
+          Object {
+            "enabled": true,
+            "isValidator": false,
+            "userId": 2,
+          }
+        }
+      />
+    </FlexGrid>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      key="undefined-anno-avatar-2"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "marginRight": 5,
+        }
+      }
+      type="column"
+    >
+      <CodingValidationAvatar
+        enabled={false}
+        isValidator={true}
+        onClick={[MockFunction]}
+        size="medium"
+        style={Object {}}
+        user={
+          Object {
+            "enabled": false,
+            "isValidator": true,
+            "userId": 3,
+          }
+        }
+      />
+    </FlexGrid>
+    <CodingValidationAvatar
+      enabled={true}
+      isValidator={false}
+      onClick={null}
+      size="medium"
+      style={
+        Object {
+          "backgroundColor": "#3d316a",
+          "color": "white",
+        }
+      }
+      user={
+        Object {
+          "initials": "ALL",
+          "username": "All annotations",
+        }
+      }
+    />
+  </FlexGrid>
   <FlexGrid
     align="stretch"
     circular={false}

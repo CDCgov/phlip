@@ -7,6 +7,7 @@ const rrd = require('react-router-dom')
 Enzyme.configure({ adapter: new Adapter() })
 
 // Mocking react-router-dom browser router to just render children
+// eslint-disable-next-line react/display-name
 rrd.BrowserRouter = ({ children }) => <div>{children}</div>
 
 jest.mock('popper.js', () => {
