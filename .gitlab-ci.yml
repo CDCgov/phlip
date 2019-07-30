@@ -51,6 +51,8 @@ build and deploy on staging:
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
     - echo "NODE_ENV=development" >> .env
+    - echo APP_PIPELINE = 3344
+    - echo APP_BUILT_TIMESTAMP = 1558550362
     - npm run build
     - pm2 start scripts/serve.js --name fe
     - cd ../esquire-backend
