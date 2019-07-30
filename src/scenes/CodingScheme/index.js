@@ -18,7 +18,8 @@ import {
   PageHeader,
   Button,
   withProjectLocked,
-  withAutocompleteMethods, CircularLoader
+  withAutocompleteMethods,
+  CircularLoader
 } from 'components'
 import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
@@ -541,7 +542,8 @@ const mapStateToProps = (state, ownProps) => {
     lockedAlert: schemeState.lockedAlert || null,
     hasLock: Object.keys(schemeState.lockInfo).length > 0 || false,
     copying: schemeState.copying,
-    currentUser: state.data.user.currentUser
+    currentUser: state.data.user.currentUser,
+    user: state.data.user.currentUser
   }
 }
 

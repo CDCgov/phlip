@@ -23,7 +23,6 @@ import apiCalls from 'services/api/calls'
 import { INITIAL_STATE as mainListState } from '../../../reducer'
 import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 describe('Document Management - Upload logic', () => {
   let mock, apiMock
@@ -54,17 +53,17 @@ describe('Document Management - Upload logic', () => {
           docManage: {
             main: { list: { ...mainListState, ...mainListUpdates } },
             upload: {
-              list: { ...INITIAL_STATE, ...current },
-              projectSuggestions: {
-                ...AUTO_INITIAL_STATE,
-                ...projAuto
-              },
-              jurisdictionSuggestions: {
-                ...AUTO_INITIAL_STATE,
-                ...jurAuto
-              }
+              list: { ...INITIAL_STATE, ...current }
             }
           }
+        },
+        'autocomplete.project.upload': {
+          ...AUTO_INITIAL_STATE,
+          ...projAuto
+        },
+        'autocomplete.jurisdiction.upload': {
+          ...AUTO_INITIAL_STATE,
+          ...jurAuto
         }
       },
       reducer: mockReducer,
@@ -79,7 +78,7 @@ describe('Document Management - Upload logic', () => {
   describe('Upload Documents', () => {
     test('should reject action with type REJECT_NO_PROJECT_SELECTED when no project is selected', done => {
       const store = setupStore()
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs, project: {}, jurisdiction: {} })
       
       store.whenComplete(() => {
         expect(store.actions).toEqual([
@@ -104,7 +103,12 @@ describe('Document Management - Upload logic', () => {
         { selectedSuggestion: { name: 'project' } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs,
+        project: { name: 'project' },
+        jurisdiction: {}
+      })
       store.whenComplete(() => {
         expect(store.actions).toEqual([
           {
@@ -130,7 +134,12 @@ describe('Document Management - Upload logic', () => {
           { selectedSuggestion: { name: 'project', id: 4 } }
         )
         
-        store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
+        store.dispatch({
+          type: types.UPLOAD_DOCUMENTS_START,
+          selectedDocs,
+          project: { name: 'project', id: 4 },
+          jurisdiction: {}
+        })
         store.whenComplete(() => {
           expect(store.actions).toEqual([
             {
@@ -163,7 +172,12 @@ describe('Document Management - Upload logic', () => {
           { selectedSuggestion: { name: 'project', id: 4 } }
         )
         
-        store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+        store.dispatch({
+          type: types.UPLOAD_DOCUMENTS_START,
+          selectedDocs: docsWithFiles,
+          project: { name: 'project', id: 4 },
+          jurisdiction: {}
+        })
         store.whenComplete(() => {
           expect(store.actions[0].type).toEqual(types.UPLOAD_DOCUMENTS_START)
           done()
@@ -173,7 +187,7 @@ describe('Document Management - Upload logic', () => {
     
     test('should dispatch that there are duplicates if duplicates are found', done => {
       const store = setupStore(
-        { selectedDocs },
+        { selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } },
         {
@@ -189,7 +203,13 @@ describe('Document Management - Upload logic', () => {
         }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: arrOfDocsTransport })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: arrOfDocsTransport,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
+      
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.VERIFY_RETURN_DUPLICATE_FILES)
         done()
@@ -202,12 +222,17 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         expect(spy).toHaveBeenCalledTimes(4)
@@ -220,12 +245,17 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         const actions = store.actions
@@ -243,12 +273,17 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         expect(store.actions[3].payload.failed).toEqual(true)
@@ -268,12 +303,17 @@ describe('Document Management - Upload logic', () => {
       
       const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        { hasVerified: true, selectedDocs },
+        { hasVerified: true, selectedDocs: fullMerged },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+      store.dispatch({
+        type: types.UPLOAD_DOCUMENTS_START,
+        selectedDocs: docsWithFiles,
+        project: { name: 'project', id: 4 },
+        jurisdiction: { name: 'jurisdiction 10', id: 10 }
+      })
       
       store.whenComplete(() => {
         const actions = store.actions
@@ -320,7 +360,7 @@ describe('Document Management - Upload logic', () => {
         
         apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
         
-        const response = await mergeInfoWithDocs(excelWithoutState, selectedWithDup, api)
+        const { merged: response } = await mergeInfoWithDocs(excelWithoutState, selectedWithDup, api)
         expect(response[response.length - 1].jurisdictions.value.searchValue).toEqual('butler county')
       })
     })
@@ -328,24 +368,23 @@ describe('Document Management - Upload logic', () => {
     describe('MERGE_INFO', () => {
       test('should create an object of docs to prepare for merging info', done => {
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' } }).reply(200, [
-          { name: 'Washington (state)' }
+          { name: 'Washington (state)', id: 1 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' } }).reply(200, [
-          { name: 'North Carolina (state)' }
+          { name: 'North Carolina (state)', id: 2 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' } }).reply(200, [
-          { name: 'Washington, DC (federal district)' }
+          { name: 'Washington, DC (federal district)', id: 3 }
         ])
         
-        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
+        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } })
+          .reply(200, [{ name: 'Ohio (state)', id: 4 }])
         
         mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
         
-        const store = setupStore({
-          extractedInfo: excelInfoFull
-        })
+        const store = setupStore({ extractedInfo: excelInfoFull })
         
         store.dispatch({
           type: types.MERGE_INFO_WITH_DOCS,
@@ -353,7 +392,7 @@ describe('Document Management - Upload logic', () => {
         })
         
         store.whenComplete(() => {
-          expect(store.actions[0].payload).toEqual(fullMerged)
+          expect(store.actions[0].payload.merged).toEqual(fullMerged)
           done()
         })
       })
@@ -362,18 +401,19 @@ describe('Document Management - Upload logic', () => {
     describe('EXTRACT_INFO', () => {
       test('should specify that there are no selected docs when dispatching success', done => {
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' } }).reply(200, [
-          { name: 'Washington (state)' }
+          { name: 'Washington (state)', id: 1 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' } }).reply(200, [
-          { name: 'North Carolina (state)' }
+          { name: 'North Carolina (state)', id: 2 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' } }).reply(200, [
-          { name: 'Washington, DC (federal district)' }
+          { name: 'Washington, DC (federal district)', id: 3 }
         ])
         
-        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
+        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } })
+          .reply(200, [{ name: 'Ohio (state)', id: 4 }])
         
         mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
         
@@ -392,18 +432,19 @@ describe('Document Management - Upload logic', () => {
       
       test('should merge info with already selected docs for upload', done => {
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' } }).reply(200, [
-          { name: 'Washington (state)' }
+          { name: 'Washington (state)', id: 1 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' } }).reply(200, [
-          { name: 'North Carolina (state)' }
+          { name: 'North Carolina (state)', id: 2 }
         ])
         
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' } }).reply(200, [
-          { name: 'Washington, DC (federal district)' }
+          { name: 'Washington, DC (federal district)', id: 3 }
         ])
         
-        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
+        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } })
+          .reply(200, [{ name: 'Ohio (state)', id: 4 }])
         
         mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
         
@@ -462,96 +503,6 @@ describe('Document Management - Upload logic', () => {
         
         store.whenComplete(() => {
           expect(store.actions[1].type).toEqual(types.EXTRACT_INFO_FAIL)
-          done()
-        })
-      })
-    })
-  })
-  
-  describe('Autocomplete searches', () => {
-    describe('Search for Project suggestions', () => {
-      test('should allow the search if there is no project selected', done => {
-        const store = setupStore({}, { selectedSuggestion: {} })
-        
-        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` })
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` }
-          ])
-          done()
-        })
-      })
-      
-      test('should allow the action if the selected project\'s name is different than new search', done => {
-        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
-        
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-          searchString: 'Zero Dawn'
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`, searchString: 'Zero Dawn' }
-          ])
-          done()
-        })
-      })
-      
-      test('should not allow the action if the selected project\'s name is the same as the new search', done => {
-        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
-        
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-          searchString: 'Overwatch'
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([])
-          done()
-        })
-      })
-    })
-    
-    describe('Search for Jurisdiction suggestions', () => {
-      test('should allow the search if there is no jurisdiction selected', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: {} })
-    
-        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` })
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` }
-          ])
-          done()
-        })
-      })
-  
-      test('should allow the action if the selected jurisdictions\'s name is different than new search', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
-    
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-          searchString: 'Florida'
-        })
-    
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([
-            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`, searchString: 'Florida' }
-          ])
-          done()
-        })
-      })
-  
-      test('should not allow the action if the selected jurisdictions\'s name is the same as the new search', done => {
-        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
-    
-        store.dispatch({
-          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-          searchString: 'Ohio'
-        })
-    
-        store.whenComplete(() => {
-          expect(store.actions).toEqual([])
           done()
         })
       })

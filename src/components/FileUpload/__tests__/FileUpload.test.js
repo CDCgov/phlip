@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import FileUpload from '../index'
-import { DataTransferItem, FileEntry } from 'utils/testData/fileEntryMock'
+import { DataTransferItem, FileEntry, FileReader } from 'utils/testData/fileEntryMock'
 
 const props = {
   containerBorderColor: '#99D0E9',
@@ -14,13 +14,15 @@ const props = {
     enable: false,
     text: ''
   },
-  handleAddFiles: jest.fn()
+  handleAddFiles: jest.fn(),
+  allowFolderDrop: true,
+  allowedExtensions: ['pdf', 'docx', 'doc']
 }
 
 const dataTransfer = {
   items: [
-    new DataTransferItem('file1', 'file', []),
-    new DataTransferItem('file2', 'file', [])
+    new DataTransferItem('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+    new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
   ]
 }
 
@@ -198,6 +200,10 @@ describe('File Upload component', () => {
   })
   
   describe('dropping files', () => {
+    beforeEach(() => {
+      jest.resetAllMocks()
+    })
+    
     test('should prevent default from going to input component', () => {
       const wrapper = shallow(<FileUpload {...props} />)
       const event = {
@@ -212,52 +218,209 @@ describe('File Upload component', () => {
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should loop through all files found', async () => {
+    test('should loop through all files found', done => {
       const wrapper = shallow(<FileUpload {...props} allowMultiple />)
       const event = {
         preventDefault: jest.fn(),
         dataTransfer
       }
       
+      window.FileReader = FileReader
+      window.FileReader.DONE = 2
+      
       const spy = jest.spyOn(props, 'handleAddFiles')
-      await wrapper.find('form').simulate('drop', event)
-      console.log(wrapper)
-      expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
+      wrapper.find('form').simulate('drop', event)
+      setTimeout(() => {
+        expect(spy)
+          .toHaveBeenCalledWith([
+            { name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] },
+            { name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }
+          ])
+        done()
+      }, 2000)
     })
     
-    test('should only send back first file allow multiple is false', async () => {
+    test('should only send back first file allow multiple is false', done => {
       const wrapper = shallow(<FileUpload {...props} />)
       const event = {
         preventDefault: jest.fn(),
         dataTransfer
       }
       
+      window.FileReader = FileReader
+      window.FileReader.DONE = 2
+      
       const spy = jest.spyOn(props, 'handleAddFiles')
-      await wrapper.find('form').simulate('drop', event)
-      console.log(wrapper)
-      expect(spy).toHaveBeenCalledWith({ name: 'file1' })
+      wrapper.find('form').simulate('drop', event)
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalledWith({ name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] })
+        done()
+      }, 2000)
     })
     
-    describe('if the user has dropped a folder', () => {
-      test('should loop through the folder to get files', async done => {
+    describe('handling invalid files', () => {
+      beforeEach(() => {
+        jest.resetAllMocks()
+      })
+      
+      test('should not pass show any files that are invalid', done => {
         const wrapper = shallow(<FileUpload {...props} allowMultiple />)
         const event = {
           preventDefault: jest.fn(),
           dataTransfer: {
             items: [
-              new DataTransferItem('demo', 'dir', [
-                new FileEntry('file1', 'file', []),
-                new FileEntry('file2', 'file2', [])
-              ])
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
             ]
           }
         }
         
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
         const spy = jest.spyOn(props, 'handleAddFiles')
-        await wrapper.find('form').simulate('drop', event)
-        expect(spy).toHaveBeenCalledWith([{ name: 'file1' }, { name: 'file2' }])
-        done()
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalledWith([{ name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }])
+          done()
+        }, 2000)
       })
+      
+      test('should show an alert if the user tries to upload documents that are too large', done => {
+        const wrapper = shallow(<FileUpload {...props} allowMultiple />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
+            ]
+          }
+        }
+        
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(wrapper.state().alert).toEqual({
+            open: true,
+            title: 'Maximum File Size Exceeded',
+            text: 'The files listed below exceed the maximum allowed size of 16 MB. These files will be removed from the list.',
+            type: 'files'
+          })
+          clearTimeout()
+          done()
+        }, 1000)
+      })
+      
+      test('should show an alert if the user tries to upload documents that have an invalid type', done => {
+        const wrapper = shallow(<FileUpload {...props} allowMultiple />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.txt', 'file', [], 12000, [23, 423, 545, 234])
+            ]
+          }
+        }
+        
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(wrapper.state().alert).toEqual({
+            open: true,
+            title: 'Invalid File Types',
+            text: 'The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are .pdf, .docx, .doc.',
+            type: 'files'
+          })
+          clearTimeout()
+          done()
+        }, 1000)
+      })
+    })
+    
+    test(
+      'should show an alert if the user tries to upload documents that have an invalid type and invalid size',
+      done => {
+        const wrapper = shallow(<FileUpload {...props} allowMultiple allowedExtensions={['.xlsx']} />)
+        const event = {
+          preventDefault: jest.fn(),
+          dataTransfer: {
+            items: [
+              new DataTransferItem('file1.pdf', 'file', [], 20000000, [37, 80, 68, 70]),
+              new DataTransferItem('file2.txt', 'file', [], 12000, [23, 423, 545, 234])
+            ]
+          }
+        }
+        
+        window.FileReader = FileReader
+        window.FileReader.DONE = 2
+        
+        wrapper.find('form').simulate('drop', event)
+        setTimeout(() => {
+          expect(wrapper.state().alert).toEqual({
+            open: true,
+            title: 'Invalid Files Found',
+            text: 'The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are .xlsx. Maximum file size is 16 MB.',
+            type: 'files'
+          })
+          clearTimeout()
+          done()
+        }, 1000)
+      }
+    )
+  })
+  
+  describe('if the user has dropped a folder', () => {
+    test('should show an alert if foldering dropping is not allowed', async done => {
+      const wrapper = shallow(<FileUpload {...props} allowFolderDrop={false} />)
+      const event = {
+        preventDefault: jest.fn(),
+        dataTransfer: { items: [new DataTransferItem('demo', 'dir', [])] }
+      }
+      
+      await wrapper.find('form').simulate('drop', event)
+      expect(wrapper.state().alert).toEqual({
+        open: true,
+        title: 'Folder drop is not allowed',
+        type: 'folder',
+        text: 'Dragging and dropping a folder is not allowed for this input.'
+      })
+      expect(wrapper.find('Alert').prop('open')).toEqual(true)
+      done()
+    })
+    
+    test('should loop through the folder to get files', done => {
+      const wrapper = shallow(<FileUpload {...props} allowMultiple allowFolderDrop />)
+      const event = {
+        preventDefault: jest.fn(),
+        dataTransfer: {
+          items: [
+            new DataTransferItem('demo', 'dir', [
+              new FileEntry('file1.pdf', 'file', [], 12000, [37, 80, 68, 70]),
+              new FileEntry('file2.pdf', 'file', [], 12000, [37, 80, 68, 70])
+            ], 1, true)
+          ]
+        }
+      }
+      
+      window.FileReader = FileReader
+      window.FileReader.DONE = 2
+      
+      const spy = jest.spyOn(props, 'handleAddFiles')
+      wrapper.find('form').simulate('drop', event)
+      setTimeout(() => {
+        expect(spy)
+          .toHaveBeenCalledWith([
+            { name: 'file1.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] },
+            { name: 'file2.pdf', size: 12000, arrBufferOutput: [37, 80, 68, 70] }
+          ])
+        done()
+      }, 2000)
     })
   })
 })

@@ -14,14 +14,24 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import theme from 'services/theme'
 
+const defaultAutocomplete = {
+  showSearchIcon: false, inputProps: {}
+}
+
 /**
  * Autocomplete HOC
  * @param type
  * @param suffix
- * @param otherAutocompleteProps
+ * @param initialRequest
+ * @param otherAutoProps
  * @returns {function(*=)}
  */
-export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = { showSearchIcon: false, inputProps: {} }) =>
+export const withAutocompleteMethods = (
+  type,
+  suffix,
+  otherAutoProps = defaultAutocomplete,
+  initialRequest = true
+) =>
   WrappedComponent => {
     const reduxType = type.toUpperCase()
     const reduxSuffix = `_${suffix.toUpperCase()}`
@@ -33,6 +43,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
      * Classes passed to Autosuggest
      * @param theme
      * @returns
+     * istanbul ignore next
      */
     const classes = theme => ({
       suggestionsContainerOpen: {
@@ -77,7 +88,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
       componentWillUnmount() {
         this.handleClearAll()
       }
-  
+      
       /**
        * Clears suggestions, searching value, spinner
        */
@@ -93,7 +104,13 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
        */
       handleGetSuggestions = ({ value: searchString }) => {
         const actions = this.props[`${type}AutoActions`]
-        actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+        const { user } = this.props
+        
+        if (searchString === '' && initialRequest) {
+          actions.getInitialSuggestionsRequest(user.id, 30, reduxSuffix)
+        } else {
+          actions.searchForSuggestionsRequest(searchString, reduxSuffix)
+        }
         actions.setSearchingStatus(true)
       }
       
@@ -128,7 +145,7 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
        * @returns {boolean}
        */
       shouldRenderSuggestions = value => {
-        if (suffix !== 'project') {
+        if (!initialRequest) {
           return value !== undefined ? value.trim().length >= 3 : true
         } else {
           return true
@@ -214,6 +231,11 @@ export const withAutocompleteMethods = (type, suffix, otherAutocompleteProps = {
       
       render() {
         const { suggestions, searching, searchValue, selectedSuggestion, classes, ...otherProps } = this.props
+        let otherAutocompleteProps = otherAutoProps
+        
+        if (Object.keys(otherAutocompleteProps).length === 0) {
+          otherAutocompleteProps = defaultAutocomplete
+        }
         
         const spinnerSize = otherAutocompleteProps.inputProps.style
           ? otherAutocompleteProps.inputProps.style.fontSize

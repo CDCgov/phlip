@@ -20,18 +20,24 @@ const props = {
     clearSelectedFiles: jest.fn(),
     closeAlert: jest.fn(),
     openAlert: jest.fn(),
-    projectAutocomplete: {
-      clearAll: jest.fn()
-    },
-    jurisdictionAutocomplete: {
-      clearAll: jest.fn()
-    },
     uploadDocumentsStart: jest.fn(),
     verifyFiles: jest.fn(),
     addSelectedDocs: jest.fn(),
     mergeInfoWithDocs: jest.fn(),
     setInfoRequestProgress: jest.fn(),
     extractInfoRequest: jest.fn()
+  },
+  projectAutoActions: {
+    clearAll: jest.fn()
+  },
+  jurisdictionAutoActions: {
+    clearAll: jest.fn()
+  },
+  jurisdictionAutocompleteProps: {
+    selectedSuggestion: {}
+  },
+  projectAutocompleteProps: {
+    selectedSuggestion: {}
   },
   alert: {
     open: false,
@@ -134,14 +140,14 @@ describe('Document Management - Upload scene', () => {
       })
       
       test('should clear all jurisdiction suggestions', () => {
-        const spy = jest.spyOn(props.actions.jurisdictionAutocomplete, 'clearAll')
+        const spy = jest.spyOn(props.jurisdictionAutoActions, 'clearAll')
         const wrapper = shallow(<Upload {...props} />)
         wrapper.find('WithStyles(Modal)').prop('onClose')()
         expect(spy).toHaveBeenCalled()
       })
       
       test('should clear all project suggestions', () => {
-        const spy = jest.spyOn(props.actions.projectAutocomplete, 'clearAll')
+        const spy = jest.spyOn(props.projectAutoActions, 'clearAll')
         const wrapper = shallow(<Upload {...props} />)
         wrapper.find('WithStyles(Modal)').prop('onClose')()
         expect(spy).toHaveBeenCalled()
@@ -179,34 +185,6 @@ describe('Document Management - Upload scene', () => {
       preventDefault: jest.fn(),
       persist: jest.fn()
     }
-    
-    const fileArr = [
-      {
-        name: 'file1.txt',
-        lastModifiedDate: undefined,
-        tags: [],
-        effectiveDate: '',
-        file: file1,
-        citation: '',
-        jurisdictions: { searchValue: '', suggestions: [], name: '' }
-      },
-      {
-        name: 'file2.txt',
-        lastModifiedDate: undefined,
-        tags: [],
-        file: file2,
-        effectiveDate: '',
-        citation: '',
-        jurisdictions: { searchValue: '', suggestions: [], name: '' }
-      }
-    ]
-    
-    test('should send a request to verify files', () => {
-      const wrapper = shallow(<Upload {...props} />)
-      const spy = jest.spyOn(props.actions, 'verifyFiles')
-      wrapper.find('FileUpload').at(0).dive().find('input').simulate('change', fileList)
-      expect(spy).toHaveBeenCalledWith(fileArr)
-    })
     
     test('should open an alert if user selects more documents than allowed', () => {
       const spy = jest.spyOn(props.actions, 'openAlert')
@@ -256,15 +234,15 @@ describe('Document Management - Upload scene', () => {
       <Upload
         {...props}
         selectedDocs={docs}
-        selectedProject={{ id: 4 }}
-        selectedJurisdiction={{}}
+        projectAutocompleteProps={{ selectedSuggestion: { id: 4 } }}
+        jurisdictionAutocompleteProps={{ selectedSuggestion: {} }}
       />
     )
     
     test('should create an array of all documents correctly formed', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      expect(spy).toHaveBeenCalledWith(arrOfDocsTransport)
+      expect(spy).toHaveBeenCalledWith(arrOfDocsTransport, { id: 4 }, {})
     })
     
     test('should send a request to upload documents', () => {
@@ -273,19 +251,35 @@ describe('Document Management - Upload scene', () => {
       expect(spy).toHaveBeenCalled()
     })
     
-    test('should use the global jurisdiction if selected', () => {
+    test('should use the global jurisdiction if the doc doesn\'t has one selected', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
+      const selectedDocs = docs.slice(0, docs.length - 1)
+      const lastDoc = docs[docs.length - 1]
       wrapper.setProps({
-        selectedJurisdiction: { id: 20 }
+        jurisdictionAutocompleteProps: {
+          selectedSuggestion: { id: 20 }
+        },
+        selectedDocs: [
+          ...selectedDocs,
+          {
+            ...lastDoc,
+            jurisdictions: {
+              ...lastDoc.jurisdictions,
+              value: {
+                id: undefined
+              }
+            }
+          }
+        ]
       })
       
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      const globalJur = arrOfDocsTransport.map(doc => ({
-        ...doc,
-        jurisdictions: [20]
-      }))
-      
-      expect(spy).toHaveBeenCalledWith(globalJur)
+      const transport = arrOfDocsTransport.slice(0, arrOfDocsTransport.length - 1)
+      expect(spy).toHaveBeenCalledWith(
+        [...transport, { ...arrOfDocsTransport[arrOfDocsTransport.length - 1], jurisdictions: [20] }],
+        { id: 4 },
+        { id: 20 }
+      )
     })
   })
   
@@ -338,7 +332,7 @@ describe('Document Management - Upload scene', () => {
           uploadProgress={{ index: 3, total: 3, failures: 0, percentage: 100 }}
         />
       )
-  
+      
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('All documents successfully uploaded!')
     })
@@ -351,7 +345,7 @@ describe('Document Management - Upload scene', () => {
           uploadProgress={{ index: 3, total: 3, failures: 1, percentage: 100 }}
         />
       )
-  
+      
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Some of the documents failed to upload. They are still present in the list if you wish to retry.')
     })
@@ -422,7 +416,8 @@ describe('Document Management - Upload scene', () => {
       const wrapper = shallow(<Upload {...props} infoRequestInProgress />)
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Processing document... This could take a couple of minutes...')
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />)).toEqual(true)
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />))
+        .toEqual(true)
     })
     
     test('handle if there\'s an error while submitting', () => {

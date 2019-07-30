@@ -23,8 +23,9 @@ const memoizedGetSamlAuthToken = memoize(getSamlAuthToken)
  * Logs in a user by setting the token parameter is session storage
  *
  * @param {String} token
+ * @param samlToken
  */
-export const login = async (token,samlToken) => {
+export const login = async (token, samlToken) => {
   return new Promise(resolve => {
     memoizedGetAuthToken.cache.clear()
     setAuthToken(token)
@@ -38,7 +39,6 @@ export const login = async (token,samlToken) => {
 
 /**
  * Checks to see if a user is logged in, by checking to see if a token exists in session storage
- *
  * @returns {Boolean}
  */
 export const isLoggedIn = () => {
@@ -57,21 +57,18 @@ export const logout = () => {
 
 /**
  * Gets the token that is in session storage
- *
  * @returns {String}
  */
 export const getToken = () => memoizedGetAuthToken(TOKEN_KEY)
 
 /**
  * Gets the saml token that is in session storage
- *
  * @returns {String}
  */
 export const getSamlToken = () => memoizedGetSamlAuthToken(SAML_KEY)
 
 /**
  * Decodes the JWT token
- *
  * @param {String} token
  * @returns {Object}
  */
@@ -81,11 +78,20 @@ export const decodeToken = token => {
 
 /**
  * Checks to see if the token has expired
- *
  * @returns {Boolean}
  */
 export const isTokenExpired = () => {
   const token = decodeToken(getToken())
   const current = Date.now() / 1000
   return current > token.exp
+}
+
+export default {
+  login,
+  isLoggedIn,
+  decodeToken,
+  isTokenExpired,
+  getSamlToken,
+  getToken,
+  logout
 }

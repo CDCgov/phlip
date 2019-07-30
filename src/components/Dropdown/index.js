@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
 import FlexGrid from 'components/FlexGrid'
 
+/* istanbul ignore next */
 const styles = theme => ({
   disabled: {
     color: 'black',
@@ -116,7 +117,8 @@ Dropdown.defaultProps = {
   meta: { touched: false, error: undefined },
   label: '',
   displayEmpty: false,
-  fullWidth: false
+  fullWidth: false,
+  disabled: false
 }
 
 export default withStyles(styles)(Dropdown)

@@ -11,7 +11,8 @@ export const types = {
   CLEAR_ALL: 'CLEAR_ALL',
   FLUSH_STATE: 'FLUSH_STATE',
   GET_INITIAL_PROJECT_SUGGESTION_REQUEST: 'GET_INITIAL_PROJECT_SUGGESTION_REQUEST',
-  SET_SEARCHING_STATUS: 'SET_SEARCHING_STATUS'
+  SET_SEARCHING_STATUS: 'SET_SEARCHING_STATUS',
+  GET_INITIAL_SUGGESTIONS_REQUEST: 'GET_INITIAL_SUGGESTIONS_REQUEST'
 }
 
 export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
@@ -27,6 +28,12 @@ export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
     clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`),
     onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`, 'suggestion'),
     clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}${suffix}`),
+    getInitialSuggestionsRequest: makeActionCreator(
+      `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_${searchName}`,
+      'userId',
+      'count',
+      'suffix'
+    ),
     getProjectsByUserRequest: makeActionCreator(types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST, 'userId', 'count')
   }
 }

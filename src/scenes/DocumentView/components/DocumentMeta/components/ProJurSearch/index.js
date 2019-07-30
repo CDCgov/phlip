@@ -39,7 +39,7 @@ const ProJurSearch = props => {
     onConfirmAction,
     searching
   } = props
-  
+
   const cancelButton = {
     value: 'Cancel',
     type: 'button',
@@ -47,7 +47,7 @@ const ProJurSearch = props => {
     preferred: true,
     onClick: onCloseModal
   }
-  
+
   const actions = [
     cancelButton,
     {
@@ -58,7 +58,7 @@ const ProJurSearch = props => {
       disabled: buttonInfo.disabled
     }
   ]
-  
+
   return (
     <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false}>
       <ModalTitle title={`Assign ${searchType ? capitalizeFirstLetter(searchType) : ''}`} />
@@ -88,6 +88,7 @@ const ProJurSearch = props => {
                 fullWidth: true
               }}
               isSearching={searching}
+              suggestionType={searchType}
             />
           </FlexGrid>
         </FlexGrid>

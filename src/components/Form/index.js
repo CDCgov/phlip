@@ -6,7 +6,9 @@ import { reduxForm } from 'redux-form'
  * Basic form wrapper to be used with redux-form
  * @component
  */
-export let Form = ({ children, handleSubmit, form, role, ariaLabelledBy, style }) => {
+export let Form = props => {
+  const { children, handleSubmit, form, role, ariaLabelledBy, style } = props
+  
   return (
     <form onSubmit={handleSubmit} role={role} aria-labelledby={ariaLabelledBy} style={style}>
       {children}

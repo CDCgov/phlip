@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const FlexGrid = props => {
+export const FlexGrid = props => {
   const { type, flex, container, align, justify, children, style, padding, raised, circular, ...otherProps } = props
 
   const elStyle = {
@@ -56,15 +56,46 @@ FlexGrid.defaultProps = {
 }
 
 FlexGrid.propTypes = {
+  /**
+   * Flex direction
+   */
   type: PropTypes.oneOf(['row', 'column']),
+  /**
+   * Whether or not this element should flex
+   */
   flex: PropTypes.bool,
+  /**
+   * Determines if display:flex is set
+   */
   container: PropTypes.bool,
+  /**
+   * Value to pass to align-items
+   */
   align: PropTypes.oneOf(alignJustifyTypes),
+  /**
+   * Value to pass to justify-content
+   */
   justify: PropTypes.oneOf(alignJustifyTypes),
+  /**
+   * Any overriding style to pass to component
+   */
   style: PropTypes.object,
+  /**
+   * Is it a card component
+   */
   raised: PropTypes.bool,
+  /**
+   * Sets border-radius to 50%
+   */
   circular: PropTypes.bool,
-  padding: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  /**
+   * Padding to be added to component
+   */
+  padding: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * Contents of component
+   */
+  children: PropTypes.any
 }
 
 export default FlexGrid

@@ -45,7 +45,7 @@ export const BulkModal = props => {
     ownerList,
     searching
   } = props
-  
+
   const cancelButton = {
     value: 'Cancel',
     type: 'button',
@@ -53,7 +53,7 @@ export const BulkModal = props => {
     preferred: true,
     onClick: onCloseModal
   }
-  
+
   const actions = [
     cancelButton,
     {
@@ -64,7 +64,7 @@ export const BulkModal = props => {
       disabled: buttonInfo.disabled
     }
   ]
-  
+
   const genMessage = (bulkType) => {
     if (['project', 'jurisdiction'].includes(bulkType)) {
       return `Do you want to assign this ${bulkType} to other users' documents?`
@@ -80,7 +80,7 @@ export const BulkModal = props => {
       e.preventDefault()
     }
   }
-  
+
   return (
     <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox" onMouseDown={onMouseDown}>
       <ModalTitle title={typeToTitle[bulkType]} />
@@ -118,6 +118,7 @@ export const BulkModal = props => {
                 placeholder: `Search ${bulkType.includes('project') ? 'project' : bulkType}s`,
                 fullWidth: true
               }}
+              suggestionType = {bulkType.includes('project') ? 'project' : bulkType}
             />
           </FlexGrid>}
           <FlexGrid>

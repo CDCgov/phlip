@@ -16,6 +16,10 @@ const isIE = () => {
   return (msie > 0 || trident > 0)
 }
 
+/**
+ * Renders the actual app
+ * @param Component
+ */
 const renderApp = Component => {
   ReactDOM.render(
     <Provider store={store}>

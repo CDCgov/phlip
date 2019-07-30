@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
+import upload, { INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types as uploadTypes } from './scenes/Upload/actions'
 import { types } from './actions'
 import { arrayToObject, createArrOfObj, mapArray } from 'utils/normalize'
@@ -214,6 +214,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_DELETE_SUCCESS:
+    case types.DELETE_DOC_SUCCESS:
       let updatedDocs = { ...state.documents.byId }
       let matches = state.documents.matches.slice()
       userDocs = state.documents.userDocs.slice()
@@ -343,7 +344,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
-  
+    
     case types.SELECT_ALL_DOCS:
       return {
         ...state,
@@ -353,17 +354,17 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         allSelected: !state.allSelected
       }
-  
+    
     case types.SELECT_ONE_DOC:
       let updatedChecked = [...state.documents.checked]
-    
+      
       if (state.documents.checked.includes(action.id)) {
         const index = state.documents.checked.indexOf(action.id)
         updatedChecked.splice(index, 1)
       } else {
         updatedChecked = [...updatedChecked, action.id]
       }
-    
+      
       return {
         ...state,
         documents: {
@@ -387,7 +388,7 @@ const MAIN_COMBINED_STATE = {
 }
 
 const COMBINED_INITIAL_STATE = {
-  upload: UPLOAD_INITIAL_STATE,
+  upload: { list: UPLOAD_INITIAL_STATE },
   main: MAIN_COMBINED_STATE,
   search: SEARCH_INITIAL_STATE
 }

@@ -1,5 +1,4 @@
 import makeActionCreator from 'utils/makeActionCreator'
-import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 
 export const types = {
   UPLOAD_DOCUMENTS_START: 'UPLOAD_DOCUMENTS_START',
@@ -27,14 +26,12 @@ export const types = {
   CLEAR_ROW_JURISDICTION_SUGGESTIONS: 'CLEAR_ROW_JURISDICTION_SUGGESTIONS',
   EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
   MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS',
-  VERIFY_VALID_FILES: 'VERIFY_VALID_FILES',
-  ALL_FILES_VALID: 'ALL_FILES_VALID',
   INVALID_FILES_FOUND: 'INVALID_FILES_FOUND',
   FLUSH_STATE: 'FLUSH_STATE'
 }
 
 export default {
-  uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs'),
+  uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs', 'project', 'jurisdiction'),
   acknowledgeUploadFailures: makeActionCreator(types.ACKNOWLEDGE_UPLOAD_FAILURES),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
@@ -48,15 +45,6 @@ export default {
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs'),
   setInfoRequestProgress: makeActionCreator(types.SET_INFO_REQUEST_IN_PROGRESS)
-}
-
-export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT', '')
-}
-
-export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION', '')
 }
 

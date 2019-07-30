@@ -14,6 +14,7 @@ import { CircularLoader, Icon, SimpleInput } from 'components'
  * @param theme
  * @returns
  */
+/* istanbul ignore next */
 const classes = theme => ({
   suggestionsContainerOpen: {
     width: '100%',
