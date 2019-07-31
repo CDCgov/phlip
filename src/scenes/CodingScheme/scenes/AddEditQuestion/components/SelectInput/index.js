@@ -17,6 +17,12 @@ const styles = {
   }
 }
 
+/**
+ * Renders the dropdown so the user can select question type
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 const SelectInput = props => {
   const {
     canModify, name, label, answerType, type, input, classes,

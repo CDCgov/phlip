@@ -2,6 +2,9 @@ import React, { Children, cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import styles from './tree-node.scss'
 
+/**
+ * This component is used for the scaffoldig / container for the Question Node of the coding scheme
+ */
 export const TreeNode = props => {
   const {
     children,

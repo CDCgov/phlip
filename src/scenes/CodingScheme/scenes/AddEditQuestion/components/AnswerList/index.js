@@ -6,6 +6,13 @@ import Button from 'components/Button'
 import { Row } from 'components/Layout'
 import * as questionTypes from '../../constants'
 
+/**
+ * Renders a list of answer text fields or an answer text box if the question is a TextField question
+ * @param fields
+ * @param answerType
+ * @param isEdit
+ * @param canModify
+ */
 export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
   return (
     <Fragment>

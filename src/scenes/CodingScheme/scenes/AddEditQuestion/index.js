@@ -75,30 +75,38 @@ export class AddEditQuestion extends Component {
      * Whether or not the protocol is checked out by the current user logged in
      */
     lockedByCurrentUser: PropTypes.bool,
-    
+    /**
+     * Called when there's an error that occurs while sending a request. Passed in from formModal -- opens an alert
+     */
     onSubmitError: PropTypes.func,
-    
+    /**
+     * Whether or not to close the modal and go back to the coding scheme page
+     */
     goBack: PropTypes.bool
   }
   
   constructor(props, context) {
     super(props, context)
-    this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
-      ? null
-      : this.props.location.state.questionDefined
+    const { match, projectId, location, lockedByCurrentUser } = props
     
-    this.parentDefined = this.props.location.state
-      ? this.props.location.state.parentDefined
-        ? this.props.location.state.parentDefined
+    // User is editing a question
+    this.questionDefined = match.url === `/project/${projectId}/coding-scheme/add`
+      ? null
+      : location.state.questionDefined
+    
+    // Parent of question if it's a child question
+    this.parentDefined = location.state
+      ? location.state.parentDefined
+        ? location.state.parentDefined
         : null
       : null
     
     this.state = {
       edit: this.questionDefined,
       submitting: false,
-      canModify: this.props.location.state
-        ? this.props.location.state.canModify
-        : this.props.lockedByCurrentUser
+      canModify: location.state
+        ? location.state.canModify
+        : lockedByCurrentUser
     }
     
     this.defaultForm = {
@@ -129,15 +137,15 @@ export class AddEditQuestion extends Component {
       : `${document.title} - Add Question`
   }
   
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    const { formError, onSubmitError, history, goBack } = this.props
+    
     if (this.state.submitting) {
-      if (this.props.formError !== null) {
-        this.setState({
-          submitting: false
-        })
-        this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack) {
-        this.props.history.goBack()
+      if (formError !== null) {
+        this.setState({ submitting: false })
+        onSubmitError(formError)
+      } else if (goBack) {
+        history.goBack()
       }
     }
   }
@@ -146,6 +154,11 @@ export class AddEditQuestion extends Component {
     document.title = this.prevTitle
   }
   
+  /**
+   * Shows a spinner next to button text when a request is in progress
+   * @param text
+   * @returns {*}
+   */
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -167,9 +180,7 @@ export class AddEditQuestion extends Component {
    * @param {Object} values
    */
   handleSubmit = values => {
-    this.setState({
-      submitting: true
-    })
+    this.setState({ submitting: true })
     
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
@@ -399,16 +410,18 @@ export class AddEditQuestion extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
-  const schemeState = state.scenes.codingScheme
+  const formState = state.scenes.codingScheme.addEditQuestion
+  const schemeState = state.scenes.codingScheme.main
   
   return {
     form: state.form.questionForm || {},
     projectId: ownProps.match.params.id,
     formName: 'questionForm',
-    formError: schemeState.formError || null,
+    formError: formState.formError || null,
     lockedByCurrentUser: schemeState.lockedByCurrentUser || false,
     hasLock: Object.keys(schemeState.lockInfo).length > 0 || false,
-    goBack: schemeState.goBack
+    goBack: formState.goBack,
+    submitting: formState.submitting
   }
 }
 

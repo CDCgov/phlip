@@ -7,6 +7,8 @@ import {
   addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
+import { combineReducers } from 'redux'
+import addEditQuestion from './scenes/AddEditQuestion/reducer'
 
 export const INITIAL_STATE = {
   questions: [],
@@ -14,14 +16,12 @@ export const INITIAL_STATE = {
   allowHover: true,
   flatQuestions: [],
   schemeError: null,
-  formError: null,
   alertError: '',
   previousQuestions: [],
   previousOutline: {},
   lockedByCurrentUser: false,
   lockInfo: {},
   lockedAlert: null,
-  goBack: false,
   copying: false
 }
 
@@ -242,24 +242,13 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         alertError: action.payload
       }
   
-    case types.ADD_QUESTION_REQUEST:
-    case types.ADD_CHILD_QUESTION_REQUEST:
-    case types.UPDATE_QUESTION_REQUEST:
-      return {
-        ...state,
-        formError: null,
-        goBack: false
-      }
-  
     case types.ADD_QUESTION_SUCCESS:
       return {
         ...state,
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
         flatQuestions: [...state.flatQuestions, action.payload],
-        empty: false,
-        error: null,
-        goBack: true
+        empty: false
       }
   
     case types.ADD_CHILD_QUESTION_SUCCESS:
@@ -276,8 +265,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: newTree.treeData,
         outline: questionsToOutline(newTree.treeData),
         empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload],
-        goBack: true
+        flatQuestions: [...state.flatQuestions, action.payload]
       }
   
     case types.UPDATE_QUESTION_SUCCESS:
@@ -292,17 +280,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
-        empty: false,
-        goBack: true
-      }
-
-    case types.ADD_QUESTION_FAIL:
-    case types.ADD_CHILD_QUESTION_FAIL:
-    case types.UPDATE_QUESTION_FAIL:
-      return {
-        ...state,
-        formError: action.payload,
-        goBack: false
+        empty: false
       }
 
     case types.SET_EMPTY_STATE:
@@ -389,4 +367,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default codingSchemeReducer
+/**
+ * Combines the reducers from ./scenes/AddEditProject and ./scenes/AddEditJurisdiction
+ */
+const codingSchemeRootReducer = combineReducers({
+  main: codingSchemeReducer,
+  addEditQuestion
+})
+
+export default codingSchemeRootReducer

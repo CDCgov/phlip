@@ -10,6 +10,12 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 import Tooltip from 'components/Tooltip'
 import Link from 'components/Link'
 
+/**
+ * Checks if the node is a descendant
+ * @param older
+ * @param younger
+ * @returns {boolean|*}
+ */
 const isDescendant = (older, younger) => {
   return (
     !!older.children &&
@@ -18,6 +24,9 @@ const isDescendant = (older, younger) => {
   )
 }
 
+/**
+ * This is the actual node content and node for the coding scheme tree
+ */
 export class QuestionNode extends Component {
   static propTypes = {
     buttons: PropTypes.arrayOf(PropTypes.node),
@@ -74,25 +83,19 @@ export class QuestionNode extends Component {
     super(props, context)
 
     this.state = {
-      isGrabbed: false,
       hovered: false
     }
   }
-
-  handleGrabbed = e => {
-    if (e.key === ' ') {
-      e.preventDefault()
-      this.setState({
-        isGrabbed: true
-      })
-    }
-  }
-
+  
+  /**
+   * Sets whether or a not a node is being hovered over -- need to know so to determine button show
+   * @param hovered
+   */
   setHoveredStatus = hovered => {
-    if (!this.props.isDragging) {
-      this.setState({
-        hovered
-      })
+    const { isDragging } = this.props
+    
+    if (!isDragging) {
+      this.setState({ hovered })
     }
   }
 
@@ -117,6 +120,8 @@ export class QuestionNode extends Component {
       projectId,
       handleDeleteQuestion
     } = this.props
+    
+    const { hovered } = this.state
 
     const questionBody = node.text
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
@@ -125,7 +130,7 @@ export class QuestionNode extends Component {
 
     const handle = connectDragSource(
       <div className={styles.handle} tabIndex={0} role="button">
-        <Tooltip text={this.state.hovered ? '' : 'Drag to reorder'} placement="bottom">
+        <Tooltip text={hovered ? '' : 'Drag to reorder'} placement="bottom">
           <Icon size="24" color="black">reorder</Icon>
         </Tooltip>
       </div>,
@@ -162,7 +167,7 @@ export class QuestionNode extends Component {
               <Typography noWrap component="h4" style={{ flex: 1 }}>
                 {questionBody}
               </Typography>
-              {this.state.hovered && !isDraggedDescendant &&
+              {hovered && !isDraggedDescendant &&
               <div className={styles.questionButtons}>
                 {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                   <Tooltip
@@ -214,7 +219,7 @@ export class QuestionNode extends Component {
                   />
                 </Tooltip>}
               </div>}
-              {!this.state.hovered && node.questionType === questionTypes.CATEGORY &&
+              {!hovered && node.questionType === questionTypes.CATEGORY &&
               <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>}
             </CardContent>
           </div>
@@ -231,12 +236,12 @@ export class QuestionNode extends Component {
         <>
           <IconButton
             type="button"
-            aria-label={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
+            aria-label={hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             className={styles.expandCollapseButton}
             color="#707070"
             style={{ backgroundColor: '#f5f5f5' }}
             iconSize={28}
-            tooltipText={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
+            tooltipText={hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             onClick={() => toggleChildrenVisibility({
               node,
               path,

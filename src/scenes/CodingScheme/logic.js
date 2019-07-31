@@ -191,7 +191,7 @@ const reorderSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const outline = {
       userid: getState().data.user.currentUser.id,
-      outline: getState().scenes.codingScheme.outline
+      outline: getState().scenes.codingScheme.main.outline
     }
     try {
       await api.reorderScheme(outline, {}, { projectId: action.projectId })
@@ -218,7 +218,7 @@ const deleteQuestionLogic = createLogic({
     try {
       await api.deleteQuestion({}, {}, { projectId: action.projectId, questionId: action.questionId })
       const updatedQuestions = removeNodeAtPath({
-        treeData: getState().scenes.codingScheme.questions,
+        treeData: getState().scenes.codingScheme.main.questions,
         path: action.path,
         getNodeKey
       })

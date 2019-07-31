@@ -122,10 +122,12 @@ export class CodingScheme extends Component {
   }
   
   componentDidMount() {
-    document.title = `PHLIP - ${this.props.projectName} - Coding Scheme`
-    this.props.actions.getSchemeRequest(this.props.projectId)
+    const { projectName, projectId, actions } = this.props
+    
+    document.title = `PHLIP - ${projectName} - Coding Scheme`
+    actions.getSchemeRequest(projectId)
     setTimeout(() => {
-      this.props.actions.setEmptyState()
+      actions.setEmptyState()
     }, 1000)
   }
   
@@ -144,7 +146,8 @@ export class CodingScheme extends Component {
    * @public
    */
   onCloseAlert = () => {
-    this.props.actions.resetAlertError()
+    const { actions } = this.props
+    actions.resetAlertError()
   }
   
   /**
@@ -152,7 +155,8 @@ export class CodingScheme extends Component {
    * @public
    */
   onCloseLockedAlert = () => {
-    this.props.actions.closeLockedAlert()
+    const { actions } = this.props
+    actions.closeLockedAlert()
   }
   
   /**
@@ -161,7 +165,8 @@ export class CodingScheme extends Component {
    * @param questions
    */
   handleQuestionTreeChange = questions => {
-    this.props.actions.updateQuestionTree(questions)
+    const { actions } = this.props
+    actions.updateQuestionTree(questions)
   }
   
   /**
@@ -169,7 +174,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleQuestionNodeMove = () => {
-    this.props.actions.reorderSchemeRequest(this.props.projectId)
+    const { actions, projectId } = this.props
+    actions.reorderSchemeRequest(projectId)
   }
   
   /**
@@ -177,7 +183,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleLockCodingScheme = () => {
-    this.props.actions.lockCodingSchemeRequest(this.props.projectId)
+    const { actions, projectId } = this.props
+    actions.lockCodingSchemeRequest(projectId)
   }
   
   /**
@@ -185,7 +192,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleUnlockCodingScheme = () => {
-    this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
+    const { actions, projectId } = this.props
+    actions.unlockCodingSchemeRequest(projectId)
   }
   
   /**
@@ -193,7 +201,10 @@ export class CodingScheme extends Component {
    * @public
    */
   handleDeleteQuestion = () => {
-    this.props.actions.deleteQuestionRequest(this.props.projectId, this.state.questionIdToDelete, this.state.path)
+    const { actions, projectId } = this.props
+    const { questionIdToDelete, path } = this.state
+    
+    actions.deleteQuestionRequest(projectId, questionIdToDelete, path)
     this.onCloseDeleteQuestionAlert()
   }
   
@@ -229,9 +240,7 @@ export class CodingScheme extends Component {
    * @public
    */
   onCloseGoBackAlert = () => {
-    this.setState({
-      goBackAlertOpen: false
-    })
+    this.setState({ goBackAlertOpen: false })
   }
   
   /**
@@ -240,9 +249,11 @@ export class CodingScheme extends Component {
    * @public
    */
   onContinueGoBack = () => {
+    const { actions, history } = this.props
+    
     this.handleUnlockCodingScheme()
-    this.props.actions.clearState()
-    this.props.history.goBack()
+    actions.clearState()
+    history.goBack()
   }
   
   /**
@@ -252,13 +263,13 @@ export class CodingScheme extends Component {
    * @public
    */
   onGoBack = () => {
-    if (this.props.lockedByCurrentUser) {
-      this.setState({
-        goBackAlertOpen: true
-      })
+    const { actions, history, lockedByCurrentUser } = this.props
+    
+    if (lockedByCurrentUser) {
+      this.setState({ goBackAlertOpen: true })
     } else {
-      this.props.actions.clearState()
-      this.props.history.goBack()
+      actions.clearState()
+      history.goBack()
     }
   }
   
@@ -266,7 +277,9 @@ export class CodingScheme extends Component {
    *  release the lock when user click on release lock button
    */
   overrideLock = () => {
-    this.props.actions.unlockCodingSchemeRequest(this.props.projectId, this.props.lockInfo.userId)
+    const { actions, projectId, lockInfo } = this.props
+  
+    actions.unlockCodingSchemeRequest(projectId, lockInfo.userId)
     this.onCloseLockedAlert()
   }
   
@@ -274,9 +287,7 @@ export class CodingScheme extends Component {
    * Opens the project search modal for copying the coding scheme
    */
   openProjectSearch = () => {
-    this.setState({
-      projectSearchOpen: true
-    })
+    this.setState({ projectSearchOpen: true })
   }
   
   /**
@@ -284,9 +295,8 @@ export class CodingScheme extends Component {
    */
   closeProjectSearch = () => {
     const { projectAutoActions } = this.props
-    this.setState({
-      projectSearchOpen: false
-    })
+    
+    this.setState({ projectSearchOpen: false })
     projectAutoActions.clearAll()
   }
   
@@ -525,7 +535,7 @@ export class CodingScheme extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
-  const schemeState = state.scenes.codingScheme
+  const schemeState = state.scenes.codingScheme.main
   
   return {
     projectName: state.data.projects.byId[ownProps.match.params.id].name,

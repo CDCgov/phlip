@@ -148,12 +148,12 @@ let apiCalls = [
   {
     name: 'addQuestion',
     method: 'post',
-    path: ({ projectId }) => `/projects/${projectId}/scheme`
+    path: ({ projectId }) => `/project/${projectId}/scheme`
   },
   {
     name: 'updateQuestion',
     method: 'put',
-    path: ({ projectId, questionId }) => `/projects/${projectId}/scheme/${questionId}`
+    path: ({ projectId, questionId }) => `/project/${projectId}/scheme/${questionId}`
   },
   {
     name: 'deleteQuestion',

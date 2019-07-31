@@ -34,7 +34,7 @@ const updateOutlineLogic = createLogic({
       question: {
         ...action.question,
         userId: getState().data.user.currentUser.id,
-        outline: getState().scenes.codingScheme.outline,
+        outline: getState().scenes.codingScheme.main.outline,
         parentId: action.parentId,
         possibleAnswers: action.question.questionType === questionTypes.TEXT_FIELD
           ? [{ text: '' }]
@@ -54,7 +54,7 @@ const updatePositionInParentLogic = createLogic({
       ...action,
       question: {
         ...action.question,
-        positionInParent: getState().scenes.codingScheme.questions.length
+        positionInParent: getState().scenes.codingScheme.main.questions.length
       }
     })
   }
