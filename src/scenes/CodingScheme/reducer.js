@@ -149,7 +149,7 @@ const sortPossibleAnswers = questions => {
  * @param {Object} action
  * @returns {Object}
  */
-const codingSchemeReducer = (state = INITIAL_STATE, action) => {
+export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
       sortPossibleAnswers(action.payload.scheme.schemeQuestions)

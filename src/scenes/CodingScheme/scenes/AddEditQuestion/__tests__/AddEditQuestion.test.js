@@ -4,15 +4,13 @@ import { AddEditQuestion } from '../index'
 
 const props = {
   actions: {
-    updateQuestionRequest: () => { },
-    addChildQuestionRequest: () => { },
-    addQuestionRequest: () => { }
+    updateQuestionRequest: jest.fn(),
+    addChildQuestionRequest: jest.fn(),
+    addQuestionRequest: jest.fn()
   },
-  match: {
-    url: '`/project/2/coding-scheme/add`'
-  },
+  match: { url: '/project/2/coding-scheme/add' },
   formActions: {
-    reset: () => { }
+    reset: jest.fn()
   },
   location: {
     state: {}
