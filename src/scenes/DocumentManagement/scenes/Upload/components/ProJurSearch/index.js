@@ -2,6 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FlexGrid, Icon } from 'components'
 import Autosuggest from 'react-autosuggest'
+import { withStyles } from '@material-ui/core/styles'
+
+/* istanbul ignore next */
+const styles = () => ({
+  suggestionsContainerOpenAbsolute: {
+    width: '100%',
+    maxHeight: 500,
+    overflow: 'auto',
+    position: 'absolute',
+    '& div:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  container: {
+    width: '100%',
+    position: 'relative'
+  }
+})
 
 /**
  * Renders the project and jurisdiction autocomplete search fields
@@ -12,7 +30,8 @@ const ProJurSearch = props => {
     jurisdictionAutocompleteProps,
     showJurSearch,
     onMouseDown,
-    showProjectError
+    showProjectError,
+    classes
   } = props
   
   return (
@@ -34,6 +53,11 @@ const ProJurSearch = props => {
               error: showProjectError
             }
           }}
+          theme={{
+            ...projectAutocompleteProps.theme,
+            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+            container: classes.container
+          }}
         />
       </FlexGrid>
       {showJurSearch &&
@@ -47,6 +71,11 @@ const ProJurSearch = props => {
               ...jurisdictionAutocompleteProps.inputProps.TextFieldProps,
               label: 'Jurisdiction'
             }
+          }}
+          theme={{
+            ...jurisdictionAutocompleteProps.theme,
+            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+            container: classes.container
           }}
         />
       </FlexGrid>}
@@ -74,7 +103,11 @@ ProJurSearch.propTypes = {
   /**
    * Props to pass to the autocomplete search for jurisdiction
    */
-  jurisdictionAutocompleteProps: PropTypes.object
+  jurisdictionAutocompleteProps: PropTypes.object,
+  /**
+   * Passed in from material ui withStyles HOC
+   */
+  classes: PropTypes.object
 }
 
-export default ProJurSearch
+export default withStyles(styles)(ProJurSearch)

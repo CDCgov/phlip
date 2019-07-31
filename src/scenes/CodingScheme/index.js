@@ -452,10 +452,10 @@ export class CodingScheme extends Component {
               flexDirection: 'column',
               paddingTop: 24,
               width: 500,
-              height: 250
+              height: 275
             }}>
-            <FlexGrid container type="row" align="center">
-              <Icon style={{ paddingRight: 8 }}>dvr</Icon>
+            <FlexGrid container type="row">
+              <Icon style={{ paddingRight: 8, marginTop: 5 }}>dvr</Icon>
               <Autosuggest {...projectAutocompleteProps} />
             </FlexGrid>
           </ModalContent>

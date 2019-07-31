@@ -69,7 +69,7 @@ exports[`DocumentView scene should render correctly 1`] = `
       }
       type="column"
     >
-      <Connect(DocumentMeta)
+      <Connect(Connect(WithStyles(Autocomplete)))
         document={
           Object {
             "content": Object {},

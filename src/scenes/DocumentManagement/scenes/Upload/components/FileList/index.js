@@ -5,6 +5,24 @@ import { IconButton, Icon, DatePicker, SimpleInput, Tooltip, CircularLoader } fr
 import Autosuggest from 'react-autosuggest'
 import Grid from 'components/Grid'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { withStyles } from '@material-ui/core/styles'
+
+/* istanbul ignore next */
+const styles = () => ({
+  suggestionsContainerOpenAbsolute: {
+    width: '100%',
+    maxHeight: 500,
+    overflow: 'auto',
+    position: 'absolute',
+    '& div:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  container: {
+    width: '100%',
+    position: 'relative'
+  }
+})
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -65,7 +83,11 @@ export class FileList extends Component {
     /**
      * All props to pass to jurisdiction autocomplete
      */
-    jurisdictionAutocompleteProps: PropTypes.object
+    jurisdictionAutocompleteProps: PropTypes.object,
+    /**
+     * Classes from material-ui withStyles HOC
+     */
+    classes: PropTypes.object
   }
   
   constructor(props, context) {
@@ -148,7 +170,7 @@ export class FileList extends Component {
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
     
-    const { selectedDocs, invalidFiles, jurisdictionAutocompleteProps } = this.props
+    const { selectedDocs, invalidFiles, jurisdictionAutocompleteProps, classes } = this.props
     
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -231,6 +253,11 @@ export class FileList extends Component {
                             id: `jurisdiction-name-row-${i}`,
                             ...inputProps
                           }}
+                          theme={{
+                            ...jurisdictionAutocompleteProps.theme,
+                            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+                            container: classes.container
+                          }}
                         />
                       </div>)
                     : (
@@ -292,4 +319,4 @@ export class FileList extends Component {
   }
 }
 
-export default FileList
+export default withStyles(styles)(FileList)

@@ -22,20 +22,18 @@ const getStateSuffix = createLogic({
     const suffix = action.suffix.slice(1).toLowerCase()
     const type = actionToType[action.type]
     const state = getState()[`autocomplete.${type}.${suffix}`]
-    let selected
-    if (state !== undefined) {
-      selected = state.selectedSuggestion
-      if (Object.keys(selected).length === 0) {
-        allow(action)
-      } else {
-        if (selected.name !== action.searchString) {
-          allow(action)
-        } else {
-          reject()
-        }
-      }
-    } else {
+    let allowAction = false
+    
+    allowAction = state !== undefined
+      ? Object.keys(state.selectedSuggestion).length === 0
+        ? true
+        : state.selectedSuggestion.name !== action.searchString
+      : true
+    
+    if (allowAction) {
       allow(action)
+    } else {
+      reject()
     }
   }
 })

@@ -5,11 +5,21 @@ import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { FileDocument, CalendarRange, Account, FormatSection, FileUpload } from 'mdi-material-ui'
-import actions, { projectAutocomplete, jurisdictionAutocomplete } from 'scenes/DocumentView/actions'
+import actions from 'scenes/DocumentView/actions'
 import ProJurSearch from './components/ProJurSearch'
 import { convertToLocalDate } from 'utils/normalize'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
-import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
+import {
+  Button,
+  FlexGrid,
+  Dropdown,
+  DatePicker,
+  IconButton,
+  Alert,
+  CircularLoader,
+  ApiErrorAlert,
+  withAutocompleteMethods
+} from 'components'
 
 export class DocumentMeta extends Component {
   static propTypes = {
@@ -17,10 +27,6 @@ export class DocumentMeta extends Component {
     document: PropTypes.object,
     projectList: PropTypes.array,
     jurisdictionList: PropTypes.array,
-    projectSuggestions: PropTypes.array,
-    jurisdictionSuggestions: PropTypes.array,
-    projectSearchValue: PropTypes.string,
-    jurisdictionSearchValue: PropTypes.string,
     inEditMode: PropTypes.bool,
     documentUpdateInProgress: PropTypes.bool,
     documentDeleteInProgress: PropTypes.bool,
@@ -40,7 +46,15 @@ export class DocumentMeta extends Component {
     /**
      * Whether or not the app is searching jurisdictions
      */
-    searchingJurisdictions: PropTypes.bool
+    searchingJurisdictions: PropTypes.bool,
+    /**
+     * current user
+     */
+    currentUser: PropTypes.object,
+    projectAutocompleteProps: PropTypes.object,
+    projectAutoActions: PropTypes.object,
+    jurisdictionAutocompleteProps: PropTypes.object,
+    jurisdictionAutoActions: PropTypes.object
   }
   
   constructor(props, context) {
@@ -124,47 +138,6 @@ export class DocumentMeta extends Component {
   }
   
   /**
-   * Get suggestions for some type of autocomplete search
-   * @param suggestionType
-   * @param searchString
-   * @param index
-   */
-  handleGetSuggestions = (suggestionType, { value: searchString }) => {
-    const { actions } = this.props
-    
-    clearTimeout(this.timeout)
-    actions[`${suggestionType}Autocomplete`].setSearchingStatus(true)
-    this.timeout = setTimeout(() => {
-      actions[`${suggestionType}Autocomplete`].searchForSuggestionsRequest(searchString, '_META')
-    }, 500)
-    
-  }
-  
-  /**
-   * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
-   */
-  handleSuggestionSelected = suggestionType => (event, { suggestionValue }) => {
-    this.props.actions[`${suggestionType}Autocomplete`].onSuggestionSelected(suggestionValue)
-  }
-  
-  /**
-   * Handles when a user has made a change in an autocomplete search for project or jurisdiction
-   * @param suggestionType
-   * @param value
-   */
-  handleSearchValueChange = (suggestionType, value) => {
-    this.props.actions[`${suggestionType}Autocomplete`].updateSearchValue(value)
-  }
-  
-  /**
-   * Handles clearing autocomplete suggestions for project or jurisdiction
-   * @param suggestionType
-   */
-  handleClearSuggestions = suggestionType => {
-    this.props.actions[`${suggestionType}Autocomplete`].clearSuggestions()
-  }
-  
-  /**
    * Opens a confirmation alert asking the user to confirm deletion of a project or jurisdiction
    * @param type
    * @param index
@@ -206,16 +179,20 @@ export class DocumentMeta extends Component {
    * Closes the modal for autocomplete for adding project or jurisdiction
    */
   handleCloseProJurModal = () => {
-    const { actions, selectedProject, selectedJurisdiction } = this.props
+    const {
+      projectAutocompleteProps, projectAutoActions, jurisdictionAutoActions, jurisdictionAutocompleteProps
+    } = this.props
+    const selectedProject = projectAutocompleteProps.selectedSuggestion
+    const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
     
     if (selectedJurisdiction !== null) {
-      this.handleClearSuggestions('jurisdiction')
-      actions.jurisdictionAutocomplete.clearAll()
+      jurisdictionAutoActions.clearSuggestions()
+      jurisdictionAutoActions.clearAll()
     }
     
     if (selectedProject !== null) {
-      this.handleClearSuggestions('project')
-      actions.projectAutocomplete.clearAll()
+      projectAutoActions.clearSuggestions()
+      projectAutoActions.clearAll()
     }
     
     this.setState({
@@ -228,8 +205,10 @@ export class DocumentMeta extends Component {
    * When the user chooses a project or jurisdiction to add to a document
    */
   addProJur = () => {
-    const { selectedProject, selectedJurisdiction, actions } = this.props
+    const { projectAutocompleteProps, jurisdictionAutocompleteProps, actions } = this.props
     const { searchType } = this.state
+    const selectedProject = projectAutocompleteProps.selectedSuggestion
+    const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
     
     const selected = searchType === 'project' ? selectedProject : selectedJurisdiction
     const error = !selected
@@ -336,7 +315,9 @@ export class DocumentMeta extends Component {
    */
   getButtonInfo = () => {
     const { searchType } = this.state
-    const { selectedProject, selectedJurisdiction, documentUpdateInProgress } = this.props
+    const { projectAutocompleteProps, jurisdictionAutocompleteProps, documentUpdateInProgress } = this.props
+    const selectedProject = projectAutocompleteProps.selectedSuggestion
+    const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
     const selected = searchType === 'project' ? selectedProject : selectedJurisdiction
     
     let info = {
@@ -349,17 +330,15 @@ export class DocumentMeta extends Component {
   
   render() {
     const {
-      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole, searchingProjects,
-      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions, searchingJurisdictions
+      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole,
+      projectAutocompleteProps, jurisdictionAutocompleteProps
     } = this.props
     
     const { alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, alertType, searchType } = this.state
-    
-    const suggestionProps = {
-      suggestions: searchType === 'project' ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: searchType === 'project' ? projectSearchValue : jurisdictionSearchValue,
-      searching: searchType === 'project' ? searchingProjects : searchingJurisdictions
-    }
+  
+    const autocompleteProps = searchType.includes('project')
+      ? projectAutocompleteProps
+      : jurisdictionAutocompleteProps
     
     const options = [
       { value: 'Draft', label: 'Draft' },
@@ -604,17 +583,13 @@ export class DocumentMeta extends Component {
               </FlexGrid>))}
           </FlexGrid>
           <ProJurSearch
-            onClearSuggestions={this.handleClearSuggestions}
-            onGetSuggestions={this.handleGetSuggestions}
-            onSearchValueChange={this.handleSearchValueChange}
-            onSuggestionSelected={this.handleSuggestionSelected}
+            autocompleteProps={autocompleteProps}
             onMouseDown={this.onMouseDown}
             searchType={searchType}
             open={showModal}
             onCloseModal={this.handleCloseProJurModal}
             onConfirmAction={this.addProJur}
             buttonInfo={this.getButtonInfo()}
-            {...suggestionProps}
           />
         </FlexGrid>
       </>
@@ -642,29 +617,24 @@ const mapStateToProps = state => {
         ? ''
         : { name: state.data.jurisdictions.byId[jur].name, id: jur }
     }),
-    projectSuggestions: docState.projectSuggestions.suggestions,
-    jurisdictionSuggestions: docState.jurisdictionSuggestions.suggestions,
-    projectSearchValue: docState.projectSuggestions.searchValue,
-    jurisdictionSearchValue: docState.jurisdictionSuggestions.searchValue,
-    selectedProject: docState.projectSuggestions.selectedSuggestion,
-    selectedJurisdiction: docState.jurisdictionSuggestions.selectedSuggestion,
-    searchingProjects: docState.projectSuggestions.searching,
-    searchingJurisdictions: docState.jurisdictionSuggestions.searching,
     inEditMode: docState.meta.inEditMode,
     apiErrorInfo: docState.meta.apiErrorInfo,
     apiErrorOpen: docState.meta.apiErrorOpen || false,
     documentUpdateInProgress: docState.meta.documentUpdateInProgress || false,
-    userRole: state.data.user.currentUser.role
+    userRole: state.data.user.currentUser.role,
+    currentUser: state.data.user.currentUser
   }
 }
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
-  actions: {
-    ...bindActionCreators(actions, dispatch),
-    projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
-    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch)
-  }
+  actions: bindActionCreators(actions, dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentMeta)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'meta')(
+    withAutocompleteMethods('jurisdiction', 'meta', {}, false)(
+      DocumentMeta
+    )
+  )
+)
