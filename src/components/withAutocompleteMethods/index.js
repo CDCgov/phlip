@@ -64,7 +64,7 @@ export const withAutocompleteMethods = (
         margin: 0,
         padding: 0,
         listStyleType: 'none',
-        maxHeight: 250
+        maxHeight: 220
       },
       sectionContainer: {
         margin: '0 10px',
@@ -118,11 +118,9 @@ export const withAutocompleteMethods = (
         if (searchString === '') {
           if (initialRequest) {
             actions.getInitialSuggestionsRequest(userId, 30, reduxSuffix)
-            actions.setSearchingStatus(true)
           }
         } else {
           actions.searchForSuggestionsRequest(searchString, reduxSuffix)
-          actions.setSearchingStatus(true)
         }
       }
       

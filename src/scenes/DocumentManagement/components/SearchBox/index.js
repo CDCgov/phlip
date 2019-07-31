@@ -15,7 +15,8 @@ import { AccountBox, Alphabetical, City, Clipboard, CalendarBlank } from 'mdi-ma
 import Autosuggest from 'react-autosuggest'
 import { withStyles } from '@material-ui/core/styles'
 
-const styles = theme => ({
+/* istanbul ignore next */
+const styles = () => ({
   suggestionsContainerOpenAbsolute: {
     width: '100%',
     maxHeight: 500,
@@ -456,7 +457,7 @@ export class SearchBox extends Component {
                       <Autosuggest
                         {...projectAutocompleteProps}
                         theme={{
-                          ...jurisdictionAutocompleteProps.theme,
+                          ...projectAutocompleteProps.theme,
                           suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
                           container: classes.container
                         }}
