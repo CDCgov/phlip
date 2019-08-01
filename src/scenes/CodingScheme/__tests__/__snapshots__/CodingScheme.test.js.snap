@@ -125,7 +125,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     otherButton={
       Object {
         "isLink": true,
-        "path": "/project/undefined/coding-scheme/add",
+        "path": "/project/1/coding-scheme/add",
         "props": Object {
           "aria-label": "Add new question to coding scheme",
         },
@@ -139,6 +139,8 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
     }
     pageTitle="Coding Scheme"
+    projectId={1}
+    projectName="Test Project"
     protocolButton={true}
   />
   <FlexGrid

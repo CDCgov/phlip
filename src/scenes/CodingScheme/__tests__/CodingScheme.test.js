@@ -10,6 +10,10 @@ const props = {
     enableHover: () => {},
     disableHover: () => {}
   },
+  project: {
+    id: 1,
+    name: 'Test Project'
+  },
   questions: [],
   lockInfo: {},
   lockedByCurrentUser: false,
