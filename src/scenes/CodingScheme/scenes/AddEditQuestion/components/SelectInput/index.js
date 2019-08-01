@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Radio from '@material-ui/core/Radio'
-import Container, { Row, Column } from 'components/Layout'
 import Checkbox from '@material-ui/core/Checkbox'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import IconButton from 'components/IconButton'
+import { FlexGrid, IconButton } from 'components'
 import * as questionTypes from '../../constants'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -23,7 +22,7 @@ const styles = {
  * @returns {*}
  * @constructor
  */
-const SelectInput = props => {
+export const SelectInput = props => {
   const {
     canModify, name, label, answerType, type, input, classes,
     index, currentValue, meta: { active, touched, error, warning },
@@ -31,8 +30,8 @@ const SelectInput = props => {
   } = props
 
   return (
-    <Container>
-      <Column style={{ marginTop: 8 }}>
+    <FlexGrid container type="row">
+      <FlexGrid style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
             case questionTypes.BINARY:
@@ -45,8 +44,8 @@ const SelectInput = props => {
               break
           }
         })()}
-      </Column>
-      <Column flex>
+      </FlexGrid>
+      <FlexGrid flex>
         <FormControl error={Boolean(touched && error && !active || warning)} fullWidth>
           <InputLabel htmlFor={name} shrink required={index === 0}>{label}</InputLabel>
           <Input
@@ -61,10 +60,10 @@ const SelectInput = props => {
           />
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
-      </Column>
-      <Row displayFlex style={{ alignItems: 'center' }}>
+      </FlexGrid>
+      <FlexGrid container type="row" align="center">
         {canModify && (answerType !== questionTypes.BINARY &&
-          <Column displayFlex>
+          <FlexGrid container>
             <IconButton
               color="action"
               iconSize={36}
@@ -72,7 +71,8 @@ const SelectInput = props => {
               disabled={!index - 1 >= 0}
               aria-label="Move answer choice up one position"
               id={`move-answer-${index}-up`}
-              onClick={handleUp}>arrow_drop_up
+              onClick={handleUp}>
+              arrow_drop_up
             </IconButton>
             <IconButton
               color="action"
@@ -82,11 +82,12 @@ const SelectInput = props => {
               disabled={index + 1 === fields.length}
               aria-label="Move answer choice down one position"
               id={`move-answer-${index}-down`}
-              onClick={handleDown}>arrow_drop_down
+              onClick={handleDown}>
+              arrow_drop_down
             </IconButton>
-          </Column>)}
+          </FlexGrid>)}
         {canModify &&
-        <Column>
+        <FlexGrid>
           {currentValue.isNew
             ? (
               <IconButton
@@ -112,9 +113,9 @@ const SelectInput = props => {
                 </IconButton>
               )
           }
-        </Column>}
-      </Row>
-    </Container>
+        </FlexGrid>}
+      </FlexGrid>
+    </FlexGrid>
   )
 }
 
