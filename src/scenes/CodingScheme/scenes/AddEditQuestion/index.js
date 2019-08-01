@@ -87,6 +87,8 @@ export class AddEditQuestion extends Component {
     super(props, context)
     const { match, projectId, location, lockedByCurrentUser } = props
     
+    console.log(location)
+    
     // User is editing a question
     this.questionDefined = match.url === `/project/${projectId}/coding-scheme/add`
       ? null
@@ -139,7 +141,6 @@ export class AddEditQuestion extends Component {
     
     if (prevProps.submitting && !submitting) {
       if (formError !== null) {
-        this.setState({ submitting: false })
         onSubmitError(formError)
       } else if (goBack) {
         history.goBack()
@@ -192,23 +193,22 @@ export class AddEditQuestion extends Component {
       })
     }
     
-    this.questionDefined
-      ? actions.updateQuestionRequest(
+    if (this.questionDefined) {
+      // updating an existing question
+      actions.updateQuestionRequest(updatedValues, projectId, this.questionDefined.id, location.state.path)
+    } else if (this.parentDefined) {
+      // adding a new child question
+      actions.addChildQuestionRequest(
         updatedValues,
         projectId,
-        this.questionDefined.id,
+        this.parentDefined.id,
+        this.parentDefined,
         location.state.path
       )
-      : this.parentDefined
-        ? actions.addChildQuestionRequest(
-          updatedValues,
-          projectId,
-          this.parentDefined.id,
-          this.parentDefined,
-          location.state.path
-        )
-        : actions.addQuestionRequest(updatedValues, projectId, 0)
-    
+    } else {
+      // adding a new regular non child question
+      actions.addQuestionRequest(updatedValues, projectId, 0)
+    }
   }
   
   /**

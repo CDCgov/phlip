@@ -87,19 +87,20 @@ const updateQuestionLogic = createLogic({
     const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
       return { ...answer, order: index + 1 }
     })
-
+    
     action.question.possibleAnswers = orderedAnswers
     try {
-      const updatedQuestion = await api.updateQuestion(action.question, {}, {
-        projectId: action.projectId,
-        questionId: action.questionId
-      })
+      const updatedQuestion = await api.updateQuestion(
+        action.question,
+        {},
+        { projectId: action.projectId, questionId: action.questionId }
+      )
       dispatch({
         type: types.UPDATE_QUESTION_SUCCESS,
         payload: {
           ...updatedQuestion,
           possibleAnswers: commonHelpers.sortListOfObjects(action.question.possibleAnswers),
-          children: action.question.children,
+          children: action.question.children || [],
           expanded: true,
           hovering: false,
           path: action.path
@@ -158,7 +159,7 @@ const addQuestionLogic = createLogic({
     const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
       return { ...answer, order: index + 1 }
     })
-
+    
     action.question.possibleAnswers = orderedAnswers
     try {
       const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })

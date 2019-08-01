@@ -151,6 +151,12 @@ const sortPossibleAnswers = questions => {
  */
 export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case types.GET_SCHEME_REQUEST:
+      return {
+        ...state,
+        schemeError: false
+      }
+      
     case types.GET_SCHEME_SUCCESS:
       sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
@@ -252,12 +258,13 @@ export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
   
     case types.ADD_CHILD_QUESTION_SUCCESS:
+      const { outline, ...question } = action.payload
       const newTree = addNodeUnderParent({
         treeData: state.questions,
         parentKey: action.payload.path[action.payload.path.length - 1],
         expandParent: true,
         getNodeKey,
-        newNode: { ...action.payload, hovering: false }
+        newNode: { ...question, hovering: false }
       })
       
       return {

@@ -35,7 +35,7 @@ export class Scheme extends Component {
     outline: PropTypes.object,
     flatQuestions: PropTypes.array,
     handleQuestionNodeMove: PropTypes.func,
-    projectId: PropTypes.string,
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     lockedByCurrentUser: PropTypes.bool,
     hasLock: PropTypes.bool,
     handleDeleteQuestion: PropTypes.func
@@ -66,9 +66,9 @@ export class Scheme extends Component {
         }}
         generateNodeProps={() => {
           return {
-            projectId: projectId,
+            projectId,
             canModify: hasLock && lockedByCurrentUser === true,
-            handleDeleteQuestion: handleDeleteQuestion
+            handleDeleteQuestion
           }
         }}
         canDrag={hasLock && lockedByCurrentUser === true}

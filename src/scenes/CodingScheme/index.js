@@ -32,13 +32,9 @@ import Divider from '@material-ui/core/Divider'
 export class CodingScheme extends Component {
   static propTypes = {
     /**
-     * Name of project for which the coding scheme is open
+     * Project for which the coding scheme is open
      */
-    projectName: PropTypes.string,
-    /**
-     * ID of project
-     */
-    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    project: PropTypes.object,
     /**
      * Array of question tree to render as the coding scheme
      */
@@ -122,10 +118,10 @@ export class CodingScheme extends Component {
   }
   
   componentDidMount() {
-    const { projectName, projectId, actions } = this.props
+    const { project, actions } = this.props
     
-    document.title = `PHLIP - ${projectName} - Coding Scheme`
-    actions.getSchemeRequest(projectId)
+    document.title = `PHLIP - ${project.name} - Coding Scheme`
+    actions.getSchemeRequest(project.id)
     setTimeout(() => {
       actions.setEmptyState()
     }, 1000)
@@ -174,8 +170,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleQuestionNodeMove = () => {
-    const { actions, projectId } = this.props
-    actions.reorderSchemeRequest(projectId)
+    const { actions, project } = this.props
+    actions.reorderSchemeRequest(project.id)
   }
   
   /**
@@ -183,8 +179,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleLockCodingScheme = () => {
-    const { actions, projectId } = this.props
-    actions.lockCodingSchemeRequest(projectId)
+    const { actions, project } = this.props
+    actions.lockCodingSchemeRequest(project.id)
   }
   
   /**
@@ -192,8 +188,8 @@ export class CodingScheme extends Component {
    * @public
    */
   handleUnlockCodingScheme = () => {
-    const { actions, projectId } = this.props
-    actions.unlockCodingSchemeRequest(projectId)
+    const { actions, project } = this.props
+    actions.unlockCodingSchemeRequest(project.id)
   }
   
   /**
@@ -201,25 +197,24 @@ export class CodingScheme extends Component {
    * @public
    */
   handleDeleteQuestion = () => {
-    const { actions, projectId } = this.props
+    const { actions, project } = this.props
     const { questionIdToDelete, path } = this.state
     
-    actions.deleteQuestionRequest(projectId, questionIdToDelete, path)
+    actions.deleteQuestionRequest(project.id, questionIdToDelete, path)
     this.onCloseDeleteQuestionAlert()
   }
   
   /**
    * Opens an alert to ask the user to confirm deleting a coding scheme question
    * @public
-   * @param projectId
    * @param questionId
    * @param path
    */
-  onOpenDeleteQuestionAlert = (projectId, questionId, path) => {
+  onOpenDeleteQuestionAlert = (questionId, path) => {
     this.setState({
       deleteQuestionAlertOpen: true,
       questionIdToDelete: questionId,
-      path: path
+      path
     })
   }
   
@@ -277,9 +272,9 @@ export class CodingScheme extends Component {
    *  release the lock when user click on release lock button
    */
   overrideLock = () => {
-    const { actions, projectId, lockInfo } = this.props
+    const { actions, project, lockInfo } = this.props
   
-    actions.unlockCodingSchemeRequest(projectId, lockInfo.userId)
+    actions.unlockCodingSchemeRequest(project.id, lockInfo.userId)
     this.onCloseLockedAlert()
   }
   
@@ -304,8 +299,8 @@ export class CodingScheme extends Component {
    * Handles sending a request to copy coding scheme
    */
   onCopyCodingScheme = () => {
-    const { projectAutocompleteProps, actions, projectId } = this.props
-    actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id, projectId)
+    const { projectAutocompleteProps, actions, project } = this.props
+    actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id, project.id)
   }
   
   /**
@@ -314,7 +309,7 @@ export class CodingScheme extends Component {
    * @returns {*}
    */
   renderGetStarted = () => {
-    const { lockedByCurrentUser, projectId, projectLocked } = this.props
+    const { lockedByCurrentUser, project, projectLocked } = this.props
     
     return (
       <FlexGrid container flex align="center" justify="center">
@@ -330,7 +325,7 @@ export class CodingScheme extends Component {
           <Button
             component={Link}
             to={{
-              pathname: `/project/${projectId}/coding-scheme/add`,
+              pathname: `/project/${project.id}/coding-scheme/add`,
               state: { questionDefined: null, canModify: true, modal: true }
             }}
             value="Add New Question"
@@ -370,7 +365,7 @@ export class CodingScheme extends Component {
   
   render() {
     const {
-      projectLocked, currentUser, alertError, lockedAlert, lockInfo, projectName, projectId, lockedByCurrentUser,
+      projectLocked, currentUser, alertError, lockedAlert, lockInfo, project, lockedByCurrentUser,
       questions, hasLock, schemeError, empty, actions, outline, flatQuestions, projectAutocompleteProps, copying
     } = this.props
     
@@ -472,8 +467,8 @@ export class CodingScheme extends Component {
           <ModalActions actions={modalActions} />
         </Modal>}
         <PageHeader
-          projectName={projectName}
-          projectId={projectId}
+          projectName={project.name}
+          projectId={project.id}
           pageTitle="Coding Scheme"
           protocolButton
           onBackButtonClick={this.onGoBack}
@@ -490,7 +485,7 @@ export class CodingScheme extends Component {
           otherButton={{
             isLink: true,
             text: 'Add New Question',
-            path: `/project/${projectId}/coding-scheme/add`,
+            path: `/project/${project.id}/coding-scheme/add`,
             state: { questionDefined: null, canModify: true, modal: true },
             props: {
               'aria-label': 'Add new question to coding scheme'
@@ -519,7 +514,7 @@ export class CodingScheme extends Component {
                 handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
                 disableHover={actions.disableHover}
                 enableHover={actions.enableHover}
-                projectId={projectId}
+                projectId={project.id}
                 outline={outline}
                 flatQuestions={flatQuestions}
                 lockedByCurrentUser={lockedByCurrentUser}
@@ -538,8 +533,7 @@ const mapStateToProps = (state, ownProps) => {
   const schemeState = state.scenes.codingScheme.main
   
   return {
-    projectName: state.data.projects.byId[ownProps.match.params.id].name,
-    projectId: ownProps.match.params.id,
+    project: state.data.projects.byId[ownProps.match.params.id],
     questions: schemeState.questions || [],
     empty: schemeState.empty || false,
     outline: schemeState.outline || {},

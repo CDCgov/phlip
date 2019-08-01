@@ -56,7 +56,7 @@ export class QuestionNode extends Component {
     canDrop: PropTypes.bool,
     isOver: PropTypes.bool.isRequired,
     canModify: PropTypes.bool,
-    projectId: PropTypes.string,
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     handleDeleteQuestion: PropTypes.func,
     rowDirection: PropTypes.any
   }
@@ -144,6 +144,8 @@ export class QuestionNode extends Component {
       minHeight: 'unset',
       minWidth: 'unset'
     }
+    
+    console.log(node)
 
     const dragPreview = connectDragPreview(
       <div tabIndex={-1} className={styles.rowWrapper}>
@@ -215,7 +217,7 @@ export class QuestionNode extends Component {
                     aria-label="Delete question"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">delete</Icon>}
-                    onClick={() => handleDeleteQuestion(projectId, node.id, path)}
+                    onClick={() => handleDeleteQuestion(node.id, path)}
                   />
                 </Tooltip>}
               </div>}
