@@ -4,10 +4,7 @@ import { Scheme } from '../index'
 
 const props = {
   questions: [],
-  handleQuestionTreeChange: () => {},
-  handleHoverOnQuestion: () => {},
-  enableHover: () => {},
-  disableHover: () => {}
+  handleQuestionTreeChange: () => {}
 }
 
 describe('CodingScheme scene -- Scheme component', () => {

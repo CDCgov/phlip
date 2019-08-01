@@ -148,6 +148,15 @@ describe('Coding Scheme reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
   
+  describe('GET_SCHEME_REQUEST', () => {
+    test('should reset any scheme error that may be existing', () => {
+      const action = { type: types.GET_SCHEME_REQUEST }
+      const currentState = getState({ schemeError: 'this is an error' })
+      const state = reducer(currentState, action)
+      expect(state.schemeError).toEqual(null)
+    })
+  })
+  
   describe('GET_SCHEME_SUCCESS', () => {
     describe('when the scheme is not empty', () => {
       const action = {
@@ -165,13 +174,6 @@ describe('Coding Scheme reducer', () => {
       
       const currentState = getState({ empty: true })
       const state = reducer(currentState, action)
-      
-      test('should set state.questions to action.payload and set hovering to false on all questions', () => {
-        expect(state.questions).toEqual([
-          { ...questions[0], hovering: false, expanded: true },
-          { ...questions[1], hovering: false, expanded: true }
-        ])
-      })
       
       test('should set that the scheme is not empty', () => {
         expect(state.empty).toEqual(false)
@@ -699,8 +701,7 @@ describe('Coding Scheme reducer', () => {
       // expect(state.questions[0].children[0].children[0]).toEqual({
       //   text: 'new question',
       //   parentId: 4,
-      //   path: [0, 1],
-      //   hovering: false
+      //   path: [0, 1]
       // })
     })
   })
@@ -724,7 +725,7 @@ describe('Coding Scheme reducer', () => {
     
     describe('if question being updated is a root question', () => {
       test('should update the question at correct path', () => {
-        expect(state.questions[1]).toEqual({ ...questions[1], text: 'do re mi', path: [1], hovering: false })
+        expect(state.questions[1]).toEqual({ ...questions[1], text: 'do re mi', path: [1] })
       })
       
       test('should update outline if needed', () => {
@@ -752,7 +753,7 @@ describe('Coding Scheme reducer', () => {
       
       test('should update the question at correct path', () => {
         expect(state.questions[0].children[1].children[0])
-          .toEqual({ ...childQuestion, text: 'do re mi', hovering: false, path: [0, 2, 3] })
+          .toEqual({ ...childQuestion, text: 'do re mi', path: [0, 2, 3] })
       })
       
       test('should update outline if needed', () => {
@@ -787,177 +788,19 @@ describe('Coding Scheme reducer', () => {
     })
   })
   
-  describe('TOGGLE_HOVER', () => {
-    test('should set the hovering field to true on node if action.hover = true', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: false, questionBody: 'la la la', type: 2 },
-        path: [1],
-        hover: true
-      }
-      
-      const currentState = getState({ questions })
-      const state = reducer(currentState, action)
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: true, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should set the hovering field to false on node if action.hover = false', () => {
-      const questions = [
-        { hovering: true, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: true, questionBody: 'fa la la la', type: 1 },
-        path: [0],
-        hover: false
-      }
-      
-      const state = reducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should set the hovering field on a child node', () => {
-      const questions = [
-        {
-          hovering: false, questionBody: 'fa la la la', type: 1, children: [
-            { hovering: false, questionBody: 'fa la la child', type: 3 }
-          ]
-        },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: true, questionBody: 'fa la la child', type: 3 },
-        path: [0, 1],
-        hover: true
-      }
-      
-      const state = reducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          {
-            hovering: false, questionBody: 'fa la la la', type: 1, children: [
-              { hovering: true, questionBody: 'fa la la child', type: 3 }
-            ]
-          },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should return current state if node is not found', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: {},
-        path: [10],
-        hover: true
-      }
-      
-      const state = reducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should not change hovering field if allowHover is set to false', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: {},
-        path: [10],
-        hover: true
-      }
-      
-      const state = reducer(
-        getState({ questions, allowHover: false }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: false,
-        flatQuestions: []
-      })
-    })
-  })
-  
   describe('HANDLE_QUESTION_TREE_CHANGE', () => {
     test('should set state.questions to action.questions and update outline', () => {
       const questions = [
-        { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
-        { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+        { questionBody: 'la la la', type: 2, id: 1 },
+        { questionBody: 'fa la la la', type: 1, id: 2 }
       ]
       
       const action = {
         type: types.HANDLE_QUESTION_TREE_CHANGE,
         questions: [
           {
-            hovering: false, questionBody: 'la la la', type: 2, id: 2, children: [
-              { hovering: false, questionBody: 'fa la la la', type: 1, id: 1 }
+            questionBody: 'la la la', type: 2, id: 2, children: [
+              { questionBody: 'fa la la la', type: 1, id: 1 }
             ]
           }
         ]
@@ -970,12 +813,11 @@ describe('Coding Scheme reducer', () => {
         ...initial,
         questions: [
           {
-            hovering: false,
             questionBody: 'la la la',
             type: 2,
             id: 2,
             children: [
-              { hovering: false, questionBody: 'fa la la la', type: 1, id: 1 }
+              { questionBody: 'fa la la la', type: 1, id: 1 }
             ]
           }
         ],
@@ -983,45 +825,12 @@ describe('Coding Scheme reducer', () => {
           1: { parentId: 2, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 0 }
         },
-        allowHover: true,
         flatQuestions: [],
         previousOutline: {},
         previousQuestions: [
-          { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
-          { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+          { questionBody: 'la la la', type: 2, id: 1 },
+          { questionBody: 'fa la la la', type: 1, id: 2 }
         ]
-      })
-    })
-  })
-  
-  describe('ENABLE_HOVER', () => {
-    test('should set allow hover to true', () => {
-      const action = { type: types.ENABLE_HOVER }
-      const currentState = getState({ allowHover: false })
-      const state = reducer(currentState, action)
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-  })
-  
-  describe('DISABLE_HOVER', () => {
-    test('should set allow hover to false', () => {
-      const action = { type: types.DISABLE_HOVER }
-      const currentState = getState()
-      const state = reducer(currentState, action)
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [],
-        outline: {},
-        allowHover: false,
-        flatQuestions: []
       })
     })
   })

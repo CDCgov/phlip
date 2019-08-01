@@ -34,7 +34,6 @@ export const refreshJwtLogic = createLogic({
   warnTimeout: 0,
   cancelType: [types.CANCEL_REFRESH_JWT, types.LOGOUT_USER],
   process({ cancelled$, api }) {
-    console.log('starting refresh', new Date().toLocaleTimeString())
     const interval = setInterval(async () => {
       if (isLoggedIn()) {
         const currentToken = getToken()
@@ -44,11 +43,9 @@ export const refreshJwtLogic = createLogic({
           { tokenObj: { token: currentToken } }
         )
         await login(newToken.token.value)
-        console.log('refreshing', new Date().toLocaleTimeString())
       }
-      //}, 900000)
-    }, 60000)
-
+    }, 900000)
+    
     cancelled$.subscribe(() => {
       clearInterval(interval)
     })

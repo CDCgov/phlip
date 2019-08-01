@@ -164,13 +164,5 @@ exports[`CodingScheme scene should render correctly 1`] = `
       error=""
     />
   </FlexGrid>
-  <Route
-    component={[Function]}
-    path="/project/:id/coding-scheme/add"
-  />
-  <Route
-    component={[Function]}
-    path="/project/:id/coding-scheme/edit/:questionId"
-  />
 </FlexGrid>
 `;

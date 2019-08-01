@@ -28,10 +28,7 @@ export class Scheme extends Component {
   static propTypes = {
     questions: PropTypes.array,
     handleQuestionTreeChange: PropTypes.func,
-    handleHoverOnQuestion: PropTypes.func,
     handleQuestionNodeMoveRequest: PropTypes.func,
-    enableHover: PropTypes.func,
-    disableHover: PropTypes.func,
     outline: PropTypes.object,
     flatQuestions: PropTypes.array,
     handleQuestionNodeMove: PropTypes.func,
@@ -73,7 +70,7 @@ export class Scheme extends Component {
         }}
         canDrag={hasLock && lockedByCurrentUser === true}
         canDrop={({ node, nextParent, prevParent }) => canDrop(node, nextParent, prevParent, outline, flatQuestions)}
-        isVirtualized={true}
+        isVirtualized
       />
     )
   }

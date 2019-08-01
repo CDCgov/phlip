@@ -88,7 +88,7 @@ describe('CodingScheme - AddEditQuestion logic', () => {
         parentId: 0
       })
       store.whenComplete(() => {
-        expect(store.actions[0].question.possibleAnswers).toEqual([{ text: '' }])
+        expect(store.actions[0].question.possibleAnswers).toEqual([{ text: '', order: 0 }])
         done()
       })
     })
@@ -203,7 +203,7 @@ describe('CodingScheme - AddEditQuestion logic', () => {
         parentId: 1
       })
       store.whenComplete(() => {
-        expect(store.actions[0].question.possibleAnswers).toEqual([{ text: '' }])
+        expect(store.actions[0].question.possibleAnswers).toEqual([{ text: '', order: 0 }])
         done()
       })
     })

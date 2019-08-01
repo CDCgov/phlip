@@ -144,8 +144,6 @@ export class QuestionNode extends Component {
       minHeight: 'unset',
       minWidth: 'unset'
     }
-    
-    console.log(node)
 
     const dragPreview = connectDragPreview(
       <div tabIndex={-1} className={styles.rowWrapper}>
@@ -173,7 +171,6 @@ export class QuestionNode extends Component {
               <div className={styles.questionButtons}>
                 {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                   <Tooltip
-                    //aria-label="Add child question"
                     text="Add child question"
                     id={`add-child-question-${listIndex}`}
                     placement="left">
@@ -192,7 +189,6 @@ export class QuestionNode extends Component {
                 <Tooltip
                   text={canModify ? 'Edit Question' : 'View Question'}
                   id={`${canModify ? 'edit' : 'view'}-question-${listIndex}`}
-                  //aria-label="View and edit question"
                   placement="right">
                   <Button
                     color="accent"
@@ -208,7 +204,6 @@ export class QuestionNode extends Component {
                 </Tooltip>
                 {canModify &&
                 <Tooltip
-                  //aria-label="Delete question"
                   text="Delete question"
                   id={`delete-question-${listIndex}`}
                   placement="right">

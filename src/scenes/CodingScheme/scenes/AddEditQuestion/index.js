@@ -87,8 +87,6 @@ export class AddEditQuestion extends Component {
     super(props, context)
     const { match, projectId, location, lockedByCurrentUser } = props
     
-    console.log(location)
-    
     // User is editing a question
     this.questionDefined = match.url === `/project/${projectId}/coding-scheme/add`
       ? null

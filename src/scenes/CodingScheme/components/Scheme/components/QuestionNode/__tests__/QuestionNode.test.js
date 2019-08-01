@@ -47,10 +47,7 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
     
     test('should display actions if hovering = true and canModify = true', () => {
       const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={true} />)
-      
-      wrapper.setState({
-        hovered: true
-      })
+      wrapper.setState({ hovered: true })
       const card = wrapper.find('WithStyles(CardContent)').dive()
       expect(card.find('CardContent').find('WithTheme(Button)')).toHaveLength(3)
     })
@@ -58,27 +55,21 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
     describe('hovering without edit mode enabled', () => {
       test('should only display one action button', () => {
         const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={false} />)
-        wrapper.setState({
-          hovered: true
-        })
+        wrapper.setState({ hovered: true })
         const card = wrapper.find('WithStyles(CardContent)').dive()
         expect(card.find('CardContent').find('WithTheme(Button)')).toHaveLength(1)
       })
   
       test('should display an eyeball icon in button', () => {
         const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={false} />)
-        wrapper.setState({
-          hovered: true
-        })
+        wrapper.setState({ hovered: true })
         const card = wrapper.find('WithStyles(CardContent)').dive()
         expect(card.find('WithTheme(Button)').prop('value').props.children).toEqual('visibility')
       })
       
       test('should set tooltip text for button icon to be View Question', () => {
         const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={false} />)
-        wrapper.setState({
-          hovered: true
-        })
+        wrapper.setState({ hovered: true })
         const card = wrapper.find('WithStyles(CardContent)').dive()
         expect(card.find('WithStyles(Tooltip)').prop('text')).toEqual('View Question')
       })

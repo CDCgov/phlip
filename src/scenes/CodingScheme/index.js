@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography'
-import { Route, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import actions from './actions'
 import Scheme from './components/Scheme'
-import AddEditQuestion from './scenes/AddEditQuestion'
 import Autosuggest from 'react-autosuggest'
 import {
   ApiErrorAlert,
@@ -366,7 +365,7 @@ export class CodingScheme extends Component {
   render() {
     const {
       projectLocked, currentUser, alertError, lockedAlert, lockInfo, project, lockedByCurrentUser,
-      questions, hasLock, schemeError, empty, actions, outline, flatQuestions, projectAutocompleteProps, copying
+      questions, hasLock, schemeError, empty, outline, flatQuestions, projectAutocompleteProps, copying
     } = this.props
     
     const { goBackAlertOpen, deleteQuestionAlertOpen, projectSearchOpen } = this.state
@@ -510,10 +509,7 @@ export class CodingScheme extends Component {
                 questions={questions}
                 handleQuestionTreeChange={this.handleQuestionTreeChange}
                 handleQuestionNodeMove={this.handleQuestionNodeMove}
-                handleHoverOnQuestion={actions.toggleHover}
                 handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
-                disableHover={actions.disableHover}
-                enableHover={actions.enableHover}
                 projectId={project.id}
                 outline={outline}
                 flatQuestions={flatQuestions}
@@ -521,8 +517,6 @@ export class CodingScheme extends Component {
                 hasLock={hasLock}
               />}
         </FlexGrid>
-        <Route path="/project/:id/coding-scheme/add" component={AddEditQuestion} />
-        <Route path="/project/:id/coding-scheme/edit/:questionId" component={AddEditQuestion} />
       </FlexGrid>
     )
   }

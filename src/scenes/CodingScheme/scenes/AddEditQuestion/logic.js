@@ -27,7 +27,7 @@ const updateOutlineLogic = createLogic({
   transform({ getState, action }, next) {
     let possibleAnswers
     if (action.question.questionType === questionTypes.TEXT_FIELD) {
-      possibleAnswers = [{ text: '' }]
+      possibleAnswers = [{ text: '', order: 0 }]
     } else {
       possibleAnswers = action.question.possibleAnswers.map((answer, index) => ({ ...answer, order: index + 1 }))
     }
@@ -73,7 +73,6 @@ const updateQuestionLogic = createLogic({
           possibleAnswers: action.question.possibleAnswers,
           children: action.question.children || [],
           expanded: true,
-          hovering: false,
           path: action.path
         }
       })
@@ -100,8 +99,7 @@ const addChildQuestionLogic = createLogic({
         payload: {
           ...action.question,
           path: action.path,
-          id: question.id,
-          hovering: false
+          id: question.id
         }
       })
     } catch (error) {
@@ -128,8 +126,7 @@ const addQuestionLogic = createLogic({
           ...question,
           possibleAnswers: action.question.possibleAnswers,
           parentId: action.question.parentId,
-          positionInParent: action.question.positionInParent,
-          hovering: false
+          positionInParent: action.question.positionInParent
         }
       })
     } catch (error) {

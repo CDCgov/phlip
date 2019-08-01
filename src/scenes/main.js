@@ -248,6 +248,8 @@ export class Main extends Component {
       ? 'row'
       : 'column'
     
+    const switchLocation = isModal ? this.previousLocation : location
+    
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
         <IdleTimer ref={this.idleRef} onIdle={this.logoutUserOnIdle} timeout={900000} />
@@ -262,7 +264,7 @@ export class Main extends Component {
           onOpenAdminPage={this.handleOpenAdminPage}
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
-          <Switch location={isModal ? this.previousLocation : location}>
+          <Switch location={switchLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
             <Route path="/project/:id/:view(code|validate)/:jid/:qid" component={CodingValidation} />

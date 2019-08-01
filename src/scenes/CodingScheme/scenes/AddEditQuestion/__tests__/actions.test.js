@@ -24,10 +24,10 @@ describe('CodingScheme - AddEditQuestion action creators', () => {
       type: types.UPDATE_QUESTION_REQUEST,
       question: { id: 1 },
       projectId: 4,
-      parentId: 0,
+      questionId: 10,
       path: [1, 3]
     }
-    expect(actions.updateQuestionRequest({ id: 1 }, 4, 0, [1, 3])).toEqual(expected)
+    expect(actions.updateQuestionRequest({ id: 1 }, 4, 10, [1, 3])).toEqual(expected)
   })
   
   test('should create an action to reset form error', () => {

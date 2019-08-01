@@ -13,7 +13,6 @@ import addEditQuestion from './scenes/AddEditQuestion/reducer'
 export const INITIAL_STATE = {
   questions: [],
   outline: {},
-  allowHover: true,
   flatQuestions: [],
   schemeError: null,
   alertError: '',
@@ -67,7 +66,6 @@ const getQuestionsFromOutline = (outline, questions) => {
       {
         ...q,
         ...outline[q.id],
-        hovering: false,
         expanded: true
       }
     ]
@@ -112,25 +110,6 @@ export const getNodeKey = ({ treeIndex }) => {
 }
 
 /**
- * Sets the hovering state to hovering parameter for the node and sets hovering to false for all its children
- *
- * @param {Object} node
- * @param {Boolean} hovering
- * @returns {Object}
- */
-const setHovering = (node, hovering) => {
-  node.hovering = hovering
-
-  if (node.children) {
-    node.children = node.children.map((child) => {
-      return setHovering(child, false)
-    })
-  }
-
-  return node
-}
-
-/**
  * Sorts the possibleAnswers property for all questions in questions parameter
  *
  * @param {Array} questions
@@ -154,7 +133,7 @@ export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.GET_SCHEME_REQUEST:
       return {
         ...state,
-        schemeError: false
+        schemeError: null
       }
       
     case types.GET_SCHEME_SUCCESS:
@@ -264,7 +243,7 @@ export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         parentKey: action.payload.path[action.payload.path.length - 1],
         expandParent: true,
         getNodeKey,
-        newNode: { ...question, hovering: false }
+        newNode: { ...question }
       })
       
       return {
@@ -280,7 +259,7 @@ export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         treeData: state.questions,
         path: action.payload.path,
         getNodeKey,
-        newNode: { ...action.payload, hovering: false }
+        newNode: { ...action.payload }
       })
     
       return {
@@ -303,37 +282,6 @@ export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         previousOutline: state.outline,
         questions: action.questions,
         outline: questionsToOutline(action.questions)
-      }
-
-    case types.TOGGLE_HOVER:
-      if (state.allowHover) {
-        try {
-          return {
-            ...state,
-            questions: changeNodeAtPath({
-              treeData: state.questions,
-              path: action.path,
-              getNodeKey,
-              newNode: setHovering({ ...action.node }, action.hover)
-            })
-          }
-        } catch (e) {
-          return state
-        }
-      } else {
-        return state
-      }
-
-    case types.DISABLE_HOVER:
-      return {
-        ...state,
-        allowHover: false
-      }
-
-    case types.ENABLE_HOVER:
-      return {
-        ...state,
-        allowHover: true
       }
       
     case types.COPY_CODING_SCHEME_REQUEST:
