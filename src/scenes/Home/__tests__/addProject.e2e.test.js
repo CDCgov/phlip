@@ -1,3 +1,4 @@
+const commonElements = require('./commonElement')
 const admin = { email: 'admin@cdc.gov' }
 const email_selector = '#email'
 const host = 'http://localhost:5200'
