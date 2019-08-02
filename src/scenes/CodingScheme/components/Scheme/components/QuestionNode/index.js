@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
-import Link from 'components/Link'
+import { withRouter } from 'react-router-dom'
 
 /**
  * Checks if the node is a descendant
@@ -58,7 +58,8 @@ export class QuestionNode extends Component {
     canModify: PropTypes.bool,
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     handleDeleteQuestion: PropTypes.func,
-    rowDirection: PropTypes.any
+    rowDirection: PropTypes.any,
+    history: PropTypes.object
   }
 
   static defaultProps = {
@@ -98,6 +99,17 @@ export class QuestionNode extends Component {
       this.setState({ hovered })
     }
   }
+  
+  /**
+   * Opens the add / edit modal for this question
+   */
+  openAddEditModal = addOrEdit => () => {
+    const { history, projectId, node, canModify, path } = this.props
+    history.push({
+      pathname: `/project/${projectId}/coding-scheme/${addOrEdit}/${node.id}`,
+      state: { questionDefined: { ...node }, path, canModify, modal: true }
+    })
+  }
 
   render() {
     const {
@@ -117,7 +129,6 @@ export class QuestionNode extends Component {
       lowerSiblingCounts,
       listIndex,
       parentNode,
-      projectId,
       handleDeleteQuestion
     } = this.props
     
@@ -176,11 +187,7 @@ export class QuestionNode extends Component {
                     placement="left">
                     <Button
                       aria-label="Add child question"
-                      component={Link}
-                      to={{
-                        pathname: `/project/${projectId}/coding-scheme/add`,
-                        state: { parentDefined: { ...node }, path, canModify: true, modal: true }
-                      }}
+                      onClick={this.openAddEditModal('add')}
                       color="accent"
                       style={{ ...actionStyles, marginRight: 10 }}
                       value={<Icon color="white">subdirectory_arrow_right</Icon>}
@@ -192,13 +199,9 @@ export class QuestionNode extends Component {
                   placement="right">
                   <Button
                     color="accent"
-                    component={Link}
-                    to={{
-                      pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                      state: { questionDefined: { ...node }, path, canModify, modal: true }
-                    }}
                     aria-label={canModify ? 'Edit Question' : 'View Question'}
                     style={{ ...actionStyles, marginRight: 10 }}
+                    onClick={this.openAddEditModal('edit')}
                     value={<Icon color="white">{canModify ? 'mode_edit' : 'visibility'}</Icon>}
                   />
                 </Tooltip>
@@ -257,4 +260,4 @@ export class QuestionNode extends Component {
   }
 }
 
-export default QuestionNode
+export default withRouter(QuestionNode)
