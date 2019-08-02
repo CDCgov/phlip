@@ -1,5 +1,6 @@
 import { types } from '../actions'
 import { codingSchemeReducer as reducer, INITIAL_STATE as initial } from '../reducer'
+import { schemeFromApi, schemeOutline } from 'utils/testData/coding'
 
 const getState = other => ({ ...initial, ...other })
 
@@ -844,13 +845,42 @@ describe('Coding Scheme reducer', () => {
     })
   })
   
-  describe.skip('COPY_CODING_SCHEME_SUCCESS', () => {
-    const action = { type: types.COPY_CODING_SCHEME_SUCCESS, payload: 'couldnt copy coding scheme' }
+  describe('COPY_CODING_SCHEME_SUCCESS', () => {
+    const action = {
+      type: types.COPY_CODING_SCHEME_SUCCESS, payload: {
+        scheme: {
+          outline: schemeOutline,
+          schemeQuestions: schemeFromApi
+        }
+      }
+    }
     const currentState = getState({ copying: true, empty: true })
     const state = reducer(currentState, action)
     
     test('should indicate that copying is not longer happening', () => {
       expect(state.copying).toEqual(false)
+    })
+    
+    test('should transform the flat questions into nested questions', () => {
+      const questions = [
+        { ...schemeFromApi[0], expanded: true },
+        { ...schemeFromApi[1], expanded: true },
+        {
+          ...schemeFromApi[2],
+          expanded: true,
+          children: [{ ...schemeFromApi[3], expanded: true }]
+        },
+        { ...schemeFromApi[4], expanded: true }
+      ]
+      expect(state.questions).toEqual(questions)
+    })
+    
+    test('should keep flat questions', () => {
+      expect(state.flatQuestions).toEqual(schemeFromApi)
+    })
+    
+    test('should copy the new outline', () => {
+      expect(state.outline).toEqual(schemeOutline)
     })
     
     test('should set that scheme is no longer empty', () => {
