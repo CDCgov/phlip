@@ -65,6 +65,28 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
         Assigned Documents
       </WithStyles(Typography)>
     </FlexGrid>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <IconButton
+        color="#757575"
+        disabled={false}
+        iconSize={24}
+        onClick={[Function]}
+        placement="left-start"
+        tooltipText="Download All Documents"
+      >
+        file_download
+      </IconButton>
+    </FlexGrid>
   </FlexGrid>
   <WithStyles(Divider) />
   <FlexGrid
@@ -90,36 +112,57 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
       container={true}
       flex={false}
       justify="stretch"
-      padding={10}
+      padding="10px 15px"
       raised={false}
       style={Object {}}
       type="row"
     >
-      <WithStyles(Typography)>
-        1
-        .
-      </WithStyles(Typography)>
-      <WithStyles(Typography)
-        style={
-          Object {
-            "color": "#048484",
-            "cursor": "pointer",
-            "paddingLeft": 5,
-            "paddingRight": 5,
-          }
-        }
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={true}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={Object {}}
+        type="row"
       >
-        <span
-          onClick={[Function]}
+        <WithStyles(Typography)>
+          1
+          .
+        </WithStyles(Typography)>
+        <WithStyles(Typography)
           style={
             Object {
-              "paddingRight": 10,
+              "color": "#048484",
+              "cursor": "pointer",
+              "paddingLeft": 5,
+              "paddingRight": 5,
             }
           }
         >
-          doc1
-        </span>
-      </WithStyles(Typography)>
+          <span
+            onClick={[Function]}
+            style={
+              Object {
+                "paddingRight": 10,
+              }
+            }
+          >
+            doc1
+          </span>
+        </WithStyles(Typography)>
+      </FlexGrid>
+      <IconButton
+        color="#757575"
+        disabled={false}
+        iconSize={20}
+        onClick={[Function]}
+        tooltipText="Download"
+      >
+        file_download
+      </IconButton>
     </FlexGrid>
     <WithStyles(Divider) />
     <FlexGrid
@@ -128,38 +171,66 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
       container={true}
       flex={false}
       justify="stretch"
-      padding={10}
+      padding="10px 15px"
       raised={false}
       style={Object {}}
       type="row"
     >
-      <WithStyles(Typography)>
-        2
-        .
-      </WithStyles(Typography)>
-      <WithStyles(Typography)
-        style={
-          Object {
-            "color": "#048484",
-            "cursor": "pointer",
-            "paddingLeft": 5,
-            "paddingRight": 5,
-          }
-        }
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={true}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={Object {}}
+        type="row"
       >
-        <span
-          onClick={[Function]}
+        <WithStyles(Typography)>
+          2
+          .
+        </WithStyles(Typography)>
+        <WithStyles(Typography)
           style={
             Object {
-              "paddingRight": 10,
+              "color": "#048484",
+              "cursor": "pointer",
+              "paddingLeft": 5,
+              "paddingRight": 5,
             }
           }
         >
-          doc1
-        </span>
-      </WithStyles(Typography)>
+          <span
+            onClick={[Function]}
+            style={
+              Object {
+                "paddingRight": 10,
+              }
+            }
+          >
+            doc2
+          </span>
+        </WithStyles(Typography)>
+      </FlexGrid>
+      <IconButton
+        color="#757575"
+        disabled={false}
+        iconSize={20}
+        onClick={[Function]}
+        tooltipText="Download"
+      >
+        file_download
+      </IconButton>
     </FlexGrid>
     <WithStyles(Divider) />
   </FlexGrid>
+  <a
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
 </FlexGrid>
 `;

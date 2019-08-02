@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
-import { sortListOfObjects } from 'utils/commonHelpers'
+import { sortListOfObjects, removeExtension } from 'utils/commonHelpers'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage/session'
 import { persistReducer } from 'redux-persist'
@@ -45,12 +45,18 @@ export const INITIAL_STATE = {
   apiError: {
     title: '',
     text: '',
-    open: false
+    open: false,
+    alertOrView: 'alert'
   },
   shouldShowAnnoModeAlert: true,
   currentAnnotationIndex: 0,
   scrollTop: false,
-  gettingDocs: false
+  gettingDocs: false,
+  downloading: {
+    name: '',
+    id: '',
+    content: ''
+  }
 }
 
 const mergeName = docObj => ({
@@ -84,9 +90,10 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         apiError: {
-          text: 'Failed to get the list of approved documents.',
+          text: 'We couldn\'t get the list of approved documents.',
           title: 'Request failed',
-          open: true
+          open: true,
+          alertOrView: 'view'
         },
         gettingDocs: false
       }
@@ -134,8 +141,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         docSelected: true,
         apiError: {
           title: '',
-          text: 'Failed to retrieve document contents.',
-          open: true
+          text: 'We couldn\'t get the document contents.',
+          open: true,
+          alertOrView: 'view'
         }
       }
       
@@ -267,7 +275,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiError: {
           title: '',
           text: '',
-          open: false
+          open: false,
+          alertOrView: 'alert'
         },
         annotations: {
           ...state.annotations,
@@ -345,6 +354,60 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         scrollTop: false
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_REQUEST:
+      return {
+        ...state,
+        downloading: {
+          name: action.docId === 'all' ? '' : `${removeExtension(state.documents.byId[action.docId].name).name}.pdf`,
+          id: action.docId,
+          content: ''
+        }
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_SUCCESS:
+      return {
+        ...state,
+        downloading: {
+          ...state.downloading,
+          content: action.payload
+        }
+      }
+      
+    case types.DOWNLOAD_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        apiError: {
+          title: '',
+          text: action.payload,
+          open: true,
+          alertOrView: 'alert'
+        },
+        downloading: {
+          name: '',
+          id: '',
+          content: ''
+        }
+      }
+      
+    case types.CLEAR_DOWNLOAD:
+      return {
+        ...state,
+        downloading: {
+          name: '',
+          id: '',
+          content: ''
+        }
+      }
+      
+    case types.CLEAR_API_ERROR:
+      return {
+        ...state,
+        apiError: {
+          ...state.apiError,
+          open: false
+        }
       }
     
     default:

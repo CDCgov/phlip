@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Route } from 'react-router-dom'
 import { FlexGrid, ApiErrorAlert, PageLoader, ApiErrorView, PageHeader, withAutocompleteMethods } from 'components'
-import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
+import actions from './actions'
 import { projectAutocomplete as searchProjectAutocomplete } from './components/SearchBox/actions'
 import DocList from './components/DocList'
 import SearchBox from './components/SearchBox'
@@ -42,26 +42,6 @@ export class DocumentManagement extends Component {
      * Whether or not the checkbox table header has been clicked, selecting all files
      */
     allSelected: PropTypes.bool,
-    /**
-     * Search value for document search box
-     */
-    searchValue: PropTypes.string,
-    /**
-     * Project autocomplete search value
-     */
-    projectSearchValue: PropTypes.string,
-    /**
-     * Jurisdiction autocomplete search value
-     */
-    jurisdictionSearchValue: PropTypes.string,
-    /**
-     * Project autocomplete suggestions
-     */
-    projectSuggestions: PropTypes.array,
-    /**
-     * Jurisdiction autocomplete suggestions
-     */
-    jurisdictionSuggestions: PropTypes.array,
     /**
      * List of selected documents
      */
@@ -107,19 +87,17 @@ export class DocumentManagement extends Component {
      */
     userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder']),
     /**
-     * Whether or not the app is searching projects
-     */
-    searchingProjects: PropTypes.bool,
-    /**
-     * Whether or not the app is searching jurisdictions
-     */
-    searchingJurisdictions: PropTypes.bool,
-    /**
      * current user
      */
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    projectAutocompleteProps: PropTypes.object,
+    projectAutoActions: PropTypes.object,
+    jurisdictionAutocompleteProps: PropTypes.object,
+    jurisdictionAutoActions: PropTypes.object,
+    showAll: PropTypes.bool,
+    checkedDocsOwner: PropTypes.array
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -127,105 +105,63 @@ export class DocumentManagement extends Component {
       bulkActionType: ''
     }
   }
-
+  
   componentDidMount() {
     document.title = 'PHLIP - Document List'
     this.props.actions.getDocumentsRequest()
   }
-
+  
   componentDidUpdate(prevProps) {
-    if (prevProps.getDocumentsInProgress && !this.props.getDocumentsInProgress) {
-      if (this.props.location.state !== undefined) {
-        if (this.props.location.state.projectDefined) {
-          let name = this.props.location.state.project.name
+    const { getDocumentsInProgress, location, actions, bulkOperationInProgress, apiErrorOpen } = this.props
+    
+    if (prevProps.getDocumentsInProgress && !getDocumentsInProgress) {
+      if (location.state !== undefined) {
+        if (location.state.projectDefined) {
+          let name = location.state.project.name
           if (checkIfMultiWord(name)) {
             name = `(${name})`
           }
-          this.props.actions.handleSearchValueChange(`project:${name}`, {
-            project: this.props.location.state.project,
+          actions.handleSearchValueChange(`project:${name}`, {
+            project: location.state.project,
             jurisdiction: {}
           })
-          this.props.actions.handleFormValueChange('project', this.props.location.state.project)
-          this.props.actions.searchProjectAutocomplete.onSuggestionSelected(this.props.location.state.project)
+          actions.handleFormValueChange('project', location.state.project)
+          actions.searchProjectAutocomplete.onSuggestionSelected(location.state.project)
         }
       }
     }
-
-    if (prevProps.bulkOperationInProgress && !this.props.bulkOperationInProgress) {
-      if (!this.props.apiErrorOpen) {
+    
+    if (prevProps.bulkOperationInProgress && !bulkOperationInProgress) {
+      if (!apiErrorOpen) {
         this.onCloseModal()
       }
     }
   }
-
+  
   /*
    * opens bulk action modal
    */
   handleBulkAction = actionType => {
-    this.props.actions.jurisdictionAutocomplete.clearAll()
-    this.props.actions.projectAutocomplete.clearAll()
-
+    const { projectAutoActions, jurisdictionAutoActions } = this.props
+    jurisdictionAutoActions.clearAll()
+    projectAutoActions.clearAll()
+    
     if (actionType !== 'bulk') {
       this.setState({ showModal: true, bulkActionType: actionType })
     }
   }
-
-  /**
-   * Get suggestions for some type of autocomplete search
-   * @param suggestionType
-   * @param searchString
-   * @param index
-   */
-  handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    const { actions } = this.props
-
-    if (suggestionType === 'project') {
-      actions.projectAutocomplete.getInitialSuggestionsRequest(this.props.currentUser.id,30, '_BULK')
-      actions.projectAutocomplete.setSearchingStatus(true)
-    } else {
-      actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_BULK', index)
-      actions.jurisdictionAutocomplete.setSearchingStatus(true)
-    }
-  }
-
-  /**
-   * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
-   */
-  handleSuggestionSelected = suggestionType => (event, { suggestionValue }) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
-      : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
-  }
-
-  /**
-   * When the search field value changes
-   * @param suggestionType
-   * @param value
-   */
-  handleSearchValueChange = (suggestionType, value) => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
-      : this.props.actions.projectAutocomplete.updateSearchValue(value)
-  }
-
-  /**
-   * Clears autocomplete lists
-   * @param suggestionType
-   */
-  handleClearSuggestions = suggestionType => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
-      : this.props.actions.projectAutocomplete.clearSuggestions()
-  }
-
+  
   /**
    * Alert to confirm bulk update / delete / approve of documents
    */
   handleBulkConfirm = () => {
     const { bulkActionType } = this.state
-    const { actions, selectedProject, selectedJurisdiction, checkedDocs } = this.props
+    const { actions, checkedDocs, projectAutocompleteProps, jurisdictionAutocompleteProps } = this.props
+    const selectedProject = projectAutocompleteProps.selectedSuggestion
+    const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
+    
     switch (bulkActionType) {
-      case 'delete' :
+      case 'delete':
         actions.handleBulkDelete(checkedDocs)
         break
       case 'removeproject':
@@ -248,65 +184,56 @@ export class DocumentManagement extends Component {
         }
         actions.handleBulkUpdate(updateData, checkedDocs)
     }
-
-    // if (bulkActionType === 'delete') {
-    //   actions.handleBulkDelete(checkedDocs)
-    // } else {
-    //   let updateData = {}
-    //   if (bulkActionType === 'approve') {
-    //     updateData = {
-    //       updateType: 'status'
-    //     }
-    //   } else {
-    //     updateData = {
-    //       updateType: `${bulkActionType}s`,
-    //       updateProJur: bulkActionType === 'project' ? selectedProject : selectedJurisdiction
-    //     }
-    //   }
-    //   actions.handleBulkUpdate(updateData, checkedDocs)
-    // }
   }
-
+  
   /**
    * Closes alerts
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
-
+  
   /**
    * Closes the autocomplete search modal
    */
   onCloseModal = () => {
-    if (this.state.bulkActionType === 'jurisdiction') {
-      this.handleClearSuggestions('jurisdiction')
-      this.props.actions.jurisdictionAutocomplete.clearAll()
+    const { projectAutoActions, jurisdictionAutoActions } = this.props
+    const { bulkActionType } = this.state
+    
+    if (bulkActionType === 'jurisdiction') {
+      jurisdictionAutoActions.clearSuggestions()
+      jurisdictionAutoActions.clearAll()
     }
-
-    if (this.state.bulkActionType === 'project') {
-      this.handleClearSuggestions('project')
-      this.props.actions.projectAutocomplete.clearAll()
+    
+    if (bulkActionType === 'project') {
+      projectAutoActions.clearSuggestions()
+      projectAutoActions.clearAll()
     }
-
+    
     this.setState({
       showModal: false,
       bulkActionType: ''
     })
   }
-
+  
   /**
    * Gets bulk action modal button props
    * @returns {{inProgress: DocumentManagement.props.bulkOperationInProgress, disabled: boolean}}
    */
   getButtonInfo = () => {
     const { bulkActionType } = this.state
-    const { selectedProject, selectedJurisdiction, checkedCount, bulkOperationInProgress } = this.props
-
+    const {
+      projectAutocompleteProps, jurisdictionAutocompleteProps, checkedCount, bulkOperationInProgress
+    } = this.props
+  
+    const selectedProject = projectAutocompleteProps.selectedSuggestion
+    const selectedJurisdiction = jurisdictionAutocompleteProps.selectedSuggestion
+    
     let info = {
       disabled: false,
       inProgress: bulkOperationInProgress
     }
-
+    
     switch (bulkActionType) {
       case 'delete':
       case 'approve':
@@ -323,25 +250,23 @@ export class DocumentManagement extends Component {
         info.disabled = false
         break
     }
-
+    
     return info
   }
-
+  
   render() {
     const {
-      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, searchingProjects, showAll,
-      actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue, userRole,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, searchingJurisdictions
+      apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount, showAll,
+      actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, userRole, checkedDocsOwner,
+      jurisdictionAutocompleteProps, projectAutocompleteProps
     } = this.props
-
+    
     const { bulkActionType, showModal } = this.state
-
-    const suggestionProps = {
-      suggestions: bulkActionType.includes('project') ? projectSuggestions : jurisdictionSuggestions,
-      searchValue: bulkActionType.includes('project') ? projectSearchValue : jurisdictionSearchValue,
-      searching: bulkActionType.includes('project') ? searchingProjects : searchingJurisdictions
-    }
-
+    
+    const autocompleteProps = bulkActionType.includes('project')
+      ? projectAutocompleteProps
+      : jurisdictionAutocompleteProps
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert open={apiErrorOpen} content={apiErrorInfo.text} onCloseAlert={this.closeAlert} />
@@ -390,15 +315,11 @@ export class DocumentManagement extends Component {
           open={showModal}
           onCloseModal={this.onCloseModal}
           bulkType={bulkActionType}
-          onClearSuggestions={this.handleClearSuggestions}
-          onGetSuggestions={this.handleGetSuggestions}
-          onSearchValueChange={this.handleSearchValueChange}
           docCount={checkedCount}
           ownerList={checkedDocsOwner}
-          onSuggestionSelected={this.handleSuggestionSelected}
           onConfirmAction={this.handleBulkConfirm}
           buttonInfo={this.getButtonInfo()}
-          {...suggestionProps}
+          autocompleteProps={autocompleteProps}
         />
         <Route path="/docs/upload" component={Upload} />
       </FlexGrid>
@@ -418,7 +339,7 @@ const mapStateToProps = state => {
     if (checkedDocsOwners.indexOf(uploadedBy) === -1 && (uploadedBy !== curuserName))
       checkedDocsOwners.push(uploadedBy)
   })
-
+  
   return {
     checkedDocsOwner: checkedDocsOwners,
     documents: docManage.list.documents.visible,
@@ -435,14 +356,6 @@ const mapStateToProps = state => {
     sortDirection: docManage.list.sortDirection,
     getDocumentsInProgress: docManage.list.getDocumentsInProgress || false,
     pageError: docManage.list.pageError,
-    projectSuggestions: docManage.projectSuggestions.suggestions,
-    selectedProject: docManage.projectSuggestions.selectedSuggestion,
-    projectSearchValue: docManage.projectSuggestions.searchValue,
-    jurisdictionSuggestions: docManage.jurisdictionSuggestions.suggestions,
-    jurisdictionSearchValue: docManage.jurisdictionSuggestions.searchValue,
-    selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
-    searchingProjects: docManage.projectSuggestions.searching,
-    searchingJurisdictions: docManage.jurisdictionSuggestions.searching,
     userRole: state.data.user.currentUser.role,
     showAll: docManage.list.showAll,
     currentUser: currentUser
@@ -453,8 +366,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),
-    projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
-    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch),
     searchProjectAutocomplete: bindActionCreators(searchProjectAutocomplete, dispatch)
   }
 })

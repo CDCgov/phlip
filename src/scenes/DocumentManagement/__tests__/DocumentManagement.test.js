@@ -16,6 +16,22 @@ const props = {
     handleRowsChange: jest.fn(),
     handleSelectOneFile: jest.fn()
   },
+  jurisdictionAutocompleteProps: {
+    suggestions: [
+      { id: 2932 },
+      { id: 25332 },
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
+    ],
+    selectedSuggestion: {},
+    searchValue: ''
+  },
+  projectAutocompleteProps: {
+    suggestions: [{ id: 1 }, { id: 2 }, { id: 4 }, { id: 5 }],
+    selectedSuggestion: {},
+    searchValue: ''
+  },
   apiErrorOpen: false,
   apiErrorInfo: {
     title: '',

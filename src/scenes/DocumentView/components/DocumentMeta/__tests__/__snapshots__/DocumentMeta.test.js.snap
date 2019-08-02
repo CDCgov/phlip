@@ -607,40 +607,40 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
       </FlexGrid>
     </FlexGrid>
     <ProJurSearch
+      autocompleteProps={
+        Object {
+          "searchValue": "",
+          "selectedSuggestion": Object {},
+          "suggestions": Array [
+            Object {
+              "id": 2932,
+            },
+            Object {
+              "id": 25332,
+            },
+            Object {
+              "id": 1,
+            },
+            Object {
+              "id": 2,
+            },
+            Object {
+              "id": 3,
+            },
+          ],
+        }
+      }
       buttonInfo={
         Object {
           "disabled": true,
           "inProgress": undefined,
         }
       }
-      onClearSuggestions={[Function]}
       onCloseModal={[Function]}
       onConfirmAction={[Function]}
-      onGetSuggestions={[Function]}
       onMouseDown={[Function]}
-      onSearchValueChange={[Function]}
-      onSuggestionSelected={[Function]}
       open={false}
       searchType=""
-      suggestions={
-        Array [
-          Object {
-            "id": 2932,
-          },
-          Object {
-            "id": 25332,
-          },
-          Object {
-            "id": 1,
-          },
-          Object {
-            "id": 2,
-          },
-          Object {
-            "id": 3,
-          },
-        ]
-      }
     />
   </FlexGrid>
 </Fragment>
