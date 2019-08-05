@@ -294,7 +294,7 @@ export class DocumentMeta extends Component {
     return (
       <>
         <span style={{ marginRight: 5 }}>{text}</span>
-        {this.props.documentUpdateInProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />}
+        {this.props.documentUpdateInProgress && <CircularLoader size={15} thickness={5} />}
       </>
     )
   }

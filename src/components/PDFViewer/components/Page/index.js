@@ -206,7 +206,7 @@ export class Page extends Component {
         onMouseUp={this.onMouseUp}>
         {!readyToRenderText &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
-          <CircularLoader />
+          <CircularLoader size={40} />
         </FlexGrid>}
         <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
           <canvas {...canvasStyleSpecs} id={`page-${id}-canvas`} ref={this.canvasRef}>

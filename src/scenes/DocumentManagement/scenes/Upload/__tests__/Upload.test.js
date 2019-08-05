@@ -416,7 +416,7 @@ describe('Document Management - Upload scene', () => {
       const wrapper = shallow(<Upload {...props} infoRequestInProgress />)
       expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Processing document... This could take a couple of minutes...')
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />))
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader size={40} />))
         .toEqual(true)
     })
     

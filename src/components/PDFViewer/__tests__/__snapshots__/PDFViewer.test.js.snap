@@ -96,8 +96,8 @@ exports[`PDFViewer component should render correctly 1`] = `
       size={40}
       style={
         Object {
-          "height": 40,
-          "width": 40,
+          "height": 24,
+          "width": 24,
         }
       }
       thickness={5}

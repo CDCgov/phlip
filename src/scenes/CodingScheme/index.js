@@ -357,7 +357,7 @@ export class CodingScheme extends Component {
     return (
       <>
         {text}
-        {inProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginRight: 5 }} />}
+        {inProgress && <CircularLoader thickness={5} size={15} style={{ marginRight: 5 }} />}
       </>
     )
   }

@@ -200,7 +200,7 @@ export class FileList extends Component {
                 endAdornment: doc.jurisdictions.searching && (
                   <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
                     <CircularLoader
-                      style={{ height: 20, width: 20 }}
+                      size={20}
                       thickness={4}
                       color="primary"
                       type="indeterminate"
