@@ -56,7 +56,6 @@ export const TreeNode = props => {
     />)
 
     if (treeIndex !== listIndex && i === swapDepth) {
-      console.log(props)
       let highlightLineClass = ''
       if (listIndex === swapFrom + swapLength - 1) {
         highlightLineClass = styles.highlightBottomLeftCorner
