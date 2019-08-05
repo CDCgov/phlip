@@ -432,7 +432,8 @@ export class CodingScheme extends Component {
           closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
           open={lockedAlert !== null}
           title={
-            <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+            <>
+              <Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
               The Coding Scheme is checked out.
             </>
           }>
@@ -507,14 +508,15 @@ export class CodingScheme extends Component {
               ? this.renderGetStarted()
               : <Scheme
                 questions={questions}
-                handleQuestionTreeChange={this.handleQuestionTreeChange}
-                handleQuestionNodeMove={this.handleQuestionNodeMove}
-                handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
+                onQuestionTreeChange={this.handleQuestionTreeChange}
+                onQuestionNodeMove={this.handleQuestionNodeMove}
+                onDeleteQuestion={this.onOpenDeleteQuestionAlert}
                 projectId={project.id}
                 outline={outline}
                 flatQuestions={flatQuestions}
                 lockedByCurrentUser={lockedByCurrentUser}
                 hasLock={hasLock}
+                projectLocked={projectLocked}
               />}
         </FlexGrid>
       </FlexGrid>

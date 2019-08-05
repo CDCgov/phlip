@@ -8,7 +8,6 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
-import { withRouter } from 'react-router-dom'
 
 /**
  * Checks if the node is a descendant
@@ -57,9 +56,9 @@ export class QuestionNode extends Component {
     isOver: PropTypes.bool.isRequired,
     canModify: PropTypes.bool,
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    handleDeleteQuestion: PropTypes.func,
+    onDeleteQuestion: PropTypes.func,
     rowDirection: PropTypes.any,
-    history: PropTypes.object
+    onOpenAddEditModal: PropTypes.func
   }
 
   static defaultProps = {
@@ -104,11 +103,8 @@ export class QuestionNode extends Component {
    * Opens the add / edit modal for this question
    */
   openAddEditModal = addOrEdit => () => {
-    const { history, projectId, node, canModify, path } = this.props
-    history.push({
-      pathname: `/project/${projectId}/coding-scheme/${addOrEdit}/${node.id}`,
-      state: { questionDefined: { ...node }, path, canModify, modal: true }
-    })
+    const { node, canModify, path, onOpenAddEditModal } = this.props
+    onOpenAddEditModal(addOrEdit, node, canModify, path)
   }
 
   render() {
@@ -129,7 +125,7 @@ export class QuestionNode extends Component {
       lowerSiblingCounts,
       listIndex,
       parentNode,
-      handleDeleteQuestion
+      onDeleteQuestion
     } = this.props
     
     const { hovered } = this.state
@@ -215,7 +211,7 @@ export class QuestionNode extends Component {
                     aria-label="Delete question"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">delete</Icon>}
-                    onClick={() => handleDeleteQuestion(node.id, path)}
+                    onClick={() => onDeleteQuestion(node.id, path)}
                   />
                 </Tooltip>}
               </div>}
@@ -260,4 +256,4 @@ export class QuestionNode extends Component {
   }
 }
 
-export default withRouter(QuestionNode)
+export default QuestionNode

@@ -64,8 +64,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
   </Alert>
   <ApiErrorAlert
     actions={Array []}
+    content=""
     onCloseAlert={[Function]}
-    open={true}
+    open={false}
   />
   <Alert
     actions={
@@ -84,7 +85,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     hideClose={false}
     onCloseAlert={[Function]}
-    open={true}
+    open={false}
     title={
       <React.Fragment>
         <WithTheme(Icon)
@@ -160,8 +161,15 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     type="row"
   >
-    <ApiErrorView
-      error=""
+    <withRouter(Scheme)
+      hasLock={false}
+      lockedByCurrentUser={false}
+      onDeleteQuestion={[Function]}
+      onQuestionNodeMove={[Function]}
+      onQuestionTreeChange={[Function]}
+      projectId={1}
+      projectLocked={false}
+      questions={Array []}
     />
   </FlexGrid>
 </FlexGrid>

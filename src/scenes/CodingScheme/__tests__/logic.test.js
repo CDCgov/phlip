@@ -4,7 +4,7 @@ import logic from '../logic'
 import { types } from '../actions'
 import { INITIAL_STATE } from '../reducer'
 import createApiHandler, { projectApiInstance } from 'services/api'
-import { schemeOutline, schemeTreeFromApi, schemeTree, schemeFromApi } from 'utils/testData/coding'
+import { schemeOutline, schemeTreeFromApi, schemeTree, schemeFromApi } from 'utils/testData/scheme'
 import calls from 'services/api/calls'
 
 const history = {}

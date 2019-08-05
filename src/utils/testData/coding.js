@@ -106,17 +106,6 @@ export const schemeTree = [
   { ...schemeById[5] }
 ]
 
-export const schemeTreeFromApi = [
-  { ...schemeById[1] },
-  { ...schemeById[2] },
-  {
-    ...schemeById[3],
-    expanded: true,
-    childQuestions: [{ ...schemeById[4] }]
-  },
-  { ...schemeById[5] }
-]
-
 export const schemeTreeAfterInitialization = [
   { ...schemeById[1] },
   { ...schemeById[2] },

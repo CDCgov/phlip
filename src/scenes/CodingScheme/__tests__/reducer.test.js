@@ -1,6 +1,6 @@
 import { types } from '../actions'
 import { codingSchemeReducer as reducer, INITIAL_STATE as initial } from '../reducer'
-import { schemeFromApi, schemeOutline } from 'utils/testData/coding'
+import { expandedSchemeTree, schemeOutline, schemeFromApi } from 'utils/testData/scheme'
 
 const getState = other => ({ ...initial, ...other })
 
@@ -862,16 +862,7 @@ describe('Coding Scheme reducer', () => {
     })
     
     test('should transform the flat questions into nested questions', () => {
-      const questions = [
-        { ...schemeFromApi[0], expanded: true },
-        { ...schemeFromApi[1], expanded: true },
-        {
-          ...schemeFromApi[2],
-          expanded: true,
-          children: [{ ...schemeFromApi[3], expanded: true }]
-        },
-        { ...schemeFromApi[4], expanded: true }
-      ]
+      const questions = expandedSchemeTree.slice()
       expect(state.questions).toEqual(questions)
     })
     
