@@ -74,7 +74,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Question"
               multiline={true}
               name="text"
@@ -98,7 +98,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             <Field
               component={[Function]}
               defaultValue={4}
-              disabled={true}
+              disabled={false}
               fullWidth={true}
               label="Answer Type"
               name="questionType"
@@ -155,7 +155,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Coding directions"
               name="hint"
               placeholder="Enter any special directions or considerations to display when coding this question"
@@ -166,6 +166,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         </FlexGrid>
         <FieldArray
           answerType={4}
+          canModify={true}
           component={[Function]}
           isEdit={false}
           name="possibleAnswers"
@@ -198,7 +199,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Include comment box"
               name="includeComment"
             />
@@ -218,7 +219,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             "value": "Cancel",
           },
           Object {
-            "disabled": true,
+            "disabled": undefined,
             "otherProps": Object {
               "aria-label": "Save form",
             },
