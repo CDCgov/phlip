@@ -40,17 +40,15 @@ export const AnswerList = props => {
           )
         })}
         
-        {canModify && (answerType === questionTypes.BINARY
-          ? null
-          : <Button
-            value="Add more"
-            type="button"
-            color="accent"
-            raised={false}
-            style={{ marginLeft: 32, fontWeight: 'normal' }}
-            onClick={() => fields.push({ isNew: true, order: fields.length })}
-          />)
-        }
+        {(canModify && answerType !== questionTypes.BINARY)
+        && <Button
+          value="Add more"
+          type="button"
+          color="accent"
+          raised={false}
+          style={{ marginLeft: 32, fontWeight: 'normal' }}
+          onClick={() => fields.push({ isNew: true, order: fields.length })}
+        />}
       </FlexGrid>
     )
   )
