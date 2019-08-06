@@ -19,6 +19,7 @@ export const AnswerList = props => {
             <Fragment key={index}>
               <FlexGrid>
                 <Field
+                  id={`possibleAnswers${index}-text`}
                   name={`${answer}.text`}
                   type="text"
                   answerType={answerType}
@@ -39,7 +40,7 @@ export const AnswerList = props => {
             </Fragment>
           )
         })}
-        
+
         {(canModify && answerType !== questionTypes.BINARY)
         && <Button
           value="Add more"
