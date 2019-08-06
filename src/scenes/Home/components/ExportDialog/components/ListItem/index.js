@@ -26,7 +26,7 @@ export const ListItem = props => {
         <IconButton iconStyle={{ color: disabled ? 'unset' : 'black' }} disabled={disabled} onClick={onExport}>
           file_download
         </IconButton>}
-        {inProgress && <CircularLoader type="indeterminate" style={{ width: 17, height: 17 }} />}
+        {inProgress && <CircularLoader type="indeterminate" size={17} />}
       </FlexGrid>
     </MuiListItem>
   )

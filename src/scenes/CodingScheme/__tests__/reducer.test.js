@@ -1,8 +1,8 @@
 import { types } from '../actions'
-import reducer, { INITIAL_STATE as initial } from '../reducer'
+import { codingSchemeReducer as reducer, INITIAL_STATE as initial } from '../reducer'
+import { expandedSchemeTree, schemeOutline, schemeFromApi } from 'utils/testData/scheme'
 
 const getState = other => ({ ...initial, ...other })
-const getReducer = (state, action) => reducer(state, action)
 
 const questions = [
   {
@@ -149,6 +149,15 @@ describe('Coding Scheme reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
   
+  describe('GET_SCHEME_REQUEST', () => {
+    test('should reset any scheme error that may be existing', () => {
+      const action = { type: types.GET_SCHEME_REQUEST }
+      const currentState = getState({ schemeError: 'this is an error' })
+      const state = reducer(currentState, action)
+      expect(state.schemeError).toEqual(null)
+    })
+  })
+  
   describe('GET_SCHEME_SUCCESS', () => {
     describe('when the scheme is not empty', () => {
       const action = {
@@ -166,13 +175,6 @@ describe('Coding Scheme reducer', () => {
       
       const currentState = getState({ empty: true })
       const state = reducer(currentState, action)
-      
-      test('should set state.questions to action.payload and set hovering to false on all questions', () => {
-        expect(state.questions).toEqual([
-          { ...questions[0], hovering: false, expanded: true },
-          { ...questions[1], hovering: false, expanded: true }
-        ])
-      })
       
       test('should set that the scheme is not empty', () => {
         expect(state.empty).toEqual(false)
@@ -644,23 +646,6 @@ describe('Coding Scheme reducer', () => {
     })
   })
   
-  describe('ADD_QUESTION_REQUEST', () => {
-    const action = { type: types.ADD_QUESTION_REQUEST }
-    const currentState = getState({
-      formError: 'lala',
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should reset any form errors', () => {
-      expect(state.formError).toEqual(null)
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
-    })
-  })
-  
   describe('ADD_QUESTION_SUCCESS', () => {
     const newQuestion = { text: 'new question', id: 4 }
     const action = { type: types.ADD_QUESTION_SUCCESS, payload: newQuestion }
@@ -691,47 +676,6 @@ describe('Coding Scheme reducer', () => {
     test('should set that the scheme is not empty', () => {
       expect(state.empty).toEqual(false)
     })
-    
-    test('should set that there was no error', () => {
-      expect(state.error).toEqual(null)
-    })
-    
-    test('should set to go add modal', () => {
-      expect(state.goBack).toEqual(true)
-    })
-  })
-  
-  describe('ADD_QUESTION_FAIL', () => {
-    const action = { type: types.ADD_QUESTION_FAIL, payload: 'failed to add question' }
-    const currentState = getState({
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should set the api error', () => {
-      expect(state.formError).toEqual('failed to add question')
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
-    })
-  })
-  
-  describe('ADD_CHILD_QUESTION_REQUEST', () => {
-    const action = { type: types.ADD_CHILD_QUESTION_REQUEST }
-    const currentState = getState({
-      formError: 'lala',
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should reset any form errors', () => {
-      expect(state.formError).toEqual(null)
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
-    })
   })
   
   xdescribe('ADD_CHILD_QUESTION_SUCCESS', () => {
@@ -758,42 +702,8 @@ describe('Coding Scheme reducer', () => {
       // expect(state.questions[0].children[0].children[0]).toEqual({
       //   text: 'new question',
       //   parentId: 4,
-      //   path: [0, 1],
-      //   hovering: false
+      //   path: [0, 1]
       // })
-    })
-  })
-  
-  describe('ADD_CHILD_QUESTION_FAIL', () => {
-    const action = { type: types.ADD_CHILD_QUESTION_FAIL, payload: 'failed to add question' }
-    const currentState = getState({
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should set the api error', () => {
-      expect(state.formError).toEqual('failed to add question')
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
-    })
-  })
-  
-  describe('UPDATE_QUESTION_REQUEST', () => {
-    const action = { type: types.UPDATE_QUESTION_REQUEST }
-    const currentState = getState({
-      formError: 'lala',
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should reset any form errors', () => {
-      expect(state.formError).toEqual(null)
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
     })
   })
   
@@ -816,7 +726,7 @@ describe('Coding Scheme reducer', () => {
     
     describe('if question being updated is a root question', () => {
       test('should update the question at correct path', () => {
-        expect(state.questions[1]).toEqual({ ...questions[1], text: 'do re mi', path: [1], hovering: false })
+        expect(state.questions[1]).toEqual({ ...questions[1], text: 'do re mi', path: [1] })
       })
       
       test('should update outline if needed', () => {
@@ -844,7 +754,7 @@ describe('Coding Scheme reducer', () => {
       
       test('should update the question at correct path', () => {
         expect(state.questions[0].children[1].children[0])
-          .toEqual({ ...childQuestion, text: 'do re mi', hovering: false, path: [0, 2, 3] })
+          .toEqual({ ...childQuestion, text: 'do re mi', path: [0, 2, 3] })
       })
       
       test('should update outline if needed', () => {
@@ -854,26 +764,6 @@ describe('Coding Scheme reducer', () => {
     
     test('should set that empty if false', () => {
       expect(state.empty).toEqual(false)
-    })
-    
-    test('should set to close the update modal', () => {
-      expect(state.goBack).toEqual(true)
-    })
-  })
-  
-  describe('UPDATE_QUESTION_FAIL', () => {
-    const action = { type: types.UPDATE_QUESTION_FAIL, payload: 'failed to update question' }
-    const currentState = getState({
-      goBack: true
-    })
-    const state = reducer(currentState, action)
-    
-    test('should set the api error', () => {
-      expect(state.formError).toEqual('failed to update question')
-    })
-    
-    test('should set to not go back', () => {
-      expect(state.goBack).toEqual(false)
     })
   })
   
@@ -899,201 +789,36 @@ describe('Coding Scheme reducer', () => {
     })
   })
   
-  describe('TOGGLE_HOVER', () => {
-    test('should set the hovering field to true on node if action.hover = true', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: false, questionBody: 'la la la', type: 2 },
-        path: [1],
-        hover: true
-      }
-      
-      const state = getReducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: true, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should set the hovering field to false on node if action.hover = false', () => {
-      const questions = [
-        { hovering: true, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: true, questionBody: 'fa la la la', type: 1 },
-        path: [0],
-        hover: false
-      }
-      
-      const state = getReducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should set the hovering field on a child node', () => {
-      const questions = [
-        {
-          hovering: false, questionBody: 'fa la la la', type: 1, children: [
-            { hovering: false, questionBody: 'fa la la child', type: 3 }
-          ]
-        },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: { hovering: true, questionBody: 'fa la la child', type: 3 },
-        path: [0, 1],
-        hover: true
-      }
-      
-      const state = getReducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          {
-            hovering: false, questionBody: 'fa la la la', type: 1, children: [
-              { hovering: true, questionBody: 'fa la la child', type: 3 }
-            ]
-          },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should return current state if node is not found', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: {},
-        path: [10],
-        hover: true
-      }
-      
-      const state = getReducer(
-        getState({ questions }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-    
-    test('should not change hovering field if allowHover is set to false', () => {
-      const questions = [
-        { hovering: false, questionBody: 'fa la la la', type: 1 },
-        { hovering: false, questionBody: 'la la la', type: 2 }
-      ]
-      
-      const action = {
-        type: types.TOGGLE_HOVER,
-        node: {},
-        path: [10],
-        hover: true
-      }
-      
-      const state = getReducer(
-        getState({ questions, allowHover: false }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [
-          { hovering: false, questionBody: 'fa la la la', type: 1 },
-          { hovering: false, questionBody: 'la la la', type: 2 }
-        ],
-        outline: {},
-        allowHover: false,
-        flatQuestions: []
-      })
-    })
-  })
-  
   describe('HANDLE_QUESTION_TREE_CHANGE', () => {
     test('should set state.questions to action.questions and update outline', () => {
       const questions = [
-        { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
-        { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+        { questionBody: 'la la la', type: 2, id: 1 },
+        { questionBody: 'fa la la la', type: 1, id: 2 }
       ]
       
       const action = {
         type: types.HANDLE_QUESTION_TREE_CHANGE,
         questions: [
           {
-            hovering: false, questionBody: 'la la la', type: 2, id: 2, children: [
-              { hovering: false, questionBody: 'fa la la la', type: 1, id: 1 }
+            questionBody: 'la la la', type: 2, id: 2, children: [
+              { questionBody: 'fa la la la', type: 1, id: 1 }
             ]
           }
         ]
       }
       
-      const state = getReducer(
-        getState({
-          questions
-        }),
-        action
-      )
+      const currentState = getState({ questions })
+      const state = reducer(currentState, action)
       
       expect(state).toEqual({
         ...initial,
         questions: [
           {
-            hovering: false,
             questionBody: 'la la la',
             type: 2,
             id: 2,
             children: [
-              { hovering: false, questionBody: 'fa la la la', type: 1, id: 1 }
+              { questionBody: 'fa la la la', type: 1, id: 1 }
             ]
           }
         ],
@@ -1101,75 +826,52 @@ describe('Coding Scheme reducer', () => {
           1: { parentId: 2, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 0 }
         },
-        allowHover: true,
         flatQuestions: [],
         previousOutline: {},
         previousQuestions: [
-          { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
-          { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+          { questionBody: 'la la la', type: 2, id: 1 },
+          { questionBody: 'fa la la la', type: 1, id: 2 }
         ]
-      })
-    })
-  })
-  
-  describe('ENABLE_HOVER', () => {
-    test('should set allow hover to true', () => {
-      const action = {
-        type: types.ENABLE_HOVER
-      }
-      const state = getReducer(
-        getState({ allowHover: false }),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [],
-        outline: {},
-        allowHover: true,
-        flatQuestions: []
-      })
-    })
-  })
-  
-  describe('DISABLE_HOVER', () => {
-    test('should set allow hover to false', () => {
-      const action = {
-        type: types.DISABLE_HOVER
-      }
-      const state = getReducer(
-        getState(),
-        action
-      )
-      
-      expect(state).toEqual({
-        ...initial,
-        questions: [],
-        outline: {},
-        allowHover: false,
-        flatQuestions: []
       })
     })
   })
   
   describe('COPY_CODING_SCHEME_REQUEST', () => {
     test('should indicate that copying is happening', () => {
-      const action = {
-        type: types.COPY_CODING_SCHEME_REQUEST
-      }
+      const action = { type: types.COPY_CODING_SCHEME_REQUEST }
       const currentState = getState()
       const state = reducer(currentState, action)
       expect(state.copying).toEqual(true)
     })
   })
   
-  describe.skip('COPY_CODING_SCHEME_SUCCESS', () => {
-    const action = { type: types.COPY_CODING_SCHEME_SUCCESS, payload: 'couldnt copy coding scheme' }
+  describe('COPY_CODING_SCHEME_SUCCESS', () => {
+    const action = {
+      type: types.COPY_CODING_SCHEME_SUCCESS, payload: {
+        scheme: {
+          outline: schemeOutline,
+          schemeQuestions: schemeFromApi
+        }
+      }
+    }
     const currentState = getState({ copying: true, empty: true })
     const state = reducer(currentState, action)
     
     test('should indicate that copying is not longer happening', () => {
       expect(state.copying).toEqual(false)
+    })
+    
+    test('should transform the flat questions into nested questions', () => {
+      const questions = expandedSchemeTree.slice()
+      expect(state.questions).toEqual(questions)
+    })
+    
+    test('should keep flat questions', () => {
+      expect(state.flatQuestions).toEqual(schemeFromApi)
+    })
+    
+    test('should copy the new outline', () => {
+      expect(state.outline).toEqual(schemeOutline)
     })
     
     test('should set that scheme is no longer empty', () => {

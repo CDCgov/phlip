@@ -283,6 +283,7 @@ export const withAutocompleteMethods = (
                 <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
                   {searching &&
                   <CircularLoader
+                    size={spinnerSize}
                     style={{ height: spinnerSize, width: spinnerSize }}
                     thickness={4}
                     color="primary"

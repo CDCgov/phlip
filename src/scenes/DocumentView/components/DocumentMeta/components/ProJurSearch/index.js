@@ -13,7 +13,7 @@ const getButtonText = (text, inProgress) => {
   return (
     <>
       {text}
-      {inProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginRight: 5 }} />}
+      {inProgress && <CircularLoader size={15} thickness={5} style={{ marginRight: 5 }} />}
     </>
   )
 }

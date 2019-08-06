@@ -599,7 +599,7 @@ export class PDFViewer extends Component {
         </Alert>
         {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
-          <CircularLoader />
+          <CircularLoader size={40} />
         </FlexGrid>}
       </div>
     )

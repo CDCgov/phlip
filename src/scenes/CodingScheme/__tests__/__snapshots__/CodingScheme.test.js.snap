@@ -64,8 +64,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
   </Alert>
   <ApiErrorAlert
     actions={Array []}
+    content=""
     onCloseAlert={[Function]}
-    open={true}
+    open={false}
   />
   <Alert
     actions={
@@ -84,7 +85,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     hideClose={false}
     onCloseAlert={[Function]}
-    open={true}
+    open={false}
     title={
       <React.Fragment>
         <WithTheme(Icon)
@@ -125,7 +126,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     otherButton={
       Object {
         "isLink": true,
-        "path": "/project/undefined/coding-scheme/add",
+        "path": "/project/1/coding-scheme/add",
         "props": Object {
           "aria-label": "Add new question to coding scheme",
         },
@@ -139,6 +140,8 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
     }
     pageTitle="Coding Scheme"
+    projectId={1}
+    projectName="Test Project"
     protocolButton={true}
   />
   <FlexGrid
@@ -158,17 +161,16 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     type="row"
   >
-    <ApiErrorView
-      error=""
+    <withRouter(Scheme)
+      hasLock={false}
+      lockedByCurrentUser={false}
+      onDeleteQuestion={[Function]}
+      onQuestionNodeMove={[Function]}
+      onQuestionTreeChange={[Function]}
+      projectId={1}
+      projectLocked={false}
+      questions={Array []}
     />
   </FlexGrid>
-  <Route
-    component={[Function]}
-    path="/project/:id/coding-scheme/add"
-  />
-  <Route
-    component={[Function]}
-    path="/project/:id/coding-scheme/edit/:questionId"
-  />
 </FlexGrid>
 `;
