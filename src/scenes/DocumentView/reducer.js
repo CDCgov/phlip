@@ -1,5 +1,4 @@
 import { types } from './actions'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 import { combineReducers } from 'redux'
 
 export const INITIAL_STATE = {
@@ -185,7 +184,5 @@ export const docViewReducer = (state = INITIAL_STATE, action) => {
 }
 
 export default combineReducers({
-  meta: docViewReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT', '_META'),
-  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_META')
+  meta: docViewReducer
 })

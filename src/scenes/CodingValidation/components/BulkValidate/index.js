@@ -332,7 +332,7 @@ export class BulkValidate extends Component {
                     color="secondary"
                     onClick={this.handleConfirmValidate}>
                     <span style={{ marginRight: 4 }}>Validate</span>
-                    {validationInProgress && <CircularLoader color="secondary" style={{ height: 15, width: 15 }} />}
+                    {validationInProgress && <CircularLoader color="secondary" size={15} />}
                   </Button>
                 </FlexGrid>
               </FlexGrid>}

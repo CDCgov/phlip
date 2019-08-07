@@ -48,13 +48,14 @@ export const withAutocompleteMethods = (
     const classes = theme => ({
       suggestionsContainerOpen: {
         width: '100%',
-        position: 'absolute',
         maxHeight: 500,
         overflow: 'auto',
         '& div:last-child': {
           borderBottom: 'none'
         },
-        display: 'block'
+        display: 'flex',
+        flexDirection: 'column',
+        flex: '0 1 auto'
       },
       suggestion: {
         display: 'block'
@@ -63,7 +64,7 @@ export const withAutocompleteMethods = (
         margin: 0,
         padding: 0,
         listStyleType: 'none',
-        maxHeight: 250
+        maxHeight: 220
       },
       sectionContainer: {
         margin: '0 10px',
@@ -71,7 +72,9 @@ export const withAutocompleteMethods = (
       },
       container: {
         width: '100%',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column'
       }
     })
     
@@ -104,14 +107,21 @@ export const withAutocompleteMethods = (
        */
       handleGetSuggestions = ({ value: searchString }) => {
         const actions = this.props[`${type}AutoActions`]
-        const { user } = this.props
+        const { user, currentUser } = this.props
         
-        if (searchString === '' && initialRequest) {
-          actions.getInitialSuggestionsRequest(user.id, 30, reduxSuffix)
+        const userId = user === undefined
+          ? currentUser === undefined
+            ? null
+            : currentUser.id
+          : user.id
+        
+        if (searchString === '') {
+          if (initialRequest) {
+            actions.getInitialSuggestionsRequest(userId, 30, reduxSuffix)
+          }
         } else {
           actions.searchForSuggestionsRequest(searchString, reduxSuffix)
         }
-        actions.setSearchingStatus(true)
       }
       
       /**
@@ -273,6 +283,7 @@ export const withAutocompleteMethods = (
                 <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
                   {searching &&
                   <CircularLoader
+                    size={spinnerSize}
                     style={{ height: spinnerSize, width: spinnerSize }}
                     thickness={4}
                     color="primary"
@@ -288,9 +299,11 @@ export const withAutocompleteMethods = (
                 ? this.handleSearchValueChange(newValue.name)
                 : this.handleSearchValueChange(e.target.value)
             },
-            id: `${suffix}-${type}-name-search`
+            id: `${suffix}-${type}-name-search`,
+            ...otherAutocompleteProps.inputProps
           },
-          selectedSuggestion
+          selectedSuggestion,
+          searchValue
         }
         
         return (

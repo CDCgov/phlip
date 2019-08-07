@@ -8,8 +8,13 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
-import Link from 'components/Link'
 
+/**
+ * Checks if the node is a descendant
+ * @param older
+ * @param younger
+ * @returns {boolean|*}
+ */
 const isDescendant = (older, younger) => {
   return (
     !!older.children &&
@@ -18,6 +23,9 @@ const isDescendant = (older, younger) => {
   )
 }
 
+/**
+ * This is the actual node content and node for the coding scheme tree
+ */
 export class QuestionNode extends Component {
   static propTypes = {
     buttons: PropTypes.arrayOf(PropTypes.node),
@@ -47,9 +55,10 @@ export class QuestionNode extends Component {
     canDrop: PropTypes.bool,
     isOver: PropTypes.bool.isRequired,
     canModify: PropTypes.bool,
-    projectId: PropTypes.string,
-    handleDeleteQuestion: PropTypes.func,
-    rowDirection: PropTypes.any
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onDeleteQuestion: PropTypes.func,
+    rowDirection: PropTypes.any,
+    onOpenAddEditModal: PropTypes.func
   }
 
   static defaultProps = {
@@ -74,26 +83,28 @@ export class QuestionNode extends Component {
     super(props, context)
 
     this.state = {
-      isGrabbed: false,
       hovered: false
     }
   }
-
-  handleGrabbed = e => {
-    if (e.key === ' ') {
-      e.preventDefault()
-      this.setState({
-        isGrabbed: true
-      })
+  
+  /**
+   * Sets whether or a not a node is being hovered over -- need to know so to determine button show
+   * @param hovered
+   */
+  setHoveredStatus = hovered => {
+    const { isDragging } = this.props
+    
+    if (!isDragging) {
+      this.setState({ hovered })
     }
   }
-
-  setHoveredStatus = hovered => {
-    if (!this.props.isDragging) {
-      this.setState({
-        hovered
-      })
-    }
+  
+  /**
+   * Opens the add / edit modal for this question
+   */
+  openAddEditModal = addOrEdit => () => {
+    const { node, canModify, path, onOpenAddEditModal } = this.props
+    onOpenAddEditModal(addOrEdit, node, canModify, path)
   }
 
   render() {
@@ -114,9 +125,10 @@ export class QuestionNode extends Component {
       lowerSiblingCounts,
       listIndex,
       parentNode,
-      projectId,
-      handleDeleteQuestion
+      onDeleteQuestion
     } = this.props
+    
+    const { hovered } = this.state
 
     const questionBody = node.text
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
@@ -125,7 +137,7 @@ export class QuestionNode extends Component {
 
     const handle = connectDragSource(
       <div className={styles.handle} tabIndex={0} role="button">
-        <Tooltip text={this.state.hovered ? '' : 'Drag to reorder'} placement="bottom">
+        <Tooltip text={hovered ? '' : 'Drag to reorder'} placement="bottom">
           <Icon size="24" color="black">reorder</Icon>
         </Tooltip>
       </div>,
@@ -162,21 +174,16 @@ export class QuestionNode extends Component {
               <Typography noWrap component="h4" style={{ flex: 1 }}>
                 {questionBody}
               </Typography>
-              {this.state.hovered && !isDraggedDescendant &&
+              {hovered && !isDraggedDescendant &&
               <div className={styles.questionButtons}>
                 {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                   <Tooltip
-                    //aria-label="Add child question"
                     text="Add child question"
                     id={`add-child-question-${listIndex}`}
                     placement="left">
                     <Button
                       aria-label="Add child question"
-                      component={Link}
-                      to={{
-                        pathname: `/project/${projectId}/coding-scheme/add`,
-                        state: { parentDefined: { ...node }, path, canModify: true, modal: true }
-                      }}
+                      onClick={this.openAddEditModal('add')}
                       color="accent"
                       style={{ ...actionStyles, marginRight: 10 }}
                       value={<Icon color="white">subdirectory_arrow_right</Icon>}
@@ -185,23 +192,17 @@ export class QuestionNode extends Component {
                 <Tooltip
                   text={canModify ? 'Edit Question' : 'View Question'}
                   id={`${canModify ? 'edit' : 'view'}-question-${listIndex}`}
-                  //aria-label="View and edit question"
                   placement="right">
                   <Button
                     color="accent"
-                    component={Link}
-                    to={{
-                      pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                      state: { questionDefined: { ...node }, path, canModify, modal: true }
-                    }}
                     aria-label={canModify ? 'Edit Question' : 'View Question'}
                     style={{ ...actionStyles, marginRight: 10 }}
+                    onClick={this.openAddEditModal('edit')}
                     value={<Icon color="white">{canModify ? 'mode_edit' : 'visibility'}</Icon>}
                   />
                 </Tooltip>
                 {canModify &&
                 <Tooltip
-                  //aria-label="Delete question"
                   text="Delete question"
                   id={`delete-question-${listIndex}`}
                   placement="right">
@@ -210,11 +211,11 @@ export class QuestionNode extends Component {
                     aria-label="Delete question"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">delete</Icon>}
-                    onClick={() => handleDeleteQuestion(projectId, node.id, path)}
+                    onClick={() => onDeleteQuestion(node.id, path)}
                   />
                 </Tooltip>}
               </div>}
-              {!this.state.hovered && node.questionType === questionTypes.CATEGORY &&
+              {!hovered && node.questionType === questionTypes.CATEGORY &&
               <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>}
             </CardContent>
           </div>
@@ -231,12 +232,12 @@ export class QuestionNode extends Component {
         <>
           <IconButton
             type="button"
-            aria-label={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
+            aria-label={hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             className={styles.expandCollapseButton}
             color="#707070"
             style={{ backgroundColor: '#f5f5f5' }}
             iconSize={28}
-            tooltipText={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
+            tooltipText={hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             onClick={() => toggleChildrenVisibility({
               node,
               path,

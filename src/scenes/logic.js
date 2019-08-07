@@ -11,6 +11,9 @@ import { createLogic } from 'redux-logic'
 import { types } from './actions'
 import { getToken, decodeToken, login, isLoggedIn } from 'services/authToken'
 
+/**
+ * Handles sending a request to download the 'User Guide' PDF
+ */
 export const downloadPdfLogic = createLogic({
   type: types.DOWNLOAD_PDF_REQUEST,
   processOptions: {
@@ -23,6 +26,9 @@ export const downloadPdfLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to get a new JWT every 15 minutes so the user isn't logged out if they are still active
+ */
 export const refreshJwtLogic = createLogic({
   type: types.REFRESH_JWT,
   warnTimeout: 0,
@@ -31,12 +37,15 @@ export const refreshJwtLogic = createLogic({
     const interval = setInterval(async () => {
       if (isLoggedIn()) {
         const currentToken = getToken()
-        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken } })
+        const newToken = await api.checkPivUser(
+          { email: decodeToken(currentToken).Email },
+          {},
+          { tokenObj: { token: currentToken } }
+        )
         await login(newToken.token.value)
-        console.log('refreshing')
       }
     }, 900000)
-
+    
     cancelled$.subscribe(() => {
       clearInterval(interval)
     })

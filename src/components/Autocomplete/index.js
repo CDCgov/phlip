@@ -182,7 +182,7 @@ export const Autocomplete = props => {
           endAdornment: (
             <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
               {isSearching &&
-              <CircularLoader style={{ height: spinnerSize, width: spinnerSize }} thickness={4} color="primary" type="indeterminate" />}
+              <CircularLoader size={spinnerSize} thickness={4} color="primary" type="indeterminate" />}
               {!isSearching && showSearchIcon && <Icon color={theme.palette.greyText}>search</Icon>}
             </InputAdornment>
           )

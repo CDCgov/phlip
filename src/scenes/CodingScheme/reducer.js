@@ -7,21 +7,20 @@ import {
   addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
+import { combineReducers } from 'redux'
+import addEditQuestion from './scenes/AddEditQuestion/reducer'
 
 export const INITIAL_STATE = {
   questions: [],
   outline: {},
-  allowHover: true,
   flatQuestions: [],
   schemeError: null,
-  formError: null,
   alertError: '',
   previousQuestions: [],
   previousOutline: {},
   lockedByCurrentUser: false,
   lockInfo: {},
   lockedAlert: null,
-  goBack: false,
   copying: false
 }
 
@@ -67,7 +66,6 @@ const getQuestionsFromOutline = (outline, questions) => {
       {
         ...q,
         ...outline[q.id],
-        hovering: false,
         expanded: true
       }
     ]
@@ -112,25 +110,6 @@ export const getNodeKey = ({ treeIndex }) => {
 }
 
 /**
- * Sets the hovering state to hovering parameter for the node and sets hovering to false for all its children
- *
- * @param {Object} node
- * @param {Boolean} hovering
- * @returns {Object}
- */
-const setHovering = (node, hovering) => {
-  node.hovering = hovering
-
-  if (node.children) {
-    node.children = node.children.map((child) => {
-      return setHovering(child, false)
-    })
-  }
-
-  return node
-}
-
-/**
  * Sorts the possibleAnswers property for all questions in questions parameter
  *
  * @param {Array} questions
@@ -149,8 +128,14 @@ const sortPossibleAnswers = questions => {
  * @param {Object} action
  * @returns {Object}
  */
-const codingSchemeReducer = (state = INITIAL_STATE, action) => {
+export const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case types.GET_SCHEME_REQUEST:
+      return {
+        ...state,
+        schemeError: null
+      }
+      
     case types.GET_SCHEME_SUCCESS:
       sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
@@ -242,33 +227,23 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         alertError: action.payload
       }
   
-    case types.ADD_QUESTION_REQUEST:
-    case types.ADD_CHILD_QUESTION_REQUEST:
-    case types.UPDATE_QUESTION_REQUEST:
-      return {
-        ...state,
-        formError: null,
-        goBack: false
-      }
-  
     case types.ADD_QUESTION_SUCCESS:
       return {
         ...state,
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
         flatQuestions: [...state.flatQuestions, action.payload],
-        empty: false,
-        error: null,
-        goBack: true
+        empty: false
       }
   
     case types.ADD_CHILD_QUESTION_SUCCESS:
+      const { outline, ...question } = action.payload
       const newTree = addNodeUnderParent({
         treeData: state.questions,
         parentKey: action.payload.path[action.payload.path.length - 1],
         expandParent: true,
         getNodeKey,
-        newNode: { ...action.payload, hovering: false }
+        newNode: { ...question }
       })
       
       return {
@@ -276,8 +251,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: newTree.treeData,
         outline: questionsToOutline(newTree.treeData),
         empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload],
-        goBack: true
+        flatQuestions: [...state.flatQuestions, action.payload]
       }
   
     case types.UPDATE_QUESTION_SUCCESS:
@@ -285,24 +259,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         treeData: state.questions,
         path: action.payload.path,
         getNodeKey,
-        newNode: { ...action.payload, hovering: false }
+        newNode: { ...action.payload }
       })
     
       return {
         ...state,
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
-        empty: false,
-        goBack: true
-      }
-
-    case types.ADD_QUESTION_FAIL:
-    case types.ADD_CHILD_QUESTION_FAIL:
-    case types.UPDATE_QUESTION_FAIL:
-      return {
-        ...state,
-        formError: action.payload,
-        goBack: false
+        empty: false
       }
 
     case types.SET_EMPTY_STATE:
@@ -318,37 +282,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         previousOutline: state.outline,
         questions: action.questions,
         outline: questionsToOutline(action.questions)
-      }
-
-    case types.TOGGLE_HOVER:
-      if (state.allowHover) {
-        try {
-          return {
-            ...state,
-            questions: changeNodeAtPath({
-              treeData: state.questions,
-              path: action.path,
-              getNodeKey,
-              newNode: setHovering({ ...action.node }, action.hover)
-            })
-          }
-        } catch (e) {
-          return state
-        }
-      } else {
-        return state
-      }
-
-    case types.DISABLE_HOVER:
-      return {
-        ...state,
-        allowHover: false
-      }
-
-    case types.ENABLE_HOVER:
-      return {
-        ...state,
-        allowHover: true
       }
       
     case types.COPY_CODING_SCHEME_REQUEST:
@@ -389,4 +322,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default codingSchemeReducer
+/**
+ * Combines the reducers from ./scenes/AddEditProject and ./scenes/AddEditJurisdiction
+ */
+const codingSchemeRootReducer = combineReducers({
+  main: codingSchemeReducer,
+  addEditQuestion
+})
+
+export default codingSchemeRootReducer

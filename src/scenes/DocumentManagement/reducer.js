@@ -5,7 +5,6 @@ import { types } from './actions'
 import { arrayToObject, createArrOfObj, mapArray } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
-import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
 export const INITIAL_STATE = {
   documents: {
@@ -96,7 +95,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         pageError: '',
         page: 0,
         count: userDocs.length,
-        showAll: false
+        showAll: false,
+        allSelected: false
       }
     
     case types.GET_DOCUMENTS_FAIL:
@@ -118,7 +118,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
             state.rowsPerPage,
             state.sortBy,
             state.sortDirection
-          )
+          ),
+          matches: action.isSearch ? mapArray(action.payload, '_id') : state.documents.matches
         },
         count: action.payload.length,
         page: 0
@@ -382,9 +383,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
 }
 
 const MAIN_COMBINED_STATE = {
-  list: INITIAL_STATE,
-  projectSuggestions: AUTO_INITIAL_STATE,
-  jurisdictionSuggestions: AUTO_INITIAL_STATE
+  list: INITIAL_STATE
 }
 
 const COMBINED_INITIAL_STATE = {
@@ -394,9 +393,7 @@ const COMBINED_INITIAL_STATE = {
 }
 
 const docManage = combineReducers({
-  list: docManagementReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT', '_BULK'),
-  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_BULK')
+  list: docManagementReducer
 })
 
 const docManageReducer = (state = COMBINED_INITIAL_STATE, action) => {

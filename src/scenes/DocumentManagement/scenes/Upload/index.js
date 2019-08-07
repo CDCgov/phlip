@@ -316,7 +316,7 @@ export class Upload extends Component {
     return (
       <>
         {text}
-        {uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
+        {uploading && <CircularLoader size={15} thickness={5} style={{ marginLeft: 5 }} />}
       </>
     )
   }
@@ -401,7 +401,7 @@ export class Upload extends Component {
               <Typography variant="body1" style={{ paddingBottom: 30 }}>
                 {'Processing document... This could take a couple of minutes...'}
               </Typography>
-              <CircularLoader type="indeterminate" />
+              <CircularLoader size={40} type="indeterminate" />
             </FlexGrid>}
             {uploading && <FlexGrid container style={{ paddingBottom: 30 }}>
               <Typography
