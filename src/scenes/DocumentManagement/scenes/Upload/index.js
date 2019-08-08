@@ -390,6 +390,7 @@ export class Upload extends Component {
           open={(uploading || infoRequestInProgress)}
           hideClose={uploadProgress.percentage < 100}
           onCloseAlert={this.closeUploadingAlert}
+          id='uploadProgressAlert'
           title={infoRequestInProgress
             ? 'Processing...'
             : uploadProgress.percentage === 100 ? uploadProgress.failures > 0

@@ -96,7 +96,7 @@ export class CodingScheme extends Component {
      */
     projectLocked: PropTypes.bool
   }
-  
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -106,7 +106,7 @@ export class CodingScheme extends Component {
       path: null,
       projectSearchOpen: false
     }
-    
+
     this.deleteAlertActions = [
       {
         value: 'Continue',
@@ -115,27 +115,27 @@ export class CodingScheme extends Component {
       }
     ]
   }
-  
+
   componentDidMount() {
     const { project, actions } = this.props
-    
+
     document.title = `PHLIP - ${project.name} - Coding Scheme`
     actions.getSchemeRequest(project.id)
     setTimeout(() => {
       actions.setEmptyState()
     }, 1000)
   }
-  
+
   componentDidUpdate(prevProps) {
     const { copying, alertError } = this.props
-    
+
     if (prevProps.copying && !copying) {
       if (!alertError) {
         this.closeProjectSearch()
       }
     }
   }
-  
+
   /**
    * Calls a redux action to close any ApiErrorAlert that is open
    * @public
@@ -144,7 +144,7 @@ export class CodingScheme extends Component {
     const { actions } = this.props
     actions.resetAlertError()
   }
-  
+
   /**
    * Calls a redux action to close any alert that is associated to the locking on the coding scheme
    * @public
@@ -153,7 +153,7 @@ export class CodingScheme extends Component {
     const { actions } = this.props
     actions.closeLockedAlert()
   }
-  
+
   /**
    * Invoked when the user reorders the coding scheme or makes any edits to the scheme. Calls a redux action to update
    * the question tree with the questions parameter
@@ -163,7 +163,7 @@ export class CodingScheme extends Component {
     const { actions } = this.props
     actions.updateQuestionTree(questions)
   }
-  
+
   /**
    * Invoked after a question is move, calls a redux action to send API request
    * @public
@@ -172,7 +172,7 @@ export class CodingScheme extends Component {
     const { actions, project } = this.props
     actions.reorderSchemeRequest(project.id)
   }
-  
+
   /**
    * Invoked when the user clicks 'Checkout' button, calls a redux action to send API request to checkout scheme
    * @public
@@ -181,7 +181,7 @@ export class CodingScheme extends Component {
     const { actions, project } = this.props
     actions.lockCodingSchemeRequest(project.id)
   }
-  
+
   /**
    * Invoked when the user clicks 'Check In' button, calls a redux action to send API request to check in the scheme
    * @public
@@ -190,7 +190,7 @@ export class CodingScheme extends Component {
     const { actions, project } = this.props
     actions.unlockCodingSchemeRequest(project.id)
   }
-  
+
   /**
    * Invoked when the user confirms delete of coding scheme question, closes confirm delete alert
    * @public
@@ -198,11 +198,11 @@ export class CodingScheme extends Component {
   handleDeleteQuestion = () => {
     const { actions, project } = this.props
     const { questionIdToDelete, path } = this.state
-    
+
     actions.deleteQuestionRequest(project.id, questionIdToDelete, path)
     this.onCloseDeleteQuestionAlert()
   }
-  
+
   /**
    * Opens an alert to ask the user to confirm deleting a coding scheme question
    * @public
@@ -216,7 +216,7 @@ export class CodingScheme extends Component {
       path
     })
   }
-  
+
   /**
    * Closes the confirm delete alert
    * @public
@@ -228,7 +228,7 @@ export class CodingScheme extends Component {
       path: null
     })
   }
-  
+
   /**
    * Invoked when the user clicks 'cancel' in the alert displayed when they hit the go back arrow. Closes alert
    * @public
@@ -236,7 +236,7 @@ export class CodingScheme extends Component {
   onCloseGoBackAlert = () => {
     this.setState({ goBackAlertOpen: false })
   }
-  
+
   /**
    * Invoked when the user clicks 'check in' on the alert displayed when they hit go back. Calls redux action to call
    * API to check in coding scheme, clears the redux state and goes back one in browser history
@@ -244,12 +244,12 @@ export class CodingScheme extends Component {
    */
   onContinueGoBack = () => {
     const { actions, history } = this.props
-    
+
     this.handleUnlockCodingScheme()
     actions.clearState()
     history.goBack()
   }
-  
+
   /**
    * Invoked when the user clicks the 'back arrow' button in the page header. If the coding scheme is checked out by the
    * current user, it opens an alert to tell the user to check in the scheme. Otherwise, it clears redux state and goes
@@ -258,7 +258,7 @@ export class CodingScheme extends Component {
    */
   onGoBack = () => {
     const { actions, history, lockedByCurrentUser } = this.props
-    
+
     if (lockedByCurrentUser) {
       this.setState({ goBackAlertOpen: true })
     } else {
@@ -266,34 +266,34 @@ export class CodingScheme extends Component {
       history.goBack()
     }
   }
-  
+
   /**
    *  release the lock when user click on release lock button
    */
   overrideLock = () => {
     const { actions, project, lockInfo } = this.props
-  
+
     actions.unlockCodingSchemeRequest(project.id, lockInfo.userId)
     this.onCloseLockedAlert()
   }
-  
+
   /**
    * Opens the project search modal for copying the coding scheme
    */
   openProjectSearch = () => {
     this.setState({ projectSearchOpen: true })
   }
-  
+
   /**
    * Closes project search
    */
   closeProjectSearch = () => {
     const { projectAutoActions } = this.props
-    
+
     this.setState({ projectSearchOpen: false })
     projectAutoActions.clearAll()
   }
-  
+
   /**
    * Handles sending a request to copy coding scheme
    */
@@ -301,7 +301,7 @@ export class CodingScheme extends Component {
     const { projectAutocompleteProps, actions, project } = this.props
     actions.copyCodingSchemeRequest(projectAutocompleteProps.selectedSuggestion.id, project.id)
   }
-  
+
   /**
    * Renders a 'Get started' view. Only called when the coding scheme is empty
    * @public
@@ -309,7 +309,7 @@ export class CodingScheme extends Component {
    */
   renderGetStarted = () => {
     const { lockedByCurrentUser, project, projectLocked } = this.props
-    
+
     return (
       <FlexGrid container flex align="center" justify="center">
         <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -322,6 +322,7 @@ export class CodingScheme extends Component {
         {(!projectLocked && lockedByCurrentUser) &&
         <FlexGrid container type="row" align="center" justify="center">
           <Button
+            id='addQuestionBtn'
             component={Link}
             to={{
               pathname: `/project/${project.id}/coding-scheme/add`,
@@ -333,6 +334,7 @@ export class CodingScheme extends Component {
           />
           <span style={{ width: 20 }} />
           <Button
+            id='copySchenmeBtn'
             onClick={this.openProjectSearch}
             value="Copy Coding Scheme"
             color="accent"
@@ -341,6 +343,7 @@ export class CodingScheme extends Component {
         </FlexGrid>}
         {(!projectLocked && !lockedByCurrentUser) &&
         <Button
+          id = 'checkoutBtn'
           value="Check out"
           color="accent"
           aria-label="check out coding scheme"
@@ -349,7 +352,7 @@ export class CodingScheme extends Component {
       </FlexGrid>
     )
   }
-  
+
   /*
    * gets button modal text
    */
@@ -361,31 +364,32 @@ export class CodingScheme extends Component {
       </>
     )
   }
-  
+
   render() {
     const {
       projectLocked, currentUser, alertError, lockedAlert, lockInfo, project, lockedByCurrentUser,
       questions, hasLock, schemeError, empty, outline, flatQuestions, projectAutocompleteProps, copying
     } = this.props
-    
+
     const { goBackAlertOpen, deleteQuestionAlertOpen, projectSearchOpen } = this.state
-    
+
     // Actions for the 'Go Back' alert modal
     const alertActions = [
       {
         value: 'Check in',
         type: 'button',
         onClick: this.onContinueGoBack,
-        preferred: true
+        preferred: true,
+        id: 'codingSchemeChkInBtn'
       }
     ]
-    
+
     // add a release lock if the user is an admin
     let lockedAlertAction = []
     if (currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
-    
+
     const cancelButton = {
       value: 'Cancel',
       type: 'button',
@@ -393,7 +397,7 @@ export class CodingScheme extends Component {
       preferred: true,
       onClick: this.closeProjectSearch
     }
-    
+
     const modalActions = [
       cancelButton,
       {
@@ -404,7 +408,7 @@ export class CodingScheme extends Component {
         disabled: copying || !projectAutocompleteProps.selectedSuggestion.id
       }
     ]
-    
+
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <Alert
@@ -473,6 +477,7 @@ export class CodingScheme extends Component {
           protocolButton
           onBackButtonClick={this.onGoBack}
           checkoutButton={{
+            id:'checkInOutBtn',
             isLink: false,
             text: lockedByCurrentUser ? 'Check in' : 'Check out',
             props: {
@@ -488,7 +493,7 @@ export class CodingScheme extends Component {
             path: `/project/${project.id}/coding-scheme/add`,
             state: { questionDefined: null, canModify: true, modal: true },
             props: {
-              'aria-label': 'Add new question to coding scheme'
+              'aria-label': 'Add new question to coding scheme', id: 'addQuestionBtn2'
             },
             show: questions.length > 0 && (hasLock && lockedByCurrentUser) && !projectLocked
           }}
@@ -527,7 +532,7 @@ export class CodingScheme extends Component {
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const schemeState = state.scenes.codingScheme.main
-  
+
   return {
     project: state.data.projects.byId[ownProps.match.params.id],
     questions: schemeState.questions || [],

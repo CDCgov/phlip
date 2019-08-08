@@ -71,7 +71,7 @@ export const PageHeader = props => {
         />}
         {checkoutButton && checkoutButton.show === true &&
         <div style={{ marginLeft: 15 }}>
-          <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
+          <Button value={checkoutButton.text} color="accent" id="checkInOutBtn2" {...checkoutButton.props} />
         </div>}
       </FlexGrid>
     </FlexGrid>

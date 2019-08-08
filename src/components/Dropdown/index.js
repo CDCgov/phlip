@@ -56,7 +56,7 @@ export const Dropdown = props => {
         disabled={disabled}
         {...otherProps}>
         {options.map((option, index) => (
-          <MenuItem key={`menu-item-${index}`} value={option.value}>{option.label}</MenuItem>
+          <MenuItem key={`menu-item-${index}`} value={option.value} id={option.id}>{option.label}</MenuItem>
         ))}
       </Select>
     </FlexGrid>

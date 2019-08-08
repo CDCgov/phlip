@@ -86,19 +86,19 @@ export class QuestionNode extends Component {
       hovered: false
     }
   }
-  
+
   /**
    * Sets whether or a not a node is being hovered over -- need to know so to determine button show
    * @param hovered
    */
   setHoveredStatus = hovered => {
     const { isDragging } = this.props
-    
+
     if (!isDragging) {
       this.setState({ hovered })
     }
   }
-  
+
   /**
    * Opens the add / edit modal for this question
    */
@@ -127,7 +127,7 @@ export class QuestionNode extends Component {
       parentNode,
       onDeleteQuestion
     } = this.props
-    
+
     const { hovered } = this.state
 
     const questionBody = node.text
@@ -182,6 +182,7 @@ export class QuestionNode extends Component {
                     id={`add-child-question-${listIndex}`}
                     placement="left">
                     <Button
+                      id={`add-child-question-${listIndex}-btn`}
                       aria-label="Add child question"
                       onClick={this.openAddEditModal('add')}
                       color="accent"
@@ -194,6 +195,7 @@ export class QuestionNode extends Component {
                   id={`${canModify ? 'edit' : 'view'}-question-${listIndex}`}
                   placement="right">
                   <Button
+                    id={`edit-question-${listIndex}-btn`}
                     color="accent"
                     aria-label={canModify ? 'Edit Question' : 'View Question'}
                     style={{ ...actionStyles, marginRight: 10 }}
@@ -207,6 +209,7 @@ export class QuestionNode extends Component {
                   id={`delete-question-${listIndex}`}
                   placement="right">
                   <Button
+                    id={`delete-question-${listIndex}-btn`}
                     color="accent"
                     aria-label="Delete question"
                     style={{ ...actionStyles, marginRight: 10 }}

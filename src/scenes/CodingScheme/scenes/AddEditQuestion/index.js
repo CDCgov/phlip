@@ -82,61 +82,61 @@ export class AddEditQuestion extends Component {
      */
     submitting: PropTypes.bool
   }
-  
+
   constructor(props, context) {
     super(props, context)
     const { match, projectId, location, lockedByCurrentUser } = props
-    
+
     // User is editing a question
     this.questionDefined = match.url === `/project/${projectId}/coding-scheme/add`
       ? null
       : location.state.questionDefined
-    
+
     // Parent of question if it's a child question
     this.parentDefined = location.state
       ? location.state.parentDefined
         ? location.state.parentDefined
         : null
       : null
-    
+
     this.state = {
       edit: this.questionDefined,
       canModify: location.state
         ? location.state.canModify
         : lockedByCurrentUser
     }
-    
+
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
       includeComment: false,
       isCategoryQuestion: false
     }
-    
+
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
       includeComment: false,
       isCategoryQuestion: false
     }
-    
+
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false,
       isCategoryQuestion: false
     }
   }
-  
+
   componentDidMount() {
     this.prevTitle = document.title
     document.title = this.questionDefined
       ? `${document.title} - Edit Question`
       : `${document.title} - Add Question`
   }
-  
+
   componentDidUpdate(prevProps) {
     const { formError, onSubmitError, history, goBack, submitting } = this.props
-    
+
     if (prevProps.submitting && !submitting) {
       if (formError !== null) {
         onSubmitError(formError)
@@ -145,11 +145,11 @@ export class AddEditQuestion extends Component {
       }
     }
   }
-  
+
   componentWillUnmount() {
     document.title = this.prevTitle
   }
-  
+
   /**
    * Shows a spinner next to button text when a request is in progress
    * @param text
@@ -164,7 +164,7 @@ export class AddEditQuestion extends Component {
       </>
     )
   }
-  
+
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
    * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
@@ -174,17 +174,17 @@ export class AddEditQuestion extends Component {
    */
   handleSubmit = values => {
     const { actions, projectId, location } = this.props
-    
+
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
       else updatedValues[field] = values[field]
     }
-    
+
     if (values.possibleAnswers) {
       values.possibleAnswers.forEach((answer, i) => {
         const { isNew, ...answerProps } = answer
-        
+
         if (updatedValues.possibleAnswers[i].text) {
           updatedValues.possibleAnswers[i] = {
             ...answerProps,
@@ -195,7 +195,7 @@ export class AddEditQuestion extends Component {
         }
       })
     }
-    
+
     if (this.questionDefined) {
       // updating an existing question
       actions.updateQuestionRequest(updatedValues, projectId, this.questionDefined.id, location.state.path)
@@ -213,7 +213,7 @@ export class AddEditQuestion extends Component {
       actions.addQuestionRequest(updatedValues, projectId, 0)
     }
   }
-  
+
   /**
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
    * @public
@@ -223,7 +223,7 @@ export class AddEditQuestion extends Component {
     formActions.reset('questionForm')
     history.goBack()
   }
-  
+
   /**
    * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form
    * action to change form fields and values. Values are kept for questionText and questionHint. If the type of
@@ -344,6 +344,7 @@ export class AddEditQuestion extends Component {
                 </FlexGrid>
                 <FlexGrid>
                   <Field
+                    id="answerType"
                     name="questionType"
                     component={Dropdown}
                     fullWidth
