@@ -15,10 +15,8 @@ const logoutLogic = createLogic({
     // if saml enabled, do saml logout first
     if (APP_IS_SAML_ENABLED === '1') {
       samsLogout()
-    } else {
-      logout()
     }
-    
+    logout()
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
     await persistor.flush()
     await persistor.purge()
@@ -40,7 +38,7 @@ const samsLogout = async () => {
         sessionIndex: parsedUser.sessionIndex
       }
     }).then(res => {
-      logout()
+      //logout()
       const logoutURL = res.data
       location.href = logoutURL
     })
