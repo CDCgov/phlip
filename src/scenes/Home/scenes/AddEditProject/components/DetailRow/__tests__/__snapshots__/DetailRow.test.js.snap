@@ -18,7 +18,6 @@ exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
     disabled={false}
     label="Type"
     name="type"
-    shrinkLabel={true}
     type="text"
   />
 </FlexGrid>

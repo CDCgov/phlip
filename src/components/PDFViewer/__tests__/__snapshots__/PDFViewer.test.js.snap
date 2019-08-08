@@ -93,6 +93,13 @@ exports[`PDFViewer component should render correctly 1`] = `
   >
     <CircularLoader
       color="primary"
+      size={40}
+      style={
+        Object {
+          "height": 24,
+          "width": 24,
+        }
+      }
       thickness={5}
       type="indeterminate"
     />

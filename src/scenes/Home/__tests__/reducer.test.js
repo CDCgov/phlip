@@ -148,6 +148,202 @@ describe('Home reducer', () => {
     })
   })
   
+  describe('SET_PROJECT_TO_EXPORT', () => {
+    test('should set all project to export metadata', () => {
+      const action = {
+        type: types.SET_PROJECT_TO_EXPORT,
+        project: {
+          id: 4,
+          projectUsers: [{ userId: 1 }, { userId: 4 }],
+          name: 'Test Project'
+        }
+      }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.projectToExport.projectUsers).toEqual([{ userId: 1 }, { userId: 4 }])
+      expect(state.projectToExport.id).toEqual(4)
+      expect(state.projectToExport.text).toEqual('')
+      expect(state.projectToExport.name).toEqual('Test Project')
+    })
+  })
+  
+  describe('CLEAR_PROJECT_TO_EXPORT', () => {
+    test('should close the dialog and clear any info about project selected', () => {
+      const action = { type: types.CLEAR_PROJECT_TO_EXPORT }
+      const currentState = getState({
+        projectToExport: {
+          id: 4,
+          projectUsers: [{ userId: 1 }, { userId: 4 }],
+          name: 'Test Project',
+          text: 'blabla'
+        }
+      })
+      const state = reducer(currentState, action)
+      expect(state.projectToExport).toEqual(initial.projectToExport)
+    })
+  })
+  
+  describe('EXPORT_DATA_REQUEST', () => {
+    const action = {
+      type: types.EXPORT_DATA_REQUEST,
+      exportType: 'numeric',
+      user: { userId: 1, firstName: 'test', lastName: 'user' }
+    }
+    const currentState = getState({
+      projectToExport: {
+        id: 4,
+        projectUsers: [{ userId: 1 }, { userId: 4 }],
+        name: 'Test Project',
+        text: 'blabla'
+      }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set the export type', () => {
+      expect(state.projectToExport.exportType).toEqual('numeric')
+    })
+    
+    test('should set the user being exported if not null', () => {
+      expect(state.projectToExport.user).toEqual({
+        id: 1,
+        firstName: 'test',
+        lastName: 'user'
+      })
+    })
+    
+    test('if no user selected, then the user id should be val', () => {
+      const action = { type: types.EXPORT_DATA_REQUEST, exportType: 'numeric', user: null }
+      const currentState = getState({
+        projectToExport: {
+          id: 4,
+          projectUsers: [{ userId: 1 }, { userId: 4 }],
+          name: 'Test Project',
+          text: 'blabla'
+        }
+      })
+      const state = reducer(currentState, action)
+      expect(state.projectToExport.user).toEqual({ id: 'val' })
+    })
+    
+    test('should set that exporting is happening', () => {
+      expect(state.exporting).toEqual(true)
+    })
+  })
+  
+  describe('EXPORT_DATA_SUCCESS', () => {
+    const action = { type: types.EXPORT_DATA_SUCCESS, payload: 'file-text' }
+    
+    const currentState = getState({
+      projectToExport: {
+        id: 4,
+        projectUsers: [{ userId: 1 }, { userId: 4 }],
+        name: 'Test Project',
+        text: 'blabla',
+        user: {
+          id: 1,
+          firstName: 'test',
+          lastName: 'user'
+        },
+        exportType: 'numeric'
+      }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set the actual file content for download', () => {
+      expect(state.projectToExport.text).toEqual('file-text')
+    })
+    
+    test('should set that exporting ins no longer happening', () => {
+      expect(state.exporting).toEqual(false)
+    })
+  })
+  
+  describe('EXPORT_DATA_FAIL', () => {
+    const action = { type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export this project.' }
+  
+    const currentState = getState({
+      projectToExport: {
+        id: 4,
+        projectUsers: [{ userId: 1 }, { userId: 4 }],
+        name: 'Test Project',
+        text: 'blabla',
+        user: {
+          id: 1,
+          firstName: 'test',
+          lastName: 'user'
+        },
+        exportType: 'numeric'
+      }
+    })
+    const state = reducer(currentState, action)
+    test('should open an alert to inform the user of the errors that happened', () => {
+      expect(state.apiErrorAlert.open).toEqual(true)
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t export this project.')
+    })
+    
+    test('should set that exporting ins no longer happening', () => {
+      expect(state.exporting).toEqual(false)
+    })
+  })
+  
+  describe('GET_PROJECT_USERS_FAIL', () => {
+    const action = { type: types.GET_PROJECT_USERS_FAIL, payload: 'We couldn\'t get updated user profiles.' }
+  
+    const currentState = getState()
+    const state = reducer(currentState, action)
+    
+    test('should open an alert to inform the user of the errors that happened', () => {
+      expect(state.apiErrorAlert.open).toEqual(true)
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t get updated user profiles.')
+    })
+  })
+  
+  describe('TOGGLE_BOOKMARK_FAIL', () => {
+    const action = { type: types.TOGGLE_BOOKMARK_FAIL, payload: 'We couldn\'t save your bookmark request.' }
+  
+    const currentState = getState()
+    const state = reducer(currentState, action)
+  
+    test('should open an alert to inform the user of the errors that happened', () => {
+      expect(state.apiErrorAlert.open).toEqual(true)
+      expect(state.apiErrorAlert.text).toEqual('We couldn\'t save your bookmark request.')
+    })
+  })
+  
+  describe('DISMISS_API_ERROR', () => {
+    const action = { type: types.DISMISS_API_ERROR }
+  
+    const currentState = getState({
+      apiErrorAlert: {
+        open: true,
+        text: 'We couldn\'t save your bookmark request.'
+      }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should close the api alert', () => {
+      expect(state.apiErrorAlert.open).toEqual(false)
+    })
+  })
+  
+  describe('TOGGLE_PROJECT', () => {
+    test('should close the project if the project is already open', () => {
+      const action = { type: types.TOGGLE_PROJECT, projectId: 4 }
+  
+      const currentState = getState({ openProject: 4 })
+      const state = reducer(currentState, action)
+      expect(state.openProject).toEqual(0)
+    })
+    
+    test('should open the new project if the project is not already open', () => {
+      const action = { type: types.TOGGLE_PROJECT, projectId: 4 }
+  
+      const currentState = getState({ openProject: 0 })
+      const state = reducer(currentState, action)
+      expect(state.openProject).toEqual(4)
+    })
+  })
+  
   describe('FLUSH_STATE', () => {
     test('should set state to initial state, expect for rowsPerPage', () => {
       const state = reducer(getState({ rowsPerPage: 5 }), { type: types.FLUSH_STATE })

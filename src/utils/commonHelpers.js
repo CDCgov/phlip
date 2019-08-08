@@ -58,7 +58,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
-
+  
   return new Promise(async (resolve, reject) => {
     if (users.length === 0) {
       resolve({ errors })
@@ -104,4 +104,67 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   })
 }
 
-export default { sliceTable, sortListOfObjects, generateUniqueProps, checkIfMultiWord, handleUserImages }
+/**
+ * Removes the extension, if it exists from string
+ * @param string
+ * @returns {*}
+ */
+export const removeExtension = string => {
+  const pieces = [...string.split('.')]
+  let name = string, extension = ''
+  if (pieces.length > 0) {
+    extension = pieces[pieces.length - 1]
+    pieces.pop()
+    name = pieces.join('.')
+  }
+  
+  return { name, extension }
+}
+
+const signatures = {
+  '25504446': ['pdf'],
+  '7B5C7274': ['doc', 'rtf'],
+  '504B34': ['docx', 'odt', 'xlsx']
+}
+
+/**
+ * Determines the file type of a document selected for upload
+ */
+export const getFileType = file => {
+  return new Promise(async (resolve, reject) => {
+    const filereader = new FileReader()
+    filereader.onload = evt => {
+      if (evt.target.readyState === FileReader.DONE) {
+        const uint = new Uint8Array(evt.target.result)
+        const { extension } = removeExtension(file.name)
+        let bytes = [], fileType = undefined
+        uint.forEach(byte => bytes.push(byte.toString(16)))
+        const hex = bytes.join('').toUpperCase()
+        const types = signatures[hex]
+        if (types !== undefined) {
+          if (extension === '') {
+            fileType = types[0]
+          } else {
+            const type = types.find(type => type === extension)
+            fileType = type !== undefined ? type : extension
+          }
+        }
+        
+        resolve({ ...file, fileType })
+      }
+    }
+    
+    const blob = file.slice(0, 4)
+    filereader.readAsArrayBuffer(blob)
+  })
+}
+
+export default {
+  sliceTable,
+  sortListOfObjects,
+  generateUniqueProps,
+  checkIfMultiWord,
+  handleUserImages,
+  removeExtension,
+  getFileType
+}

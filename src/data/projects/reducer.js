@@ -1,4 +1,5 @@
 import { types } from './actions'
+import { commonHelpers } from 'utils'
 
 export const INITIAL_STATE = {
   byId: {},
@@ -23,7 +24,10 @@ const projectReducer = (state = INITIAL_STATE, action) => {
           ...state.byId,
           [action.payload.id]: {
             ...state.byId[action.payload.id],
-            ...action.payload
+            ...action.payload,
+            projectJurisdictions: action.payload.projectJurisdictions
+              ? commonHelpers.sortListOfObjects(action.payload.projectJurisdictions, 'name', 'asc')
+              : state.byId[action.payload.id].projectJurisdictions
           }
         },
         allIds: state.allIds.indexOf(action.payload.id) === -1

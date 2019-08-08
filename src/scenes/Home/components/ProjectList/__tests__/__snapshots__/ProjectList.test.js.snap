@@ -31,6 +31,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
     >
       <Connect(ProjectPanel)
         expanded={false}
+        handleEditProject={[Function]}
         handleExpandProject={[Function]}
         id={1}
         index={0}
@@ -41,6 +42,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       />
       <Connect(ProjectPanel)
         expanded={false}
+        handleEditProject={[Function]}
         handleExpandProject={[Function]}
         id={2}
         index={1}
@@ -51,5 +53,18 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       />
     </div>
   </ClickAwayListener>
+  <Table>
+    <WithStyles(TableFooter)>
+      <WithStyles(TableRow)>
+        <WithStyles(TablePagination)
+          count={2}
+          onChangePage={[Function]}
+          onChangeRowsPerPage={[Function]}
+          page={0}
+          rowsPerPage="10"
+        />
+      </WithStyles(TableRow)>
+    </WithStyles(TableFooter)>
+  </Table>
 </FlexGrid>
 `;

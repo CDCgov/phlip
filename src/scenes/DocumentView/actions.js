@@ -1,5 +1,4 @@
 import makeActionCreator from 'utils/makeActionCreator'
-import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 
 export const types = {
   INIT_STATE_WITH_DOC: 'INIT_STATE_WITH_DOC',
@@ -35,12 +34,4 @@ export default {
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   deleteDocRequest: makeActionCreator(types.DELETE_DOCUMENT_REQUEST, 'id')
-}
-
-export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT', '')
-}
-
-export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION', '')
 }

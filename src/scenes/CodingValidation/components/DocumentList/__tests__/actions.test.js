@@ -81,4 +81,9 @@ describe('CodingValidation - DocumentList action creators', () => {
     
     expect(actions.changeAnnotationIndex(42)).toEqual(expectedAction)
   })
+  
+  test('should create an action to download documents', () => {
+    const expected = { type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 'all' }
+    expect(actions.downloadDocumentsRequest('all')).toEqual(expected)
+  })
 })

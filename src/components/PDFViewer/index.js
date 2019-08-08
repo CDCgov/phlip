@@ -44,6 +44,8 @@ export class PDFViewer extends Component {
     onCheckTextContent: () => {
     },
     resetScrollTop: () => {
+    },
+    onFinishRendering: () => {
     }
   }
   
@@ -264,6 +266,24 @@ export class PDFViewer extends Component {
   }
   
   /**
+   * Checks to see if the selection rects are the same except for bottom prop (height 200 difference)
+   */
+  checkNextRect = (r1, r2) => {
+    const b1 = r1.bottom - r1.height
+    const b2 = r2.bottom - r2.height
+    
+    return (
+      (Math.abs(b1 - b2) < 1)
+      && (Math.abs(r1.top - r2.top) < 1)
+      && (Math.abs(r1.left - r2.left) < 1)
+      && (Math.abs(r1.right - r2.right) < 1)
+      && (Math.abs(r1.width - r2.width) < 1)
+      && (Math.abs(r1.x - r2.x) < 1)
+      && (Math.abs(r1.y - r2.y) < 1)
+    )
+  }
+  
+  /**
    * Determines the 'annotation' information for text selection at a specific Document.Range
    * @param rangeNumber
    * @param selection
@@ -276,8 +296,24 @@ export class PDFViewer extends Component {
     const selectionRects = selection.getRangeAt(rangeNumber).getClientRects()
     let rects = []
     
-    for (let i = 0; i < selectionRects.length; i++) {
-      const r = selectionRects[i]
+    let i = 0
+    while (i < selectionRects.length) {
+      let same = false, nextRect = null, r = null
+      const currRect = selectionRects[i]
+      r = currRect
+  
+      if (i !== selectionRects.length - 1) {
+        nextRect = selectionRects[i + 1]
+        same = this.checkNextRect(currRect, nextRect)
+      }
+      
+      if (same) {
+        r = nextRect
+        i += 2
+      } else {
+        i += 1
+      }
+      
       const start = dom_utils.applyInverseTransform([
         r.left - pageRect.x, r.top - pageRect.y
       ], renderContext.viewport.transform)
@@ -291,16 +327,48 @@ export class PDFViewer extends Component {
         endX: end[0],
         endY: end[1]
       }
-      
-      if (i > 0) {
-        const previous = rects[rects.length - 1]
-        if (!this.matchRect(previous.pdfPoints, points)) {
-          rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
-        }
-      } else {
-        rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
-      }
+      rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
     }
+    
+    // for (let i = 0; i < selectionRects.length; i++) {
+    //   const currRect = selectionRects[i]
+    //   r = currRect
+    //
+    //   if (i !== selectionRects.length - 1) {
+    //     nextRect = selectionRects[i + 1]
+    //     same = this.checkNextRect(currRect, nextRect)
+    //   }
+    //
+    //   if (same) {
+    //     r = nextRect
+    //     i+=2
+    //   }
+    //
+    //   const start = dom_utils.applyInverseTransform([
+    //     r.left - pageRect.x, r.top - pageRect.y
+    //   ], renderContext.viewport.transform)
+    //   const end = dom_utils.applyInverseTransform([
+    //     r.right - pageRect.x, r.bottom - pageRect.y
+    //   ], renderContext.viewport.transform)
+    //
+    //   const points = {
+    //     x: start[0],
+    //     y: start[1],
+    //     endX: end[0],
+    //     endY: end[1]
+    //   }
+    //
+    //   rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
+    //
+    //   /*if (i > 0) {
+    //     const previous = rects[rects.length - 1]
+    //     if (!this.matchRect(previous.pdfPoints, points)) {
+    //       rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
+    //     }
+    //   } else {
+    //     rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
+    //   }*/
+    // }
     return rects
   }
   
@@ -531,7 +599,7 @@ export class PDFViewer extends Component {
         </Alert>
         {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
-          <CircularLoader />
+          <CircularLoader size={40} />
         </FlexGrid>}
       </div>
     )

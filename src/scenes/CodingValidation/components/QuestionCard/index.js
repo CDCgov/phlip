@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Broom } from 'mdi-material-ui'
+import { Broom, Restore } from 'mdi-material-ui'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { getInitials } from 'utils/normalize'
@@ -15,6 +15,13 @@ import { bindActionCreators } from 'redux'
 import { default as codingActions } from 'scenes/CodingValidation/actions'
 import actions from './actions'
 
+/**
+ * Wraps a tab container
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
+/* istanbul ignore next */
 const TabContainer = props => {
   return (
     <Tabs tabs={props.tabs} selectedTab={props.selected} onChangeTab={props.onChangeCategory}>
@@ -46,47 +53,41 @@ export class QuestionCard extends Component {
     questionChangeLoader: PropTypes.bool,
     isChangingQuestion: PropTypes.bool,
     unsavedChanges: PropTypes.bool,
-    saveFailed: PropTypes.bool,
-    hasTouchedQuestion: PropTypes.bool,
     enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     annotationModeEnabled: PropTypes.bool,
     areDocsEmpty: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    handleGetQuestion: PropTypes.func
   }
   
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isSaving: false,
       hoveredAnswerChoice: 0
     }
     
     this.alertActions = []
   }
   
-  componentDidUpdate(prevProps) {
-    if (!prevProps.unsavedChanges && this.props.unsavedChanges) {
-      this.setState({
-        isSaving: true
-      })
-      clearTimeout()
-    } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
-      setTimeout(() => {
-        this.setState({
-          isSaving: false
-        })
-      }, 600)
-    }
+  componentDidMount() {
+    this.changeTouchStatusAndText(false, '')
   }
   
-  onMouseOutAnswerChoice = () => {
+  /**
+   * User stops hovering on an answer choice
+   */
+  handleMouseOutAnswerChoice = () => {
     this.setState({
       hoveredAnswerChoice: 0
     })
   }
   
-  onMouseInAnswerChoice = answerId => {
+  /**
+   * When the user hovers over an answer choice
+   * @param answerId
+   */
+  handleMouseInAnswerChoice = answerId => {
     this.setState({
       hoveredAnswerChoice: answerId
     })
@@ -97,13 +98,11 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onChangeAnswer = id => (event, value) => {
-    const { question, userAnswers, annotationModeEnabled, enabledAnswerId, actions } = this.props
+  handleChangeAnswer = id => (event, value) => {
+    const { question, userAnswers, actions, onChange } = this.props
     let text = '', open = false
-  
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-    }
+    
+    this.disableAnnotationMode()
     
     if (question.questionType === questionTypes.CATEGORY) {
       if (userAnswers.answers.hasOwnProperty(id)) {
@@ -125,9 +124,9 @@ export class QuestionCard extends Component {
         }
       }
     }
-  
+    
     if (open) {
-      this.props.actions.setAlert({
+      actions.setAlert({
         open: true,
         type: 'changeAnswer',
         title: 'Warning',
@@ -135,19 +134,19 @@ export class QuestionCard extends Component {
         data: { id, value }
       })
     } else {
-      this.props.onChange(id)(event, value)
+      onChange(id, value)
+      actions.setResetStatus(true)
+      this.changeTouchStatusAndText(true, 'Saving...')
     }
   }
   
   /**
    * Shows an alert to confirm clearing answer
    */
-  onClearAnswer = () => {
-    const { annotationModeEnabled, actions, question, enabledAnswerId } = this.props
+  handleClearAnswer = () => {
+    const { actions } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-    }
+    this.disableAnnotationMode()
     
     actions.setAlert({
       open: true,
@@ -161,7 +160,7 @@ export class QuestionCard extends Component {
   /**
    * Closes the open alert on the page
    */
-  onCloseAlert = () => {
+  handleCloseAlert = () => {
     this.props.actions.closeAlert()
   }
   
@@ -170,11 +169,13 @@ export class QuestionCard extends Component {
    * @returns {number}
    */
   getMargin = () => {
-    return !this.props.isValidation
-      ? this.props.question.questionType !== questionTypes.CATEGORY
+    const { isValidation, question } = this.props
+    
+    return !isValidation
+      ? question.questionType !== questionTypes.CATEGORY
         ? -70
         : -46
-      : this.props.question.questionType !== questionTypes.CATEGORY
+      : question.questionType !== questionTypes.CATEGORY
         ? -24
         : 0
   }
@@ -182,22 +183,30 @@ export class QuestionCard extends Component {
   /**
    * When the user changes the category
    */
-  onChangeCategory = (event, selection) => {
-    const { annotationModeEnabled, question, enabledAnswerId, actions, onChangeCategory } = this.props
+  handleChangeCategory = (event, selection) => {
+    const { onChangeCategory, actions } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-    }
+    this.disableAnnotationMode()
+    this.changeTouchStatusAndText(false, '')
+    actions.toggleOffView()
+    actions.setResetStatus(false)
     onChangeCategory(event, selection)
   }
   
-  onApplyAll = () => {
-    const { annotationModeEnabled, onOpenAlert, actions, question, enabledAnswerId } = this.props
+  /**
+   * When the user clicks the 'Apply to all categories' button for an answer
+   */
+  handleApplyAll = () => {
+    const { actions } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-    }
-    onOpenAlert()
+    this.disableAnnotationMode()
+    actions.setAlert({
+      open: true,
+      title: 'Warning',
+      text: 'Your answer will apply to ALL categories. Previous answers will be overwritten.',
+      type: 'applyAll',
+      data: {}
+    })
   }
   
   /**
@@ -205,7 +214,7 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onToggleAnnotationMode = id => () => {
+  handleToggleAnnotationMode = id => () => {
     const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
     
     const enabled = annotationModeEnabled
@@ -219,84 +228,202 @@ export class QuestionCard extends Component {
    * Toggles showing annotations for an answer choice
    * @param answerId
    */
-  onToggleViewAnnotations = answerId => () => {
-    const { question, actions, enabledAnswerId, annotationModeEnabled } = this.props
+  handleToggleViewAnnotations = answerId => () => {
+    const { question, actions } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-    }
-    
+    this.disableAnnotationMode()
     actions.toggleViewAnnotations(question.id, answerId)
   }
   
+  /**
+   * Handles when the user changes a text field
+   */
+  handleChangeTextAnswer = (id, field) => event => {
+    const { onChangeTextAnswer, actions } = this.props
+    
+    this.disableAnnotationMode()
+    this.changeTouchStatusAndText(true, 'Saving...')
+    actions.setResetStatus(true)
+    onChangeTextAnswer(field, id, event.target.value)
+  }
+  
+  /**
+   * Turns of annotation mode
+   */
   disableAnnotationMode = () => {
-    const { question, actions, enabledAnswerId } = this.props
-    actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+    const { question, actions, enabledAnswerId, annotationModeEnabled } = this.props
+    if (annotationModeEnabled) {
+      actions.toggleAnnotationMode(question.id, enabledAnswerId || '', false)
+    }
+  }
+  
+  /**
+   * Event handler for saving a flag
+   */
+  handleSaveFlag = flagInfo => {
+    const { user, onSaveFlag, actions } = this.props
+    
+    const flag = {
+      raisedBy: {
+        userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName
+      },
+      ...flagInfo
+    }
+    
+    onSaveFlag(flag)
+    actions.setResetStatus(true)
+    this.disableAnnotationMode()
+    this.changeTouchStatusAndText(true, 'Saving...')
+  }
+  
+  /**
+   * Changes touched status and card header text
+   * @param status
+   * @param text
+   */
+  changeTouchStatusAndText = (status, text) => {
+    const { actions } = this.props
+    
+    actions.changeTouchedStatus(status)
+    actions.setHeaderText(text)
+  }
+  
+  /**
+   * Continues with whatever action they were doing. Determines which action to call
+   */
+  handleContinueAlert = () => {
+    const { alert, onClearAnswer, onChange, onApplyAll, onResetAnswer, actions, onClearFlag } = this.props
+    
+    switch (alert.type) {
+      case 'clearAnswer':
+        onClearAnswer()
+        actions.toggleOffView()
+        actions.setResetStatus(true)
+        break
+      case 'changeAnswer':
+        onChange(alert.data.id, alert.data.value)
+        actions.toggleOffView()
+        actions.setResetStatus(true)
+        break
+      case 'applyAll':
+        onApplyAll()
+        actions.setResetStatus(true)
+        break
+      case 'reset':
+        onResetAnswer()
+        actions.toggleOffView()
+        actions.setResetStatus(false)
+        break
+      case 'clearFlag':
+        onClearFlag(alert.data.id, alert.data.type)
+        break
+    }
+    
+    actions.setAlert({ open: false })
+    this.changeTouchStatusAndText(true, 'Saving...')
+    this.disableAnnotationMode()
+  }
+  
+  /**
+   * When the user changes question using the arrow buttons
+   * @param dir
+   * @param newIndex
+   * @returns {Function}
+   */
+  handleChangeQuestion = (dir, newIndex) => () => {
+    const { handleGetQuestion, actions } = this.props
+    
+    this.disableAnnotationMode()
+    this.changeTouchStatusAndText(false, '')
+    actions.setResetStatus(false)
+    handleGetQuestion(dir, newIndex)
+  }
+  
+  /**
+   * Handle reset answer
+   * @returns {*}
+   */
+  handleResetAnswer = () => {
+    const { actions } = this.props
+    
+    this.disableAnnotationMode()
+    actions.setAlert({
+      open: true,
+      title: 'Warning',
+      text: 'Any changes you\'ve made, including selected answer, pincites, comments, and annotations, since arriving to this question will be reset.',
+      type: 'reset',
+      data: {}
+    })
+  }
+  
+  /**
+   * Shows an alert asking the user to confirm clearing a flag
+   * @param id
+   * @param type
+   */
+  handleClearFlag = (id, type) => {
+    const { actions } = this.props
+    
+    this.disableAnnotationMode()
+    actions.setAlert({
+      open: true,
+      title: 'Confirm Clear Flag',
+      text: 'Do you want to clear this flag?',
+      type: 'clearFlag',
+      data: { id, type },
+      continueButtonText: 'Clear Flag'
+    })
   }
   
   render() {
     const {
-      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation,
-      mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
-      areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
-      selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isUserAnswerSelected, selectedCategoryId, alert, actions
+      canReset, header, user, question, userAnswers, isValidation, mergedUserQuestions,
+      disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, questionChangeLoader,
+      categories, selectedCategory, currentIndex, totalLength, showNextButton, isUserAnswerSelected, selectedCategoryId,
+      alert
     } = this.props
     
+    const { hoveredAnswerChoice } = this.state
+    
     const questionContentProps = {
-      onChange: this.onChangeAnswer,
-      onChangeTextAnswer: onChangeTextAnswer,
-      onOpenFlagConfirmAlert: onOpenFlagConfirmAlert,
-      currentUserInitials: getInitials(user.firstName, user.lastName),
+      onChange: this.handleChangeAnswer,
+      onChangeTextAnswer: this.handleChangeTextAnswer,
+      onClearFlag: this.handleClearFlag,
+      onApplyAll: this.handleApplyAll,
+      onToggleAnnotationMode: this.handleToggleAnnotationMode,
+      onToggleViewAnnotations: this.handleToggleViewAnnotations,
+      onMouseInAnswerChoice: this.handleMouseInAnswerChoice,
+      onMouseOutAnswerChoice: this.handleMouseOutAnswerChoice,
       user,
+      currentUserInitials: getInitials(user.firstName, user.lastName),
       question,
-      onApplyAll: this.onApplyAll,
       userAnswers: { validatedBy: { ...user }, ...userAnswers },
       comment: userAnswers.comment,
       isValidation,
       mergedUserQuestions,
       disableAll,
       userImages,
-      onToggleAnnotationMode: this.onToggleAnnotationMode,
-      onToggleViewAnnotations: this.onToggleViewAnnotations,
       isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
       areDocsEmpty,
-      onMouseInAnswerChoice: this.onMouseInAnswerChoice,
-      onMouseOutAnswerChoice: this.onMouseOutAnswerChoice,
-      hoveredAnswerChoice: this.state.hoveredAnswerChoice
+      hoveredAnswerChoice
     }
     
-    const { isSaving } = this.state
-    
-    const closeButton = { value: alert.type === 'disableAnnoMode' ? 'Dismiss' : 'Cancel' }
-    this.alertActions = alert.type === 'disableAnnoMode'
-      ? [] : [
-        {
-          value: 'Continue',
-          type: 'button',
-          onClick: () => {
-            if (alert.type === 'clearAnswer') {
-              onClearAnswer()
-              actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
-            } else {
-              this.props.onChange(alert.data.id)(alert.data.value)
-            }
-            this.props.actions.setAlert({ open: false })
-          }
-        }
-      ]
+    this.alertActions = [
+      {
+        value: alert.continueButtonText !== '' ? alert.continueButtonText : 'Continue',
+        type: 'button',
+        onClick: this.handleContinueAlert
+      }
+    ]
     
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert
-          actions={this.alertActions}
-          title={alert.title}
-          onCloseAlert={this.onCloseAlert}
-          closeButton={closeButton}
-          open={alert.open}>
+        <Alert actions={this.alertActions} title={alert.title} onCloseAlert={this.handleCloseAlert} open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.text}
           </Typography>
@@ -307,18 +434,25 @@ export class QuestionCard extends Component {
             : <>
               <FlexGrid container type="row" align="center" padding="0 15px 0 0" style={{ height: 55, minHeight: 55 }}>
                 <FlexGrid flex style={{ width: '100%' }}>
-                  {hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
-                    {saveFailed ? 'Save failed!' : isSaving ? 'Saving...' : 'All changes saved'}
-                  </Typography>}
+                    {header}
+                  </Typography>
                 </FlexGrid>
                 <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
+                  {canReset &&
+                  <IconButton
+                    onClick={this.handleResetAnswer}
+                    style={{ height: 24, width: 24 }}
+                    tooltipText="Restore to initial">
+                    {!disableAll && <Restore className={styles.icon} />}
+                  </IconButton>}
                   {question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
-                    onClick={this.onClearAnswer}
+                    onClick={this.handleClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
+                    disabled={disableAll}
                     style={{ height: 24 }}>
                     {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
@@ -327,7 +461,7 @@ export class QuestionCard extends Component {
                     <FlagPopover
                       userFlag={userAnswers.flag}
                       questionId={question.id}
-                      onSaveFlag={onSaveFlag}
+                      onSaveFlag={this.handleSaveFlag}
                       questionFlags={question.flags}
                       categoryId={selectedCategoryId}
                       user={user}
@@ -342,16 +476,15 @@ export class QuestionCard extends Component {
                   <TabContainer
                     tabs={categories}
                     selected={selectedCategory}
-                    onChangeCategory={this.onChangeCategory}>
+                    onChangeCategory={this.handleChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                currentIndex={currentIndex}
-                getNextQuestion={getNextQuestion}
-                getPrevQuestion={getPrevQuestion}
+                getQuestion={this.handleChangeQuestion}
                 totalLength={totalLength}
+                currentIndex={currentIndex}
                 showNextButton={showNextButton}
               />
             </>}
@@ -368,6 +501,8 @@ const mapStateToProps = (state, ownProps) => {
   const cardState = pageState.card
   
   return {
+    touched: cardState.touched,
+    header: cardState.header,
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
     question: pageState.scheme === null ? {} : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
@@ -384,22 +519,22 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
-    disableAll: pageState.codedQuestionsError !== null || false,
+    disableAll: pageState.disableAll || ownProps.disableAll || false,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
-    saveFailed: pageState.saveFailed || false,
-    hasTouchedQuestion: pageState.hasTouchedQuestion || false,
     userImages: state.data.user.byId,
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,
     annotationModeEnabled: docState.annotationModeEnabled,
     isUserAnswerSelected: docState.isUserAnswerSelected,
     areDocsEmpty: docState.showEmptyDocs,
-    alert: cardState.alert
+    alert: cardState.alert,
+    canReset: cardState.canReset
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),

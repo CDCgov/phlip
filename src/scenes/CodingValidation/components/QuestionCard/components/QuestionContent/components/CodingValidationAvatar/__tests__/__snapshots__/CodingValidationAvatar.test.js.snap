@@ -19,11 +19,8 @@ exports[`CodingValidation - QuestionCard - QuestionContent - CodingValidationAva
     }
     type="column"
   >
-    <Avatar
-      alt=""
+    <Connect(Avatar)
       avatar=""
-      big={false}
-      cardAvatar={false}
       initials="TU"
       style={
         Object {
@@ -37,7 +34,6 @@ exports[`CodingValidation - QuestionCard - QuestionContent - CodingValidationAva
           "width": 30,
         }
       }
-      theme={Object {}}
       userName="Test User"
     />
   </FlexGrid>

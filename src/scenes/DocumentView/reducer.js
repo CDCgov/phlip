@@ -1,4 +1,5 @@
 import { types } from './actions'
+import { combineReducers } from 'redux'
 
 export const INITIAL_STATE = {
   document: {
@@ -21,7 +22,7 @@ export const INITIAL_STATE = {
   error: ''
 }
 
-const docViewReducer = (state = INITIAL_STATE, action) => {
+export const docViewReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.INIT_STATE_WITH_DOC:
       return {
@@ -152,20 +153,20 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: false
       }
     
-    case types.DELETE_DOCUMENT_REQUEST :
+    case types.DELETE_DOCUMENT_REQUEST:
       return {
         ...state,
         documentDeleteInProgress: true
       }
     
-    case types.DELETE_DOCUMENT_SUCCESS :
+    case types.DELETE_DOCUMENT_SUCCESS:
       return {
         ...state,
         documentDeleteInProgress: false,
         documentDeleteError: false
       }
     
-    case types.DELETE_DOCUMENT_FAIL :
+    case types.DELETE_DOCUMENT_FAIL:
       return {
         ...state,
         apiErrorInfo: {
@@ -182,4 +183,6 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default docViewReducer
+export default combineReducers({
+  meta: docViewReducer
+})

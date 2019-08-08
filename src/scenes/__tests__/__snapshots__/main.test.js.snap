@@ -80,12 +80,14 @@ exports[`Main scene should render correctly 1`] = `
         Object {
           "active": true,
           "icon": "dvr",
+          "id": "project-list",
           "label": "Project List",
           "location": "/home",
         },
         Object {
           "active": false,
           "icon": "description",
+          "id": "doc-manage",
           "label": "Document Management",
           "location": "/docs",
         },
@@ -126,7 +128,11 @@ exports[`Main scene should render correctly 1`] = `
       />
       <Route
         component={[Function]}
-        path="/project/:id/(code|validate)"
+        path="/project/:id/:view(code|validate)/:jid/:qid"
+      />
+      <Route
+        component={[Function]}
+        path="/project/:id/:view(code|validate)"
       />
       <Route
         component={[Function]}
@@ -178,11 +184,11 @@ exports[`Main scene should render correctly 1`] = `
     />
     <Route
       component={[Function]}
-      path="/project/:projectId/coding-scheme/add"
+      path="/project/:id/coding-scheme/add"
     />
     <Route
       component={[Function]}
-      path="/project/:projectId/coding-scheme/:id"
+      path="/project/:id/coding-scheme/edit/:questionId"
     />
     <Route
       component={[Function]}

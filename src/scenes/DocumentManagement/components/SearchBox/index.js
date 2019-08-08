@@ -1,101 +1,114 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Button, Icon, DatePicker, Typography, Autocomplete } from 'components'
+import { FlexGrid, Button, Icon, DatePicker, Typography, withAutocompleteMethods } from 'components'
 import SearchBar from 'components/SearchBox'
 import TextField from '@material-ui/core/TextField'
 import ButtonBase from '@material-ui/core/ButtonBase'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import actions, { jurisdictionAutocomplete, projectAutocomplete } from './actions'
+import actions from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import moment from 'moment'
 import { checkIfMultiWord } from 'utils/commonHelpers'
 import { AccountBox, Alphabetical, City, Clipboard, CalendarBlank } from 'mdi-material-ui'
+import Autosuggest from 'react-autosuggest'
+import { withStyles } from '@material-ui/core/styles'
+
+/* istanbul ignore next */
+const styles = () => ({
+  suggestionsContainerOpenAbsolute: {
+    width: '100%',
+    maxHeight: 500,
+    overflow: 'auto',
+    position: 'absolute',
+    '& div:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  container: {
+    width: '100%',
+    position: 'relative'
+  }
+})
 
 export class SearchBox extends Component {
   static propTypes = {
     form: PropTypes.object,
     searchValue: PropTypes.string,
-    projectSuggestions: PropTypes.array,
-    jurisdictionSuggestions: PropTypes.array,
-    projectSearchValue: PropTypes.string,
-    jurisdictionSearchValue: PropTypes.string,
-    actions: PropTypes.object
+    searchBarValue: PropTypes.string,
+    actions: PropTypes.object,
+    currentUser: PropTypes.object,
+    projectAutocompleteProps: PropTypes.object,
+    projectAutoActions: PropTypes.object,
+    jurisdictionAutocompleteProps: PropTypes.object,
+    jurisdictionAutoActions: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.buttonRef = null
   }
-
+  
   state = {
     isFocused: false,
     showFilterForm: false,
     datePicker1Open: false,
     datePicker2Open: false
   }
-
-  componentDidUpdate() {
-
-  }
-
+  
   componentWillUnmount() {
     this.clearForm()
     this.props.actions.clearSearchString()
   }
-
+  
+  /**
+   * Users focus changes
+   * @param focused
+   */
   handleFocusChange = focused => {
     this.setState({
       isFocused: focused,
       showFilterForm: false
     })
   }
-
+  
+  /**
+   * User has changed a search field in the advanced form
+   * @param property
+   * @param value
+   */
   handleFormValueChange = (property, value) => {
     if (property.includes('uploadedDate') && value === null) {
       value = ''
     }
     this.props.actions.updateFormValue(property, value)
   }
-
+  
+  /**
+   * User has enter a search value in the basic search form
+   * @param e
+   */
   handleSearchFieldChange = e => {
     if (e.target.value === '') {
       this.clearForm()
     }
     this.props.actions.updateSearchValue(e.target.value, this.props.form)
   }
-
-  handleGetSuggestions = (suggestionType, index = null) => ({ value: searchString }) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '_MAIN', index)
-  }
-
-  handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-    suggestionType === 'project'
-      ? this.props.actions.updateFormValue('project', suggestionValue)
-      : this.props.actions.updateFormValue('jurisdiction', suggestionValue)
-  }
-
-  handleAutocompleteSearchValueChange = (suggestionType, value) => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
-      : this.props.actions.projectAutocomplete.updateSearchValue(value)
-  }
-
-  handleClearSuggestions = suggestionType => () => {
-    suggestionType === 'jurisdiction'
-      ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
-      : this.props.actions.projectAutocomplete.clearSuggestions()
-  }
-
+  
+  /**
+   * User has clicked 'enter' or clicked the submit button on the form
+   */
   handleSearchFormSubmit = () => {
     const searchString = this.buildSearchFilter()
     this.props.actions.updateSearchValue(searchString, this.props.form)
     this.handleToggleForm()
   }
-
+  
+  /**
+   * Closes the form if the date pickers aren't open
+   * @param e
+   */
   handleClickAway = e => {
     if (!this.state.datePicker1Open && !this.state.datePicker2Open) {
       this.clearForm()
@@ -104,36 +117,49 @@ export class SearchBox extends Component {
       }
     }
   }
-
+  
+  /**
+   * Clears the search form
+   */
   clearForm = () => {
-    this.props.actions.clearForm()
-    this.props.actions.projectAutocomplete.clearAll()
-    this.props.actions.jurisdictionAutocomplete.clearAll()
+    const { projectAutoActions, jurisdictionAutoActions, actions } = this.props
+    actions.clearForm()
+    projectAutoActions.clearAll()
+    jurisdictionAutoActions.clearAll()
   }
-
+  
+  /**
+   * Opens / closes the form
+   */
   handleToggleForm = () => {
-    this.setState({
-      showFilterForm: !this.state.showFilterForm
-    })
+    this.setState({ showFilterForm: !this.state.showFilterForm })
   }
-
+  
+  /**
+   * Builds the search string based on what the user has populated
+   * @returns {string}
+   */
   buildSearchFilter = () => {
+    const { form, projectAutocompleteProps, jurisdictionAutocompleteProps } = this.props
+    const projectSearchValue = projectAutocompleteProps.searchValue
+    const jurisdictionSearchValue = jurisdictionAutocompleteProps.searchValue
+    
     const params = ['name', 'uploadedBy']
-
+    
     let searchTerms = []
     params.forEach((key, index) => {
-      if (this.props.form[key] !== '') {
-        let p = this.props.form[key]
+      if (form[key] !== '') {
+        let p = form[key]
         if (checkIfMultiWord(p)) {
           p = `(${p})`
         }
         searchTerms.push(key.concat(':', p))
       }
     })
-
-    if (this.props.form.uploadedDate1 && this.props.form.uploadedDate2) {
-      let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
-      let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
+    
+    if (form.uploadedDate1 && form.uploadedDate2) {
+      let dBegin = moment.utc(form.uploadedDate1).local().format('MM/DD/YYYY')
+      let dEnd = moment.utc(form.uploadedDate2).local().format('MM/DD/YYYY')
       // check if dates in valid order:  dBegin should be older than dEnd
       if (dBegin > dEnd) {
         const tmpDate = dBegin
@@ -142,73 +168,77 @@ export class SearchBox extends Component {
       }
       let p = `["${dBegin}","${dEnd}"]`
       searchTerms.push(`uploadedDate:${p}`)
-    } else if (this.props.form.uploadedDate1 &&
-      (this.props.form.uploadedDate2 === '' || this.props.form.uploadedDate2 === undefined)) { // user entered only date 1
-      let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
+    } else if (form.uploadedDate1 &&
+      (form.uploadedDate2 === '' || form.uploadedDate2 === undefined)) {
+      let dBegin = moment.utc(form.uploadedDate1).local().format('MM/DD/YYYY')
       let p = `["${dBegin}",""]`
       searchTerms.push(`uploadedDate:${p}`)
-    } else if ((this.props.form.uploadedDate1 === '' || this.props.form.uploadedDate1 === undefined) &&
-      this.props.form.uploadedDate2) { // user only entered date 2
-      let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
+    } else if ((form.uploadedDate1 === '' || form.uploadedDate1 === undefined) &&
+      form.uploadedDate2) {
+      let dEnd = moment.utc(form.uploadedDate2).local().format('MM/DD/YYYY')
       let p = `["","${dEnd}"]`
       searchTerms.push(`uploadedDate:${p}`)
     }
-
-    if (this.props.projectSearchValue !== '') {
-      let z = this.props.projectSearchValue
-      if (this.props.form.project.id !== null) {
-        z = this.props.form.project.name
+    
+    if (projectSearchValue !== '') {
+      let z = projectSearchValue
+      if (form.project.id !== null) {
+        z = form.project.name
       }
       if (checkIfMultiWord(z)) {
         z = `(${z})`
       }
       searchTerms.push(`project:${z}`)
     }
-
-    if (this.props.jurisdictionSearchValue !== '') {
-      let z = this.props.jurisdictionSearchValue
-      if (this.props.form.jurisdiction.id !== null) {
-        z = this.props.form.jurisdiction.name
+    
+    if (jurisdictionSearchValue !== '') {
+      let z = jurisdictionSearchValue
+      if (form.jurisdiction.id !== null) {
+        z = form.jurisdiction.name
       }
       if (checkIfMultiWord(z)) {
         z = `(${z})`
       }
       searchTerms.push(`jurisdiction:${z}`)
     }
-
+    
     return searchTerms.join(' | ')
   }
-
+  
+  /**
+   * Opens the date picker for start date
+   */
   handleOpenDatePicker2 = () => {
-    this.setState({
-      datePicker2Open: true
-    })
+    this.setState({ datePicker2Open: true })
   }
-
+  
+  /**
+   * Closes the date picker for end date
+   */
   handleCloseDatePicker2 = () => {
-    this.setState({
-      datePicker2Open: false
-    })
+    this.setState({ datePicker2Open: false })
   }
-
+  
+  /**
+   * Opens the date picker for start date
+   */
   handleOpenDatePicker1 = () => {
-    this.setState({
-      datePicker1Open: true
-    })
+    this.setState({ datePicker1Open: true })
   }
-
+  
+  /**
+   * Closes the date picker for start date
+   */
   handleCloseDatePicker1 = () => {
-    this.setState({
-      datePicker1Open: false
-    })
+    this.setState({ datePicker1Open: false })
   }
-
-  onKeyPress = (e) => {
+  
+  onKeyPress = e => {
     if (e.which === 13 && this.state.showFilterForm) {
       this.handleSearchFormSubmit()
     }
   }
-
+  
   render() {
     const {
       form: {
@@ -217,32 +247,33 @@ export class SearchBox extends Component {
         name,
         uploadedDate2
       },
-      searchValue,
-      projectSuggestions,
-      jurisdictionSuggestions,
-      projectSearchValue,
-      jurisdictionSearchValue
+      searchBarValue,
+      projectAutocompleteProps,
+      jurisdictionAutocompleteProps,
+      classes
     } = this.props
-
+    
+    const { showFilterForm, isFocused } = this.state
+    
     const iconColor = '#949494'
-
+    
     const boxStyle = {
       backgroundColor: 'white',
-      borderRadius: this.state.showFilterForm ? '5px 5px 0 0' : '5px',
+      borderRadius: showFilterForm ? '5px 5px 0 0' : '5px',
       border: `1px solid rgba(${189}, ${189}, ${189}, ${.33}`,
       display: 'flex',
       alignItems: 'center',
       padding: 5,
       flex: 1,
-      boxShadow: this.state.isFocused
+      boxShadow: isFocused
         ? '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)'
         : 'none'
     }
-
+    
     const formRowStyles = {
       marginBottom: 20
     }
-
+    
     const formRowFontStyles = {
       color: '#5f6368',
       letterSpacing: .2,
@@ -252,24 +283,22 @@ export class SearchBox extends Component {
       width: '25%',
       maxWidth: '25%'
     }
-
+    
     const formRowFontStyles2 = {
       color: '#5f6368',
       letterSpacing: .2,
       fontWeight: 300,
       fontSize: 13,
-      // maxWidth: '9%',
       marginRight: 10
-      // paddingLeft: 5
     }
-
+    
     const inputProps = {
       style: {
         padding: 0,
         fontSize: 13
       }
     }
-
+    
     return (
       <Manager>
         <Reference>
@@ -279,7 +308,7 @@ export class SearchBox extends Component {
                 <SearchBar
                   placeholder="Search documents"
                   fullWidth
-                  searchValue={searchValue}
+                  searchValue={searchBarValue}
                   handleSearchValueChange={this.handleSearchFieldChange}
                   searchIcon="search"
                   InputProps={{
@@ -297,15 +326,15 @@ export class SearchBox extends Component {
         </Reference>
         <Popper
           placement="bottom-start"
-          eventsEnabled={this.state.showFilterForm}
-          style={{ pointerEvents: this.state.showFilterForm ? 'auto' : 'none' }}>
+          eventsEnabled={showFilterForm}
+          style={{ pointerEvents: showFilterForm ? 'auto' : 'none' }}>
           {({ placement, ref, style }) => {
             return (
-              this.state.showFilterForm &&
+              showFilterForm &&
               <ClickAwayListener onClickAway={this.handleClickAway}>
                 <div
                   data-placement={placement}
-                  style={{ ...style, width: '100%', zIndex: 5 }}
+                  style={{ ...style, width: '100%', zIndex: 5, maxHeight: 450 }}
                   ref={ref}
                   tabIndex="0"
                   onKeyPress={this.onKeyPress}>
@@ -350,10 +379,15 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Uploaded Date
                       </Typography>
-                      <FlexGrid container flex type="row" style={{ flexBasis: '100%', flexWrap:'wrap' }} justify="space-between" >
-                        <FlexGrid container flex type="row" justify="space-between" style={{ width:'35%' }}>
+                      <FlexGrid
+                        container
+                        flex
+                        type="row"
+                        style={{ flexBasis: '100%', flexWrap: 'wrap' }}
+                        justify="space-between">
+                        <FlexGrid container flex type="row" justify="space-between" style={{ width: '35%' }}>
                           <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
-                          From:
+                            From:
                           </Typography>
                           <DatePicker
                             id="date1"
@@ -380,15 +414,15 @@ export class SearchBox extends Component {
                               }
                             }}
                           />
-
+                        
                         </FlexGrid>
                         <FlexGrid style={{ width: '1%' }} />
-                        <FlexGrid container flex type="row" justify="space-between" style={{ width:'35%' }}>
+                        <FlexGrid container flex type="row" justify="space-between" style={{ width: '35%' }}>
                           <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
-                          To:
+                            To:
                           </Typography>
                           <DatePicker
-                            id = "date2"
+                            id="date2"
                             name="uploadedDate2Search"
                             dateFormat="MM/DD/YYYY"
                             onChange={date => this.handleFormValueChange('uploadedDate2', date)}
@@ -420,24 +454,13 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="project" style={formRowFontStyles}>
                         Project
                       </Typography>
-                      <Autocomplete
-                        suggestions={projectSuggestions}
-                        handleGetSuggestions={this.handleGetSuggestions('project')}
-                        handleClearSuggestions={this.handleClearSuggestions('project')}
-                        showSearchIcon={false}
-                        inputProps={{
-                          value: projectSearchValue,
-                          onChange: (e, { newValue }) => {
-                            if (e.target.value === undefined) {
-                              this.handleAutocompleteSearchValueChange('project', newValue.name)
-                            } else {
-                              this.handleAutocompleteSearchValueChange('project', e.target.value)
-                            }
-                          },
-                          id: 'project-name',
-                          ...inputProps
+                      <Autosuggest
+                        {...projectAutocompleteProps}
+                        theme={{
+                          ...projectAutocompleteProps.theme,
+                          suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+                          container: classes.container
                         }}
-                        handleSuggestionSelected={this.handleSuggestionSelected('project')}
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
@@ -445,24 +468,13 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="jurisdiction" style={formRowFontStyles}>
                         Jurisdiction
                       </Typography>
-                      <Autocomplete
-                        suggestions={jurisdictionSuggestions}
-                        handleGetSuggestions={this.handleGetSuggestions('jurisdiction')}
-                        handleClearSuggestions={this.handleClearSuggestions('jurisdiction')}
-                        showSearchIcon={false}
-                        inputProps={{
-                          value: jurisdictionSearchValue,
-                          onChange: (e, { newValue }) => {
-                            if (e.target.value === undefined) {
-                              this.handleAutocompleteSearchValueChange('jurisdiction', newValue.name)
-                            } else {
-                              this.handleAutocompleteSearchValueChange('jurisdiction', e.target.value)
-                            }
-                          },
-                          id: 'jurisdiction-name',
-                          ...inputProps
+                      <Autosuggest
+                        {...jurisdictionAutocompleteProps}
+                        theme={{
+                          ...jurisdictionAutocompleteProps.theme,
+                          suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+                          container: classes.container
                         }}
-                        handleSuggestionSelected={this.handleSuggestionSelected('jurisdiction')}
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" justify="flex-end">
@@ -489,25 +501,33 @@ export class SearchBox extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const searchState = state.scenes.docManage.search
+  const currentUser = state.data.user.currentUser
   return {
     form: searchState.form.params,
-    searchValue: searchState.form.searchValue,
-    projectSuggestions: searchState.projectSuggestions.suggestions,
-    jurisdictionSuggestions: searchState.jurisdictionSuggestions.suggestions,
-    projectSearchValue: searchState.projectSuggestions.searchValue,
-    jurisdictionSearchValue: searchState.jurisdictionSuggestions.searchValue,
-    selectedJurisdiction: searchState.jurisdictionSuggestions.selectedSuggestion,
-    selectedProject: searchState.projectSuggestions.selectedSuggestion
+    searchBarValue: searchState.form.searchValue,
+    currentUser
   }
 }
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
-  actions: {
-    ...bindActionCreators(actions, dispatch),
-    projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
-    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch)
-  }
+  actions: bindActionCreators(actions, dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBox)
+const otherAutoProps = {
+  inputProps: {
+    style: {
+      minHeight: 24,
+      fontSize: 14,
+      padding: 0
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withAutocompleteMethods('project', 'search', otherAutoProps)(
+    withAutocompleteMethods('jurisdiction', 'search', otherAutoProps, false)(
+      withStyles(styles)(SearchBox)
+    )
+  )
+)

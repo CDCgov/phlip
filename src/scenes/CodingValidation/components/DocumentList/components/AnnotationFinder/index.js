@@ -6,8 +6,13 @@ import { connect } from 'react-redux'
 import CodingValidationAvatar from '../../../QuestionCard/components/QuestionContent/components/CodingValidationAvatar'
 import theme from 'services/theme'
 
+/**
+ * The AnnotationFinder that shows at the top of an open document. Lets the user filter annotations by user and jump to
+ * previous and next annotations
+ * @component
+ */
 export const AnnotationFinder = props => {
-  const { count, current, users, handleScrollAnnotation, handleClickAvatar, allEnabled } = props
+  const { count, current, users, onScrollAnnotation, onClickAvatar, allEnabled } = props
   
   const containerStyles = {
     backgroundColor: 'black',
@@ -29,11 +34,11 @@ export const AnnotationFinder = props => {
                 user={user}
                 size="medium"
                 isValidator={user.isValidator}
-                onClick={handleClickAvatar && !user.enabled
-                  ? handleClickAvatar(user.userId, user.isValidator)
+                onClick={onClickAvatar && !user.enabled
+                  ? onClickAvatar(user.userId, user.isValidator)
                   : null}
                 enabled={
-                  handleClickAvatar
+                  onClickAvatar
                     ? users.length > 1
                       ? user.enabled
                       : true
@@ -48,7 +53,7 @@ export const AnnotationFinder = props => {
           user={{ initials: 'ALL', username: 'All annotations' }}
           enabled={allEnabled}
           onClick={!allEnabled
-            ? handleClickAvatar('All', false)
+            ? onClickAvatar('All', false)
             : null}
           isValidator={false}
           size="medium"
@@ -62,13 +67,13 @@ export const AnnotationFinder = props => {
       <FlexGrid style={{ borderLeft: '2px solid white', height: '50%' }} />
       <FlexGrid style={{ marginLeft: 8 }}>
         <IconButton
-          onClick={() => handleScrollAnnotation(current - 1)}
+          onClick={() => onScrollAnnotation(current - 1)}
           disabled={current === 0}
           color={current === 0 ? disabledColor : 'white'}>
           keyboard_arrow_up
         </IconButton>
         <IconButton
-          onClick={() => handleScrollAnnotation(current + 1)}
+          onClick={() => onScrollAnnotation(current + 1)}
           disabled={current === count - 1}
           color={current === count - 1 ? disabledColor : 'white'}>
           keyboard_arrow_down
@@ -82,8 +87,8 @@ AnnotationFinder.propTypes = {
   count: PropTypes.number,
   current: PropTypes.number,
   users: PropTypes.array,
-  handleScrollAnnotation: PropTypes.func,
-  handleClickAvatar: PropTypes.func,
+  onScrollAnnotation: PropTypes.func,
+  onClickAvatar: PropTypes.func,
   allEnabled: PropTypes.bool
 }
 
@@ -94,8 +99,7 @@ AnnotationFinder.defaultProps = {
   allEnabled: true
 }
 
-/** istanbul ignore next */
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = /* istanbul ignore next */ (state, ownProps) => {
   return {
     users: ownProps.users.map(user => {
       return {

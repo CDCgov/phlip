@@ -29,8 +29,6 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
         "id": "stop-coding-question",
         "style": Object {
           "maxHeight": 500,
-          "paddingLeft": 15,
-          "paddingRight": 15,
         },
         "tooltip": "Stop coding this question",
       }
@@ -79,6 +77,7 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
           type="column"
         >
           <SimpleInput
+            disabled={false}
             error={false}
             helperText=""
             id="flag-notes"
@@ -117,6 +116,7 @@ exports[`CodingValidation -- FlagPopover component should render correctly 1`] =
         />
         <WithTheme(Button)
           color="accent"
+          disabled={false}
           onClick={[Function]}
           raised={false}
           type="submit"

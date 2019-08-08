@@ -148,6 +148,37 @@ export const selectedDocs = [
   }
 ]
 
+export const arrOfDocsTransport = [
+  {
+    name: 'Children and Minors Motor Vehicles Communication.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [1],
+    projects: [4]
+  },
+  {
+    name: 'North Carolina Register, Aug. 2018.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [2],
+    projects: [4]
+  },
+  {
+    name: 'OAC 3701-52-04 eff. 5-3-07.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [3],
+    projects: [4]
+  },
+  {
+    name: 'Ohio - combined PDF.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [4],
+    projects: [4]
+  }
+]
+
 export const selectedWithDup = [
   ...selectedDocs,
   {
@@ -194,21 +225,25 @@ export const fullMerged = [
       editable: false,
       value: '2012-12-12T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ark. Code R. § 016.06.18-219.000',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Washington (state)'
+        name: 'Washington (state)',
+        id: 1
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -222,21 +257,25 @@ export const fullMerged = [
       editable: false,
       value: '2002-04-10T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'NC. Gen. Stat. § 19a-111j',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
       value: {
-        name: 'North Carolina (state)'
+        name: 'North Carolina (state)',
+        id: 2
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -250,21 +289,25 @@ export const fullMerged = [
       editable: false,
       value: '2002-10-01T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'DC Code § 34.1452.1',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Washington, DC (federal district)'
+        name: 'Washington, DC (federal district)',
+        id: 3
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -278,21 +321,25 @@ export const fullMerged = [
       editable: false,
       value: '2015-04-11T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ohio Admin. Code 3701-30-07',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
       value: {
-        name: 'Ohio (state)'
+        name: 'Ohio (state)',
+        id: 4
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   }
 ]
@@ -344,13 +391,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2012-12-12T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ark. Code R. § 016.06.18-219.000',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: true,
@@ -360,7 +409,8 @@ export const mergedWithMissing = [
         searchValue: ''
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     }
   },
   {
@@ -374,13 +424,15 @@ export const mergedWithMissing = [
       editable: true,
       value: '',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     },
     citation: {
       editable: false,
       value: 'NC. Gen. Stat. § 19a-111j',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -388,7 +440,8 @@ export const mergedWithMissing = [
         name: 'North Carolina (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -402,13 +455,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2002-10-01T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: true,
       value: '',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: false
     },
     jurisdictions: {
       editable: false,
@@ -416,7 +471,8 @@ export const mergedWithMissing = [
         name: 'Washington, DC (federal district)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   },
   {
@@ -430,13 +486,15 @@ export const mergedWithMissing = [
       editable: false,
       value: '2015-04-11T00:00:00.000Z',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     citation: {
       editable: false,
       value: 'Ohio Admin. Code 3701-30-07',
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     },
     jurisdictions: {
       editable: false,
@@ -444,7 +502,8 @@ export const mergedWithMissing = [
         name: 'Ohio (state)'
       },
       error: '',
-      inEditMode: false
+      inEditMode: false,
+      fromMetaFile: true
     }
   }
 ]

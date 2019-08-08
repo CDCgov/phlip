@@ -13,3 +13,4 @@ docs
 stats.json
 .prettierrc
 *.png
+coverage-copy

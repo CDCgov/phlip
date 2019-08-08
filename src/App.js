@@ -12,7 +12,7 @@ import { hot } from 'react-hot-loader'
  * Main App component. Sets up the BrowserRouter for react-router, the theme for @material-ui/core and the provider / store
  * for redux
  */
-class App extends Component {
+export class App extends Component {
   render() {
     return (
       <Router history={history}>

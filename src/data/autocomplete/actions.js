@@ -10,16 +10,30 @@ export const types = {
   CLEAR_SUGGESTIONS: 'CLEAR_SUGGESTIONS',
   CLEAR_ALL: 'CLEAR_ALL',
   FLUSH_STATE: 'FLUSH_STATE',
-  GET_INITIAL_PROJECT_SUGGESTION_REQUEST: 'GET_INITIAL_PROJECT_SUGGESTION_REQUEST'
+  GET_INITIAL_PROJECT_SUGGESTION_REQUEST: 'GET_INITIAL_PROJECT_SUGGESTION_REQUEST',
+  SET_SEARCHING_STATUS: 'SET_SEARCHING_STATUS',
+  GET_INITIAL_SUGGESTIONS_REQUEST: 'GET_INITIAL_SUGGESTIONS_REQUEST'
 }
 
 export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
   return {
     updateSearchValue: makeActionCreator(`${types.UPDATE_SEARCH_VALUE}_${searchName}${suffix}`, 'value'),
-    searchForSuggestionsRequest: makeActionCreator(`${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`, 'searchString', 'suffix', 'index'),
+    searchForSuggestionsRequest: makeActionCreator(
+      `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`,
+      'searchString',
+      'suffix',
+      'index'
+    ),
+    setSearchingStatus: makeActionCreator(`${types.SET_SEARCHING_STATUS}_${searchName}${suffix}`, 'status'),
     clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`),
     onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`, 'suggestion'),
     clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}${suffix}`),
-    getProjectsByUserRequest: makeActionCreator(types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,'userId','count')
+    getInitialSuggestionsRequest: makeActionCreator(
+      `${types.GET_INITIAL_SUGGESTIONS_REQUEST}_${searchName}`,
+      'userId',
+      'count',
+      'suffix'
+    ),
+    getProjectsByUserRequest: makeActionCreator(types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST, 'userId', 'count')
   }
 }

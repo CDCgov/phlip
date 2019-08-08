@@ -3,7 +3,7 @@ export const mockDocuments = {
     1: {
       name: 'the elder scrolls: skyrim',
       _id: '1',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 10 },
       uploadedByName: 'test user',
       jurisdictions: [1],
       projects: [12],
@@ -13,7 +13,7 @@ export const mockDocuments = {
     2: {
       name: 'gardenscapes',
       _id: '2',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 4 },
       uploadedByName: 'test user',
       jurisdictions: [1, 33],
       projects: [12, 11],
@@ -23,7 +23,7 @@ export const mockDocuments = {
     3: {
       name: 'words with friends',
       _id: '3',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 4 },
       uploadedByName: 'test user',
       jurisdictions: [2, 33],
       projects: [12, 44],
@@ -33,7 +33,7 @@ export const mockDocuments = {
     4: {
       name: 'legal text document',
       _id: '4',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 2 },
       uploadedByName: 'test user',
       jurisdictions: [],
       projects: [5],
@@ -43,7 +43,7 @@ export const mockDocuments = {
     5: {
       name: 'document about brooklyn nine nine',
       _id: '5',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 5 },
       uploadedByName: 'test user',
       jurisdictions: [33, 200, 1],
       projects: [12, 5],
@@ -53,7 +53,7 @@ export const mockDocuments = {
     6: {
       name: 'document about overwatch',
       _id: '6',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 4 },
       uploadedByName: 'test user',
       jurisdictions: [1],
       projects: [],
@@ -63,7 +63,7 @@ export const mockDocuments = {
     7: {
       name: 'document about bugs',
       _id: '7',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedBy: { firstName: 'test', lastName: 'user', id: 3 },
       uploadedByName: 'test user',
       jurisdictions: [2],
       projects: [],
@@ -72,7 +72,8 @@ export const mockDocuments = {
     }
   },
   allIds: ['1', '2', '3', '4', '5', '6', '7'],
-  visible: ['4', '1']
+  visible: ['4', '1'],
+  userDocs: ['2', '3', '6']
 }
 
 export const orderedByDate = ['4', '1', '6', '7', '2', '5', '3']

@@ -2,17 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import Icon from 'components/Icon'
-import Autocomplete from 'components/Autocomplete'
 import Typography from '@material-ui/core/Typography'
 import Modal, { ModalActions, ModalContent, ModalTitle } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import { CircularLoader } from 'components'
+import Autosuggest from 'react-autosuggest'
 
 const typeToTitle = {
   'delete': 'Delete Documents',
   'approve': 'Approve Documents',
   'project': 'Assign Project',
-  'jurisdiction': 'Assign Jurisdiction'
+  'jurisdiction': 'Assign Jurisdiction',
+  'removeproject' : 'Unassign Project'
 }
 
 /*
@@ -22,26 +23,25 @@ const getButtonText = (text, inProgress) => {
   return (
     <>
       {text}
-      {inProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginRight: 5 }} />}
+      {inProgress && <CircularLoader thickness={5} size={15} style={{ marginRight: 5 }} />}
     </>
   )
 }
 
+/**
+ * This is the modal that shows when the user selects a bulk action for documents
+ * @param props
+ */
 export const BulkModal = props => {
   const {
-    suggestions,
-    searchValue,
-    onClearSuggestions,
-    onGetSuggestions,
-    onSearchValueChange,
-    onSuggestionSelected,
     bulkType,
     docCount,
     onCloseModal,
     open,
     buttonInfo,
     onConfirmAction,
-    ownerList
+    ownerList,
+    autocompleteProps
   } = props
   
   const cancelButton = {
@@ -51,7 +51,7 @@ export const BulkModal = props => {
     preferred: true,
     onClick: onCloseModal
   }
-  
+
   const actions = [
     cancelButton,
     {
@@ -66,12 +66,21 @@ export const BulkModal = props => {
   const genMessage = (bulkType) => {
     if (['project', 'jurisdiction'].includes(bulkType)) {
       return `Do you want to assign this ${bulkType} to other users' documents?`
+    } else if (bulkType === 'removeproject') {
+      return `Do you want to remove this ${typeToTitle[bulkType]} from other users' documents?`
     } else {
       return `Do you want to ${bulkType} other users' documents?`
     }
   }
+
+  const onMouseDown = e => {
+    if (['react-autowhatever-1','jurisdiction-form','bulkConfirmBox'].includes(e.target.id)){
+      e.preventDefault()
+    }
+  }
+
   return (
-    <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox">
+    <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox" onMouseDown={onMouseDown}>
       <ModalTitle title={typeToTitle[bulkType]} />
       <Divider />
       <ModalContent
@@ -83,50 +92,34 @@ export const BulkModal = props => {
           height: 250
         }}>
         <FlexGrid container flex justify="space-between">
-          {['project', 'jurisdiction'].includes(bulkType) &&
-          <FlexGrid container type="row" align="center" padding="0 0 20px">
-            <Icon style={{ paddingRight: 8 }}>
+          {['project', 'jurisdiction', 'removeproject'].includes(bulkType) &&
+          <FlexGrid container type="row" padding="0 0 20px" flex>
+            <Icon style={{ paddingRight: 8, marginTop: 5 }}>
               {bulkType === 'jurisdiction' ? 'account_balance' : 'dvr'}
             </Icon>
-            <Autocomplete
-              suggestions={suggestions}
-              handleGetSuggestions={val => onGetSuggestions(bulkType, val)}
-              handleClearSuggestions={() => onClearSuggestions(bulkType)}
-              inputProps={{
-                value: searchValue,
-                onChange: (e, { newValue }) => {
-                  e.target.value === undefined
-                    ? onSearchValueChange(bulkType, newValue.name)
-                    : onSearchValueChange(bulkType, e.target.value)
-                },
-                id: `${bulkType}-name`
-              }}
-              handleSuggestionSelected={onSuggestionSelected(bulkType)}
-              InputProps={{
-                placeholder: `Search ${bulkType}s`,
-                fullWidth: true
-              }}
-            />
+            <Autosuggest {...autocompleteProps} />
           </FlexGrid>}
           <FlexGrid>
             {ownerList.length > 0 &&
             <>
               <Typography variant="body1">{genMessage(bulkType)}</Typography>
-              <Typography style={{ padding:10 }} />
+              <Typography style={{ padding: 10 }} />
               <Typography variant="body1">Number of documents selected: {docCount}</Typography>
-              <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
-             </> }
-            { ownerList.length === 0 && bulkType !== 'delete' &&
-              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+              <Typography variant="body2" style={{ paddingTop: 20 }}>Users: {ownerList.join(', ')}</Typography>
+            </>}
+            {ownerList.length === 0 && bulkType !== 'delete' &&
+            <Typography variant="body1">Number of documents selected: {docCount}</Typography>
             }
             {bulkType === 'delete' &&
             <>
-              { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
-              <Typography style={{ paddingTop:20 }} >
-                <span style={{ fontSize:18, fontWeight:500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
+              {ownerList.length === 0 &&
+              <Typography variant="body1">
+                Do you want to delete {docCount} document{docCount > 1 ? 's' : ''}?
+              </Typography>}
+              <Typography style={{ paddingTop: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
               </Typography>
-              </>
-            }
+            </>}
           </FlexGrid>
         </FlexGrid>
       </ModalContent>
@@ -138,18 +131,13 @@ export const BulkModal = props => {
 
 BulkModal.propTypes = {
   open: PropTypes.bool,
-  suggestions: PropTypes.array,
-  searchValue: PropTypes.string,
-  onClearSuggestions: PropTypes.func,
-  onGetSuggestions: PropTypes.func,
-  onSearchValueChange: PropTypes.func,
-  onSuggestionSelected: PropTypes.func,
-  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve']),
+  bulkType: PropTypes.oneOf(['', 'project', 'jurisdiction', 'delete', 'approve', 'removeproject']),
   docCount: PropTypes.number,
   onCloseModal: PropTypes.func,
   onConfirmAction: PropTypes.func,
   buttonInfo: PropTypes.object,
-  ownerList: PropTypes.array
+  ownerList: PropTypes.array,
+  autocompleteProps: PropTypes.object
 }
 
 export default BulkModal

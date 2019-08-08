@@ -1,12 +1,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
-import SimpleInput from 'components/SimpleInput'
-import DatePicker from 'components/DatePicker'
-import Icon from 'components/Icon'
-import IconButton from 'components/IconButton'
-import Autocomplete from 'components/Autocomplete'
 import { convertToLocalDate } from 'utils/normalize'
+import { IconButton, Icon, DatePicker, SimpleInput, Tooltip, CircularLoader } from 'components'
+import Autosuggest from 'react-autosuggest'
+import Grid from 'components/Grid'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import { withStyles } from '@material-ui/core/styles'
+
+/* istanbul ignore next */
+const styles = () => ({
+  suggestionsContainerOpenAbsolute: {
+    width: '100%',
+    maxHeight: 500,
+    overflow: 'auto',
+    position: 'absolute',
+    '& div:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  container: {
+    width: '100%',
+    position: 'relative'
+  }
+})
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -63,7 +79,15 @@ export class FileList extends Component {
     /**
      * invalid files because of size or type
      */
-    invalidFiles: PropTypes.array
+    invalidFiles: PropTypes.array,
+    /**
+     * All props to pass to jurisdiction autocomplete
+     */
+    jurisdictionAutocompleteProps: PropTypes.object,
+    /**
+     * Classes from material-ui withStyles HOC
+     */
+    classes: PropTypes.object
   }
   
   constructor(props, context) {
@@ -77,7 +101,8 @@ export class FileList extends Component {
    * @param value
    */
   onDocPropertyChange = (index, propName, value) => {
-    this.props.handleDocPropertyChange(index, propName, value)
+    const { handleDocPropertyChange } = this.props
+    handleDocPropertyChange(index, propName, value)
   }
   
   /**
@@ -86,7 +111,8 @@ export class FileList extends Component {
    * @returns {Function}
    */
   getSuggestions = index => searchValue => {
-    this.props.onGetSuggestions('jurisdiction', searchValue, index)
+    const { onGetSuggestions } = this.props
+    onGetSuggestions(searchValue, index)
   }
   
   /**
@@ -95,7 +121,8 @@ export class FileList extends Component {
    * @returns {Function}
    */
   clearSuggestions = index => () => {
-    this.props.onClearSuggestions(index)
+    const { onClearSuggestions } = this.props
+    onClearSuggestions(index)
   }
   
   /**
@@ -103,7 +130,8 @@ export class FileList extends Component {
    * @returns {*}
    */
   toggleEditMode = (index, property) => () => {
-    this.props.toggleRowEditMode(index, property)
+    const { toggleRowEditMode } = this.props
+    toggleRowEditMode(index, property)
   }
   
   /**
@@ -125,7 +153,8 @@ export class FileList extends Component {
    * @returns {*}
    */
   handleRemoveDoc = index => () => {
-    this.props.handleRemoveDoc(index)
+    const { handleRemoveDoc } = this.props
+    handleRemoveDoc(index)
   }
   
   render() {
@@ -140,7 +169,8 @@ export class FileList extends Component {
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-    const { selectedDocs, invalidFiles } = this.props
+    
+    const { selectedDocs, invalidFiles, jurisdictionAutocompleteProps, classes } = this.props
     
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -155,7 +185,7 @@ export class FileList extends Component {
         </Grid>
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }} id="uploadFileList">
           {selectedDocs.map((doc, i) => {
-            const isDuplicate = doc.isDuplicate
+            const isDuplicate = doc.isDuplicate || doc.hasError
             const isInvalid = invalidFiles.find(file => file.name === doc.name.value) !== undefined
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
@@ -163,6 +193,23 @@ export class FileList extends Component {
             const bgColor = i % 2 === 0
               ? '#f9f9f9'
               : '#fff'
+  
+            const inputProps = {
+              InputProps: {
+                style: { 'alignItems': 'center' },
+                endAdornment: doc.jurisdictions.searching && (
+                  <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
+                    <CircularLoader
+                      size={20}
+                      thickness={4}
+                      color="primary"
+                      type="indeterminate"
+                    />
+                  </InputAdornment>
+                ),
+                error: !!doc.jurisdictions.error
+              }
+            }
             
             return (
               <Grid
@@ -173,7 +220,14 @@ export class FileList extends Component {
                 <div />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   {(isDuplicate || isInvalid) &&
-                  <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>}
+                  <Tooltip
+                    text={doc.isDuplicate
+                      ? 'Duplicate document'
+                      : doc.hasError
+                        ? 'File upload failed'
+                        : 'Invalid File'}>
+                    <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>
+                  </Tooltip>}
                   {!isDuplicate && <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>}
                   <div style={colStyle}>{doc.name.value}</div>
                 </div>
@@ -181,22 +235,28 @@ export class FileList extends Component {
                   ? doc.jurisdictions.inEditMode
                     ? (
                       <div style={{ ...colStyle, position: 'relative' }}>
-                        <Autocomplete
+                        <Autosuggest
+                          {...jurisdictionAutocompleteProps}
                           suggestions={doc.jurisdictions.value.suggestions}
-                          handleGetSuggestions={this.getSuggestions(i)}
-                          handleClearSuggestions={this.clearSuggestions(i)}
-                          InputProps={{ placeholder: 'Search jurisdictions', error: !!doc.jurisdictions.error }}
-                          focusInputOnSuggestionClick={false}
-                          inputProps={{
-                            value: doc.jurisdictions.value.searchValue,
-                            onChange: this.onAutocompleteChange(i, 'jurisdictions', doc.jurisdictions.value),
-                            id: `jurisdiction-name-row-${i}`
-                          }}
-                          handleSuggestionSelected={(event, { suggestionValue }) => {
+                          onSuggestionsFetchRequested={this.getSuggestions(i)}
+                          onSuggestionsClearRequested={this.clearSuggestions(i)}
+                          onSuggestionSelected={(event, { suggestionValue }) => {
                             this.onDocPropertyChange(i, 'jurisdictions', {
                               ...suggestionValue,
                               searchValue: suggestionValue.name
                             })
+                          }}
+                          inputProps={{
+                            ...jurisdictionAutocompleteProps.inputProps,
+                            value: doc.jurisdictions.value.searchValue,
+                            onChange: this.onAutocompleteChange(i, 'jurisdictions', doc.jurisdictions.value),
+                            id: `jurisdiction-name-row-${i}`,
+                            ...inputProps
+                          }}
+                          theme={{
+                            ...jurisdictionAutocompleteProps.theme,
+                            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+                            container: classes.container
                           }}
                         />
                       </div>)
@@ -259,4 +319,4 @@ export class FileList extends Component {
   }
 }
 
-export default FileList
+export default withStyles(styles)(FileList)

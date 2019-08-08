@@ -2,13 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { default as MuiAvatar } from '@material-ui/core/Avatar'
 import transparent from './transparent.png'
+import { connect } from 'react-redux'
 
 /**
  * @component
  * Shows an circular avatar with initials or img
  */
-export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userName, alt, ...otherProps }) => {
-  const dim = big ? '45px' : small ? '20px' : cardAvatar ? '38px' : '30px'
+export const Avatar = props => {
+  const { big, small, avatar, initials, style, cardAvatar, userName, alt, dispatch, userId, ...otherProps } = props
+  
+  const dim = big
+    ? '45px'
+    : small
+      ? '20px'
+      : cardAvatar
+        ? '38px'
+        : '30px'
   
   const common = {
     width: dim,
@@ -76,7 +85,11 @@ Avatar.propTypes = {
   /**
    * alt text for image
    */
-  alt: PropTypes.string
+  alt: PropTypes.string,
+  /**
+   * User id
+   */
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 Avatar.defaultProps = {
@@ -86,7 +99,20 @@ Avatar.defaultProps = {
   style: {},
   theme: {},
   userName: '',
-  alt: ''
+  alt: '',
+  userId: 0
 }
 
-export default Avatar
+/* istanbul ignore next */
+const mapStateToProps = (state, ownProps) => {
+  const user = ownProps.userId ? state.data.user.byId[ownProps.userId] : {}
+  
+  return {
+    userName: user.username,
+    initials: user.initials,
+    avatar: user.avatar,
+    ...ownProps
+  }
+}
+
+export default connect(mapStateToProps, null)(Avatar)

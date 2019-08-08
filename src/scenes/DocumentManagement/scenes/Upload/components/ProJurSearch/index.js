@@ -1,76 +1,81 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Autocomplete, Icon } from 'components'
+import { FlexGrid, Icon } from 'components'
+import Autosuggest from 'react-autosuggest'
+import { withStyles } from '@material-ui/core/styles'
 
+/* istanbul ignore next */
+const styles = () => ({
+  suggestionsContainerOpenAbsolute: {
+    width: '100%',
+    maxHeight: 500,
+    overflow: 'auto',
+    position: 'absolute',
+    '& div:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  container: {
+    width: '100%',
+    position: 'relative'
+  }
+})
+
+/**
+ * Renders the project and jurisdiction autocomplete search fields
+ */
 const ProJurSearch = props => {
   const {
-    projectSuggestions,
-    jurisdictionSuggestions,
-    projectSearchValue,
-    jurisdictionSearchValue,
-    onClearSuggestions,
-    onGetSuggestions,
-    onSearchValueChange,
-    onSuggestionSelected,
-    showProjectError,
+    projectAutocompleteProps,
+    jurisdictionAutocompleteProps,
     showJurSearch,
-    onMouseDown
+    onMouseDown,
+    showProjectError,
+    classes
   } = props
-
+  
   return (
     <FlexGrid container type="row" align="center" justify="center" onMouseDown={onMouseDown} id="upload-panel">
-      <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }} >
+      <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }}>
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
-        <Autocomplete
-          suggestions={projectSuggestions}
-          handleGetSuggestions={val => onGetSuggestions('project', val)}
-          handleClearSuggestions={() => onClearSuggestions('project')}
+        <Autosuggest
+          {...projectAutocompleteProps}
           inputProps={{
-            value: projectSearchValue,
-            onChange: (e, { newValue }) => {
-              if (e.target.value === undefined) {
-                onSearchValueChange('project', newValue.name)
-              } else {
-                onSearchValueChange('project', e.target.value)
-              }
+            ...projectAutocompleteProps.inputProps,
+            TextFieldProps: {
+              ...projectAutocompleteProps.inputProps.TextFieldProps,
+              label: 'Project',
+              required: true,
+              error: showProjectError
             },
-            id: 'project-name'
+            InputProps: {
+              ...projectAutocompleteProps.inputProps.InputProps,
+              error: showProjectError
+            }
           }}
-          style={{ width: '100%' }}
-          InputProps={{
-            label: 'Project',
-            placeholder: 'Search projects',
-            required: true,
-            fullWidth: true,
-            error: showProjectError
+          theme={{
+            ...projectAutocompleteProps.theme,
+            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+            container: classes.container
           }}
-          handleSuggestionSelected={onSuggestionSelected('project')}
-          suggestionType='project'
         />
       </FlexGrid>
       {showJurSearch &&
       <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 20, minWidth: 250 }}>
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>account_balance</Icon>
-        <Autocomplete
-          suggestions={jurisdictionSuggestions}
-          handleGetSuggestions={val => onGetSuggestions('jurisdiction', val)}
-          handleClearSuggestions={() => onClearSuggestions('jurisdiction')}
+        <Autosuggest
+          {...jurisdictionAutocompleteProps}
           inputProps={{
-            value: jurisdictionSearchValue,
-            onChange: (e, { newValue }) => {
-              if (e.target.value === undefined) {
-                onSearchValueChange('jurisdiction', newValue.name)
-              } else {
-                onSearchValueChange('jurisdiction', e.target.value)
-              }
-            },
-            id: 'jurisdiction-name'
+            ...jurisdictionAutocompleteProps.inputProps,
+            TextFieldProps: {
+              ...jurisdictionAutocompleteProps.inputProps.TextFieldProps,
+              label: 'Jurisdiction'
+            }
           }}
-          handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
-          InputProps={{
-            label: 'Jurisdiction',
-            placeholder: 'Search jurisdictions',
-            fullWidth: true
+          theme={{
+            ...jurisdictionAutocompleteProps.theme,
+            suggestionsContainerOpen: classes.suggestionsContainerOpenAbsolute,
+            container: classes.container
           }}
         />
       </FlexGrid>}
@@ -79,19 +84,30 @@ const ProJurSearch = props => {
 }
 
 ProJurSearch.propTypes = {
-  projectSuggestions: PropTypes.array,
-  jurisdictionSuggestions: PropTypes.array,
-  projectSearchValue: PropTypes.string,
-  jurisdictionSearchValue: PropTypes.string,
-  onClearSuggestions: PropTypes.func,
-  onGetSuggestions: PropTypes.func,
-  onSearchValueChange: PropTypes.func,
-  onJurisdictionSelected: PropTypes.func,
-  onProjectSelected: PropTypes.func,
+  /**
+   * If there's an error for the project input
+   */
   showProjectError: PropTypes.bool,
-  onSuggestionSelected: PropTypes.func,
+  /**
+   * If the jurisdiction search should be shown
+   */
   showJurSearch: PropTypes.bool,
-  onMouseDown: PropTypes.func
+  /**
+   * Handles mouse down
+   */
+  onMouseDown: PropTypes.func,
+  /**
+   * Props to pass to the autocomplete search for project
+   */
+  projectAutocompleteProps: PropTypes.object,
+  /**
+   * Props to pass to the autocomplete search for jurisdiction
+   */
+  jurisdictionAutocompleteProps: PropTypes.object,
+  /**
+   * Passed in from material ui withStyles HOC
+   */
+  classes: PropTypes.object
 }
 
-export default ProJurSearch
+export default withStyles(styles)(ProJurSearch)

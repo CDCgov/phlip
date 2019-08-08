@@ -32,12 +32,10 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
   asyncValidate={[Function]}
   form="addEditUser"
   handleSubmit={[Function]}
-  height="400px"
   initialValues={Object {}}
   onClose={[MockFunction]}
   open={true}
   title="Edit User"
-  width="600px"
 >
   <FlexGrid
     align="stretch"
@@ -118,6 +116,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
           placeholder="Enter first name"
           required={true}
           shrinkLabel={true}
+          smallLabel={true}
           validate={[Function]}
         />
       </FlexGrid>
@@ -140,6 +139,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
           placeholder="Enter last name"
           required={true}
           shrinkLabel={true}
+          smallLabel={true}
           validate={[Function]}
         />
       </FlexGrid>
@@ -164,6 +164,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
         placeholder="Enter email"
         required={true}
         shrinkLabel={true}
+        smallLabel={true}
         validate={[Function]}
       />
     </FlexGrid>
@@ -191,7 +192,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
       >
         <Field
           component={[Function]}
-          defaultValue=""
+          defaultValue="Coordinator"
           disabled={false}
           id="role"
           label="Role"
@@ -212,6 +213,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
               },
             ]
           }
+          required={true}
           style={
             Object {
               "display": "flex",

@@ -66,6 +66,11 @@ let apiCalls = [
     path: () => '/users'
   },
   {
+    name: 'searchUserList',
+    method: 'get',
+    path: () => '/users'
+  },
+  {
     name: 'addUser',
     method: 'post',
     path: () => '/users'
@@ -134,6 +139,11 @@ let apiCalls = [
     name: 'getScheme',
     method: 'get',
     path: ({ projectId }) => `/projects/${projectId}/scheme`
+  },
+  {
+    name: 'getSchemeTree',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}/scheme/tree`
   },
   {
     name: 'addQuestion',
@@ -251,6 +261,11 @@ let apiCalls = [
     path: ({ projectId, jurisdictionId, questionId }) => `/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`
   },
   {
+    name: 'bulkValidate',
+    method: 'post',
+    path: ({ projectId, jurisdictionId, userId }) => `/projects/${projectId}/jurisdictions/${jurisdictionId}/bulkValidatedQuestions/${userId}`
+  },
+  {
     name: 'clearFlag',
     method: 'delete',
     path: ({ flagId }) => `/flags/${flagId}`
@@ -271,7 +286,7 @@ let apiCalls = [
     path: ({ docId }) => `/cleanup/${docId}/annotations`
   },
   {
-    name:'getBackendData',
+    name: 'getBackendData',
     method: 'get',
     path: () => '/appInfo'
   }
@@ -280,11 +295,13 @@ let apiCalls = [
 
 // If development, then include the basic auth api call
 if (APP_IS_SAML_ENABLED !== '1') {
-  apiCalls = [...apiCalls, {
-    name: 'login',
-    method: 'post',
-    path: () => '/users/authenticate'
-  }]
+  apiCalls = [
+    ...apiCalls, {
+      name: 'login',
+      method: 'post',
+      path: () => '/users/authenticate'
+    }
+  ]
 }
 
 export default apiCalls

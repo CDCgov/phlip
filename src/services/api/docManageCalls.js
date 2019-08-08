@@ -11,9 +11,21 @@ const docManageCalls = [
     headers: () => ({ 'Content-Type': 'multipart/form-data' })
   },
   {
+    name: 'downloadZip',
+    method: 'get',
+    path: ({ docList }) => `/docs/download?${docList.map((doc, i) => `docs[]=${doc}${i !== docList.length - 1
+      ? '&'
+      : ''}`).join('')}`
+  },
+  {
+    name: 'download',
+    method: 'get',
+    path: ({ docId }) => `/docs/${docId}/download`
+  },
+  {
     name: 'getDocs',
     method: 'get',
-    path: () => '/docs'
+    path: (projectList = '') => projectList !== '' ? `/docs?${projectList}` : '/docs'
   },
   {
     name: 'extractInfo',
@@ -25,6 +37,16 @@ const docManageCalls = [
     name: 'getDocumentContents',
     method: 'get',
     path: ({ docId }) => `/docs/${docId}/contents`
+  },
+  {
+    name: 'addToDocArray',
+    method: 'post',
+    path: ({ docId, updateType, newId }) => `/docs/${docId}/${updateType}/${newId}`
+  },
+  {
+    name: 'removeFromDocArray',
+    method: 'delete',
+    path: ({ docId, updateType, removeId }) => `/docs/${docId}/${updateType}/${removeId}`
   },
   {
     name: 'updateDoc',

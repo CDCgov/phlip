@@ -1,23 +1,19 @@
 import { createLogic } from 'redux-logic'
-import * as types from '../../actionTypes'
+import { types } from './actions'
 import * as questionTypes from './constants'
-import { commonHelpers } from 'utils'
 
 /**
  * Adds a userID to every action so as to not repeat the code in every logic block
  */
 const updateUserIdLogic = createLogic({
-  type: [types.UPDATE_QUESTION_REQUEST],
+  type: types.UPDATE_QUESTION_REQUEST,
   transform({ getState, action }, next) {
     next({
       ...action,
       question: {
         ...action.question,
         userId: getState().data.user.currentUser.id,
-        possibleAnswers: action.question.possibleAnswers.map(answer => {
-          const { isNew, ...answerOptions } = answer
-          return answerOptions
-        })
+        possibleAnswers: action.question.possibleAnswers.map((answer, index) => ({ ...answer, order: index + 1 }))
       }
     })
   }
@@ -29,49 +25,29 @@ const updateUserIdLogic = createLogic({
 const updateOutlineLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
+    let possibleAnswers
+    if (action.question.questionType === questionTypes.TEXT_FIELD) {
+      possibleAnswers = [{ text: '', order: 0 }]
+    } else {
+      possibleAnswers = action.question.possibleAnswers.map((answer, index) => ({ ...answer, order: index + 1 }))
+    }
+    
     next({
       ...action,
       question: {
         ...action.question,
         userId: getState().data.user.currentUser.id,
-        outline: getState().scenes.codingScheme.outline,
+        outline: getState().scenes.codingScheme.main.outline,
         parentId: action.parentId,
-        possibleAnswers: action.question.questionType === questionTypes.TEXT_FIELD
-          ? [{ text: '' }]
-          : action.question.possibleAnswers
-      }
-    })
-  }
-})
-
-/**
- * Updates the question object in the action creator values with the position in parent number
- */
-const updatePositionInParentLogic = createLogic({
-  type: types.ADD_QUESTION_REQUEST,
-  transform({ getState, action }, next) {
-    next({
-      ...action,
-      question: {
-        ...action.question,
-        positionInParent: getState().scenes.codingScheme.questions.length
-      }
-    })
-  }
-})
-
-/**
- * Updates question object in action creator with category question status and position in parent
- */
-const updateIsCategoryQuestionLogic = createLogic({
-  type: types.ADD_CHILD_QUESTION_REQUEST,
-  transform({ action }, next) {
-    next({
-      ...action,
-      question: {
-        ...action.question,
-        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY,
-        positionInParent: action.parentNode.hasOwnProperty('children') ? action.parentNode.children.length : 0
+        possibleAnswers,
+        isCategoryQuestion: action.type === types.ADD_QUESTION_REQUEST
+          ? false
+          : action.parentNode.questionType === questionTypes.CATEGORY,
+        positionInParent: action.type === types.ADD_QUESTION_REQUEST
+          ? getState().scenes.codingScheme.main.questions.length
+          : action.parentNode.children
+            ? action.parentNode.children.length
+            : 0
       }
     })
   }
@@ -83,32 +59,26 @@ const updateIsCategoryQuestionLogic = createLogic({
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
-    action.question.hovering = false
-    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
-      return { ...answer, order: index + 1 }
-    })
-
-    action.question.possibleAnswers = orderedAnswers
     try {
-      const updatedQuestion = await api.updateQuestion(action.question, {}, {
-        projectId: action.projectId,
-        questionId: action.questionId
-      })
+      const updatedQuestion = await api.updateQuestion(
+        action.question,
+        {},
+        { projectId: action.projectId, questionId: action.questionId }
+      )
+      
       dispatch({
         type: types.UPDATE_QUESTION_SUCCESS,
         payload: {
           ...updatedQuestion,
-          possibleAnswers: commonHelpers.sortListOfObjects(action.question.possibleAnswers),
-          children: action.question.children,
+          possibleAnswers: action.question.possibleAnswers,
+          children: action.question.children || [],
           expanded: true,
-          hovering: false,
           path: action.path
         }
       })
     } catch (error) {
       dispatch({
         type: types.UPDATE_QUESTION_FAIL,
-        error: true,
         payload: 'We couldn\'t update the question. Please try again later.'
       })
     }
@@ -122,26 +92,20 @@ const updateQuestionLogic = createLogic({
 const addChildQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
-    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
-      return { ...answer, order: index + 1 }
-    })
-    action.question.possibleAnswers = orderedAnswers
     try {
       const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_CHILD_QUESTION_SUCCESS,
         payload: {
           ...action.question,
-          id: question.id,
           path: action.path,
-          hovering: false
+          id: question.id
         }
       })
     } catch (error) {
       dispatch({
         type: types.ADD_CHILD_QUESTION_FAIL,
-        payload: 'We couldn\'t add this child question. Please try again later.',
-        error: true
+        payload: 'We couldn\'t add this child question. Please try again later.'
       })
     }
     done()
@@ -154,29 +118,21 @@ const addChildQuestionLogic = createLogic({
 const addQuestionLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
-    action.question.hovering = false
-    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
-      return { ...answer, order: index + 1 }
-    })
-
-    action.question.possibleAnswers = orderedAnswers
     try {
       const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_QUESTION_SUCCESS,
         payload: {
           ...question,
-          possibleAnswers: commonHelpers.sortListOfObjects(action.question.possibleAnswers),
+          possibleAnswers: action.question.possibleAnswers,
           parentId: action.question.parentId,
-          positionInParent: action.question.positionInParent,
-          hovering: false
+          positionInParent: action.question.positionInParent
         }
       })
     } catch (error) {
       dispatch({
         type: types.ADD_QUESTION_FAIL,
-        payload: 'We couldn\'t add the question. Please try again later.',
-        error: true
+        payload: 'We couldn\'t add the question. Please try again later.'
       })
     }
     done()
@@ -184,11 +140,9 @@ const addQuestionLogic = createLogic({
 })
 
 export default [
-  updatePositionInParentLogic,
   updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
-  updateIsCategoryQuestionLogic,
   addQuestionLogic,
   addChildQuestionLogic
 ]

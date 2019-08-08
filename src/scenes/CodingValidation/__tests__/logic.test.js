@@ -3,9 +3,10 @@ import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import { types } from '../actions'
 import { INITIAL_STATE } from 'data/users/reducer'
-import createApiHandler, { projectApiInstance } from 'services/api'
 import { INITIAL_STATE as initialCoding } from '../reducer'
-import { default as reducer } from 'reducer'
+import { INITIAL_STATE as initialDocList } from '../components/DocumentList/reducer'
+import createApiHandler, { projectApiInstance } from 'services/api'
+import createRootReducer from 'reducer'
 import apiCalls from 'services/api/calls'
 import {
   schemeFromApi,
@@ -18,39 +19,44 @@ import {
   userValidatedQuestions,
   userAnswersValidation,
   schemeUserAnswersEmpty,
-  schemeTreeAfterInitialization
+  schemeTreeAfterInitialization,
+  mergedUserQuestions,
+  bulkValidationQuestions
 } from 'utils/testData/coding'
 
 let history = {}, mock = {}
-
+const reducer = createRootReducer()
 const mockReducer = state => state
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
-const setupStore = (currentState = {}, reducerFn = mockReducer) => {
+const setupStore = (currentState = {}, reducerFn = mockReducer, docListOther = {}) => {
   return createMockStore({
     initialState: {
       data: {
         user: {
-          ...INITIAL_STATE, currentUser: {
+          ...INITIAL_STATE,
+          currentUser: {
             id: 1, firstName: 'Test', lastName: 'User', avatar: ''
-          }, byId: {
+          },
+          byId: {
             1: { id: 1 }
           }
+        },
+        projects: {
+          byId: {
+            4: {
+              id: 4, name: 'p4', lastEditedBy: '', dateLastEdited: new Date(10, 10, 2010)
+            }
+          }
         }
-      }, scenes: {
+      },
+      scenes: {
         codingValidation: {
           coding: {
             ...initialCoding, ...currentState
-          }
-        }, home: {
-          main: {
-            searchValue: '', projects: {
-              byId: {
-                4: {
-                  id: 4, name: 'p4', lastEditedBy: '', dateLastEdited: new Date(10, 10, 2010)
-                }
-              }
-            }
+          },
+          documentList: {
+            ...initialDocList, ...docListOther
           }
         }
       }
@@ -75,9 +81,7 @@ describe('CodingValidation logic', () => {
         })
         
         mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1')
-          .reply(config => {
-            return userCodedQuestions[1]
-          })
+          .reply(config => userCodedQuestions[1])
         
         store.dispatch({
           type: types.SAVE_USER_ANSWER_REQUEST,
@@ -141,34 +145,7 @@ describe('CodingValidation logic', () => {
         })
         
         store.whenComplete(() => {
-          expect(store.actions[2].type)
-            .toEqual(types.SAVE_USER_ANSWER_SUCCESS)
-          done()
-        })
-      })
-      
-      test('should dispatch REMOVE_REQUEST_FROM_QUEUE if question is not a new coded question', done => {
-        const store = setupStore({
-          unsavedChanges: true,
-          scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: { ...userAnswersCoded },
-          messageQueue: []
-        })
-        
-        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1')
-          .reply(200, userCodedQuestions[1])
-        
-        store.dispatch({
-          type: types.SAVE_USER_ANSWER_REQUEST,
-          projectId: 4,
-          jurisdictionId: 32,
-          selectedCategoryId: null,
-          questionId: 1
-        })
-        
-        store.whenComplete(() => {
-          expect(store.actions[1].type)
-            .toEqual(types.REMOVE_REQUEST_FROM_QUEUE)
+          expect(store.actions[1].type).toEqual(types.SAVE_USER_ANSWER_SUCCESS)
           done()
         })
       })
@@ -247,10 +224,15 @@ describe('CodingValidation logic', () => {
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: {} },
           userAnswers: {
-            ...schemeUserAnswersEmpty, 1: {
-              answers: { ...userAnswersCoded[1] }, flag: { type: 0 }, isNewCodedQuestion: true, hasMadePost: false
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: false
             }
           },
+          mergedUserQuestions,
           messageQueue: []
         })
         
@@ -280,6 +262,7 @@ describe('CodingValidation logic', () => {
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: [] },
           userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
           messageQueue: []
         })
         
@@ -299,7 +282,7 @@ describe('CodingValidation logic', () => {
     })
   })
   
-  describe('GET_CODING_OUTLINE logic', () => {
+  describe('GET_OUTLINE logic', () => {
     describe('when a coding scheme exists and calls are successful', () => {
       const store = setupStore()
       
@@ -313,14 +296,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, codedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -373,14 +356,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, [])
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -404,14 +387,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, userCodedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -435,13 +418,13 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(200, codedQuestions)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_FAIL', done => {
+      test('should dispatch GET_OUTLINE_FAIL', done => {
         store.whenComplete(() => {
-          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_FAIL)
+          expect(store.actions[1].type).toEqual(types.GET_OUTLINE_FAIL)
           done()
         })
       })
@@ -466,14 +449,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions')
           .reply(500)
         store.dispatch({
-          type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -490,9 +473,11 @@ describe('CodingValidation logic', () => {
     })
   })
   
-  describe('GET_VALIDATION_OUTLINE logic', () => {
+  describe('GET_OUTLINE logic for validation', () => {
     describe('when a coding scheme exists and calls are successful', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/api/projects/1/scheme').reply(200, {
@@ -507,14 +492,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/2/avatar').reply(200, '')
         
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[2].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -557,7 +542,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when the scheme is empty', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -567,14 +554,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/projects/1/jurisdictions/1/validatedquestions')
           .reply(200, [])
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -588,7 +575,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when jurisdictions are empty and scheme is not', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -602,14 +591,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/avatar').reply(200, '')
         mock.onGet('/users/2/avatar').reply(200, '')
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -623,7 +612,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when api scheme api request fails', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(500)
@@ -635,21 +626,21 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/1/avatar').reply(200, '')
         mock.onGet('/users/2/avatar').reply(200, '')
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_FAIL', done => {
+      test('should dispatch GET_OUTLINE_FAIL', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_FAIL)
+            .toEqual(types.GET_OUTLINE_FAIL)
           done()
         })
       })
       
       test('should return an error string', done => {
         store.whenComplete(() => {
-          expect(store.actions[1].payload).toEqual('Couldn\'t get outline')
+          expect(store.actions[1].payload).toEqual('Failed to get outline.')
           expect(store.actions[1].error).toEqual(true)
           done()
         })
@@ -657,7 +648,9 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when validated questions api request fails', () => {
-      const store = setupStore()
+      const store = setupStore({
+        page: 'validation'
+      })
       
       beforeEach(() => {
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -670,14 +663,14 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/2/avatar').reply(200, '')
         mock.onGet('/projects/1/jurisdictions/1/validationquestions').reply(500)
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
-      test('should dispatch GET_VALIDATION_OUTLINE_SUCCESS', done => {
+      test('should dispatch GET_OUTLINE_SUCCESS', done => {
         store.whenComplete(() => {
           expect(store.actions[1].type)
-            .toEqual(types.GET_VALIDATION_OUTLINE_SUCCESS)
+            .toEqual(types.GET_OUTLINE_SUCCESS)
           done()
         })
       })
@@ -694,17 +687,21 @@ describe('CodingValidation logic', () => {
     })
     
     describe('when flags exist in the first question', () => {
-      const store = setupStore({}, reducer)
+      const store = setupStore({
+        page: 'validation'
+      }, reducer)
       
       beforeEach(() => {
         const questions = schemeFromApi
         questions[0] = {
-          ...schemeFromApi[0], flags: [
+          ...schemeFromApi[0],
+          flags: [
             {
               raisedBy: {
                 userId: 3, firstName: 'test', lastName: 'user3'
               }
-            }]
+            }
+          ]
         }
         
         mock.onGet('/projects/1/scheme').reply(200, {
@@ -718,7 +715,7 @@ describe('CodingValidation logic', () => {
         mock.onGet('/users/3/avatar').reply(200, '')
         mock.onGet('/projects/1/jurisdictions/1/validationquestions').reply(500)
         store.dispatch({
-          type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
+          type: types.GET_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1
         })
       })
       
@@ -970,7 +967,8 @@ describe('CodingValidation logic', () => {
           parentId: 0,
           positionInParent: 1,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         const question2CodedAnswers = {
@@ -1018,7 +1016,8 @@ describe('CodingValidation logic', () => {
           positionInParent: 0,
           isCategoryQuestion: true,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
@@ -1027,7 +1026,8 @@ describe('CodingValidation logic', () => {
               schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: []
             }, {
               schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: []
-            }])
+            }
+          ])
         
         mock.onGet('/projects/1/scheme/4').reply(200, updatedCatChildQuestion)
         
@@ -1050,7 +1050,8 @@ describe('CodingValidation logic', () => {
                   id: 10, order: 2, text: 'category 2'
                 }, {
                   id: 20, order: 3, text: 'category 3'
-                }], question: schemeById[4], selectedCategory: 0, selectedCategoryId: 10
+                }
+              ], question: schemeById[4], selectedCategory: 0, selectedCategoryId: 10
             },
             userId: 1
           })
@@ -1063,7 +1064,8 @@ describe('CodingValidation logic', () => {
           
           expect(store.actions[1])
             .toHaveProperty('payload.updatedState.categories', [
-              { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }])
+              { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
+            ])
           
           done()
         })
@@ -1148,7 +1150,8 @@ describe('CodingValidation logic', () => {
           parentId: 0,
           positionInParent: 1,
           possibleAnswers: [
-            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            { id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }
+          ]
         }
         
         const question2CodedAnswers = {
@@ -1241,7 +1244,8 @@ describe('CodingValidation logic', () => {
                 schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: []
               }, {
                 schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: []
-              }])
+              }
+            ])
           mock.onGet('/projects/1/scheme/4').reply(200, schemeFromApi[3])
           
           const store = setupStore(currentState)
@@ -1263,7 +1267,8 @@ describe('CodingValidation logic', () => {
                     id: 10, order: 2, text: 'category 2'
                   }, {
                     id: 20, order: 3, text: 'category 3'
-                  }], selectedCategory: 0, selectedCategoryId: 10, index: 3, question: schemeById[4]
+                  }
+                ], selectedCategory: 0, selectedCategoryId: 10, index: 3, question: schemeById[4]
               }, userId: 1, page: 'coding'
             })
             
@@ -1283,9 +1288,15 @@ describe('CodingValidation logic', () => {
     describe('should get question selected in navigator based on action and state information', () => {
       test('should handle regular questions', done => {
         const currentState = {
-          question: schemeById[3], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[3],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
         
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/3')
@@ -1324,9 +1335,15 @@ describe('CodingValidation logic', () => {
       
       describe('when a category question is selected', () => {
         const currentState = {
-          question: schemeById[3], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[3],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
         const store = setupStore(currentState)
         
@@ -1350,7 +1367,8 @@ describe('CodingValidation logic', () => {
             store.whenComplete(() => {
               expect(store.actions[0].questionInfo).toEqual({
                 categories: [
-                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }],
+                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }
+                ],
                 selectedCategory: 0,
                 selectedCategoryId: 10,
                 index: 3,
@@ -1373,21 +1391,30 @@ describe('CodingValidation logic', () => {
       
       describe('when a category is selected', () => {
         const currentState = {
-          question: schemeById[2], outline: schemeOutline, scheme: {
-            byId: schemeById, order: schemeOrder, tree: schemeTree
-          }, userAnswers: { ...userAnswersCoded }, errors: {}
+          question: schemeById[1],
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder
+          },
+          userAnswers: { ...userAnswersCoded },
+          errors: {}
         }
+        
         const store = setupStore(currentState)
         
         beforeEach(() => {
-          mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
-            .reply(200, userCodedQuestions[3])
+          mock.onPut('/users/1/projects/1/jurisdictions/1/codedquestions/4').reply(200, userCodedQuestions[3])
           mock.onGet('/projects/1/scheme/4').reply(200, schemeFromApi[3])
           
           store.dispatch({
-            type: types.ON_QUESTION_SELECTED_IN_NAV, question: {
-              ...schemeTreeAfterInitialization[2].children[0].children[1], treeIndex: 1
-            }, projectId: 1, jurisdictionId: 1, page: 'coding'
+            type: types.ON_QUESTION_SELECTED_IN_NAV,
+            question: {
+              ...schemeTreeAfterInitialization[2].children[0].children[1],
+              treeIndex: 1
+            },
+            projectId: 1,
+            jurisdictionId: 1,
+            page: 'coding'
           })
         })
         
@@ -1397,7 +1424,8 @@ describe('CodingValidation logic', () => {
             store.whenComplete(() => {
               expect(store.actions[0].questionInfo).toEqual({
                 categories: [
-                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }],
+                  { id: 10, order: 2, text: 'category 2' }, { id: 20, order: 3, text: 'category 3' }
+                ],
                 selectedCategory: 1,
                 selectedCategoryId: 20,
                 index: 3,
@@ -1415,6 +1443,372 @@ describe('CodingValidation logic', () => {
               .toHaveProperty('payload.question', schemeById[4])
             done()
           })
+        })
+      })
+    })
+  })
+  
+  describe('BULK_VALIDATION', () => {
+    describe('if the user chooses question level validation', () => {
+      beforeEach(() => {
+        mock.onPut('/projects/1/jurisdictions/1/validatedquestions/1').reply(200, bulkValidationQuestions[0])
+        mock.onPost('/projects/1/jurisdictions/1/validatedquestions/2')
+          .reply(200, [bulkValidationQuestions[2], bulkValidationQuestions[3]])
+        //mock.onPut('/projects/1/jurisdictions/1/validatedquestions/4').reply(200, bulkValidationQuestions[])
+      })
+      
+      test('should call the update API if the user has already validated the question', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {},
+          page: 'validation'
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'updateValidatedQuestion')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+      
+      test('should call the create API if the user has not already validated the question', done => {
+        const currentState = {
+          question: schemeById[2],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: {
+            ...userAnswersCoded,
+            2: {
+              schemeQuestionId: 2,
+              answers: {},
+              isNewCodedQuestion: true,
+              hasMadePost: false,
+              comment: ''
+            }
+          },
+          page: 'validation',
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'answerValidatedQuestion')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 2
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+      
+      test('should update the validated answer with the new answer', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'question',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.updatedUserAnswers).toEqual({
+            ...userAnswersCoded,
+            1: {
+              schemeQuestionId: 1,
+              answers: {
+                234: {
+                  id: 789,
+                  schemeAnswerId: 234,
+                  pincite: 'my pincite!!!',
+                  textAnswer: null,
+                  annotations: []
+                }
+              },
+              id: 1001,
+              hasMadePost: false,
+              isNewCodedQuestion: false,
+              flag: undefined,
+              projectJurisdictionId: 1,
+              comment: '',
+              validatedBy: { userId: 1 }
+            }
+          })
+          done()
+        })
+      })
+      
+      test(
+        'should not change the current user answers if the selected user has not coded the selected question',
+        done => {
+          const currentState = {
+            question: schemeById[1],
+            outline: schemeOutline,
+            scheme: {
+              byId: schemeById,
+              order: schemeOrder,
+              tree: schemeTree
+            },
+            userAnswers: {
+              ...userAnswersCoded
+            },
+            page: 'validation',
+            mergedUserQuestions: {},
+            errors: {}
+          }
+          
+          const store = setupStore(currentState)
+          
+          store.dispatch({
+            type: types.BULK_VALIDATION_REQUEST,
+            scope: 'question',
+            user: { userId: 22 },
+            projectId: 1,
+            jurisdictionId: 1,
+            questionId: 1
+          })
+          
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.updatedUserAnswers).toEqual(userAnswersCoded)
+            done()
+          })
+        }
+      )
+    })
+    
+    describe('if the user chooses jurisdiction level validation', () => {
+      beforeEach(() => {
+        mock.onPost('/projects/1/jurisdictions/1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+        mock.onPost('/projects/1/jurisdictions/1/bulkValidatedQuestions/5').reply(200, [])
+      })
+      
+      test('should call the bulk validation API with jurisdiction scope', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'bulkValidate')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'jurisdiction',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: 1, userId: 22 })
+          done()
+        })
+      })
+      
+      test('if the selected user hasn\'t coded anything should not change current validated answers', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'jurisdiction',
+          user: { userId: 5 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.updatedUserAnswers).toEqual(userAnswersCoded)
+          done()
+        })
+      })
+      
+      describe('if the current question is a category question', () => {
+        test(
+          'should move current question to be parent of current question if the the selected user has not coded the current category',
+          done => {
+            const currentState = {
+              question: schemeById[4],
+              outline: schemeOutline,
+              scheme: {
+                byId: schemeById,
+                order: schemeOrder,
+                tree: schemeTree
+              },
+              page: 'validation',
+              userAnswers: { ...userAnswersCoded },
+              mergedUserQuestions,
+              categories:
+                [
+                  { id: 10, text: 'category 2', order: 2 },
+                  { id: 20, text: 'category 3', order: 3 }
+                ],
+              selectedCategoryId: 10,
+              errors: {}
+            }
+            const store = setupStore(currentState)
+            
+            store.dispatch({
+              type: types.BULK_VALIDATION_REQUEST,
+              scope: 'jurisdiction',
+              user: { userId: 22 },
+              projectId: 1,
+              jurisdictionId: 1,
+              questionId: 4
+            })
+            
+            store.whenComplete(() => {
+              expect(store.actions[1].payload.otherStateUpdates.categories).toEqual(undefined)
+              expect(store.actions[1].payload.otherStateUpdates.selectedCategoryId).toEqual(null)
+              expect(store.actions[1].payload.otherStateUpdates.selectedCategory).toEqual(0)
+              expect(store.actions[1].payload.otherStateUpdates.currentIndex).toEqual(2)
+              expect(store.actions[1].payload.otherStateUpdates.question).toEqual(schemeById[3])
+              done()
+            })
+          }
+        )
+        
+        test('should not change to the parent question if the coder has chosen the current category', done => {
+          const currentState = {
+            question: schemeById[4],
+            outline: schemeOutline,
+            scheme: {
+              byId: schemeById,
+              order: schemeOrder,
+              tree: schemeTree
+            },
+            page: 'validation',
+            userAnswers: {
+              ...userAnswersCoded
+            },
+            mergedUserQuestions,
+            categories:
+              [
+                { id: 10, text: 'category 2', order: 2 },
+                { id: 20, text: 'category 3', order: 3 }
+              ],
+            selectedCategoryId: 20,
+            errors: {}
+          }
+          const store = setupStore(currentState)
+          
+          store.dispatch({
+            type: types.BULK_VALIDATION_REQUEST,
+            scope: 'jurisdiction',
+            user: { userId: 22 },
+            projectId: 1,
+            jurisdictionId: 1,
+            questionId: 4
+          })
+          
+          store.whenComplete(() => {
+            expect(store.actions[1].payload.otherStateUpdates.question).toEqual(schemeById[4])
+            done()
+          })
+        })
+      })
+    })
+    
+    describe('if the user chooses project level validation', () => {
+      beforeEach(() => {
+        mock.onPost('/projects/1/jurisdictions/-1/bulkValidatedQuestions/22').reply(200, bulkValidationQuestions)
+      })
+      
+      test('should call the bulk validation API with project scope', done => {
+        const currentState = {
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          page: 'validation',
+          userAnswers: { ...userAnswersCoded },
+          mergedUserQuestions,
+          errors: {}
+        }
+        const store = setupStore(currentState)
+        const spy = jest.spyOn(api, 'bulkValidate')
+        
+        store.dispatch({
+          type: types.BULK_VALIDATION_REQUEST,
+          scope: 'project',
+          user: { userId: 22 },
+          projectId: 1,
+          jurisdictionId: 1,
+          questionId: 1
+        })
+        
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, {}, { projectId: 1, jurisdictionId: -1, userId: 22 })
+          done()
         })
       })
     })

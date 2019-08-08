@@ -16,45 +16,95 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
   }
   type="column"
 >
-  <Table
+  <FlexGrid
+    align="center"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="space-between"
+    padding="6px 24px"
+    raised={false}
     style={
       Object {
-        "borderCollapse": "separate",
-        "display": "block",
-        "overflow": "auto",
-        "tableLayout": "auto",
+        "height": 56,
       }
     }
-    summary="List of documents"
+    type="row"
   >
-    <WithStyles(TableHead)
-      style={
+    <WithStyles(Dropdown)
+      SelectDisplayProps={
         Object {
-          "width": "100%",
+          "style": Object {
+            "minWidth": 140,
+            "paddingBottom": 3,
+          },
         }
       }
-    >
-      <DocListTableHead
-        allSelected={false}
-        onActionSelected={[Function]}
-        onSelectAll={[Function]}
-      />
-    </WithStyles(TableHead)>
-    <WithStyles(TableBody)
-      id="documentTable"
-    >
-      <Connect(DocListTableRow)
-        id={
+      input={
+        Object {
+          "onChange": [Function],
+          "value": "bulk",
+        }
+      }
+      options={
+        Array [
           Object {
-            "_id": "1",
-            "name": "Doc",
+            "disabled": true,
+            "label": "Actions",
+            "value": "bulk",
+          },
+          Object {
+            "label": "Approve",
+            "value": "approve",
+          },
+          Object {
+            "label": "Assign Jurisdiction",
+            "value": "jurisdiction",
+          },
+          Object {
+            "label": "Assign Project",
+            "value": "project",
+          },
+          Object {
+            "label": "Unassign Project",
+            "value": "removeproject",
+          },
+        ]
+      }
+      style={
+        Object {
+          "color": "#757575",
+          "fontSize": 13,
+          "fontWeight": 400,
+        }
+      }
+    />
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <WithStyles(Switch)
+        onChange={[Function]}
+      />
+      <WithStyles(Typography)
+        style={
+          Object {
+            "fontWeight": 500,
           }
         }
-        key="doc-[object Object]"
-        onSelectFile={[Function]}
-      />
-    </WithStyles(TableBody)>
-  </Table>
+        variant="caption"
+      >
+        Show All Documents
+      </WithStyles(Typography)>
+    </FlexGrid>
+  </FlexGrid>
   <FlexGrid
     align="stretch"
     circular={false}
@@ -65,7 +115,16 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
     raised={false}
     style={Object {}}
     type="column"
-  />
+  >
+    <AutoSizer
+      disableHeight={false}
+      disableWidth={false}
+      onResize={[Function]}
+      style={Object {}}
+    >
+      <Component />
+    </AutoSizer>
+  </FlexGrid>
   <Table>
     <WithStyles(TableFooter)>
       <WithStyles(TableRow)>

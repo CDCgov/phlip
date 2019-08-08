@@ -3,18 +3,18 @@ import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
 import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
-import SimpleInput from 'components/SimpleInput'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import MenuItem from '@material-ui/core/MenuItem/MenuItem'
-import Icon from 'components/Icon'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { CircularLoader, Icon, SimpleInput } from 'components'
 
 /**
  * Classes passed to Autosuggest
  * @param theme
  * @returns
  */
+/* istanbul ignore next */
 const classes = theme => ({
   suggestionsContainerOpen: {
     width: '100%',
@@ -101,7 +101,7 @@ const getSuggestionValue = suggestion => suggestion
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   const matches = match(suggestion.name, query)
   const parts = parse(suggestion.name, matches)
-
+  
   return (
     <MenuItem selected={isHighlighted} component="div" style={{ height: 'auto', whiteSpace: 'unset' }}>
       <div>
@@ -138,15 +138,15 @@ export const Autocomplete = props => {
     getSuggestionValue,
     showSearchIcon,
     theme,
-    suggestionType
+    suggestionType,
+    isSearching
   } = props
-
+  
   /**
-     * Determines if the suggestions should be rendered. Only renders if the input length >= 3
-     * @param value
-     * @returns {boolean}
-     */
-
+   * Determines if the suggestions should be rendered. Only renders if the input length >= 3
+   * @param value
+   * @returns {boolean}
+   */
   const shouldRenderSuggestions = (value) => {
     if (suggestionType !== 'project') {
       return value !== undefined ? value.trim().length >= 3 : true
@@ -154,6 +154,13 @@ export const Autocomplete = props => {
       return true
     }
   }
+  
+  const spinnerSize = inputProps.style
+    ? inputProps.style.fontSize
+      ? inputProps.style.fontSize
+      : 20
+    : 20
+  
   return (
     <Autosuggest
       theme={{
@@ -170,17 +177,16 @@ export const Autocomplete = props => {
       renderInputComponent={renderInput}
       inputProps={{
         TextFieldProps: InputProps,
-        InputProps: showSearchIcon
-          ? {
-            style: { 'alignItems': 'center' },
-            endAdornment: (
-              <InputAdornment
-                style={{ marginTop: 0, height: 24 }}
-                position="end"
-                disableTypography><Icon color={theme.palette.greyText}>search</Icon>
-              </InputAdornment>
-            )
-          } : {},
+        InputProps: (isSearching || showSearchIcon) ? {
+          style: { 'alignItems': 'center' },
+          endAdornment: (
+            <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography>
+              {isSearching &&
+              <CircularLoader size={spinnerSize} thickness={4} color="primary" type="indeterminate" />}
+              {!isSearching && showSearchIcon && <Icon color={theme.palette.greyText}>search</Icon>}
+            </InputAdornment>
+          )
+        } : {},
         ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
@@ -196,76 +202,72 @@ Autocomplete.propTypes = {
    * List of suggestions to render
    */
   suggestions: PropTypes.array,
-
   /**
    * Suggestion value (what the user has typed in)
    */
   suggestionValue: PropTypes.string,
-
   /**
    * List of classes from @material-ui/core theme provider
    */
   classes: PropTypes.object,
-
   /**
    * Any props you to want to pass to the TextField component
    */
   InputProps: PropTypes.object,
-
   /**
    * Props to send to the actual input or InputProps component
    */
   inputProps: PropTypes.object,
-
   /**
    * Handles retrieving suggestions
    */
   handleGetSuggestions: PropTypes.func,
-
   /**
    * Handles clearing the suggestions array
    */
   handleClearSuggestions: PropTypes.func,
-
   /**
    * Handles when the user changes their input (suggestion value)
    */
   handleSuggestionValueChange: PropTypes.func,
-
   /**
    * Handles when a user clicks on a suggestion
    */
   handleSuggestionSelected: PropTypes.func,
-
   /**
    * Render each suggestion in the list
    */
   renderSuggestion: PropTypes.func,
-
   /**
    * Returns the suggestion value
    */
   getSuggestionValue: PropTypes.func,
-
   /**
    * Show search icon
    */
   showSearchIcon: PropTypes.bool,
-
   /**
    * App theme
    */
   theme: PropTypes.object,
   /**
    *  suggestion type
-  */
-  suggestionType: PropTypes.string
+   */
+  suggestionType: PropTypes.string,
+  /**
+   * Is searching
+   */
+  isSearching: PropTypes.bool
 }
 
 Autocomplete.defaultProps = {
   renderSuggestion: renderSuggestion,
   getSuggestionValue: getSuggestionValue,
-  showSearchIcon: false
+  showSearchIcon: false,
+  isSearching: false,
+  inputProps: {
+    style: {}
+  }
 }
 
 export default withStyles(classes, { withTheme: true })(Autocomplete)

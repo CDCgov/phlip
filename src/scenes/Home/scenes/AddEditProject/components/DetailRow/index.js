@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import FlexGrid from 'components/FlexGrid'
 
-export const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) => {
+export const DetailRow = props => {
+  const { component, type, name, disabled, label, shrinkLabel, ...otherProps } = props
+  
   return (
     <FlexGrid padding="0 0 25px">
       <Field
@@ -11,8 +13,8 @@ export const DetailRow = ({ component, type, name, disabled, label, ...otherProp
         type={type}
         name={name}
         label={label}
+        shrinkLabel={shrinkLabel}
         disabled={disabled}
-        shrinkLabel
         disableUnderline={disabled}
         {...otherProps}
       />
@@ -25,7 +27,8 @@ DetailRow.propTypes = {
   type: PropTypes.string,
   name: PropTypes.string,
   disabled: PropTypes.bool,
-  label: PropTypes.string
+  label: PropTypes.string,
+  shrinkLabel: PropTypes.bool
 }
 
 export default DetailRow

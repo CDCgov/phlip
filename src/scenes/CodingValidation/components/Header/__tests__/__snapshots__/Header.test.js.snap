@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CodingValidation scene --- Header component should render correctly 1`] = `
+exports[`CodingValidation scene -- Header component should render correctly 1`] = `
 <FlexGrid
   align="center"
   circular={false}
   container={true}
   flex={false}
   justify="space-between"
-  padding="15px 20px"
+  padding="15px 20px 15px 0px"
   raised={false}
   style={
     Object {
@@ -32,7 +32,7 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
       aria-label="Go back"
       color="black"
       disabled={false}
-      iconSize={24}
+      iconSize={30}
       tooltipText=""
     >
       arrow_back
@@ -62,7 +62,7 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
           }
         }
       >
-        Test Project
+        Project Test
       </span>
     </Typography>
     <span />
@@ -146,7 +146,7 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
           "color": "black",
         }
       }
-      to="/project/1/protocol"
+      to="/project/4/protocol"
     >
       <span
         style={
@@ -159,8 +159,15 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
       </span>
       <WithTheme(Icon)
         color="black"
+        size={20}
       >
-        <Icon />
+        <Icon
+          style={
+            Object {
+              "fontSize": 20,
+            }
+          }
+        />
       </WithTheme(Icon)>
     </WithTheme(Button)>
   </FlexGrid>

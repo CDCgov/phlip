@@ -5,23 +5,21 @@ import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
 import IdleTimer from 'react-idle-timer'
 import { bindActionCreators } from 'redux'
+import actions from './actions'
 import Home from './Home'
 import DocumentManagement from './DocumentManagement'
-import AppHeader from 'components/AppHeader'
-import FlexGrid from 'components/FlexGrid'
 import Admin from './Admin'
 import CodingScheme from './CodingScheme'
 import Protocol from './Protocol'
 import AddEditProject from './Home/scenes/AddEditProject'
 import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
-import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
-import actions from './actions'
 import CodingValidation from './CodingValidation'
 import Upload from './DocumentManagement/scenes/Upload'
 import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
 import AddEditUser from './Admin/scenes/AddEditUser'
+import { AppHeader, FlexGrid, ApiErrorAlert } from 'components'
 
 const modalPaths = [
   '/project/add',
@@ -30,8 +28,8 @@ const modalPaths = [
   '/project/:id/jurisdictions/add',
   '/project/:id/jurisdictions/:jid/edit',
   '/docs/upload',
-  '/project/:projectId/coding-scheme/add',
-  '/project/:projectId/coding-scheme/edit/:id',
+  '/project/:id/coding-scheme/add',
+  '/project/:id/coding-scheme/edit/:questionId',
   '/admin/new/user',
   '/admin/edit/user/:id',
   '/user/profile',
@@ -68,6 +66,7 @@ export class Main extends Component {
     super(props, context)
     
     this.helpPdfRef = React.createRef()
+    this.idleRef = React.createRef()
     this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
     
     this.state = {
@@ -77,31 +76,36 @@ export class Main extends Component {
           label: 'Project List',
           active: !props.history.location.pathname.startsWith('/docs'),
           location: '/home',
-          icon: 'dvr'
+          icon: 'dvr',
+          id: 'project-list'
         },
         {
           label: 'Document Management',
           active: props.history.location.pathname.startsWith('/docs'),
           location: '/docs',
-          icon: 'description'
+          icon: 'description',
+          id: 'doc-manage'
         }
       ]
     }
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.pdfFile === null && this.props.pdfFile !== null) {
-      this.openHelpPdf(this.props.pdfFile)
+    const { pdfFile, location, actions } = this.props
+    const { menuTabs } = this.state
+    
+    if (prevProps.pdfFile === null && pdfFile !== null) {
+      this.openHelpPdf(pdfFile)
     }
     
     const prev = prevProps.location.pathname.split('/')[1]
-    const current = this.props.location.pathname.split('/')[1]
+    const current = location.pathname.split('/')[1]
     
-    const tabs = [...this.state.menuTabs]
+    const tabs = [...menuTabs]
     
-    if (!this.props.location.state || !this.props.location.state.modal) {
-      this.previousLocation = this.props.location
-      this.props.actions.setPreviousLocation(this.props.location)
+    if (!location.state || !location.state.modal) {
+      this.previousLocation = location
+      actions.setPreviousLocation(location)
     }
     
     if (prev !== current) {
@@ -113,9 +117,7 @@ export class Main extends Component {
         tabs[1].active = false
       }
       
-      this.setState({
-        menuTabs: tabs
-      })
+      this.setState({ menuTabs: tabs })
     }
   }
   
@@ -124,10 +126,13 @@ export class Main extends Component {
    * @param index
    */
   handleTabChange = index => {
-    const newLocation = this.state.menuTabs[index].location
-    this.props.history.push(newLocation)
+    const { history } = this.props
+    const { menuTabs } = this.state
+    
+    const newLocation = menuTabs[index].location
+    history.push(newLocation)
     this.setState({
-      menuTabs: this.state.menuTabs.map((tab, i) => ({
+      menuTabs: menuTabs.map((tab, i) => ({
         ...tab,
         active: index === i
       }))
@@ -138,8 +143,8 @@ export class Main extends Component {
    * Logs out a user
    */
   handleLogoutUser = () => {
-    this.props.actions.logoutUser()
-    this.props.history.push('/login')
+    const { actions } = this.props
+    actions.logoutUser()
   }
   
   /**
@@ -147,8 +152,9 @@ export class Main extends Component {
    * @public
    */
   handleDownloadPdf = () => {
+    const { actions } = this.props
     this.handleToggleMenu()
-    this.props.actions.downloadPdfRequest()
+    actions.downloadPdfRequest()
   }
   
   /**
@@ -157,11 +163,13 @@ export class Main extends Component {
    * @param pdfFile
    */
   openHelpPdf = pdfFile => {
+    const { actions } = this.props
+    
     const url = URL.createObjectURL(pdfFile)
     this.helpPdfRef.current.href = url
     this.helpPdfRef.current.download = 'PHLIP-Help-Guide.pdf'
     this.helpPdfRef.current.click()
-    this.props.actions.clearPdfFile()
+    actions.clearPdfFile()
   }
   
   /**
@@ -169,25 +177,29 @@ export class Main extends Component {
    * @public
    */
   closeDownloadErrorAlert = () => {
-    this.props.actions.resetDownloadError()
+    const { actions } = this.props
+    actions.resetDownloadError()
   }
   
   /**
    * Opens user menu in header
    */
   handleToggleMenu = () => {
-    this.setState({
-      menuOpen: !this.state.menuOpen
-    })
+    const { menuOpen } = this.state
+    this.setState({ menuOpen: !menuOpen })
   }
   
   /**
-   * Navigates to the User Management page (clicked from the user menu)
+   * Navigates to the User Management page (clicked from the user menu). Open the user management page is the user
+   * is an Admin, otherwise just open the profile modal
    */
   handleOpenAdminPage = () => {
-    const tabs = [...this.state.menuTabs]
+    const { history, user } = this.props
+    const { menuTabs } = this.state
     
-    if (this.state.menuTabs[1].active) {
+    const tabs = [...menuTabs]
+    
+    if (menuTabs[1].active) {
       tabs[1].active = false
       tabs[0].active = true
     }
@@ -197,15 +209,15 @@ export class Main extends Component {
       menuTabs: tabs
     })
     
-    if (this.props.user.role === 'Admin') {
-      this.props.history.push('/admin')
+    if (user.role === 'Admin') {
+      history.push('/admin')
     } else {
-      this.props.history.push({
+      history.push({
         pathname: '/user/profile',
         state: {
-          isEdit: Boolean(this.props.user.avatar),
-          avatar: this.props.user.avatar,
-          userId: this.props.user.id,
+          isEdit: Boolean(user.avatar),
+          avatar: user.avatar,
+          userId: user.id,
           modal: true,
           selfUpdate: true
         }
@@ -213,8 +225,12 @@ export class Main extends Component {
     }
   }
   
+  /**
+   * Logs out the user after they've been idle for too long (15 minutes)
+   */
   logoutUserOnIdle = () => {
-    this.props.actions.logoutUser(true)
+    const { actions } = this.props
+    actions.logoutUser(true)
   }
   
   render() {
@@ -232,9 +248,11 @@ export class Main extends Component {
       ? 'row'
       : 'column'
     
+    const switchLocation = isModal ? this.previousLocation : location
+    
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
-        <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
+        <IdleTimer ref={this.idleRef} onIdle={this.logoutUserOnIdle} timeout={900000} />
         <AppHeader
           user={user}
           tabs={menuTabs}
@@ -246,10 +264,11 @@ export class Main extends Component {
           onOpenAdminPage={this.handleOpenAdminPage}
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
-          <Switch location={isModal ? this.previousLocation : location}>
+          <Switch location={switchLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
-            <Route path="/project/:id/(code|validate)" component={CodingValidation} />
+            <Route path="/project/:id/:view(code|validate)/:jid/:qid" component={CodingValidation} />
+            <Route path="/project/:id/:view(code|validate)" component={CodingValidation} />
             <Route path="/admin" component={Admin} />
             <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
             <Route strict path="/project/:id/protocol" component={Protocol} />
@@ -262,8 +281,8 @@ export class Main extends Component {
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
           <Route path="/docs/upload" component={Upload} />
-          <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
-          <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
+          <Route path="/project/:id/coding-scheme/add" component={AddEditQuestion} />
+          <Route path="/project/:id/coding-scheme/edit/:questionId" component={AddEditQuestion} />
           <Route path="/admin/new/user" component={AddEditUser} />
           <Route path="/admin/edit/user/:id" component={AddEditUser} />
           <Route path="/user/profile" component={AddEditUser} />
@@ -276,13 +295,15 @@ export class Main extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  user: state.data.user.currentUser,
-  pdfError: state.scenes.main.pdfError,
-  pdfFile: state.scenes.main.pdfFile,
-  isRefreshing: state.scenes.main.isRefreshing,
-  previousLocation: state.scenes.main.previousLocation
-})
+const mapStateToProps = state => {
+  return {
+    user: state.data.user.currentUser,
+    pdfError: state.scenes.main.pdfError,
+    pdfFile: state.scenes.main.pdfFile,
+    isRefreshing: state.scenes.main.isRefreshing,
+    previousLocation: state.scenes.main.previousLocation
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

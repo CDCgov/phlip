@@ -7,6 +7,7 @@ import ValidationTable from './components/ValidationTable'
 import { FlexGrid, Typography, Tooltip, Button, SimpleInput, Icon } from 'components'
 import { withStyles } from '@material-ui/core/styles'
 
+/* istanbul ignore next */
 const styles = () => ({
   hintTooltip: {
     fontSize: '2em',
@@ -16,13 +17,17 @@ const styles = () => ({
   }
 })
 
+/**
+ * The question content and answer choices part of the question card
+ * @constructor
+ */
 export const QuestionContent = props => {
   const {
-    question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onApplyAll, onOpenFlagConfirmAlert, userImages,
+    question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll, onClearFlag,
+    onChange, onChangeTextAnswer, onApplyAll, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations, onMouseInAnswerChoice,
-    onMouseOutAnswerChoice, hoveredAnswerChoice
+    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations,
+    onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const commonQuestionProps = {
@@ -61,10 +66,7 @@ export const QuestionContent = props => {
   
   return (
     <FlexGrid container flex justify="space-between" style={{ overflow: 'auto' }}>
-      <FlexGrid
-        container
-        type="row"
-        style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }}>
+      <FlexGrid container type="row" style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }}>
         <FlexGrid container padding="20px 0 0 20px">
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
         </FlexGrid>
@@ -108,7 +110,9 @@ export const QuestionContent = props => {
               <FlexGrid padding="15px 0 0">
                 <Button
                   onClick={onApplyAll}
-                  style={{ backgroundColor: 'white', color: 'black' }}
+                  disabled={disableAll}
+                  color="white"
+                  textColor="black"
                   value="Apply to all tabs"
                 />
               </FlexGrid>}
@@ -118,10 +122,11 @@ export const QuestionContent = props => {
       </FlexGrid>
       <FlexGrid container type="column">
         {isValidation && <ValidationTable
-          onOpenAlert={onOpenFlagConfirmAlert}
+          onClearFlag={onClearFlag}
           mergedUserQuestions={mergedUserQuestions}
           questionFlags={question.flags}
           userImages={userImages}
+          disableAll={disableAll}
         />}
       </FlexGrid>
     </FlexGrid>

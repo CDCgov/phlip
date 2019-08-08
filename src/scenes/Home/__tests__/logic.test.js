@@ -235,14 +235,14 @@ describe('Home logic', () => {
           const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 3 } }
           store.dispatch(action)
         })
-  
+        
         test('should set update rowsPerPage in state', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.rowsPerPage).toEqual(3)
             done()
           })
         })
-  
+        
         test('should update visible projects to only show first page', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2])
@@ -258,14 +258,14 @@ describe('Home logic', () => {
           const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 'All' } }
           store.dispatch(action)
         })
-  
+        
         test('should set update page to be 0', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.page).toEqual(0)
             done()
           })
         })
-  
+        
         test('should update visible projects to show all projects', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2, 3, 1])
@@ -384,21 +384,21 @@ describe('Home logic', () => {
             done()
           })
         })
-    
+        
         test('should update matches to an array of matching project ids', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projects.matches).toEqual([4])
             done()
           })
         })
-    
+        
         test('should update projectCount to number of total matches', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projectCount).toEqual(1)
             done()
           })
         })
-    
+        
         test('should update searchValue to action.payload.searchValue', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.searchValue).toEqual('Led')
@@ -406,7 +406,7 @@ describe('Home logic', () => {
           })
         })
       })
-  
+      
       describe('no matches found', () => {
         let store
         beforeEach(() => {
@@ -421,21 +421,21 @@ describe('Home logic', () => {
             done()
           })
         })
-    
+        
         test('should update matches to an empty array', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projects.matches).toEqual([])
             done()
           })
         })
-    
+        
         test('should update projectCount to 0', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projectCount).toEqual(0)
             done()
           })
         })
-    
+        
         test('should set searchValue to action.payload.searchValue', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.searchValue).toEqual('cxx')
@@ -443,29 +443,33 @@ describe('Home logic', () => {
           })
         })
       })
-  
+      
       describe('clearing search field', () => {
         let store
         beforeEach(() => {
-          store = setupStore({}, true, { projects: { visible: [4], matches: [4] }, searchValue: 'Led', projectCount: 1 })
+          store = setupStore(
+            {},
+            true,
+            { projects: { visible: [4], matches: [4] }, searchValue: 'Led', projectCount: 1 }
+          )
           const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: '' } }
           store.dispatch(action)
         })
-    
+        
         test('should set the projects back to previous state', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projects.visible).toEqual(defaultSorted)
             done()
           })
         })
-    
+        
         test('should set state.projectCount to total number of projects', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.projectCount).toEqual(5)
             done()
           })
         })
-    
+        
         test('should set state.searchValue to an empty string', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.searchValue).toEqual('')
@@ -502,14 +506,14 @@ describe('Home logic', () => {
         store = setupStore([1], true)
         store.dispatch({ type: types.GET_PROJECTS_REQUEST, payload: {} })
       })
-  
+      
       test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', done => {
         store.whenComplete(() => {
           expect(store.actions[1]).toEqual({ type: types.GET_PROJECTS_SUCCESS })
           done()
         })
       })
-  
+      
       test('should dispatch set projects to set globally and home state', done => {
         store.whenComplete(() => {
           expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
@@ -520,7 +524,7 @@ describe('Home logic', () => {
           done()
         })
       })
-  
+      
       test('should sort by dateLastEdited and descending', done => {
         store.whenComplete(() => {
           expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
@@ -600,6 +604,21 @@ describe('Home logic', () => {
         done()
       })
     })
+    
+    describe('when there is an error saving the bookmark request', () => {
+      test('should inform the user of the error', done => {
+        const project = { id: 2, name: 'Project 2' }
+        mock.onDelete('/users/5/bookmarkedprojects/2').reply(500)
+        const store = setupStore([2])
+  
+        store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.TOGGLE_BOOKMARK_FAIL)
+          expect(store.actions[1].payload).toEqual('We couldn\'t save your bookmark request.')
+          done()
+        })
+      })
+    })
   })
   
   describe('Removing a project', () => {
@@ -615,6 +634,87 @@ describe('Home logic', () => {
       store.whenComplete(() => {
         expect(store.actions[0].payload.projects.visible).toEqual([5, 2, 3, 1])
         done()
+      })
+    })
+  })
+  
+  describe('Exporting project data', () => {
+    describe('when user is null', () => {
+      let store, spy
+      beforeEach(() => {
+        spy = jest.spyOn(api, 'exportData')
+        mock.onGet('/exports/project/4/data').reply(200, 'file text')
+        store = setupStore([1], true, {
+          projectToExport: {
+            id: 4
+          }
+        })
+        store.dispatch({ type: types.EXPORT_DATA_REQUEST, exportType: 'numeric', user: null })
+      })
+      
+      test('should call the export api without user parameter', done => {
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, { params: { type: 'numeric' } }, { projectId: 4 })
+          done()
+        })
+      })
+      
+      test('should send back file data', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.EXPORT_DATA_SUCCESS)
+          expect(store.actions[1].payload).toEqual('file text')
+          done()
+        })
+      })
+    })
+    
+    describe('when user is populated', () => {
+      let store, spy
+      beforeEach(() => {
+        spy = jest.spyOn(api, 'exportData')
+        mock.onGet('/exports/project/4/data').reply(200, 'file text')
+        store = setupStore([1], true, {
+          projectToExport: {
+            id: 4
+          }
+        })
+        store.dispatch({ type: types.EXPORT_DATA_REQUEST, exportType: 'numeric', user: { userId: 5 } })
+      })
+      
+      test('should call the export api without user parameter', done => {
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalledWith({}, { params: { type: 'numeric', userId: 5 } }, { projectId: 4 })
+          done()
+        })
+      })
+      
+      test('should send back file data', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.EXPORT_DATA_SUCCESS)
+          expect(store.actions[1].payload).toEqual('file text')
+          done()
+        })
+      })
+    })
+    
+    describe('when there\'s an error', () => {
+      let store
+      beforeEach(() => {
+        mock.onGet('/exports/project/4/data').reply(500)
+        store = setupStore([1], true, {
+          projectToExport: {
+            id: 4
+          }
+        })
+        store.dispatch({ type: types.EXPORT_DATA_REQUEST, exportType: 'numeric', user: null })
+      })
+      
+      test('should dispatch the error to the user', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.EXPORT_DATA_FAIL)
+          expect(store.actions[1].payload).toEqual('We couldn\'t export the project.')
+          done()
+        })
       })
     })
   })

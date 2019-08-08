@@ -14,13 +14,18 @@ const getQuestions = (questionId, state, isValidation) => {
   
   if (codingState.question.isCategoryQuestion) {
     coderQuestion = isValidation
-      ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
-      : {}
+      ? codingState.mergedUserQuestions[questionId].hasOwnProperty(codingState.selectedCategoryId)
+        ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
+        : null
+      : null
+    
     userQuestion = codingState.userAnswers[questionId][codingState.selectedCategoryId]
   } else {
     coderQuestion = isValidation
-      ? codingState.mergedUserQuestions[questionId]
-      : {}
+      ? codingState.mergedUserQuestions.hasOwnProperty(questionId)
+        ? codingState.mergedUserQuestions[questionId]
+        : null
+      : null
     userQuestion = codingState.userAnswers[questionId]
   }
   
@@ -80,7 +85,7 @@ const getCoderAnnotations = (question, answerId) => {
  * Adds the document citation string to the action
  */
 const addCitationLogic = createLogic({
-  type: [types.ON_SAVE_ANNOTATION],
+  type: types.ON_SAVE_ANNOTATION,
   transform({ action, getState }, next) {
     const state = getState().scenes.codingValidation.documentList
     const doc = state.documents.byId[action.annotation.docId]
@@ -96,7 +101,7 @@ const addCitationLogic = createLogic({
  * @type {Logic<object, undefined, undefined, {action?: *, docApi?: *}, undefined, string[]>}
  */
 const getApprovedDocumentsLogic = createLogic({
-  type: [types.GET_APPROVED_DOCUMENTS_REQUEST],
+  type: types.GET_APPROVED_DOCUMENTS_REQUEST,
   async process({ docApi, action }, dispatch, done) {
     try {
       const docs = await docApi.getDocumentsByProjectJurisdiction(
@@ -118,17 +123,23 @@ const getApprovedDocumentsLogic = createLogic({
  * @type {Logic<object, undefined, undefined, {}, undefined, string>}
  */
 const toggleViewAnnotations = createLogic({
-  type: types.TOGGLE_VIEW_ANNOTATIONS,
+  type: [types.TOGGLE_VIEW_ANNOTATIONS, types.UPDATE_ANNOTATIONS],
   transform({ getState, action }, next) {
     const codingState = getState().scenes.codingValidation.coding
+    const docState = getState().scenes.codingValidation.documentList
     const isValidation = codingState.page === 'validation'
     const user = getState().data.user.currentUser
-    let annotations = [], users = []
+    let annotations = [], users = [], answerId = action.answerId
+    
+    if (action.type === types.UPDATE_ANNOTATIONS && docState.enabledAnswerId !== '') {
+      answerId = docState.enabledAnswerId
+    }
     
     const { userQuestion, coderQuestion } = getQuestions(action.questionId, getState(), isValidation)
-    const userAnnotations = getUserAnnotations(userQuestion, action.answerId, getState(), isValidation, user)
-    const coderAnnotations = isValidation
-      ? getCoderAnnotations(coderQuestion, action.answerId)
+    
+    const userAnnotations = getUserAnnotations(userQuestion, answerId, getState(), isValidation, user)
+    const coderAnnotations = isValidation && coderQuestion !== null
+      ? getCoderAnnotations(coderQuestion, answerId)
       : { annotations: [], users: [] }
     
     annotations = [...userAnnotations.annotations, ...coderAnnotations.annotations]
@@ -137,7 +148,8 @@ const toggleViewAnnotations = createLogic({
     next({
       ...action,
       annotations,
-      users
+      users,
+      answerId
     })
   }
 })
@@ -169,9 +181,34 @@ const toggleAnnoModeLogic = createLogic({
   }
 })
 
+/**
+ * Handles when a user requests to download documents
+ */
+const downloadLogic = createLogic({
+  type: types.DOWNLOAD_DOCUMENTS_REQUEST,
+  async process({ getState, action, docApi }, dispatch, done) {
+    try {
+      let payload = ''
+      if (action.docId === 'all') {
+        // download a zip file
+        const allIds = getState().scenes.codingValidation.documentList.documents.allIds
+        payload = await docApi.downloadZip({}, { responseType: 'arraybuffer' }, { docList: allIds })
+      } else {
+        // download just one file
+        payload = await docApi.download({}, { responseType: 'arraybuffer' }, { docId: action.docId })
+      }
+      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload })
+    } catch (err) {
+      dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
+    }
+    done()
+  }
+})
+
 export default [
   toggleViewAnnotations,
   toggleAnnoModeLogic,
   getApprovedDocumentsLogic,
-  addCitationLogic
+  addCitationLogic,
+  downloadLogic
 ]

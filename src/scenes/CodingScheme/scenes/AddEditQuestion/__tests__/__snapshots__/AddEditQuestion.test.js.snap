@@ -20,69 +20,86 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
   open={true}
   validate={[Function]}
 >
-  <Container
-    column={true}
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={false}
-    spacing={0}
+    justify="stretch"
+    padding="20px 20px 0"
+    raised={false}
     style={
       Object {
         "minWidth": 890,
-        "padding": "20px 20px 0 20px",
       }
     }
+    type="column"
   >
-    <Container
-      column={true}
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
       flex={false}
-      spacing={0}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="column"
     >
       <ModalTitle
         title="Add New Question"
       />
       <ModalContent>
-        <Container
-          column={false}
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
           flex={false}
-          spacing={0}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="row"
         >
-          <Column
-            component={
-              <WithStyles(Grid)
-                item={true}
-              />
-            }
-            displayFlex={false}
+          <FlexGrid
+            align="stretch"
+            circular={false}
+            container={false}
             flex={true}
-            style={
-              Object {
-                "padding": "0 10px 20px 0",
-              }
-            }
+            justify="stretch"
+            padding="0 10px 20px 0"
+            raised={false}
+            style={Object {}}
+            type="column"
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Question"
               multiline={true}
               name="text"
               placeholder="Enter question"
               required={true}
               shrinkLabel={true}
+              smallLabel={true}
             />
-          </Column>
-          <Column
-            component={
-              <WithStyles(Grid)
-                item={true}
-              />
-            }
-            displayFlex={false}
+          </FlexGrid>
+          <FlexGrid
+            align="stretch"
+            circular={false}
+            container={false}
             flex={false}
+            justify="stretch"
+            padding={0}
+            raised={false}
+            style={Object {}}
+            type="column"
           >
             <Field
               component={[Function]}
               defaultValue={4}
-              disabled={true}
+              disabled={false}
+              fullWidth={true}
               label="Answer Type"
               name="questionType"
               onChange={[Function]}
@@ -112,74 +129,84 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               }
               required={true}
             />
-          </Column>
-        </Container>
-        <Container
-          column={false}
+          </FlexGrid>
+        </FlexGrid>
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
           flex={false}
-          spacing={0}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="row"
         >
-          <Row
-            component={
-              <WithStyles(Grid)
-                item={true}
-              />
-            }
-            displayFlex={false}
+          <FlexGrid
+            align="stretch"
+            circular={false}
+            container={false}
             flex={true}
-            reverse={false}
-            style={
-              Object {
-                "padding": "0 10px 20px 0",
-              }
-            }
+            justify="stretch"
+            padding="0 10px 20px 0"
+            raised={false}
+            style={Object {}}
+            type="column"
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Coding directions"
               name="hint"
               placeholder="Enter any special directions or considerations to display when coding this question"
               shrinkLabel={true}
+              smallLabel={true}
             />
-          </Row>
-        </Container>
+          </FlexGrid>
+        </FlexGrid>
         <FieldArray
           answerType={4}
+          canModify={true}
           component={[Function]}
           isEdit={false}
           name="possibleAnswers"
         />
-        <Container
-          column={false}
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
           flex={false}
-          spacing={0}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="row"
         >
-          <Row
-            component={
-              <WithStyles(Grid)
-                item={true}
-              />
-            }
-            displayFlex={false}
+          <FlexGrid
+            align="stretch"
+            circular={false}
+            container={false}
             flex={true}
-            reverse={false}
+            justify="stretch"
+            padding={0}
+            raised={false}
             style={
               Object {
                 "paddingLeft": "47px",
               }
             }
+            type="column"
           >
             <Field
               component={[Function]}
-              disabled={true}
+              disabled={false}
               label="Include comment box"
               name="includeComment"
             />
-          </Row>
-        </Container>
+          </FlexGrid>
+        </FlexGrid>
       </ModalContent>
-    </Container>
+    </FlexGrid>
     <WithStyles(ModalActions)
       actions={
         Array [
@@ -192,7 +219,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             "value": "Cancel",
           },
           Object {
-            "disabled": true,
+            "disabled": undefined,
             "otherProps": Object {
               "aria-label": "Save form",
             },
@@ -211,6 +238,6 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         }
       }
     />
-  </Container>
+  </FlexGrid>
 </FormModal>
 `;

@@ -13,7 +13,8 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!/node_modules/',
-    '!src/**/*.test.js'
+    '!src/**/*.test.js',
+    '!src/utils/testData/*.js'
   ],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: [

@@ -4,20 +4,10 @@ import PropTypes from 'prop-types'
 import IconButton from 'components/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { Row } from 'components/Layout'
-import { withStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import MenuDown from 'mdi-material-ui/MenuDown'
-
-const styles = {
-  root: {
-    flex: 1,
-    '&:before': {
-      height: 0
-    }
-  }
-}
 
 /**
  * Block of text that is kind of like an Accordion. Displays beginning or all of text depending on length and size
@@ -56,12 +46,14 @@ export class ExpansionTextPanel extends Component {
   }
 
   render() {
-    const { tooltipText, ...other } = this.props.dropdownIconProps
+    const { text, textProps, dropdownIconProps } = this.props
+    const { tooltipText, ...other } = dropdownIconProps
+    const { open } = this.state
 
     return (
       <Row flex displayFlex style={{ alignItems: 'center', overflow: 'hidden' }}>
-        <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
-          {this.props.text}
+        <Typography noWrap {...textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
+          {text}
         </Typography>
         <Manager>
           <Reference innerRef={node => this.expandButtonRef = findDOMNode(node)}>
@@ -69,9 +61,9 @@ export class ExpansionTextPanel extends Component {
               return (
                 <div ref={ref}>
                   <IconButton
-                    onClick={this.state.open === true ? this.onClosePopper : this.onOpenPopper}
+                    onClick={open ? this.onClosePopper : this.onOpenPopper}
                     color="#768f99"
-                    tooltipText={this.state.open === true ? '' : tooltipText}
+                    tooltipText={open ? '' : tooltipText}
                     {...other}>
                     <MenuDown />
                   </IconButton>
@@ -79,10 +71,10 @@ export class ExpansionTextPanel extends Component {
               )
             }}
           </Reference>
-          <Popper placement="top-end" eventsEnabled={this.state.open === true}>
+          <Popper placement="top-end" eventsEnabled={open}>
             {({ ref, placement, style }) => {
               return (
-                this.state.open === true &&
+                open &&
                 <ClickAwayListener onClickAway={this.onClosePopper}>
                   <div ref={ref} data-placement={placement} style={{ ...style, zIndex: 1 }}>
                     <Paper
@@ -95,7 +87,7 @@ export class ExpansionTextPanel extends Component {
                         maxHeight: 500,
                         overflow: 'auto'
                       }}>
-                      <Typography {...this.props.textProps}>{this.props.text}</Typography>
+                      <Typography {...textProps}>{text}</Typography>
                     </Paper>
                   </div>
                 </ClickAwayListener>
@@ -113,16 +105,14 @@ ExpansionTextPanel.propTypes = {
    * Text content of the popover
    */
   text: PropTypes.string,
-
   /**
    * Props for the Typography component
    */
   textProps: PropTypes.object,
-
   /**
    * Props for the IconButton component for the dropdown arrow
    */
   dropdownIconProps: PropTypes.object
 }
 
-export default withStyles(styles)(ExpansionTextPanel)
+export default ExpansionTextPanel

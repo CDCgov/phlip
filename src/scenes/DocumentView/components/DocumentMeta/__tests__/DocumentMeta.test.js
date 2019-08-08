@@ -15,11 +15,22 @@ const props = {
   projectList: ['Project1', 'Project2'],
   jurisdictionList: ['Georgia', 'Alabama'],
   loading: false,
-  jurisdictionSuggestions: [
-    { id: 2932 }, { id: 25332 },
-    { id: 1 }, { id: 2 }, { id: 3 }
-  ],
-  projectSuggestions: [{ id: 1 }, { id: 2 }, { id: 4 }, { id: 5 }],
+  jurisdictionAutocompleteProps: {
+    suggestions: [
+      { id: 2932 },
+      { id: 25332 },
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
+    ],
+    selectedSuggestion: {},
+    searchValue: ''
+  },
+  projectAutocompleteProps: {
+    suggestions: [{ id: 1 }, { id: 2 }, { id: 4 }, { id: 5 }],
+    selectedSuggestion: {},
+    searchValue: ''
+  },
   apiErrorInfo: { title: '', text: '' },
   apiErrorOpen: false
 }

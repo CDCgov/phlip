@@ -64,13 +64,18 @@ export class Login extends Component {
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
       const rawToken = this.props.location.search
-      const parsedToken = rawToken.substring(rawToken.indexOf('=') + 1)
-      const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken }
+      const parsedTokens = rawToken.split('&')
+      const parsedToken = parsedTokens[0].substring(rawToken.indexOf('=') + 1)
+      const parsedToken2 = parsedTokens[1].split('token2=')[1]
+      const parsedToken3 = parsedTokens[2].split('token3=')[1]
+      const parsedToken4 = parsedTokens[3].split('token4=')[1]
+      const samlToken = `'{"nameID": "${parsedToken2}","sessionIndex": "${parsedToken3}","nameIDFormat": "${parsedToken4}"}'`
+      const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken, samlToken: samlToken }
       this.props.actions.checkPivUserRequest(tokenObject)
     }
     
     if (this.props.location.state !== undefined) {
-      if (this.props.location.state.sessionExpired === true) {
+      if (this.props.location.state.sessionExpired) {
         this.props.actions.logoutUser(true)
       }
     }
@@ -89,7 +94,12 @@ export class Login extends Component {
    * @param {object} values
    */
   handleSubmit = values => {
-    this.props.actions.loginUserRequest(values)
+    const { session, actions } = this.props
+    if (session) {
+      // clear the current session to start fresh
+      actions.logoutUser()
+    }
+    actions.loginUserRequest(values)
   }
   
   render() {

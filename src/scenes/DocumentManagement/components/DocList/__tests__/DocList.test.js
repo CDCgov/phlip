@@ -4,6 +4,7 @@ import { DocList } from '../index'
 
 const props = {
   documents: [{ name: 'Doc', _id: '1' }],
+  docs: [],
   page: 0,
   rowsPerPage: '10',
   onSelectAllFiles: () => {},

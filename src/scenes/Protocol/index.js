@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import actions from './actions'
 import Typography from '@material-ui/core/Typography'
-import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert } from 'components'
+import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert, withProjectLocked } from 'components'
 
 /* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
@@ -83,7 +83,12 @@ export class Protocol extends Component {
     /**
      * Current user logged in
      */
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    /**
+     * Whether or not the project has been finalized (locked) by an admin or coordinator. Different from being 'checked
+     * out'
+     */
+    projectLocked: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -222,7 +227,8 @@ export class Protocol extends Component {
     ]
     
     const {
-      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, protocolContent
+      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, protocolContent,
+      projectLocked
     } = this.props
     
     const { open, alertText, alertTitle, editMode } = this.state
@@ -270,7 +276,7 @@ export class Protocol extends Component {
             onClick: editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
             otherProps: { 'aria-label': editMode ? 'Edit protocol' : 'Save protocol' },
-            show: getProtocolError !== true
+            show: getProtocolError !== true && !projectLocked
           }}
         />
         <ApiErrorAlert onCloseAlert={this.onCloseAlert} open={alertError !== ''} content={alertError} />
@@ -342,4 +348,4 @@ const mapStateToProps = (state, ownProps) => ({
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Protocol, 'Protocol'))
+export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(withTracking(Protocol, 'Protocol')))

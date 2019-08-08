@@ -1,4 +1,5 @@
 import { types } from '../actions'
+import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import reducer, { INITIAL_STATE } from '../reducer'
 
 const initial = INITIAL_STATE
@@ -22,7 +23,7 @@ const documentPayload = [
     uploadedBy: { firstName: 'test', lastName: 'user' }
   },
   {
-    name: 'document 3',
+    name: 'document 3.docx',
     _id: '9101',
     uploadedDate: new Date('02/10/2018'),
     uploadedBy: { firstName: 'test', lastName: 'user' }
@@ -125,8 +126,9 @@ describe('CodingValidation - DocumentList reducer', () => {
     const state = reducer(currentState, action)
     
     test('should set error information object', () => {
-      expect(state.apiError.text).toEqual('Failed to get the list of approved documents.')
+      expect(state.apiError.text).toEqual('We couldn\'t get the list of approved documents.')
       expect(state.apiError.title).toEqual('Request failed')
+      expect(state.apiError.alertOrView).toEqual('view')
     })
     
     test('should display error', () => {
@@ -171,6 +173,32 @@ describe('CodingValidation - DocumentList reducer', () => {
         content: { data: {} }
       })
     })
+    
+    test('should filter out annotations for the opened doc', () => {
+      const currentState = getState({
+        documents,
+        openedDoc: { _id: '1234', name: 'document 1' },
+        annotations: {
+          all: annotations,
+          filtered: []
+        },
+        annotationUsers: {
+          all: users,
+          filtered: []
+        }
+      })
+      const state = reducer(currentState, action)
+      expect(state.annotations.filtered).toEqual([
+        { userId: 4, docId: '1234', isValidatorAnswer: false },
+        { userId: 3, docId: '1234', isValidatorAnswer: false },
+        { userId: 5, docId: '1234', isValidatorAnswer: true }
+      ])
+      expect(state.annotationUsers.filtered).toEqual([
+        { userId: 4, isValidator: false },
+        { userId: 3, isValidator: false },
+        { userId: 5, isValidator: true }
+      ])
+    })
   })
   
   describe('GET_DOC_CONTENTS_FAIL', () => {
@@ -187,7 +215,8 @@ describe('CodingValidation - DocumentList reducer', () => {
     
     test('should set error information', () => {
       expect(state.apiError.title).toEqual('')
-      expect(state.apiError.text).toEqual('Failed to retrieve document contents.')
+      expect(state.apiError.text).toEqual('We couldn\'t get the document contents.')
+      expect(state.apiError.alertOrView).toEqual('view')
     })
     
     test('should display error', () => {
@@ -242,6 +271,15 @@ describe('CodingValidation - DocumentList reducer', () => {
       
       test('should set annotations', () => {
         expect(state.annotations.all).toEqual(annotations)
+      })
+  
+      test('should update the visible annotations if a document is opened', () => {
+        const currentState = getState({ currentAnnotationIndex: 0, openedDoc: { _id: '5678' }, docSelected: true })
+        const state = reducer(currentState, action)
+        expect(state.annotations.filtered).toEqual([
+          { userId: 1, docId: '5678', isValidatorAnswer: false },
+          { userId: 2, docId: '5678', isValidatorAnswer: false }
+        ])
       })
       
       test('should set annotation users', () => {
@@ -459,6 +497,128 @@ describe('CodingValidation - DocumentList reducer', () => {
         expect(state.currentAnnotationIndex).toEqual(0)
       })
     })
+    
+    describe('when turning on view', () => {
+      const action = {
+        type: types.TOGGLE_VIEW_ANNOTATIONS,
+        answerId: 4,
+        userId: 1,
+        annotations,
+        users
+      }
+  
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      
+      test('should show annotations for selected answer id', () => {
+        expect(state.enabledAnswerId).toEqual(4)
+      })
+      
+      test('should show all users annotations by default', () => {
+        expect(state.enabledUserId).toEqual('All')
+      })
+      
+      test('should include all annotations if no doc is selected', () => {
+        expect(state.annotations.all).toEqual(annotations)
+        expect(state.annotations.filtered).toEqual(annotations)
+      })
+      
+      test('should include all users if no doc is selected', () => {
+        expect(state.annotationUsers.all).toEqual(users)
+        expect(state.annotationUsers.filtered).toEqual(users)
+      })
+  
+      test('should only show annotations for document if doc is selected', () => {
+        const currentState = getState({ openedDoc: { _id: '5678' }, docSelected: true })
+        const state = reducer(currentState, action)
+        expect(state.annotations.filtered).toEqual([
+          { userId: 1, docId: '5678', isValidatorAnswer: false },
+          { userId: 2, docId: '5678', isValidatorAnswer: false }
+        ])
+      })
+  
+      test('should only show users who annotated on document if doc is selected', () => {
+        const currentState = getState({ openedDoc: { _id: '5678' }, docSelected: true })
+        const state = reducer(currentState, action)
+        expect(state.annotationUsers.filtered).toEqual([
+          { userId: 1, isValidator: false, enabled: false },
+          { userId: 2, isValidator: false, enabled: false }
+        ])
+      })
+    })
+  })
+  
+  describe('TOGGLE_OFF_VIEW', () => {
+    const action = { type: types.TOGGLE_OFF_VIEW }
+    const currentState = getState({
+      enabledAnswerId: 4,
+      enabledUserId: 1,
+      currentAnnotationIndex: 4,
+      annotations: {
+        all: annotations,
+        filtered: [{ docId: '5678', userId: 1 }]
+      },
+      annotationUsers: {
+        all: users,
+        filtered: [{ userId: 1, isValidator: false }]
+      }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should clear all annotations when the user disables viewing annotations', () => {
+      expect(state.annotations).toEqual({
+        all: [],
+        filtered: []
+      })
+      expect(state.annotationUsers).toEqual({
+        all: [],
+        filtered: []
+      })
+    })
+    
+    test('should reset the current annotation for the finder', () => {
+      expect(state.currentAnnotationIndex).toEqual(0)
+    })
+  })
+  
+  describe('UPDATE_ANNOTATIONS', () => {
+    const action = {
+      type: types.UPDATE_ANNOTATIONS,
+      enabled: true,
+      answerId: 4,
+      questionId: 3,
+      annotations,
+      users
+    }
+    
+    const currentState = getState({ currentAnnotationIndex: 10 })
+    const state = reducer(currentState, action)
+    
+    test('should update annotations', () => {
+      expect(state.annotations.all).toEqual(annotations)
+    })
+    
+    test('should update the visible annotations if a document is opened', () => {
+      const currentState = getState({ currentAnnotationIndex: 0, openedDoc: { _id: '5678' }, docSelected: true })
+      const state = reducer(currentState, action)
+      expect(state.annotations.filtered).toEqual([
+        { userId: 1, docId: '5678', isValidatorAnswer: false },
+        { userId: 2, docId: '5678', isValidatorAnswer: false }
+      ])
+    })
+    
+    test('should update annotation users', () => {
+      expect(state.annotationUsers.all).toEqual(users)
+    })
+  })
+  
+  describe('HIDE_ANNO_MODE_ALERT', () => {
+    test('should not show the alert again if the user checks the box', () => {
+      const action = { type: types.HIDE_ANNO_MODE_ALERT }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.shouldShowAnnoModeAlert).toEqual(false)
+    })
   })
   
   describe('CHANGE_ANNOTATION_INDEX', () => {
@@ -471,12 +631,150 @@ describe('CodingValidation - DocumentList reducer', () => {
     })
   })
   
+  describe('GET_QUESTION_SUCCESS', () => {
+    describe('when the user changes questions', () => {
+      const action = { type: codingTypes.GET_QUESTION_SUCCESS }
+      const currentState = getState({
+        enabledAnswerId: 4,
+        enabledUserId: 1,
+        isUserAnswerSelected: true,
+        openedDoc: {
+          _id: '1234',
+          content: {}
+        },
+        annotations: {
+          all: annotations,
+          filtered: [{ docId: '5678', userId: 1 }]
+        },
+        annotationUsers: {
+          all: users,
+          filtered: [{ userId: 1, isValidator: false }]
+        }
+      })
+      const state = reducer(currentState, action)
+      
+      test('should clear out any saved annotations', () => {
+        expect(state.annotations).toEqual({
+          all: [],
+          filtered: []
+        })
+        expect(state.annotationUsers).toEqual({
+          all: [],
+          filtered: []
+        })
+      })
+      
+      test('should turn off all annotation mode', () => {
+        expect(state.enabledUserId).toEqual('')
+        expect(state.enabledAnswerId).toEqual('')
+        expect(state.isUserAnswerSelected).toEqual(false)
+      })
+    })
+  })
+  
   describe('FLUSH_STATE', () => {
     test('shdould set state to initial state', () => {
       const action = { type: types.FLUSH_STATE }
       const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
       const state = reducer(currentState, action)
       expect(state).toEqual(INITIAL_STATE)
+    })
+    
+    test('should overwrite showing annotation alert if the action is not logout', () => {
+      const action = { type: types.FLUSH_STATE, isLogout: true }
+      const currentState = getState({
+        documents,
+        openedDoc: { _id: '1234', name: 'document 1' },
+        shouldShowAnnoModeAlert: false
+      })
+      const state = reducer(currentState, action)
+      expect(state.shouldShowAnnoModeAlert).toEqual(true)
+    })
+  })
+  
+  describe('RESET_SCROLL_TOP', () => {
+    test('should set that the document should not scroll to the top', () => {
+      const action = { type: types.RESET_SCROLL_TOP }
+      const currentState = getState({ scrollTop: true })
+      const state = reducer(currentState, action)
+      expect(state.scrollTop).toEqual(false)
+    })
+  })
+  
+  describe('DOWNLOAD_DOCUMENTS_REQUEST', () => {
+    test('should set that a request is in progress', () => {
+      const action = { type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 'all' }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.downloading.id).toEqual('all')
+    })
+    
+    test('should not set the document name if the user is downloading all', () => {
+      const action = { type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 'all' }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.downloading.name).toEqual('')
+    })
+    
+    test('should remove the extension and add .pdf from the document name if the user is downloading just one', () => {
+      const action = { type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 9101 }
+      const currentState = getState({ documents })
+      const state = reducer(currentState, action)
+      expect(state.downloading.name).toEqual('document 3.pdf')
+    })
+  })
+  
+  describe('DOWNLOAD_DOCUMENTS_SUCCESS', () => {
+    test('should set the content of the document', () => {
+      const action = { type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload: 'doc content' }
+      const currentState = getState({ documents, downloading: { id: 'all', name: '', content: '' } })
+      const state = reducer(currentState, action)
+      expect(state.downloading.content).toEqual('doc content')
+    })
+  })
+  
+  describe('DOWNLOAD_DOCUMENTS_FAIL', () => {
+    const action = { type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'failed' }
+    const currentState = getState({ documents, downloading: { id: 'all', name: '', content: '' } })
+    const state = reducer(currentState, action)
+    
+    test('should show an alert to the user with the error', () => {
+      expect(state.apiError.text).toEqual('failed')
+      expect(state.apiError.alertOrView).toEqual('alert')
+      expect(state.apiError.open).toEqual(true)
+      expect(state.apiError.title).toEqual('')
+    })
+    
+    test('should clear any download document information', () => {
+      expect(state.downloading).toEqual({
+        name: '',
+        content: '',
+        id: ''
+      })
+    })
+  })
+  
+  describe('CLEAR_DOWNLOAD', () => {
+    const action = { type: types.CLEAR_DOWNLOAD }
+    const currentState = getState({ documents, downloading: { id: 'all', name: '', content: '' } })
+    const state = reducer(currentState, action)
+    
+    test('should clear any download document information', () => {
+      expect(state.downloading).toEqual({
+        name: '',
+        content: '',
+        id: ''
+      })
+    })
+  })
+  
+  describe('CLEAR_API_ERROR', () => {
+    const action = { type: types.CLEAR_API_ERROR }
+    const currentState = getState({ apiError: { open: true, text: 'error', title: '', alertOrView: 'alert' } })
+    const state = reducer(currentState, action)
+    
+    test('should close the api error or alert', () => {
+      expect(state.apiError.open).toEqual(false)
     })
   })
 })

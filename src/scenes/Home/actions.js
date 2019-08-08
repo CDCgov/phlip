@@ -1,4 +1,5 @@
 import makeActionCreator from 'utils/makeActionCreator'
+import { types as addEditTypes } from './scenes/AddEditProject/actions'
 
 export const types = {
   GET_PROJECTS_SUCCESS: 'GET_PROJECTS_SUCCESS',
@@ -7,17 +8,9 @@ export const types = {
   GET_PROJECT_USERS_REQUEST: 'GET_PROJECT_USERS_REQUEST',
   GET_PROJECT_USERS_FAIL: 'GET_PROJECT_USERS_FAIL',
   GET_PROJECT_USERS_SUCCESS: 'GET_PROJECT_USERS_SUCCESS',
-  UPDATE_PROJECT_REQUEST: 'UPDATE_PROJECT_REQUEST',
-  UPDATE_PROJECT_SUCCESS: 'UPDATE_PROJECT_SUCCESS',
-  UPDATE_PROJECT_FAIL: 'UPDATE_PROJECT_FAIL',
-  ADD_PROJECT_SUCCESS: 'ADD_PROJECT_SUCCESS',
-  ADD_PROJECT_REQUEST: 'ADD_PROJECT_REQUEST',
-  ADD_PROJECT_FAIL: 'ADD_PROJECT_FAIL',
-  DELETE_PROJECT_SUCCESS: 'DELETE_PROJECT_SUCCESS',
-  DELETE_PROJECT_REQUEST: 'DELETE_PROJECT_REQUEST',
-  DELETE_PROJECT_FAIL: 'DELETE_PROJECT_FAIL',
   TOGGLE_BOOKMARK: 'TOGGLE_BOOKMARK',
   TOGGLE_BOOKMARK_SUCCESS: 'TOGGLE_BOOKMARK_SUCCESS',
+  TOGGLE_BOOKMARK_FAIL: 'TOGGLE_BOOKMARK_FAIL',
   SORT_PROJECTS: 'SORT_PROJECTS',
   UPDATE_PAGE: 'UPDATE_PAGE',
   UPDATE_ROWS: 'UPDATE_ROWS',
@@ -36,26 +29,28 @@ export const types = {
   CLEAR_PROJECT_TO_EXPORT: 'CLEAR_PROJECT_TO_EXPORT',
   DISMISS_API_ERROR: 'DISMISS_API_ERROR',
   UPDATE_VISIBLE_PROJECTS: 'UPDATE_VISIBLE_PROJECTS',
-  REMOVE_PROJECT: 'REMOVE_PROJECT'
+  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  TOGGLE_PROJECT: 'TOGGLE_PROJECT',
+  SET_PROJECT_TO_EXPORT: 'SET_PROJECT_TO_EXPORT',
+  ...addEditTypes
 }
 
 export default {
-  getProjectsRequest: () => ({ type: types.GET_PROJECTS_REQUEST, payload: {} }),
-  getProjectsFail: payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } }),
-  updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'project'),
-  updateProjectFail: payload => ({ type: types.UPDATE_PROJECT_FAIL, payload: { errorContent: payload, error: true } }),
-  deleteProjectRequest: makeActionCreator(types.DELETE_PROJECT_REQUEST, 'project'),
-  deleteProjectFail: payload => ({ type: types.DELETE_PROJECT_FAIL, payload: { errorContent: payload, error: true } }),
-  toggleBookmark: makeActionCreator(types.TOGGLE_BOOKMARK, 'project'),
-  toggleBookmarkSuccess: makeActionCreator(types.TOGGLE_BOOKMARK_SUCCESS, 'payload'),
+  getProjectsRequest: () => ({ type: types.GET_PROJECTS_REQUEST, payload: { searchValue: undefined } }),
   sortBookmarked: sortBookmarked => ({ type: types.SORT_BOOKMARKED, payload: { sortBookmarked } }),
   sortProjects: sortBy => ({ type: types.SORT_PROJECTS, payload: { sortBy } }),
   updatePage: page => ({ type: types.UPDATE_PAGE, payload: { page } }),
   updateRows: rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { rowsPerPage } }),
   updateSearchValue: searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } }),
+  updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'project'),
+  deleteProjectRequest: makeActionCreator(types.DELETE_PROJECT_REQUEST, 'project'),
+  toggleBookmark: makeActionCreator(types.TOGGLE_BOOKMARK, 'project'),
+  toggleBookmarkSuccess: makeActionCreator(types.TOGGLE_BOOKMARK_SUCCESS, 'payload'),
   updateEditedFields: makeActionCreator(types.UPDATE_EDITED_FIELDS, 'projectId'),
-  exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType'),
+  exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'exportType', 'user'),
   clearProjectToExport: makeActionCreator(types.CLEAR_PROJECT_TO_EXPORT),
-  dismissApiError: makeActionCreator(types.DISMISS_API_ERROR, 'errorName'),
-  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy')
+  dismissApiError: makeActionCreator(types.DISMISS_API_ERROR),
+  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
+  toggleProject: makeActionCreator(types.TOGGLE_PROJECT, 'projectId'),
+  setProjectToExport: makeActionCreator(types.SET_PROJECT_TO_EXPORT, 'project')
 }
