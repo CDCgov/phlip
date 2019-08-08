@@ -459,7 +459,7 @@ export class AddEditProject extends Component {
             title={this.projectDefined
               ? (
                 <FlexGrid container type="row" align="center" flex>
-                  <span style={{ paddingRight: 15 }}>{!isLocked ? 'Edit Project' : 'Project Locked'}</span>
+                  <span style={{ paddingRight: 15 }} id='lock-status'>{!isLocked ? 'Edit Project' : 'Project Locked'}</span>
                   <IconButton
                     id='project-lock-btn  '
                     color={isLocked ? 'secondary' : '#757575'}
