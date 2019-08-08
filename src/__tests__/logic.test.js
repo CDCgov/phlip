@@ -69,7 +69,7 @@ describe('App Root Logic', () => {
         global.APP_IS_SAML_ENABLED = '1'
         store.dispatch({ type: types.LOGOUT_USER })
         store.whenComplete(() => {
-          expect(logout.mock.calls.length).toEqual(1)
+          expect(logout.mock.calls.length).toEqual(2)
           logout.mockClear()
           done()
         })
