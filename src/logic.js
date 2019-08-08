@@ -38,7 +38,7 @@ const samsLogout = async () => {
         sessionIndex: parsedUser.sessionIndex
       }
     }).then(res => {
-      // logout()
+      //logout()
       const logoutURL = res.data
       location.href = logoutURL
     })
