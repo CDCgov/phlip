@@ -92,7 +92,7 @@ export class DocList extends Component {
      */
     docs: PropTypes.array
   }
-  
+
   columns = [
     {
       key: 'isChecked',
@@ -150,7 +150,7 @@ export class DocList extends Component {
     },
     { key: 'status', label: 'Approved', width: 100, minWidth: 50, flexGrow: 0, flexShrink: 0 }
   ]
-  
+
   /**
    * Renders the table header
    */
@@ -173,7 +173,7 @@ export class DocList extends Component {
               {label}
             </TableSortLabel>
           ) : label
-    
+
     return (
       <TableCell
         component="div"
@@ -189,7 +189,7 @@ export class DocList extends Component {
       </TableCell>
     )
   }
-  
+
   /**
    * Renders a table row
    * @param cellData
@@ -200,7 +200,7 @@ export class DocList extends Component {
   cellRenderer = ({ cellData, columnIndex = null, rowIndex, style }) => {
     const { docs, onSelectOneDoc } = this.props
     const doc = docs[rowIndex]
-    
+
     return (
       <TableCell
         component="div"
@@ -229,22 +229,22 @@ export class DocList extends Component {
       </TableCell>
     )
   }
-  
+
   render() {
     const {
       rowsPerPage, page, sortBy, sortDirection, userRole, showAll, toggleAllDocs, onChangePage, onChangeRows, docCount,
       onBulkAction, docs
     } = this.props
-    
+
     let options = [
       { value: 'bulk', label: 'Actions', disabled: true },
-      { value: 'project', label: 'Assign Project' },
-      { value: 'jurisdiction', label: 'Assign Jurisdiction' },
-      { value: 'approve', label: 'Approve' },
-      { value: 'removeproject', label: 'Unassign Project' }
+      { value: 'project', label: 'Assign Project', id:'option-project' },
+      { value: 'jurisdiction', label: 'Assign Jurisdiction', id:'option-jurisdiction' },
+      { value: 'approve', label: 'Approve', id:'option-approve' },
+      { value: 'removeproject', label: 'Unassign Project', id:'option-removeProject' }
     ]
-    
-    options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete' }] : options
+
+    options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete', id:'option-delete' }] : options
     options.sort((a, b) => (a.label > b.label) ? 1 : -1)
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }}>
@@ -257,6 +257,7 @@ export class DocList extends Component {
             }}
             SelectDisplayProps={{ style: { paddingBottom: 3, minWidth: 140 } }}
             style={{ fontSize: 13, color: '#757575', fontWeight: 400 }}
+            id = "bulkAction"
           />
           <FlexGrid container type="row" align="center">
             <Switch checked={showAll} onChange={() => toggleAllDocs()} />
@@ -268,6 +269,7 @@ export class DocList extends Component {
             {({ height, width }) => {
               return (
                 <Table
+                  gridId = "doc-list"
                   height={height}
                   width={width}
                   headerHeight={56}
