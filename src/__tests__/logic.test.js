@@ -41,7 +41,7 @@ describe('App Root Logic', () => {
       logic
     })
   }
-  
+
   describe('Logging out', () => {
     test('should log the user out', done => {
       const store = setupStore()
@@ -52,7 +52,7 @@ describe('App Root Logic', () => {
         done()
       })
     })
-    
+
     test('should flush redux state', done => {
       const spy = jest.spyOn(persistor, 'purge')
       const store = setupStore()
@@ -62,18 +62,19 @@ describe('App Root Logic', () => {
         done()
       })
     })
-    
+
     describe('if sams authentication is enabled', () => {
       test('should logout the user from the app', done => {
         const store = setupStore()
         global.APP_IS_SAML_ENABLED = '1'
         store.dispatch({ type: types.LOGOUT_USER })
         store.whenComplete(() => {
-          expect(logout.mock.calls.length).toEqual(1)
+          expect(logout.mock.calls.length).toEqual(2)
+          logout.mockClear()
           done()
         })
       })
-      
+
       test('should logout the user in sams', done => {
         const mock = new MockAdapter(axios)
         global.APP_IS_SAML_ENABLED = '1'
