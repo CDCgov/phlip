@@ -115,7 +115,7 @@ export class AddEditProject extends Component {
      */
     project: PropTypes.object
   }
-  
+
   constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
@@ -129,11 +129,11 @@ export class AddEditProject extends Component {
       hoveredUser: null
     }
   }
-  
+
   componentDidMount() {
     const { actions, currentUser } = this.props
     this.prevTitle = document.title
-    
+
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
       actions.initProject(this.projectDefined)
@@ -142,10 +142,10 @@ export class AddEditProject extends Component {
       actions.initProject({ projectUsers: [currentUser], createdById: currentUser.userId })
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     const { formError, onSubmitError, history, goBack, submitting, togglingLock } = this.props
-    
+
     if ((prevProps.submitting && !submitting) || (prevProps.togglingLock && !togglingLock)) {
       if (formError !== null) {
         onSubmitError(formError)
@@ -154,11 +154,11 @@ export class AddEditProject extends Component {
       }
     }
   }
-  
+
   componentWillUnmount() {
     document.title = this.prevTitle
   }
-  
+
   /**
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
    * @public
@@ -168,7 +168,7 @@ export class AddEditProject extends Component {
     formActions.reset('projectForm')
     history.push('/home')
   }
-  
+
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state.
    *
@@ -177,12 +177,12 @@ export class AddEditProject extends Component {
    */
   handleSubmit = values => {
     const { actions } = this.props
-    
+
     this.projectDefined
       ? actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
       : actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
   }
-  
+
   /**
    * Capitalizes first letter of string
    *
@@ -191,7 +191,7 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
-  
+
   /**
    * Validates the name of the project in add or edit does not conflict with another project
    *
@@ -200,12 +200,12 @@ export class AddEditProject extends Component {
    */
   validateProjectName = values => {
     const { projects } = this.props
-    
+
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const projectsWoCurrent = this.projectDefined
       ? projects.filter(project => project.id !== this.projectDefined.id)
       : projects
-    
+
     const names = projectsWoCurrent.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
       if (names.includes(values.name.toLowerCase()) &&
@@ -214,7 +214,7 @@ export class AddEditProject extends Component {
       }
     })
   }
-  
+
   /**
    * Checks to see if a value is defined and if not return 'required' string
    *
@@ -223,7 +223,7 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   required = value => value ? undefined : 'Required'
-  
+
   /**
    * Gets button text adds a spinner if a saving is happening
    * @param text
@@ -237,7 +237,7 @@ export class AddEditProject extends Component {
       </>
     )
   }
-  
+
   /**
    * Shows a modal asking user to confirm deletion of project
    */
@@ -250,7 +250,7 @@ export class AddEditProject extends Component {
       }
     })
   }
-  
+
   /*
    * Handles when the user confirms deletion of project
    */
@@ -258,7 +258,7 @@ export class AddEditProject extends Component {
     this.onCancelDelete()
     this.props.actions.deleteProjectRequest(this.projectDefined.id)
   }
-  
+
   /**
    * Handles when the user confirms cancels deletion of project
    */
@@ -268,14 +268,14 @@ export class AddEditProject extends Component {
       alertInfo: {}
     })
   }
-  
+
   /**
    * Closes an alert on the page
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
-  
+
   /**
    * Search user list for adding a user
    * @param value
@@ -283,7 +283,7 @@ export class AddEditProject extends Component {
   onUsersFetchRequest = ({ value }) => {
     this.props.actions.searchUserList(value)
   }
-  
+
   /**
    * When a user was selected
    * @param event
@@ -295,7 +295,7 @@ export class AddEditProject extends Component {
       addUserEnabled: false
     })
   }
-  
+
   /**
    * User changed their search value
    * @param event
@@ -303,14 +303,14 @@ export class AddEditProject extends Component {
   onUserSuggestionChange = event => {
     this.props.actions.onSuggestionValueChanged(event.target.value)
   }
-  
+
   /**
    * Clears suggestion list
    */
   onClearUserSuggestions = () => {
     this.props.actions.onClearSuggestions()
   }
-  
+
   /**
    * Removes a user from the list
    * @returns {*}
@@ -318,7 +318,7 @@ export class AddEditProject extends Component {
   removeUser = index => () => {
     this.props.actions.removeUserFromList(index)
   }
-  
+
   /**
    * Changes background color when user hovers over a user in the list
    * @param index
@@ -326,20 +326,20 @@ export class AddEditProject extends Component {
   onHoverUser = index => () => {
     const { hoveredUser } = this.state
     const { project } = this.props
-    
+
     if (project.status !== 2) {
       this.setState({
         hoveredUser: hoveredUser === index ? null : index
       })
     }
   }
-  
+
   /**
    * Checks whether there have been updates to the users list; if not delegates it to the form alert
    */
   onCloseModal = () => {
     const { users, onCloseModal, openConfirmAlert } = this.props
-    
+
     if (this.projectDefined) {
       if (users.length !== this.projectDefined.projectUsers.length) {
         openConfirmAlert()
@@ -352,7 +352,7 @@ export class AddEditProject extends Component {
       onCloseModal()
     }
   }
-  
+
   /**
    * Stops the form from submitting when hitting 'enter' while in the search field
    * @param event
@@ -362,7 +362,7 @@ export class AddEditProject extends Component {
       event.preventDefault()
     }
   }
-  
+
   /**
    * Enables the add user field
    * @returns {*}
@@ -372,24 +372,24 @@ export class AddEditProject extends Component {
       addUserEnabled: true
     })
   }
-  
+
   /**
    * Handles locking / unlocking a project
    */
   handleToggleLock = () => {
     const { actions, project } = this.props
-    
+
     if (project.status === 2) {
       actions.unlockProjectRequest(project, 1)
     } else {
       actions.lockProjectRequest(project, 2)
     }
   }
-  
+
   render() {
     const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
     const { currentUser, location, submitting, userSuggestions, userSearchValue, users, project } = this.props
-    
+
     const isLocked = project.status === 2
     let actions = [
       {
@@ -399,7 +399,7 @@ export class AddEditProject extends Component {
         otherProps: { 'aria-label': 'Cancel edit view' }
       }
     ]
-    
+
     actions = isLocked
       ? actions
       : [
@@ -413,12 +413,12 @@ export class AddEditProject extends Component {
           otherProps: { 'aria-label': 'Save form' }
         }
       ]
-    
+
     const options = [
       { value: 1, label: 'Legal Scan' },
       { value: 2, label: 'Policy Surveillance' }
     ]
-    
+
     const alertActions = [
       {
         value: 'Delete',
@@ -426,9 +426,9 @@ export class AddEditProject extends Component {
         onClick: this.handleDeleteConfirm
       }
     ]
-    
+
     let modalButtons = undefined
-    
+
     if (this.projectDefined && currentUser.role === 'Admin') {
       modalButtons = (
         <Button
@@ -439,7 +439,7 @@ export class AddEditProject extends Component {
         </Button>
       )
     }
-    
+
     return (
       <>
         <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
@@ -461,6 +461,7 @@ export class AddEditProject extends Component {
                 <FlexGrid container type="row" align="center" flex>
                   <span style={{ paddingRight: 15 }}>{!isLocked ? 'Edit Project' : 'Project Locked'}</span>
                   <IconButton
+                    id='project-lock-btn  '
                     color={isLocked ? 'secondary' : '#757575'}
                     onClick={this.handleToggleLock}
                     tooltipText={isLocked ? 'Unlock Project' : 'Lock Project'}
@@ -541,7 +542,7 @@ export class AddEditProject extends Component {
                       : user.userId === currentUser.userId
                     const userName = `${user.firstName} ${user.lastName}`
                     const hovered = i === hoveredUser
-  
+
                     return (
                       <FlexGrid
                         key={`project-user-${i}`}
@@ -596,7 +597,7 @@ export class AddEditProject extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const addEditState = state.scenes.home.addEditProject
-  
+
   return {
     projects: Object.values(state.data.projects.byId) || [],
     project: addEditState.project || {},
