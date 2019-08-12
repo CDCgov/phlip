@@ -505,6 +505,7 @@ export class AddEditProject extends Component {
                   <InputLabel style={{ marginRight: 5, flexShrink: 0 }}>Project Users</InputLabel>
                   {!isLocked &&
                   <Button
+                    id='add-project-user'
                     raised={false}
                     color="accent"
                     variant="text"
