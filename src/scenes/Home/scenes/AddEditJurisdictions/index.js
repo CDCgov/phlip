@@ -63,23 +63,23 @@ export class AddEditJurisdictions extends Component {
      */
     projectLocked: PropTypes.bool
   }
-  
+
   constructor(props, context) {
     super(props, context)
   }
-  
+
   state = {
     confirmDeleteAlertOpen: false,
     jurisdictionToDelete: {},
     deleteErrorAlertOpen: false
   }
-  
+
   componentDidMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
     this.showJurisdictionLoader()
     document.title = `PHLIP - Project ${this.props.project.name} - Jurisdictions`
   }
-  
+
   componentDidUpdate(prevProps) {
     if (this.props.deleteError !== null && prevProps.deleteError === null) {
       this.setState({
@@ -87,13 +87,13 @@ export class AddEditJurisdictions extends Component {
       })
     }
   }
-  
+
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
     document.title = `PHLIP - Project ${this.props.project.name}`
     this.props.history.push('/home')
   }
-  
+
   /**
    * Closes main modal, and pushes '/home' onto browser history
    * @public
@@ -101,7 +101,7 @@ export class AddEditJurisdictions extends Component {
   onCloseModal = () => {
     this.props.history.push('/home')
   }
-  
+
   /**
    * Sets a timeout and if the app is still loading the jurisdictions after 1 second, then it dispatches a redux action
    * to show the loading spinner
@@ -114,7 +114,7 @@ export class AddEditJurisdictions extends Component {
       }
     }, 1000)
   }
-  
+
   /**
    * Opens an alert to ask the user to confirm deleting a jurisdiction
    *
@@ -128,7 +128,7 @@ export class AddEditJurisdictions extends Component {
       jurisdictionToDelete: { id, name }
     })
   }
-  
+
   /**
    * User confirms delete, dispatches a redux action to delete the jurisdiction, closes the alert modal
    * @public
@@ -137,7 +137,7 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.deleteJurisdictionRequest(this.state.jurisdictionToDelete.id, this.props.project.id)
     this.cancelDelete()
   }
-  
+
   /**
    * User cancels delete, closes the alert modal
    * @public
@@ -148,7 +148,7 @@ export class AddEditJurisdictions extends Component {
       jurisdictionToDelete: {}
     })
   }
-  
+
   /**
    * Closes the error alert shown when an error occurs during delete, dispatches an action to clear error content
    * @public
@@ -157,10 +157,10 @@ export class AddEditJurisdictions extends Component {
     this.setState({
       deleteErrorAlertOpen: false
     })
-    
+
     this.props.actions.dismissDeleteErrorAlert()
   }
-  
+
   /**
    * Gets the button to show in the modal header
    * @public
@@ -189,13 +189,13 @@ export class AddEditJurisdictions extends Component {
             }}
             value="Add Jurisdiction"
             color="accent"
-            aria-label="Add jurisidiction to project"
+            aria-label="Add jurisdictions to project"
           />
         </div>
       </>
     )
   }
-  
+
   render() {
     const alertActions = [
       {
@@ -204,14 +204,14 @@ export class AddEditJurisdictions extends Component {
         onClick: this.continueDelete
       }
     ]
-    
+
     const {
       project, error, searchValue, actions, deleteError, errorContent, showJurisdictionLoader, visibleJurisdictions,
       projectLocked
     } = this.props
-    
+
     const { confirmDeleteAlertOpen, jurisdictionToDelete, deleteErrorAlertOpen } = this.state
-    
+
     return (
       <Modal onClose={this.onCloseModal} open maxWidth="md" hideOverflow>
         <ModalTitle
