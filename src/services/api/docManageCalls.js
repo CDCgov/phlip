@@ -23,6 +23,11 @@ const docManageCalls = [
     path: ({ docId }) => `/docs/${docId}/download`
   },
   {
+    name: 'downloadWithAnnotations',
+    method: 'post',
+    path: ({ docId }) => `/docs/${docId}/download`
+  },
+  {
     name: 'getDocs',
     method: 'get',
     path: (projectList = '') => projectList !== '' ? `/docs?${projectList}` : '/docs'
