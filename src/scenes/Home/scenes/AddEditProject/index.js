@@ -434,6 +434,7 @@ export class AddEditProject extends Component {
         <Button
           color={isLocked ? `rgba(0, 0, 0, 0.12)` : 'error'}
           disabled={isLocked}
+          id='project-delete-btn'
           onClick={this.handleShowDeleteConfirm}>
           Delete
         </Button>
