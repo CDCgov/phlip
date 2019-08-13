@@ -260,7 +260,7 @@ export class DocList extends Component {
             id = "bulkAction"
           />
           <FlexGrid container type="row" align="center">
-            <Switch checked={showAll} onChange={() => toggleAllDocs()} />
+            <Switch checked={showAll} onChange={() => toggleAllDocs()} id='showAllDocBtn' />
             <Typography variant="caption" style={{ fontWeight: 500 }}>Show All Documents</Typography>
           </FlexGrid>
         </FlexGrid>
