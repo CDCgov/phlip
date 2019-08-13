@@ -207,15 +207,21 @@ const downloadLogic = createLogic({
   async process({ getState, action, docApi }, dispatch, done) {
     const codingState = getState().scenes.codingValidation.coding
     const isValidation = codingState.page === 'validation'
+    const { userQuestion } = getQuestions(codingState.question.id, getState(), isValidation)
 
     try {
       let payload = ''
       if (action.docId === 'all') {
         // download a zip file
         const allIds = getState().scenes.codingValidation.documentList.documents.allIds
-        payload = await docApi.downloadZip({}, { responseType: 'arraybuffer' }, { docList: allIds })
+        let docs = []
+        for (const id of allIds) {
+          const annotations = getAnnotsForQAndDoc(userQuestion, id)
+          docs = [...docs, { _id: id, annotations }]
+        }
+
+        payload = await docApi.downloadZipWithAnnotations({ docs }, { responseType: 'arraybuffer' }, {})
       } else {
-        const { userQuestion } = getQuestions(codingState.question.id, getState(), isValidation)
         const annotations = getAnnotsForQAndDoc(userQuestion, action.docId)
         // download just one file
         payload = await docApi.downloadWithAnnotations(
@@ -226,6 +232,7 @@ const downloadLogic = createLogic({
       }
       dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload })
     } catch (err) {
+      console.log(err)
       dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
     }
     done()

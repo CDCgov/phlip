@@ -18,6 +18,11 @@ const docManageCalls = [
       : ''}`).join('')}`
   },
   {
+    name: 'downloadZipWithAnnotations',
+    method: 'post',
+    path: () => '/docs/download'
+  },
+  {
     name: 'download',
     method: 'get',
     path: ({ docId }) => `/docs/${docId}/download`
