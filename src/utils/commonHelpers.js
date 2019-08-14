@@ -159,6 +159,32 @@ export const getFileType = file => {
   })
 }
 
+/**
+ * custom sort for document list in validation screen
+ */
+export const docListSort = (list,sortBy1,sortBy2,direction) => {
+
+  let grouped = {}
+  let sorted = sortListOfObjects(list,sortBy1,direction)
+  for (let i = 0; i < sorted.length; i += 1) {
+    if(!grouped[sorted[i][sortBy2]]) {
+      grouped[sorted[i][sortBy2]] = []
+    }
+    grouped[sorted[i][sortBy2]].push(sorted[i])
+  }
+  const uniqueDocName = Array.from(new Set(sorted.map(a => a[sortBy2])))
+    .map(x => {
+      return sorted.find(a => a[sortBy2] === x)
+    })
+  let mergedList = []
+  uniqueDocName.forEach(item => {
+    grouped[item[sortBy2]].forEach(doc => {
+      mergedList.push(doc)
+    })
+  })
+  return mergedList
+}
+
 export default {
   sliceTable,
   sortListOfObjects,
@@ -166,5 +192,6 @@ export default {
   checkIfMultiWord,
   handleUserImages,
   removeExtension,
-  getFileType
+  getFileType,
+  docListSort
 }
