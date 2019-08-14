@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
-import { sortListOfObjects, removeExtension, docListSort } from 'utils/commonHelpers'
+import { removeExtension, docListSort } from 'utils/commonHelpers'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage/session'
 import { persistReducer } from 'redux-persist'
