@@ -58,7 +58,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
-  
+
   return new Promise(async (resolve, reject) => {
     if (users.length === 0) {
       resolve({ errors })
@@ -75,7 +75,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             needsCheck = false
           }
         }
-        
+
         if (needsCheck) {
           try {
             avatar = await api.getUserImage({}, {}, { userId })
@@ -83,7 +83,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             errors = { userImages: 'failed to get some user images.' }
             avatar = ''
           }
-          
+
           dispatch({
             type: update ? userTypes.UPDATE_USER : userTypes.ADD_USER,
             payload: {
@@ -117,7 +117,7 @@ export const removeExtension = string => {
     pieces.pop()
     name = pieces.join('.')
   }
-  
+
   return { name, extension }
 }
 
@@ -149,11 +149,11 @@ export const getFileType = file => {
             fileType = type !== undefined ? type : extension
           }
         }
-        
+
         resolve({ ...file, fileType })
       }
     }
-    
+
     const blob = file.slice(0, 4)
     filereader.readAsArrayBuffer(blob)
   })
@@ -162,27 +162,31 @@ export const getFileType = file => {
 /**
  * custom sort for document list in validation screen
  */
-export const docListSort = (list,sortBy1,sortBy2,direction) => {
+export const docListSort = (list,sortBy1,sortBy2,direction, group = undefined) => {
 
-  let grouped = {}
   let sorted = sortListOfObjects(list,sortBy1,direction)
-  for (let i = 0; i < sorted.length; i += 1) {
-    if(!grouped[sorted[i][sortBy2]]) {
-      grouped[sorted[i][sortBy2]] = []
+  if (group) {
+    let grouped = {}
+    for (let i = 0; i < sorted.length; i += 1) {
+      if (!grouped[sorted[i][sortBy2]]) {
+        grouped[sorted[i][sortBy2]] = []
+      }
+      grouped[sorted[i][sortBy2]].push(sorted[i])
     }
-    grouped[sorted[i][sortBy2]].push(sorted[i])
+    const uniqueDocName = Array.from(new Set(sorted.map(a => a[sortBy2])))
+      .map(x => {
+        return sorted.find(a => a[sortBy2] === x)
+      })
+    let mergedList = []
+    uniqueDocName.forEach(item => {
+      grouped[item[sortBy2]].forEach(doc => {
+        mergedList.push(doc)
+      })
+    })
+    return mergedList
+  } else {
+    return sorted
   }
-  const uniqueDocName = Array.from(new Set(sorted.map(a => a[sortBy2])))
-    .map(x => {
-      return sorted.find(a => a[sortBy2] === x)
-    })
-  let mergedList = []
-  uniqueDocName.forEach(item => {
-    grouped[item[sortBy2]].forEach(doc => {
-      mergedList.push(doc)
-    })
-  })
-  return mergedList
 }
 
 export default {
