@@ -9,6 +9,7 @@ import theme from 'services/theme'
 import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader, ApiErrorAlert, IconButton } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 import AnnotationFinder from './components/AnnotationFinder'
+import moment from 'moment'
 
 export class DocumentList extends Component {
   static propTypes = {
@@ -423,7 +424,7 @@ export class DocumentList extends Component {
                         ...docNameStyle,
                         color: isRetrieving ? '#757575' : theme.palette.secondary.main
                       }}>
-                      <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}</span>
+                      <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}&nbsp;&nbsp;<span style={{ fontSize: `0.8rem`, color: '#7b7b7b' }}>({(moment.utc(doc.effectiveDate).local().format('M/D/YYYY'))})</span></span>
                     </Typography>
                     {isRetrieving && <CircularLoader color="primary" thickness={5} size={16} />}
                     {annotatedDocs.includes(doc._id) &&
