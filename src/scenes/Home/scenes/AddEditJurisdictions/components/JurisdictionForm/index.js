@@ -151,7 +151,7 @@ export class JurisdictionForm extends Component {
   onSubmitForm = () => {
 
     const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
-    if (!hasErrors && !this.checkDupJurisSegment(this.props.jurisdiction.id)) {
+    if (!hasErrors && !this.checkDupJurisSegment(this.props.jurisdiction)){
       const jurisdiction = {
         name: this.props.form.values.name,
         startDate: moment(this.props.form.values.startDate).toISOString(),
@@ -279,7 +279,7 @@ export class JurisdictionForm extends Component {
 
   onChangeDate = (dateField, event) => {
     let endDateErrors, startDateErrors
-    this.checkDupJurisSegment(this.props.jurisdiction.jurisdictionId)
+    this.checkDupJurisSegment(this.props.jurisdiction)
     if (moment(event).format() === 'Invalid date') {
       this.props.actions.setFormValues(dateField, event)
       if (dateField === 'startDate') {
