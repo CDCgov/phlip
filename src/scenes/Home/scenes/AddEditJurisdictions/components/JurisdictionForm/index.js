@@ -279,7 +279,7 @@ export class JurisdictionForm extends Component {
 
   onChangeDate = (dateField, event) => {
     let endDateErrors, startDateErrors
-    this.checkDupJurisSegment(this.props.jurisdiction)
+    //console.log(this.props.jurisdiction)
     if (moment(event).format() === 'Invalid date') {
       this.props.actions.setFormValues(dateField, event)
       if (dateField === 'startDate') {
@@ -307,6 +307,7 @@ export class JurisdictionForm extends Component {
         endDate: endDateErrors
       }
     })
+    this.checkDupJurisSegment(this.props.jurisdiction) // recheck after date change
   }
   /**
    * Check if the mouse click event valid for this component.  if not valid, ignore event
@@ -320,6 +321,7 @@ export class JurisdictionForm extends Component {
   }
 
   checkDupJurisSegment = (selectedJurisdiction) => {
+    //console.log('check here')
     let dupJurisdiction
     const jurisdictionSegments = normalize.createArrOfObj(this.props.jurisdictionsById,this.props.visibleJurisdictions)
     //console.log('form: ',jurisId, ' segStrt:', new Date(this.props.form.values.startDate).toLocaleDateString(), ' segEnd: ', new Date(this.props.form.values.endDate).toLocaleDateString())
@@ -348,6 +350,8 @@ export class JurisdictionForm extends Component {
           endDate: '',
           startDate: ''
         }
+      },() => {
+        //console.log(this.state.errors)
       })
     }
     return dupJurisdiction
