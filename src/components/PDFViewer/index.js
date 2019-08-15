@@ -31,7 +31,7 @@ export class PDFViewer extends Component {
     toggleCoderAnnotations: PropTypes.func,
     onFinishRendering: PropTypes.func
   }
-  
+
   static defaultProps = {
     annotations: [],
     document: {},
@@ -48,7 +48,7 @@ export class PDFViewer extends Component {
     onFinishRendering: () => {
     }
   }
-  
+
   constructor(props, context) {
     super(props, context)
     this.viewerRef = React.createRef()
@@ -66,22 +66,25 @@ export class PDFViewer extends Component {
       initialRender: false
     }
   }
-  
+
   componentDidMount() {
-    if (this.props.document.content.data) {
-      this.createPdf(this.props.document)
+    const { document } = this.props
+
+    if (document.content.data) {
+      this.createPdf(document)
       this.setState({
         initialRender: true
       })
     }
   }
-  
+
   componentDidUpdate(prevProps) {
-    if (!prevProps.document.content.data && this.props.document.content.data) {
-      this.createPdf(this.props.document)
+    const { document, allowSelection } = this.props
+    if (!prevProps.document.content.data && document.content.data) {
+      this.createPdf(document)
     }
-    
-    if (prevProps.allowSelection && !this.props.allowSelection) {
+
+    if (prevProps.allowSelection && !allowSelection) {
       this.setState({
         pendingAnnotations: [],
         deleteAnnotationIndexes: {},
@@ -89,7 +92,7 @@ export class PDFViewer extends Component {
       })
     }
   }
-  
+
   /**
    * Gets the PDF document using PDF.js
    * @param docContent
@@ -97,14 +100,12 @@ export class PDFViewer extends Component {
   createPdf = docContent => {
     const CMAP = 'pdfjs-dist/cmaps'
     PDFJS.getDocument({ data: docContent.content.data, cMapUrl: CMAP }).then(pdf => {
-      pdf.getMetadata().then(() => {
-        this.setState({
-          pdf
-        }, () => this.gatherPagePromises())
-      })
+      this.setState({
+        pdf
+      }, () => this.gatherPagePromises())
     })
   }
-  
+
   /**
    * User saves pending annotation
    * @param index
@@ -113,14 +114,14 @@ export class PDFViewer extends Component {
     this.props.saveAnnotation(this.state.pendingAnnotations[index])
     this.setState({ pendingAnnotations: [] })
   }
-  
+
   /**
    * User discards pending annotation
    */
   cancelAnnotation = () => {
     this.setState({ pendingAnnotations: [] })
   }
-  
+
   /**
    * Opens an alert, asking the user to confirm deletion of annotation
    * @param index
@@ -131,7 +132,7 @@ export class PDFViewer extends Component {
       deleteIndex: index
     })
   }
-  
+
   /**
    * User confirmed removing annotation
    */
@@ -143,7 +144,7 @@ export class PDFViewer extends Component {
       deleteAnnotationIndexes: {}
     })
   }
-  
+
   /**
    * User decided not to remove annotation
    */
@@ -153,7 +154,7 @@ export class PDFViewer extends Component {
       deleteIndex: null
     })
   }
-  
+
   /**
    * For hiding the 'X' icon delete button for an annotation
    */
@@ -162,7 +163,7 @@ export class PDFViewer extends Component {
       deleteAnnotationIndexes: {}
     })
   }
-  
+
   /**
    * For showing the 'X' icon delete button for an annotation
    * @param startPage
@@ -177,7 +178,7 @@ export class PDFViewer extends Component {
       }
     })
   }
-  
+
   /**
    * Gets page specific attributes
    * @returns {Promise<void>}
@@ -190,14 +191,14 @@ export class PDFViewer extends Component {
       noText.push(page.textContent.items.length === 0)
       pagePromises.push(page)
     }
-    
+
     const allPages = await Promise.all(pagePromises)
     this.props.onCheckTextContent(noText)
     this.setState({
       pages: allPages
     })
   }
-  
+
   /**
    * Gets the actual PDF page
    * @param pageNumber
@@ -208,12 +209,15 @@ export class PDFViewer extends Component {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
         page.getTextContent({ normalizeWhitespace: true, enhanceTextSelection: true }).then(async textContent => {
           const pageToAdd = { page, textContent }
-          resolve(pageToAdd)
+          page.getAnnotations().then(async annotations => {
+            console.log('annotationData', annotations)
+            resolve(pageToAdd)
+          })
         })
       })
     })
   }
-  
+
   /**
    * Checks to see if rect1 and rect2 are basically the same
    * @param rect1
@@ -228,7 +232,7 @@ export class PDFViewer extends Component {
       && (Math.abs(rect1.endY - rect2.endY) < 1)
     )
   }
-  
+
   /**
    * Used to get the first text item on a page
    * @param endNode
@@ -246,7 +250,7 @@ export class PDFViewer extends Component {
     }
     return node
   }
-  
+
   /**
    * Used to get the last text item on a page
    * @param startNode
@@ -264,14 +268,14 @@ export class PDFViewer extends Component {
     }
     return node
   }
-  
+
   /**
    * Checks to see if the selection rects are the same except for bottom prop (height 200 difference)
    */
   checkNextRect = (r1, r2) => {
     const b1 = r1.bottom - r1.height
     const b2 = r2.bottom - r2.height
-    
+
     return (
       (Math.abs(b1 - b2) < 1)
       && (Math.abs(r1.top - r2.top) < 1)
@@ -282,7 +286,7 @@ export class PDFViewer extends Component {
       && (Math.abs(r1.y - r2.y) < 1)
     )
   }
-  
+
   /**
    * Determines the 'annotation' information for text selection at a specific Document.Range
    * @param rangeNumber
@@ -295,32 +299,32 @@ export class PDFViewer extends Component {
     const pageRect = this[`page${pageNumber}ref`].current.getClientRects()[0]
     const selectionRects = selection.getRangeAt(rangeNumber).getClientRects()
     let rects = []
-    
+
     let i = 0
     while (i < selectionRects.length) {
       let same = false, nextRect = null, r = null
       const currRect = selectionRects[i]
       r = currRect
-  
+
       if (i !== selectionRects.length - 1) {
         nextRect = selectionRects[i + 1]
         same = this.checkNextRect(currRect, nextRect)
       }
-      
+
       if (same) {
         r = nextRect
         i += 2
       } else {
         i += 1
       }
-      
+
       const start = dom_utils.applyInverseTransform([
         r.left - pageRect.x, r.top - pageRect.y
       ], renderContext.viewport.transform)
       const end = dom_utils.applyInverseTransform([
         r.right - pageRect.x, r.bottom - pageRect.y
       ], renderContext.viewport.transform)
-      
+
       const points = {
         x: start[0],
         y: start[1],
@@ -329,49 +333,10 @@ export class PDFViewer extends Component {
       }
       rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
     }
-    
-    // for (let i = 0; i < selectionRects.length; i++) {
-    //   const currRect = selectionRects[i]
-    //   r = currRect
-    //
-    //   if (i !== selectionRects.length - 1) {
-    //     nextRect = selectionRects[i + 1]
-    //     same = this.checkNextRect(currRect, nextRect)
-    //   }
-    //
-    //   if (same) {
-    //     r = nextRect
-    //     i+=2
-    //   }
-    //
-    //   const start = dom_utils.applyInverseTransform([
-    //     r.left - pageRect.x, r.top - pageRect.y
-    //   ], renderContext.viewport.transform)
-    //   const end = dom_utils.applyInverseTransform([
-    //     r.right - pageRect.x, r.bottom - pageRect.y
-    //   ], renderContext.viewport.transform)
-    //
-    //   const points = {
-    //     x: start[0],
-    //     y: start[1],
-    //     endX: end[0],
-    //     endY: end[1]
-    //   }
-    //
-    //   rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
-    //
-    //   /*if (i > 0) {
-    //     const previous = rects[rects.length - 1]
-    //     if (!this.matchRect(previous.pdfPoints, points)) {
-    //       rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
-    //     }
-    //   } else {
-    //     rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
-    //   }*/
-    // }
+
     return rects
   }
-  
+
   /**
    * Gets the text selection of the screen. Splits it into various Ranges if it spans multiple pages.
    * @param renderContext
@@ -381,7 +346,7 @@ export class PDFViewer extends Component {
     const selection = window.getSelection()
     const range = selection.getRangeAt(0)
     let ranges = [], startPage = pageNumber, endPage = pageNumber
-    
+
     let fullAnnotation = {
       docId: this.props.document._id,
       docName: this.props.document.name,
@@ -391,32 +356,32 @@ export class PDFViewer extends Component {
       startPage: pageNumber,
       endPage: pageNumber
     }
-    
+
     // the selection spans multiple pages
     if (range.commonAncestorContainer.className === 'pdfViewer') {
       startPage = parseInt(range.startContainer.parentNode.parentNode.getAttribute('data-page-number'))
       endPage = parseInt(range.endContainer.parentNode.parentNode.getAttribute('data-page-number'))
-      
+
       fullAnnotation.startPage = startPage
       fullAnnotation.endPage = endPage
-      
+
       const startRange = document.createRange()
       const lastSib = this.getLastSibling(range.startContainer)
       const lastTextSib = lastSib.childNodes[lastSib.childNodes.length - 1]
       startRange.setStart(range.startContainer, range.startOffset)
       startRange.setEnd(lastTextSib, lastTextSib.length)
-      
+
       const endRange = document.createRange()
       const firstSib = this.getFirstSibling(range.endContainer)
       endRange.setStart(firstSib.childNodes[0], 0)
       endRange.setEnd(range.endContainer, range.endOffset)
-      
+
       ranges.push({ pageNumber: startPage, range: startRange })
       ranges.push({ pageNumber: endPage, range: endRange })
-      
+
       if ((endPage - startPage) > 1) {
         const start = startPage + 1
-        
+
         // create a range for start and end page
         // selection spans more than two pages
         for (let x = start; x < endPage; x++) {
@@ -433,7 +398,7 @@ export class PDFViewer extends Component {
     } else {
       ranges.push({ pageNumber, range })
     }
-    
+
     for (let x = 0; x < ranges.length; x++) {
       selection.removeAllRanges()
       selection.addRange(ranges[x].range)
@@ -441,15 +406,15 @@ export class PDFViewer extends Component {
       fullAnnotation.rects = [...fullAnnotation.rects, ...rects]
       fullAnnotation.length = fullAnnotation.length + rects.length
     }
-    
+
     selection.removeAllRanges()
-    
+
     this.setState({
       ...this.state,
       pendingAnnotations: [fullAnnotation]
     })
   }
-  
+
   /**
    * Filters annotation rects and annotations by pageNumber
    * @param annos
@@ -465,7 +430,7 @@ export class PDFViewer extends Component {
       }))
       .filter(anno => anno.startPage === pageNumber || anno.endPage === pageNumber)
   }
-  
+
   /**
    *
    * @returns {*}
@@ -480,7 +445,7 @@ export class PDFViewer extends Component {
       })
     }
   }
-  
+
   /**
    * Hides the 'Annotation Mode Not Enabled' alert, calls a method to store to redux state if don't show again
    */
@@ -491,12 +456,12 @@ export class PDFViewer extends Component {
         open: false
       }
     })
-    
+
     if (this.state.annoModeAlert.dontShowAgain) {
       this.props.onHideAnnoModeAlert()
     }
   }
-  
+
   /**
    * Sets not showing annotation mode alert for the remainder of the app session
    */
@@ -508,7 +473,7 @@ export class PDFViewer extends Component {
       }
     })
   }
-  
+
   /**
    * Handles scrolling to top of on initial render
    * @param pageNum
@@ -526,21 +491,21 @@ export class PDFViewer extends Component {
       }
     }
   }
-  
+
   render() {
     const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert } = this.state
     const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
-    
+
     const alertActions = [
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
-    
+
     return (
       <div id="viewContainer" className="pdfViewer" style={{ position: 'relative' }} ref={this.viewerRef}>
         {pages.length > 0 && pages.map((page, i) => {
           const annotationsByPage = this.filterAnnosByPage(annotations, i)
           const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
-          
+
           return (
             <Page
               id={i}
