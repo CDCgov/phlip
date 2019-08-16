@@ -151,6 +151,19 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
             }
           >
             doc1
+              
+            <span
+              style={
+                Object {
+                  "color": "#7b7b7b",
+                  "fontSize": "0.8rem",
+                }
+              }
+            >
+              (
+              12/10/2010
+              )
+            </span>
           </span>
         </WithStyles(Typography)>
       </FlexGrid>
@@ -210,6 +223,19 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
             }
           >
             doc2
+              
+            <span
+              style={
+                Object {
+                  "color": "#7b7b7b",
+                  "fontSize": "0.8rem",
+                }
+              }
+            >
+              (
+              8/14/2019
+              )
+            </span>
           </span>
         </WithStyles(Typography)>
       </FlexGrid>
