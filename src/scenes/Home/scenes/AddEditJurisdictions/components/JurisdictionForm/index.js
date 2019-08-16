@@ -299,15 +299,16 @@ export class JurisdictionForm extends Component {
         startDateErrors = this.validateMinDate(this.props.form.values.startDate, event)
       }
     }
-
     this.setState({
       errors: {
         name: this.state.errors.name,
         startDate: startDateErrors,
         endDate: endDateErrors
       }
+    }, () => {
+      this.checkDupJurisSegment(this.props.jurisdiction) // recheck after date change
     })
-    this.checkDupJurisSegment(this.props.jurisdiction) // recheck after date change
+
   }
   /**
    * Check if the mouse click event valid for this component.  if not valid, ignore event
