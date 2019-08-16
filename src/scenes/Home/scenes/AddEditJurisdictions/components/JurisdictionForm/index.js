@@ -324,7 +324,7 @@ export class JurisdictionForm extends Component {
   checkDupJurisSegment = (selectedJurisdiction) => {
     //console.log('check here')
     let dupJurisdiction
-    const jurisdictionSegments = normalize.createArrOfObj(this.props.jurisdictionsById,this.props.visibleJurisdictions)
+    const jurisdictionSegments = normalize.createArrOfObj(this.props.jurisdictionsById,this.props.visibleJurisdictions).filter(j => j.jurisdictionId === selectedJurisdiction.id)
     //console.log('form: ',jurisId, ' segStrt:', new Date(this.props.form.values.startDate).toLocaleDateString(), ' segEnd: ', new Date(this.props.form.values.endDate).toLocaleDateString())
     dupJurisdiction = jurisdictionSegments.some( jurisdiction => {
       //console.log('check: ',jurisdiction.jurisdictionId, ' segStrt:', new Date(jurisdiction.startDate).toLocaleDateString(), ' segEnd: ', new Date(jurisdiction.endDate).toLocaleDateString() )
