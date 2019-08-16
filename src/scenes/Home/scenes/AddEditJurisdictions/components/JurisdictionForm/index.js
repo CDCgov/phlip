@@ -336,9 +336,9 @@ export class JurisdictionForm extends Component {
         errors: {
           ...this.state.errors,
           //name: 'the selected jurisdiction and selected segment start and end dates already exists',
-          name: `A jurisdiction for "${selectedJurisdiction.name}" with these start and end dates already exists`,
-          endDate: 'Select another date',
-          startDate: 'Select another date'
+          name: `A jurisdiction for "${selectedJurisdiction.name}" with these start and end dates already exists`
+          // endDate: 'Select another date',
+          // startDate: 'Select another date'
         }
       }, () => {
         // console.log(this.state.errors)
@@ -347,9 +347,9 @@ export class JurisdictionForm extends Component {
       this.setState({
         errors: {
           ...this.state.errors,
-          name: '',
-          endDate: '',
-          startDate: ''
+          name: ''
+          // endDate: '',
+          // startDate: ''
         }
       },() => {
         //console.log(this.state.errors)
