@@ -355,7 +355,7 @@ export class DocumentList extends Component {
           </FlexGrid>
           {!docSelected &&
           <FlexGrid>
-            {downloading.id !== 'all' && <IconButton
+            {(downloading.id !== 'all' && documents.length > 0) && <IconButton
               color="#757575"
               tooltipText="Download All Documents"
               placement="left-start"
