@@ -18,7 +18,7 @@ import JurisdictionRow from './components/JurisdictionRow'
  * @constructor
  */
 export const JurisdictionList = ({ jurisdictions, projectId, project, onDelete, disableAll }) => (
-  <Table summary={`jurisdictions in ${project.name}`}>
+  <Table summary={`jurisdictions in ${project.name}`} id='jurisdiction-list'>
     <TableHead>
       <TableRow key="jurisdiction-header">
         <TableCell key="segment-name" id="segment-name" scope="col">Jurisdiction</TableCell>
