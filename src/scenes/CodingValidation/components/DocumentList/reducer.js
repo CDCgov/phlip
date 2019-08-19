@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
-import { sortListOfObjects, removeExtension } from 'utils/commonHelpers'
+import { removeExtension, docListSort } from 'utils/commonHelpers'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage/session'
 import { persistReducer } from 'redux-persist'
@@ -74,7 +74,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
+          //ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
+          //ordered: sortListOfObjects(Object.values(obj), 'effectiveDate', 'desc').map(obj => obj._id)
+          ordered: docListSort(Object.values(obj), 'effectiveDate', 'name', 'desc').map(obj => obj._id)
         },
         scrollTop: false,
         showEmptyDocs: action.payload.length === 0,

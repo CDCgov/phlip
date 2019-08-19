@@ -189,13 +189,13 @@ export class AddEditJurisdictions extends Component {
             }}
             value="Add Jurisdiction"
             color="accent"
-            aria-label="Add jurisidiction to project"
+            aria-label="Add jurisdictions to project"
           />
         </div>
       </>
     )
   }
-  
+
   render() {
     const alertActions = [
       {
