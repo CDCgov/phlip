@@ -247,14 +247,7 @@ const downloadLogic = createLogic({
         let docs = []
         for (const id of allIds) {
           const annotations = getAnnotsForQAndDoc(userQuestion, id)
-          docs =
-            [
-              ...docs,
-              {
-                _id: id,
-                annotations
-              }
-            ]
+          docs = [...docs, { _id: id, annotations }]
         }
         
         payload = await docApi.downloadZipWithAnnotations({ docs }, { responseType: 'arraybuffer' }, {})
