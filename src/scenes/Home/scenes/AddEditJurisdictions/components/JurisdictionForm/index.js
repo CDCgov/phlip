@@ -434,8 +434,8 @@ export class JurisdictionForm extends Component {
           onCloseForm={this.onCloseForm}
         />
         <Divider />
-        <ModalContent id='jurisdiction-form'>
-          <form>
+        <ModalContent>
+          <form id='jurisdiction-form'>
             <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }} >
               <Row style={{ paddingBottom: 20 }} >
                 {nameInputField}
