@@ -11,14 +11,14 @@ import { types } from './actions'
 const getQuestions = (questionId, state, isValidation) => {
   const codingState = state.scenes.codingValidation.coding
   let coderQuestion = {}, userQuestion = {}
-
+  
   if (codingState.question.isCategoryQuestion) {
     coderQuestion = isValidation
       ? codingState.mergedUserQuestions[questionId].hasOwnProperty(codingState.selectedCategoryId)
         ? codingState.mergedUserQuestions[questionId][codingState.selectedCategoryId]
         : null
       : null
-
+    
     userQuestion = codingState.userAnswers[questionId][codingState.selectedCategoryId]
   } else {
     coderQuestion = isValidation
@@ -28,8 +28,11 @@ const getQuestions = (questionId, state, isValidation) => {
       : null
     userQuestion = codingState.userAnswers[questionId]
   }
-
-  return { userQuestion, coderQuestion }
+  
+  return {
+    userQuestion,
+    coderQuestion
+  }
 }
 
 /**
@@ -46,7 +49,7 @@ const getAnnotsForQAndDoc = (userAnswersQuestion, docId = null) => {
       }
     }
   }
-
+  
   return annotations
 }
 
@@ -61,10 +64,15 @@ const getAnnotsForQAndDoc = (userAnswersQuestion, docId = null) => {
  */
 const getUserAnnotations = (question, answerId, state, isValidation, user) => {
   let annotations = [], users = []
-
+  
   if (question.answers.hasOwnProperty(answerId)) {
-    let userId = isValidation ? (question.validatedBy.userId || user.id) : user.id
-    users.push({ userId, isValidator: isValidation })
+    let userId = isValidation
+      ? (question.validatedBy.userId || user.id)
+      : user.id
+    users.push({
+      userId,
+      isValidator: isValidation
+    })
     annotations = question.answers[answerId].annotations.map((anno, i) => {
       return {
         ...anno,
@@ -74,8 +82,11 @@ const getUserAnnotations = (question, answerId, state, isValidation, user) => {
       }
     })
   }
-
-  return { annotations, users }
+  
+  return {
+    annotations,
+    users
+  }
 }
 
 /**
@@ -88,15 +99,25 @@ const getCoderAnnotations = (question, answerId) => {
   question.answers.forEach(answer => {
     if (answer.schemeAnswerId === answerId) {
       answer.annotations.forEach(anno => {
-        annotations.push({ ...anno, userId: answer.userId, isValidatorAnswer: false })
+        annotations.push({
+          ...anno,
+          userId: answer.userId,
+          isValidatorAnswer: false
+        })
         if (users.findIndex(user => user.userId === answer.userId) === -1) {
-          users.push({ userId: answer.userId, isValidator: false })
+          users.push({
+            userId: answer.userId,
+            isValidator: false
+          })
         }
       })
     }
   })
-
-  return { annotations, users }
+  
+  return {
+    annotations,
+    users
+  }
 }
 
 /*
@@ -125,9 +146,15 @@ const getApprovedDocumentsLogic = createLogic({
       const docs = await docApi.getDocumentsByProjectJurisdiction(
         {},
         {},
-        { projectId: action.projectId, jurisdictionId: action.jurisdictionId }
+        {
+          projectId: action.projectId,
+          jurisdictionId: action.jurisdictionId
+        }
       )
-      dispatch({ type: types.GET_APPROVED_DOCUMENTS_SUCCESS, payload: docs })
+      dispatch({
+        type: types.GET_APPROVED_DOCUMENTS_SUCCESS,
+        payload: docs
+      })
       done()
     } catch (err) {
       dispatch({ type: types.GET_APPROVED_DOCUMENTS_FAIL })
@@ -148,21 +175,24 @@ const toggleViewAnnotations = createLogic({
     const isValidation = codingState.page === 'validation'
     const user = getState().data.user.currentUser
     let annotations = [], users = [], answerId = action.answerId
-
+    
     if (action.type === types.UPDATE_ANNOTATIONS && docState.enabledAnswerId !== '') {
       answerId = docState.enabledAnswerId
     }
-
+    
     const { userQuestion, coderQuestion } = getQuestions(action.questionId, getState(), isValidation)
-
+    
     const userAnnotations = getUserAnnotations(userQuestion, answerId, getState(), isValidation, user)
     const coderAnnotations = isValidation && coderQuestion !== null
       ? getCoderAnnotations(coderQuestion, answerId)
-      : { annotations: [], users: [] }
-
+      : {
+        annotations: [],
+        users: []
+      }
+    
     annotations = [...userAnnotations.annotations, ...coderAnnotations.annotations]
     users = [...userAnnotations.users, ...coderAnnotations.users]
-
+    
     next({
       ...action,
       annotations,
@@ -179,18 +209,18 @@ const toggleAnnoModeLogic = createLogic({
   type: types.TOGGLE_ANNOTATION_MODE,
   transform({ getState, action }, next) {
     let annotations = [], users = []
-
+    
     const codingState = getState().scenes.codingValidation.coding
     const isValidation = codingState.page === 'validation'
     const user = getState().data.user.currentUser
-
+    
     if (action.enabled) {
       const { userQuestion } = getQuestions(action.questionId, getState(), isValidation)
       const userAnnotations = getUserAnnotations(userQuestion, action.answerId, getState(), isValidation, user)
       annotations = [...userAnnotations.annotations]
       users = [...userAnnotations.users]
     }
-
+    
     next({
       ...action,
       annotations,
@@ -208,7 +238,7 @@ const downloadLogic = createLogic({
     const codingState = getState().scenes.codingValidation.coding
     const isValidation = codingState.page === 'validation'
     const { userQuestion } = getQuestions(codingState.question.id, getState(), isValidation)
-
+    
     try {
       let payload = ''
       if (action.docId === 'all') {
@@ -217,9 +247,16 @@ const downloadLogic = createLogic({
         let docs = []
         for (const id of allIds) {
           const annotations = getAnnotsForQAndDoc(userQuestion, id)
-          docs = [...docs, { _id: id, annotations }]
+          docs =
+            [
+              ...docs,
+              {
+                _id: id,
+                annotations
+              }
+            ]
         }
-
+        
         payload = await docApi.downloadZipWithAnnotations({ docs }, { responseType: 'arraybuffer' }, {})
       } else {
         const annotations = getAnnotsForQAndDoc(userQuestion, action.docId)
@@ -230,10 +267,16 @@ const downloadLogic = createLogic({
           { docId: action.docId }
         )
       }
-      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload })
+      dispatch({
+        type: types.DOWNLOAD_DOCUMENTS_SUCCESS,
+        payload
+      })
     } catch (err) {
       console.log(err)
-      dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
+      dispatch({
+        type: types.DOWNLOAD_DOCUMENTS_FAIL,
+        payload: 'We couldn\'t download the documents you selected.'
+      })
     }
     done()
   }

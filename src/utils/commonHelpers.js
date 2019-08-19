@@ -21,8 +21,16 @@ export const sliceTable = (data, page, rowsPerPage) => data.slice(page * rowsPer
 export const sortListOfObjects = (list, sortBy, direction) => {
   return (
     direction === 'asc'
-      ? list.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : a[sortBy] > b[sortBy] ? 1 : 0))
-      : list.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : b[sortBy] > a[sortBy] ? 1 : 0))
+      ? list.sort((a, b) => (a[sortBy] < b[sortBy]
+        ? -1
+        : a[sortBy] > b[sortBy]
+          ? 1
+          : 0))
+      : list.sort((a, b) => (b[sortBy] < a[sortBy]
+        ? -1
+        : b[sortBy] > a[sortBy]
+          ? 1
+          : 0))
   )
 }
 
@@ -58,7 +66,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
-
+  
   return new Promise(async (resolve, reject) => {
     if (users.length === 0) {
       resolve({ errors })
@@ -75,7 +83,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             needsCheck = false
           }
         }
-
+        
         if (needsCheck) {
           try {
             avatar = await api.getUserImage({}, {}, { userId })
@@ -83,9 +91,11 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             errors = { userImages: 'failed to get some user images.' }
             avatar = ''
           }
-
+          
           dispatch({
-            type: update ? userTypes.UPDATE_USER : userTypes.ADD_USER,
+            type: update
+              ? userTypes.UPDATE_USER
+              : userTypes.ADD_USER,
             payload: {
               id: userId,
               ...coder,
@@ -117,7 +127,7 @@ export const removeExtension = string => {
     pieces.pop()
     name = pieces.join('.')
   }
-
+  
   return { name, extension }
 }
 
@@ -146,14 +156,17 @@ export const getFileType = file => {
             fileType = types[0]
           } else {
             const type = types.find(type => type === extension)
-            fileType = type !== undefined ? type : extension
+            fileType =
+              type !== undefined
+                ? type
+                : extension
           }
         }
-
+        
         resolve({ ...file, fileType })
       }
     }
-
+    
     const blob = file.slice(0, 4)
     filereader.readAsArrayBuffer(blob)
   })
@@ -162,9 +175,8 @@ export const getFileType = file => {
 /**
  * custom sort for document list in validation screen
  */
-export const docListSort = (list,sortBy1,sortBy2,direction, group = undefined) => {
-
-  let sorted = sortListOfObjects(list,sortBy1,direction)
+export const docListSort = (list, sortBy1, sortBy2, direction, group = undefined) => {
+  let sorted = sortListOfObjects(list, sortBy1, direction)
   if (group) {
     let grouped = {}
     for (let i = 0; i < sorted.length; i += 1) {

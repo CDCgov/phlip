@@ -209,10 +209,7 @@ export class PDFViewer extends Component {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
         page.getTextContent({ normalizeWhitespace: true, enhanceTextSelection: true }).then(async textContent => {
           const pageToAdd = { page, textContent }
-          page.getAnnotations().then(async annotations => {
-            console.log('annotationData', annotations)
-            resolve(pageToAdd)
-          })
+          resolve(pageToAdd)
         })
       })
     })

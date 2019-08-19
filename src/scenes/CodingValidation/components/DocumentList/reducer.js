@@ -74,8 +74,6 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          //ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
-          //ordered: sortListOfObjects(Object.values(obj), 'effectiveDate', 'desc').map(obj => obj._id)
           ordered: docListSort(Object.values(obj), 'effectiveDate', 'name', 'desc').map(obj => obj._id)
         },
         scrollTop: false,
@@ -148,7 +146,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           alertOrView: 'view'
         }
       }
-      
+    
     case types.TOGGLE_OFF_VIEW:
       return {
         ...state,
@@ -185,7 +183,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         annotationModeEnabled: action.enabled,
-        enabledAnswerId: action.enabled ? action.answerId : '',
+        enabledAnswerId: action.enabled
+          ? action.answerId
+          : '',
         enabledUserId: '',
         currentAnnotationIndex: 0,
         annotations: {
@@ -246,10 +246,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         annotationModeEnabled: false,
-        enabledAnswerId: turnOff ? '' : action.answerId,
-        enabledUserId: turnOff ? '' : 'All',
+        enabledAnswerId: turnOff
+          ? ''
+          : action.answerId,
+        enabledUserId: turnOff
+          ? ''
+          : 'All',
         annotations: {
-          all: turnOff ? [] : action.annotations,
+          all: turnOff
+            ? []
+            : action.annotations,
           filtered: turnOff
             ? []
             : state.docSelected
@@ -257,7 +263,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
               : action.annotations
         },
         annotationUsers: {
-          all: turnOff ? [] : action.users,
+          all: turnOff
+            ? []
+            : action.users,
           filtered: turnOff
             ? []
             : state.docSelected
@@ -343,7 +351,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
-        shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
+        shouldShowAnnoModeAlert: action.isLogout
+          ? true
+          : state.shouldShowAnnoModeAlert
       }
     
     case types.CHANGE_ANNOTATION_INDEX:
@@ -357,17 +367,19 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         scrollTop: false
       }
-      
+    
     case types.DOWNLOAD_DOCUMENTS_REQUEST:
       return {
         ...state,
         downloading: {
-          name: action.docId === 'all' ? '' : `${removeExtension(state.documents.byId[action.docId].name).name}.pdf`,
+          name: action.docId === 'all'
+            ? ''
+            : `${removeExtension(state.documents.byId[action.docId].name).name}.pdf`,
           id: action.docId,
           content: ''
         }
       }
-      
+    
     case types.DOWNLOAD_DOCUMENTS_SUCCESS:
       return {
         ...state,
@@ -376,7 +388,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           content: action.payload
         }
       }
-      
+    
     case types.DOWNLOAD_DOCUMENTS_FAIL:
       return {
         ...state,
@@ -392,7 +404,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           content: ''
         }
       }
-      
+    
     case types.CLEAR_DOWNLOAD:
       return {
         ...state,
@@ -402,7 +414,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           content: ''
         }
       }
-      
+    
     case types.CLEAR_API_ERROR:
       return {
         ...state,
