@@ -35,6 +35,21 @@ export const sortListOfObjects = (list, sortBy, direction) => {
 }
 
 /**
+ * Sorts a list of objects based on the parameter sortBy with special handling for null value
+ *
+ * @param {Array} list
+ * @param {*} sortBy
+ * @param {String} direction
+ * @returns {Array}
+ */
+export const sortListOfObjectsWithNull = (list, sortBy, direction) => {
+  return (
+    direction === 'asc'
+      ? list.sort((a, b) => (a[sortBy]===null)-(b[sortBy]===null) || +(a[sortBy]>b[sortBy])||-(a[sortBy]<b[sortBy]))
+      : list.sort((a, b) => (a[sortBy]===null)-(b[sortBy]===null) || -(a[sortBy]>b[sortBy])||+(a[sortBy]<b[sortBy]))
+  )
+}
+/**
  * Generates a key and ID as props for a table
  *
  * @param {*} id
@@ -66,7 +81,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
-  
+
   return new Promise(async (resolve, reject) => {
     if (users.length === 0) {
       resolve({ errors })
@@ -83,7 +98,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             needsCheck = false
           }
         }
-        
+
         if (needsCheck) {
           try {
             avatar = await api.getUserImage({}, {}, { userId })
@@ -91,7 +106,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             errors = { userImages: 'failed to get some user images.' }
             avatar = ''
           }
-          
+
           dispatch({
             type: update
               ? userTypes.UPDATE_USER
@@ -127,7 +142,7 @@ export const removeExtension = string => {
     pieces.pop()
     name = pieces.join('.')
   }
-  
+
   return { name, extension }
 }
 
@@ -162,11 +177,11 @@ export const getFileType = file => {
                 : extension
           }
         }
-        
+
         resolve({ ...file, fileType })
       }
     }
-    
+
     const blob = file.slice(0, 4)
     filereader.readAsArrayBuffer(blob)
   })
@@ -176,7 +191,7 @@ export const getFileType = file => {
  * custom sort for document list in validation screen
  */
 export const docListSort = (list, sortBy1, sortBy2, direction, group = undefined) => {
-  let sorted = sortListOfObjects(list, sortBy1, direction)
+  let sorted = sortListOfObjectsWithNull(list, sortBy1, direction)
   if (group) {
     let grouped = {}
     for (let i = 0; i < sorted.length; i += 1) {
