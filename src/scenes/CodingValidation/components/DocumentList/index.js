@@ -478,7 +478,7 @@ export class DocumentList extends Component {
                             fontSize: `0.8rem`,
                             color: '#7b7b7b'
                           }}>
-                          ({(moment.utc(doc.effectiveDate).local().format('M/D/YYYY'))})
+                          {doc.effectiveDate && (moment.utc(doc.effectiveDate).local().format('M/D/YYYY'))}
                         </span>
                       </span>
                     </Typography>
