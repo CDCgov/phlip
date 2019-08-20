@@ -46,7 +46,7 @@ export class DocumentList extends Component {
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     })
   }
-  
+
   static defaultProps = {
     actions: {},
     documents: [],
@@ -67,62 +67,62 @@ export class DocumentList extends Component {
       content: ''
     }
   }
-  
+
   constructor(props, context) {
     super(props, context)
     this.downloadRef = React.createRef()
   }
-  
+
   state = {
     noTextContent: 2
   }
-  
+
   componentDidMount() {
     const { actions, project, jurisdiction, page } = this.props
     actions.getApprovedDocumentsRequest(project.id, jurisdiction.jurisdictionId, page)
   }
-  
+
   componentDidUpdate(prevProps) {
     const { scrollTop, docSelected, annotationModeEnabled, downloading } = this.props
-    
+
     if (!prevProps.scrollTop && scrollTop && docSelected) {
       if (!annotationModeEnabled) {
         this.scrollTop()
       }
     }
-    
+
     if (prevProps.downloading.content === '' && downloading.content !== '') {
       this.prepareDocumentDownload()
     }
   }
-  
+
   componentWillUnmount() {
     this.clearDocSelected()
   }
-  
+
   /*
    * Called when user chooses to save an annotation
    */
   handleSaveAnnotation = annotation => {
     const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
-    
+
     actions.saveAnnotation(annotation, enabledAnswerId, questionId)
     saveUserAnswer()
     actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
   }
-  
+
   /**
    * Remove annotation
    * @param index
    */
   handleRemoveAnnotation = index => {
     const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
-    
+
     actions.removeAnnotation(index, enabledAnswerId, questionId)
     saveUserAnswer()
     actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
   }
-  
+
   /**
    * Scrolls to top of document
    */
@@ -132,7 +132,7 @@ export class DocumentList extends Component {
       this.scrollTop()
     }
   }
-  
+
   /**
    * Gets the actual document contents when a document is clicked
    */
@@ -140,7 +140,7 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.getDocumentContentsRequest(id)
   }
-  
+
   /**
    * Clears what document is selected
    */
@@ -149,7 +149,7 @@ export class DocumentList extends Component {
     actions.clearDocSelected()
     this.setState({ noTextContent: 2 })
   }
-  
+
   /**
    * Handles when a user has selected a document that is not text-selectable
    */
@@ -162,7 +162,7 @@ export class DocumentList extends Component {
           : 1
     })
   }
-  
+
   /**
    * Toggles whether or not to show the annotation mode not enabeld alert
    */
@@ -170,7 +170,7 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.hideAnnoModeAlert()
   }
-  
+
   /**
    * Handles changing current annotation index in annotation finder
    */
@@ -178,7 +178,7 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.changeAnnotationIndex(index)
   }
-  
+
   /**
    * Sets scroll top to false after changing it to true
    */
@@ -186,27 +186,27 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.resetScrollTop()
   }
-  
+
   /*
    * checks to see if annotation layer has rendered
    */
   checkIfRendered = position => {
     return document.getElementById(`annotation-${position}-0`)
   }
-  
+
   /**
    * Scrolls to a specific annotations
    * @param position
    */
   handleScrollAnnotation = position => {
     let el = this.checkIfRendered(position)
-    
+
     while (!el) {
       el = this.checkIfRendered(position)
       setTimeout(() => {
       }, 1000)
     }
-    
+
     clearTimeout()
     const container = document.getElementById('viewContainer')
     const pageEl = el.offsetParent.offsetParent
@@ -216,13 +216,13 @@ export class DocumentList extends Component {
       behavior: 'smooth'
     })
   }
-  
+
   /**
    * Scrolls the document to the top of the page. Used when the user toggles a different coder for annotations
    */
   scrollTop = () => {
     const { annotations } = this.props
-    
+
     if (annotations.length === 0) {
       const container = document.getElementById('viewContainer')
       container.scrollTo({
@@ -234,7 +234,7 @@ export class DocumentList extends Component {
     }
     this.resetScrollTop()
   }
-  
+
   /*
    * Toggles a coder's annotations for view
    */
@@ -242,7 +242,7 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.toggleCoderAnnotations(userId, isValidator)
   }
-  
+
   /**
    * Closes the API error alert
    * @returns {*}
@@ -251,7 +251,7 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.clearApiError()
   }
-  
+
   /**
    * Handles when the user has requested to download documents
    * @param docs
@@ -260,13 +260,13 @@ export class DocumentList extends Component {
     const { actions } = this.props
     actions.downloadDocumentsRequest(docs)
   }
-  
+
   /**
    * Prepares the actual file download
    */
   prepareDocumentDownload = () => {
     const { downloading, project, jurisdiction, actions } = this.props
-    
+
     const pdfBlob = new Blob(
       [downloading.content],
       {
@@ -283,7 +283,7 @@ export class DocumentList extends Component {
     this.downloadRef.current.click()
     actions.clearDownload()
   }
-  
+
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -291,21 +291,21 @@ export class DocumentList extends Component {
       paddingLeft: 5,
       paddingRight: 5
     }
-    
+
     const bannerBold = {
       fontWeight: 500,
       color: theme.palette.secondary.pageHeader
     }
     const bannerText = { color: '#434343' }
-    
+
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex,
       showEmptyDocs, apiError, documents, annotatedDocs, gettingDocs, annotationUsers, isValidation,
       shouldShowAnnoModeAlert, enabledUserId, downloading
     } = this.props
-    
+
     const { noTextContent } = this.state
-    
+
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
@@ -478,7 +478,7 @@ export class DocumentList extends Component {
                             fontSize: `0.8rem`,
                             color: '#7b7b7b'
                           }}>
-                          {doc.effectiveDate && (moment.utc(doc.effectiveDate).local().format('M/D/YYYY'))}
+                          {doc.effectiveDate && `(${moment.utc(doc.effectiveDate).local().format('M/D/YYYY')})`}
                         </span>
                       </span>
                     </Typography>
@@ -515,13 +515,13 @@ const mapStateToProps = state => {
   const annotations = pageState.annotations.filtered
   const users = pageState.annotationUsers.filtered
   const isValidation = state.scenes.codingValidation.coding.page === 'validation'
-  
+
   /** Get docs ids and sort by annotated first */
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
   const annos = annotations.slice()
-  
+
   /**
    * The annotations need to be sorted in the order they are on the pdf page for jump to
    */
@@ -534,10 +534,10 @@ const mapStateToProps = state => {
     ...anno,
     sortPosition: i
   }))
-  
+
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
-  
+
   return {
     documents: docArray.length === 0
       ? []
