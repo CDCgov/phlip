@@ -7,6 +7,10 @@ import TextNode from './components/TextNode'
 import Annotation from './components/Annotation'
 import classnames from 'classnames'
 
+/**
+ * Component class for an individual page in a PDF document. Handles rendering the text and annotation content
+ * @component
+ */
 export class Page extends Component {
   static defaultProps = {
     annotations: [],
@@ -122,8 +126,11 @@ export class Page extends Component {
    * Renders the PDF page
    */
   renderPage = () => {
-    if (this.shouldRerenderPdf === true) {
-      this.props.page.destroyed === false && this.props.page.render(this.state.renderContext)
+    const { page } = this.props
+    const { renderContext } = this.state
+
+    if (this.shouldRerenderPdf) {
+      page.destroyed === false && page.render(renderContext)
       this.shouldRerenderPdf = false
     }
   }
@@ -132,12 +139,15 @@ export class Page extends Component {
    * Determines to what scale to render the PDF page based on the size of the screen
    */
   setCanvasSpecs = () => {
-    const vp = this.props.page.getViewport(1)
-    let scale = this.state.renderContext.viewport.width / vp.width
+    const { page } = this.props
+    const { renderContext } = this.state
+
+    const vp = page.getViewport(1)
+    let scale = renderContext.viewport.width / vp.width
     if (scale < 1.4) {
       scale = 1.4
     }
-    const viewport = this.props.page.getViewport(scale)
+    const viewport = page.getViewport(scale)
     const canvasContext = this.canvasRef.current.getContext('2d', { alpha: false })
     
     let outputScale = ui_utils.getOutputScale(canvasContext)
@@ -159,14 +169,14 @@ export class Page extends Component {
     canvas.style.height = ui_utils.roundToDivide(viewport.height, sfy[1]) + 'px'
     const transform = outputScale.scaled ? [outputScale.sx, 0, 0, outputScale.sy, 0, 0] : null
     
-    const renderContext = {
+    const updatedRenderContext = {
       canvasContext,
       transform,
       viewport
     }
     
     this.setState({
-      renderContext,
+      renderContext: updatedRenderContext,
       canvasStyleSpecs: {
         ...canvas
       }
@@ -177,9 +187,7 @@ export class Page extends Component {
    * Indicates that the app can go ahead and start rendering text lines
    */
   generateTextElements = () => {
-    this.setState({
-      readyToRenderText: true
-    })
+    this.setState({ readyToRenderText: true })
   }
   
   render() {

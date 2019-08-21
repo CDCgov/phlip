@@ -28,15 +28,17 @@ const renderSuggestion = (suggestion, { query, isHighlighted }) => {
     <MenuItem selected={isHighlighted} component="div">
       <div>
         {parts.map((part, index) => {
-          return part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={String(index)} style={{ fontWeight: 500 }}>
-              {part.text}
-            </strong>
-          )
+          return part.highlight
+            ? (
+              <span key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </span>
+            )
+            : (
+              <strong key={String(index)} style={{ fontWeight: 500 }}>
+                {part.text}
+              </strong>
+            )
         })}
       </div>
     </MenuItem>
@@ -62,7 +64,9 @@ export class JurisdictionForm extends Component {
     onSubmitError: PropTypes.func,
     project: PropTypes.object,
     title: PropTypes.string,
-    searching: PropTypes.bool
+    searching: PropTypes.bool,
+    jurisdictionsById: PropTypes.object,
+    visibleJurisdictions: PropTypes.array
   }
   
   constructor(props, context) {
@@ -84,8 +88,12 @@ export class JurisdictionForm extends Component {
   
   componentDidMount() {
     this.props.actions.initializeFormValues({
-      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
-      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
+      endDate: this.jurisdictionDefined
+        ? this.jurisdictionDefined.endDate
+        : new Date(),
+      startDate: this.jurisdictionDefined
+        ? this.jurisdictionDefined.startDate
+        : new Date(),
       name: this.jurisdictionDefined
         ? this.jurisdictionDefined.name
         : this.props.location.state.preset
@@ -109,7 +117,10 @@ export class JurisdictionForm extends Component {
         })
         this.props.onSubmitError(this.props.formError)
       } else if (this.props.goBack === true) {
-        this.props.history.push({ pathname: `/project/${this.props.project.id}/jurisdictions`, state: { modal: true } })
+        this.props.history.push({
+          pathname: `/project/${this.props.project.id}/jurisdictions`,
+          state: { modal: true }
+        })
       }
     }
   }
@@ -148,7 +159,7 @@ export class JurisdictionForm extends Component {
   
   onSubmitForm = () => {
     const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
-    if (!hasErrors) {
+    if (!hasErrors && !this.checkDupJurisSegment(this.props.jurisdiction)) {
       const jurisdiction = {
         name: this.props.form.values.name,
         startDate: moment(this.props.form.values.startDate).toISOString(),
@@ -210,6 +221,7 @@ export class JurisdictionForm extends Component {
   
   onJurisdictionSelected = (event, { suggestionValue }) => {
     this.props.actions.onJurisdictionSelected(suggestionValue)
+    this.checkDupJurisSegment(suggestionValue)
   }
   
   onSuggestionChange = event => {
@@ -217,7 +229,11 @@ export class JurisdictionForm extends Component {
     this.setState({
       errors: {
         ...this.state.errors,
-        name: event.target.value !== undefined ? event.target.value.length > 0 ? '' : 'Required' : ''
+        name: event.target.value !== undefined
+          ? event.target.value.length > 0
+            ? ''
+            : 'Required'
+          : ''
       }
     })
   }
@@ -266,7 +282,10 @@ export class JurisdictionForm extends Component {
     this.props.actions.setFormValues(dateField, event.target.value)
     if (moment(event.target.value).format() === 'Invalid date' && event.target.value !== '') {
       this.setState({
-        errors: { ...this.state.errors, [dateField]: 'Invalid date' }
+        errors: {
+          ...this.state.errors,
+          [dateField]: 'Invalid date'
+        }
       })
     } else {
       this.onChangeDate(dateField, event.target.value)
@@ -275,6 +294,7 @@ export class JurisdictionForm extends Component {
   
   onChangeDate = (dateField, event) => {
     let endDateErrors, startDateErrors
+    //console.log(this.props.jurisdiction)
     if (moment(event).format() === 'Invalid date') {
       this.props.actions.setFormValues(dateField, event)
       if (dateField === 'startDate') {
@@ -294,26 +314,63 @@ export class JurisdictionForm extends Component {
         startDateErrors = this.validateMinDate(this.props.form.values.startDate, event)
       }
     }
-    
     this.setState({
       errors: {
         name: this.state.errors.name,
         startDate: startDateErrors,
         endDate: endDateErrors
       }
+    }, () => {
+      this.checkDupJurisSegment(this.props.jurisdiction) // recheck after date change
     })
+    
   }
   /**
    * Check if the mouse click event valid for this component.  if not valid, ignore event
    * @param e
    */
-
   onMouseDown = e => {
-    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+    if (['react-autowhatever-1', 'jurisdiction-form'].includes(e.target.id)) {
       e.preventDefault()
     }
   }
+  
+  checkDupJurisSegment = (selectedJurisdiction) => {
+    let dupJurisdiction
+    const jurisdictionSegments = normalize.createArrOfObj(this.props.jurisdictionsById, this.props.visibleJurisdictions)
+      .filter(j => j.jurisdictionId === selectedJurisdiction.id)
+    
+    dupJurisdiction = jurisdictionSegments.some(jurisdiction => {
+      return (jurisdiction.jurisdictionId ===
+        selectedJurisdiction.id &&
+        new Date(jurisdiction.startDate).toLocaleDateString() ===
+        new Date(this.props.form.values.startDate).toLocaleDateString() &&
+        new Date(jurisdiction.endDate).toLocaleDateString() ===
+        new Date(this.props.form.values.endDate).toLocaleDateString())
+    })
 
+    if (dupJurisdiction) {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          name: `A jurisdiction for "${selectedJurisdiction.name}" with these start and end dates already exists`
+        }
+      }, () => {
+        // console.log(this.state.errors)
+      })
+    } else { //reset error
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          name: ''
+        }
+      }, () => {
+        //console.log(this.state.errors)
+      })
+    }
+    return dupJurisdiction
+  }
+  
   render() {
     const formActions = [
       {
@@ -327,14 +384,19 @@ export class JurisdictionForm extends Component {
         value: this.state.edit
           ? this.getButtonText('Save')
           : this.getButtonText('Add'),
-        onClick: this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm,
+        onClick: this.props.location.state.preset === true
+          ? this.onSubmitPreset
+          : this.onSubmitForm,
         disabled: this.state.submitting === true || this.props.form.values.name === '',
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
     
     const options = [
-      { value: 'US States', label: 'US States' }
+      {
+        value: 'US States',
+        label: 'US States'
+      }
     ]
     
     const nameInputField = this.props.location.state.preset === true
@@ -384,16 +446,23 @@ export class JurisdictionForm extends Component {
         onMouseDown={this.onMouseDown}>
         <ModalTitle
           title={this.state.edit
-            ? 'Edit Jurisdiction' : this.props.location.state.preset === true
+            ? 'Edit Jurisdiction'
+            : this.props.location.state.preset === true
               ? 'Load Preset Jurisdiction List'
               : 'Add Jurisdiction'}
           onCloseForm={this.onCloseForm}
         />
         <Divider />
-        <ModalContent id='jurisdiction-form'>
+        <ModalContent id="jurisdiction-form">
           <form>
-            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }} >
-              <Row style={{ paddingBottom: 20 }} >
+            <Container
+              column
+              style={{
+                minWidth: 550,
+                minHeight: 230,
+                padding: '30px 15px'
+              }}>
+              <Row style={{ paddingBottom: 20 }}>
                 {nameInputField}
               </Row>
               <Container style={{ marginTop: 30 }}>
@@ -450,7 +519,9 @@ const mapStateToProps = (state, ownProps) => ({
   goBack: state.scenes.home.addEditJurisdictions.goBack || false,
   form: state.scenes.home.addEditJurisdictions.form || {},
   isReduxForm: false,
-  searching: state.scenes.home.addEditJurisdictions.searching
+  searching: state.scenes.home.addEditJurisdictions.searching,
+  jurisdictionsById: state.scenes.home.addEditJurisdictions.jurisdictions.byId || [],
+  visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || []
 })
 
 /* istanbul ignore next */

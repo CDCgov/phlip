@@ -21,11 +21,34 @@ export const sliceTable = (data, page, rowsPerPage) => data.slice(page * rowsPer
 export const sortListOfObjects = (list, sortBy, direction) => {
   return (
     direction === 'asc'
-      ? list.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : a[sortBy] > b[sortBy] ? 1 : 0))
-      : list.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : b[sortBy] > a[sortBy] ? 1 : 0))
+      ? list.sort((a, b) => (a[sortBy] < b[sortBy]
+        ? -1
+        : a[sortBy] > b[sortBy]
+          ? 1
+          : 0))
+      : list.sort((a, b) => (b[sortBy] < a[sortBy]
+        ? -1
+        : b[sortBy] > a[sortBy]
+          ? 1
+          : 0))
   )
 }
 
+/**
+ * Sorts a list of objects based on the parameter sortBy with special handling for null value
+ *
+ * @param {Array} list
+ * @param {*} sortBy
+ * @param {String} direction
+ * @returns {Array}
+ */
+export const sortListOfObjectsWithNull = (list, sortBy, direction) => {
+  return (
+    direction === 'asc'
+      ? list.sort((a, b) => (a[sortBy]===null)-(b[sortBy]===null) || +(a[sortBy]>b[sortBy])||-(a[sortBy]<b[sortBy]))
+      : list.sort((a, b) => (a[sortBy]===null)-(b[sortBy]===null) || -(a[sortBy]>b[sortBy])||+(a[sortBy]<b[sortBy]))
+  )
+}
 /**
  * Generates a key and ID as props for a table
  *
@@ -58,7 +81,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
   let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
-  
+
   return new Promise(async (resolve, reject) => {
     if (users.length === 0) {
       resolve({ errors })
@@ -75,7 +98,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             needsCheck = false
           }
         }
-        
+
         if (needsCheck) {
           try {
             avatar = await api.getUserImage({}, {}, { userId })
@@ -83,9 +106,11 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
             errors = { userImages: 'failed to get some user images.' }
             avatar = ''
           }
-          
+
           dispatch({
-            type: update ? userTypes.UPDATE_USER : userTypes.ADD_USER,
+            type: update
+              ? userTypes.UPDATE_USER
+              : userTypes.ADD_USER,
             payload: {
               id: userId,
               ...coder,
@@ -117,7 +142,7 @@ export const removeExtension = string => {
     pieces.pop()
     name = pieces.join('.')
   }
-  
+
   return { name, extension }
 }
 
@@ -146,17 +171,49 @@ export const getFileType = file => {
             fileType = types[0]
           } else {
             const type = types.find(type => type === extension)
-            fileType = type !== undefined ? type : extension
+            fileType =
+              type !== undefined
+                ? type
+                : extension
           }
         }
-        
+
         resolve({ ...file, fileType })
       }
     }
-    
+
     const blob = file.slice(0, 4)
     filereader.readAsArrayBuffer(blob)
   })
+}
+
+/**
+ * custom sort for document list in validation screen
+ */
+export const docListSort = (list, sortBy1, sortBy2, direction, group = undefined) => {
+  let sorted = sortListOfObjectsWithNull(list, sortBy1, direction)
+  if (group) {
+    let grouped = {}
+    for (let i = 0; i < sorted.length; i += 1) {
+      if (!grouped[sorted[i][sortBy2]]) {
+        grouped[sorted[i][sortBy2]] = []
+      }
+      grouped[sorted[i][sortBy2]].push(sorted[i])
+    }
+    const uniqueDocName = Array.from(new Set(sorted.map(a => a[sortBy2])))
+      .map(x => {
+        return sorted.find(a => a[sortBy2] === x)
+      })
+    let mergedList = []
+    uniqueDocName.forEach(item => {
+      grouped[item[sortBy2]].forEach(doc => {
+        mergedList.push(doc)
+      })
+    })
+    return mergedList
+  } else {
+    return sorted
+  }
 }
 
 export default {
@@ -166,5 +223,6 @@ export default {
   checkIfMultiWord,
   handleUserImages,
   removeExtension,
-  getFileType
+  getFileType,
+  docListSort
 }

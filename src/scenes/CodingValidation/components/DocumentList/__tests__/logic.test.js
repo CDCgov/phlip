@@ -54,7 +54,8 @@ describe('CodingValidation - DocumentList logic', () => {
           codingValidation: {
             documentList: {
               documents: {
-                byId: mockDocuments.byId
+                byId: mockDocuments.byId,
+                allIds: Object.keys(mockDocuments.byId)
               },
               ...otherDoc
             },
@@ -187,9 +188,9 @@ describe('CodingValidation - DocumentList logic', () => {
   
   describe('Downloading documents', () => {
     test('should download a zip file if the user clicked the download all button', done => {
-      mock.onGet('/docs/download').reply(200)
+      mock.onPost('/docs/download').reply(200)
       const store = setupStore()
-      const spy = jest.spyOn(docApi, 'downloadZip')
+      const spy = jest.spyOn(docApi, 'downloadZipWithAnnotations')
       store.dispatch({ type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 'all' })
       store.whenComplete(() => {
         expect(spy).toHaveBeenCalled()
@@ -200,7 +201,7 @@ describe('CodingValidation - DocumentList logic', () => {
     test('should download one file if the user clicked to download only one', done => {
       mock.onGet('/docs/1/download').reply(200)
       const store = setupStore()
-      const spy = jest.spyOn(docApi, 'download')
+      const spy = jest.spyOn(docApi, 'downloadWithAnnotations')
       store.dispatch({ type: types.DOWNLOAD_DOCUMENTS_REQUEST, docId: 1 })
       store.whenComplete(() => {
         expect(spy).toHaveBeenCalled()
