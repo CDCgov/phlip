@@ -5,7 +5,9 @@ import Styled from 'react-styleguidist/lib/rsg-components/Styled'
 import cx from 'classnames'
 import Typography from '@material-ui/core/Typography'
 
-const background = '#3A4041'
+const background = '#04648a'
+const darkGrey = '#3A4041'
+const text = 'white'
 
 const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth }) => ({
   root: {
@@ -36,14 +38,19 @@ const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth
     display: 'flex',
     flexDirection: 'column',
     overflow: 'auto',
-    color: 'white',
+    color: text,
     '& li > a': {
-      color: 'white !important'
-    },
+      color: `${text} !important`
+    }
   },
   logo: {
     padding: space[2],
-    backgroundColor: background
+    backgroundColor: background,
+    fontSize: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottom: `2px dotted ${text}`
   },
   footer: {
     display: 'block',
@@ -59,7 +66,10 @@ export function StyleGuideRenderer({ classes, title, homepageUrl, children, toc,
       <div style={{ overflow: 'auto', backgroundColor: background }}>
         <div className={classes.sidebar}>
           <div className={classes.logo}>
-            <Typography style={{ color: 'white', fontWeight: 100 }} type="title">PHLIP Docs & Styleguide</Typography>
+            <Typography style={{ color: text, fontWeight: 300, fontSize: 35, marginRight: 10 }} type="title">
+              PHLIP
+            </Typography>
+            <img src="/phlip-gavel.png" height="30" width="auto" />
           </div>
           {toc}
         </div>

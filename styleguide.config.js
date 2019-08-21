@@ -3,45 +3,303 @@ const paths = require('./config/paths')
 const styles = require('./config/styleguide').stylguideStyles
 const theme = require('./config/styleguide').styleguideTheme
 const comps = require('./config/paths').styleguideComponents
+const autoprefixer = require('autoprefixer')
 
 module.exports = {
   assetsDir: paths.appPublic,
-  webpackConfig: require('./config/webpack.dev.config')({}),
+  webpackConfig: {
+    mode: 'development',
+    devtool: 'eval',
+    resolve: {
+      extensions: [
+        '.web.mjs',
+        '.mjs',
+        '.web.js',
+        '.js',
+        '.web.ts',
+        '.ts',
+        '.web.tsx',
+        '.tsx',
+        '.json',
+        '.web.jsx',
+        '.jsx'
+      ],
+      modules: [
+        paths.appSrc,
+        'node_modules',
+        paths.appNodeModules
+      ]
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          enforce: 'pre',
+          loader: 'eslint-loader',
+          include: paths.appSrc
+        },
+        {
+          test: require.resolve('tinymce/tinymce'),
+          loaders: [
+            'imports-loader?this=>window',
+            'exports-loader?window.tinymce'
+          ]
+        },
+        {
+          test: /tinymce\/(themes|plugins)\//,
+          loaders: [
+            'imports-loader?this=>window'
+          ]
+        },
+        {
+          oneOf: [
+            {
+              test: /\.(js|mjs|jsx|ts|tsx)$/,
+              include: [paths.appSrc, path.join(paths.config, 'styleguide')],
+              exclude: /node_modules/,
+              use: [
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: [
+                      ['@babel/preset-env', { modules: false }],
+                      '@babel/preset-react'
+                    ],
+                    cacheDirectory: true,
+                    plugins: [
+                      'react-hot-loader/babel',
+                      '@babel/plugin-transform-runtime',
+                      '@babel/plugin-transform-object-assign',
+                      '@babel/plugin-proposal-object-rest-spread',
+                      '@babel/plugin-transform-async-to-generator',
+                      '@babel/plugin-proposal-class-properties'
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              test: /\.css$/,
+              use: [
+                { loader: 'style-loader' },
+                {
+                  loader: 'css-loader'
+                },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 Chrome versions'
+                        ]
+                      })
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              test: /\.scss$/,
+              use: [
+                {
+                  loader: 'style-loader'
+                },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true
+                  }
+                },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 Chrome versions'
+                        ]
+                      })
+                    ]
+                  }
+                },
+                {
+                  loader: 'sass-loader'
+                }
+              ]
+            },
+            {
+              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+              loader: require.resolve('file-loader'),
+              options: {
+                name: 'media/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
   styleguideDir: path.join(__dirname, 'docs'),
   logger: {
     warn: console.warn,
     info: console.info,
     debug: console.log
   },
+  context: {
+    theme: path.resolve(__dirname, 'src/services/theme')
+  },
+  moduleAliases: {
+    utils: path.resolve(__dirname, 'src/utils'),
+    services: path.resolve(__dirname, 'src/services')
+  },
   sections: [
     {
-      name: 'Scenes',
+      name: 'scenes',
       content: 'src/scenes/Readme.md',
-      components: 'src/**/scenes/*/index.js'
-    },
-    {
-      name: 'Data',
-      content: 'src/data/Readme.md',
       sections: [
-        { name: 'User', content: 'src/data/user/Readme.md' }
+        {
+          name: 'User Management',
+          content: 'src/scenes/Admin/Readme.md',
+          sections: [
+            {
+              components: 'src/scenes/Admin/index.js'
+            },
+            {
+              name: 'scenes',
+              components: 'src/scenes/Admin/scenes/AddEditUser/index.js'
+            },
+            {
+              name: 'components',
+              components: 'src/scenes/Admin/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Coding Scheme',
+          content: 'src/scenes/CodingScheme/Readme.md',
+          sections: [
+            {
+              components: 'src/scenes/CodingScheme/index.js'
+            },
+            {
+              name: 'scenes',
+              components: 'src/scenes/CodingScheme/scenes/AddEditQuestion/index.js'
+            },
+            {
+              name: 'components',
+              components: 'src/scenes/CodingScheme/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Code / Validate',
+          content: 'src/scenes/CodingValidation/Readme.md',
+          sections: [
+            {
+              components: 'src/scenes/CodingValidation/index.js'
+            },
+            {
+              name: 'components',
+              components: 'src/scenes/CodingValidation/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Document Management',
+          content: 'src/scenes/DocumentManagement/Readme.md',
+          sections: [
+            {
+              components: 'src/scenes/DocumentManagement/index.js'
+            },
+            {
+              name: 'scenes',
+              components: 'src/scenes/DocumentManagement/scenes/Upload/index.js'
+            },
+            {
+              name: 'components',
+              components: 'src/scenes/DocumentManagement/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Document View / Details',
+          content: 'src/scenes/DocumentView/Readme.md',
+          sections: [
+            { components: 'src/scenes/DocumentView/index.js' },
+            {
+              name: 'components',
+              components: 'src/scenes/DocumentView/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Home / Project List Screen',
+          content: 'src/scenes/Home/Readme.md',
+          sections: [
+            { components: 'src/scenes/Home/index.js' },
+            {
+              name: 'scenes',
+              components: 'src/scenes/Home/scenes/**/index.js'
+            },
+            {
+              name: 'components',
+              components: 'src/scenes/Home/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Logic',
+          content: 'src/scenes/Login/Readme.md',
+          sections: [
+            { components: 'src/scenes/Login/index.js' },
+            {
+              name: 'components',
+              components: 'src/scenes/Login/components/*/index.js'
+            }
+          ]
+        },
+        {
+          name: 'Protocol',
+          content: 'src/scenes/Protocol/Readme.md',
+          sections: [
+            { components: 'src/scenes/Protocol/index.js' }
+          ]
+        }
       ]
     },
     {
-      name: 'UI Components',
+      name: 'data',
+      content: 'src/data/Readme.md',
+      sections: [
+        { name: 'users', content: 'src/data/users/Readme.md' },
+        { name: 'autocomplete', content: 'src/data/autocomplete/Readme.md' },
+        { name: 'projects', content: 'src/data/projects/Readme.md' },
+        { name: 'jurisdictions', content: 'src/data/jurisdictions/Readme.md' }
+      ]
+    },
+    {
+      name: 'ui components',
       content: 'src/components/Readme.md',
-      components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover)/*.js',
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover|withProjectLocked|withAutocompleteMethods)/*.js',
       ignore: '**/src/components/@(Layout|RoutePages)/index.js'
     },
     {
-      name: 'Higher Order Components',
+      name: 'higher order components (hocs)',
       components: 'src/components/CodingValidation/rsgCodingValidation.js',
       sections: [
         { name: 'withFormAlert', content: 'src/components/withFormAlert/Readme.md' },
-        { name: 'withTracking', content: 'src/components/withTracking/Readme.md' }
+        { name: 'withTracking', content: 'src/components/withTracking/Readme.md' },
+        { name: 'withAutocompleteMethods', content: 'src/components/withAutocompleteMethods/Readme.md' },
+        { name: 'withProjectLocked', content: 'src/components/withProjectLocked' }
       ]
     },
     {
-      name: 'Services',
+      name: 'services',
       sections: [
         {
           name: 'api',
@@ -62,7 +320,7 @@ module.exports = {
       ]
     },
     {
-      name: 'Utility',
+      name: 'utility',
       sections: [
         {
           name: 'codingHelpers',
@@ -102,8 +360,8 @@ module.exports = {
       ]
     }
   ],
-  showCode: false,
-  showUsage: true,
+  exampleMode: 'collapse',
+  usageMode: 'expand',
   styleguideComponents: {
     Wrapper: comps('ThemeWrapper'),
     SectionsRenderer: comps('SectionsRenderer'),
@@ -118,15 +376,13 @@ module.exports = {
     let name = path.basename(componentPath, '.js')
     const dir = path.dirname(componentPath).split('/').slice(1).join('/')
     const baseDir = dir.split('/')[dir.split('/').length - 1]
-
-    if (name === 'rsgCodingValidation') {
-      name = 'withCodingValidation'
-    } else if (name === 'index') {
+    
+    if (name === 'index') {
       name = baseDir
     } else if (name !== dir) {
       name = `{ ${name} }`
     }
-
+    
     return `import ${name} from '${dir}'`
   }
 }

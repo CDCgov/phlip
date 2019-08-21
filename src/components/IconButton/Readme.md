@@ -2,7 +2,7 @@
 Click the ship wheel
 ```jsx
 const ShipWheel = require('mdi-material-ui').ShipWheel
-const Typography = require('material-ui').Typography
+const Typography = require('@material-ui/core').Typography
 initialState = { clicked: 0 };
 
 <div>
