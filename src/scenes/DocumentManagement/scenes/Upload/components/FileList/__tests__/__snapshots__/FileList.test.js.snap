@@ -12,7 +12,7 @@ exports[`Upload -- FileList should render correctly 1`] = `
   }
 >
   <Grid
-    columnSizing="20px minmax(300px, 1fr) 210px 210px 230px 45px"
+    columnSizing="20px minmax(300px, 1fr) 210px 222px 215px 45px"
     rowSizing="1fr"
     style={
       Object {
@@ -61,7 +61,7 @@ exports[`Upload -- FileList should render correctly 1`] = `
         }
       }
     >
-      Citation
+      Effective Date
     </div>
     <div
       key="file-list-col-3"
@@ -73,7 +73,7 @@ exports[`Upload -- FileList should render correctly 1`] = `
         }
       }
     >
-      Effective Date
+      Citation
     </div>
     <div
       style={
