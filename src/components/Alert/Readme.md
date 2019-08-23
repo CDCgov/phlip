@@ -3,6 +3,7 @@ Click the button to see what the alert would look like.
 
 ```jsx
 import Button from '../Button'
+import Typography from '@material-ui/core/Typography'
 initialState = { open: false }
 
 actions = [
