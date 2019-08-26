@@ -19,7 +19,8 @@ import CodingValidation from './CodingValidation'
 import Upload from './DocumentManagement/scenes/Upload'
 import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
 import AddEditUser from './Admin/scenes/AddEditUser'
-import { AppHeader, FlexGrid, ApiErrorAlert } from 'components'
+import { AppHeader, FlexGrid, ApiErrorAlert, Alert } from 'components'
+import Typography from '@material-ui/core/Typography'
 
 const modalPaths = [
   '/project/add',
@@ -35,6 +36,11 @@ const modalPaths = [
   '/user/profile',
   '/user/profile/avatar'
 ]
+
+const FIVE_MINUTES = 300000
+const TEN_MINUTES = 600000
+const ONE_MINUTE = 60000
+const BELL = '\u{1F514}'
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -67,7 +73,10 @@ export class Main extends Component {
     
     this.helpPdfRef = React.createRef()
     this.idleRef = React.createRef()
-    this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
+    this.previousLocation =
+      props.previousLocation !== props.location
+        ? props.previousLocation
+        : props.location
     
     this.state = {
       menuOpen: false,
@@ -86,8 +95,16 @@ export class Main extends Component {
           icon: 'description',
           id: 'doc-manage'
         }
-      ]
+      ],
+      idleTimeout: TEN_MINUTES,
+      logoutIdleAlertOpen: false,
+      logoutAlertTime: ''
     }
+  }
+  
+  componentDidMount() {
+    this.previousTitle = document.title
+    document.addEventListener('visibilitychange', this.handleTabVisibilityChange)
   }
   
   componentDidUpdate(prevProps) {
@@ -233,9 +250,84 @@ export class Main extends Component {
     actions.logoutUser(true)
   }
   
+  /**
+   * Shows an alert to let the user know that they will be logged out in 5 minutes. Shows when the user has been idle
+   * for 10 minutes
+   */
+  handleUserIdle = () => {
+    const { idleTimeout } = this.state
+    if (idleTimeout === TEN_MINUTES) {
+      this.previousTitle = document.title
+      // show an alert and set the timeout to 5 minutes
+      this.setState({ idleTimeout: FIVE_MINUTES }, this.startUserLogoutTimer)
+    } else {
+      // the user has been inactive for 15 minutes, so we log the user out.
+      clearInterval(this.userLogoutTimer)
+      this.logoutUserOnIdle()
+    }
+  }
+  
+  /**
+   * The user is no longer idle so we reset the timer to 10 minutes
+   */
+  handleUserActive = () => {
+    const { idleTimeout } = this.state
+  
+    if (idleTimeout === FIVE_MINUTES) {
+      this.setState({
+        idleTimeout: TEN_MINUTES,
+        logoutIdleAlertOpen: false,
+        logoutAlertTime: ''
+      }, () => this.idleRef.current.reset())
+      document.title = this.previousTitle
+      clearInterval(this.userLogoutTimer)
+    }
+  }
+  
+  /**
+   * Handles when the app tab becomes visible or not
+   */
+  handleTabVisibilityChange = () => {
+    const isVisible = document.visibilityState === 'visible'
+    document.title = isVisible
+      ? this.previousTitle
+      : document.title
+  }
+  
+  /**
+   * Updates the page title to show the user how log it will be until they are logged out. Starts showing after 10
+   * minutes of inactivity.
+   */
+  startUserLogoutTimer = () => {
+    this.logoutCountdown = FIVE_MINUTES
+    this.idleRef.current.reset()
+    this.setState({ logoutIdleAlertOpen: true, logoutAlertTime: '5:00' })
+    this.userLogoutTimer = setInterval(() => {
+      let timeString = ''
+      if (this.logoutCountdown <= ONE_MINUTE) {
+        timeString = `${this.logoutCountdown / 1000} seconds`
+      } else {
+        const minutes = Math.floor(this.logoutCountdown / 60000)
+        const seconds = (this.logoutCountdown / 1000) % 60
+        timeString =
+          `${minutes}:${seconds}${seconds === 0
+            ? '0'
+            : ''}`
+      }
+      this.setState({ logoutAlertTime: timeString })
+      if (document.visibilityState !== 'visible') {
+        document.title = document.title === '...'
+          ? `${BELL} Session Expiring`
+          : '...'
+      }
+      
+      this.logoutCountdown -= 1000
+    }, 1000)
+  }
+  
   render() {
     const { location, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
-    const { menuTabs, menuOpen } = this.state
+    const { menuTabs, menuOpen, idleTimeout, logoutIdleAlertOpen, logoutAlertTime } = this.state
     
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
     // screen, so we check if it's one of those routes and if it is set the location to /home
@@ -248,11 +340,18 @@ export class Main extends Component {
       ? 'row'
       : 'column'
     
-    const switchLocation = isModal ? this.previousLocation : location
+    const switchLocation = isModal
+      ? this.previousLocation
+      : location
     
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
-        <IdleTimer ref={this.idleRef} onIdle={this.logoutUserOnIdle} timeout={900000} />
+        <IdleTimer
+          ref={this.idleRef}
+          timeout={idleTimeout}
+          onIdle={this.handleUserIdle} // this is called only after the user has been idle for the time set in timeout
+          onActive={this.handleUserActive}
+        />
         <AppHeader
           user={user}
           tabs={menuTabs}
@@ -263,6 +362,15 @@ export class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
+        <Alert
+          onCloseAlert={this.handleUserActive}
+          open={logoutIdleAlertOpen}
+          closeButton={{ value: 'Continue' }}
+          title="Session Expiring">
+          <Typography variant="body1">
+            You'll be logged out in {logoutAlertTime}.
+          </Typography>
+        </Alert>
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={switchLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
