@@ -43,7 +43,7 @@ export const checkForAnnotations = (coderQuestions, hasAnnotations) => {
   coderQuestions.forEach(q => {
     total += q.annotations.length
   })
-  
+
   return hasAnnotations || total > 0
 }
 
@@ -56,17 +56,17 @@ export const SelectionControlQuestion = props => {
     question, enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty, onToggleViewAnnotations,
     onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
-  
+
   const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
   const isCheckbox = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType)
   const Control = isCheckbox ? Checkbox : Radio
   const isValidation = mergedUserQuestions !== null
-  
+
   return (
     <FormControl component="fieldset" style={{ flex: '1 1 auto' }}>
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
-        {choices.map(choice => {
+        {choices.map((choice,ix) => {
           const controlProps = {
             classes: {
               checked: classes.checked
@@ -74,11 +74,11 @@ export const SelectionControlQuestion = props => {
             style: { height: 'unset' },
             inputProps: { id: choice.id, 'aria-describedby': 'question_text' }
           }
-          
+
           const answerList = mergedUserQuestions !== null
             ? mergedUserQuestions.answers.filter(answer => answer.schemeAnswerId === choice.id)
             : []
-          
+
           const isAnswered = userAnswers.answers.hasOwnProperty(choice.id)
           const validatedBy = isValidation ? userAnswers.validatedBy : {}
           const list = isAnswered
@@ -92,7 +92,7 @@ export const SelectionControlQuestion = props => {
               }
             ]
             : answerList
-          
+
           const CheckedIcon = isCheckbox ? CheckboxMarked : RadioboxMarked
           const BlankIcon = isCheckbox ? CheckboxBlankOutline : RadioboxBlank
           const showAnnoMode = showAnnoStyles(choice.id)
@@ -100,7 +100,7 @@ export const SelectionControlQuestion = props => {
           const userHasAnnotations = userAnswers.answers[choice.id]
             ? userAnswers.answers[choice.id].annotations.length > 0
             : false
-          
+
           return (
             <FlexGrid
               container
@@ -117,7 +117,7 @@ export const SelectionControlQuestion = props => {
                     ? '#f5f5f5'
                     : 'white'
               }}>
-              <FlexGrid container flex>
+              <FlexGrid container flex id={`user-answer-${ix}`}>
                 <FormControlLabel
                   checked={isAnswered}
                   aria-checked={isAnswered}
@@ -135,14 +135,14 @@ export const SelectionControlQuestion = props => {
                   aria-label={choice.text}
                   style={{ marginRight: 0 }}
                 />
-                
+
                 <FlexGrid container padding="0 0 0 32px">
                   {(list.length > 0 && isValidation) &&
                   <FlexGrid container type="row" align="center" padding="5px 10px 5px 0">
                     {list.map((answer, i) => {
                       const user = userImages[answer.userId]
                       return (
-                        <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
+                        <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`} id={`user-answer-${answer.schemeAnswerId}-${i}`}>
                           <CodingValidationAvatar
                             user={user}
                             enabled={false}
@@ -153,7 +153,7 @@ export const SelectionControlQuestion = props => {
                       )
                     })}
                   </FlexGrid>}
-                  
+
                   {(list.length > 0 && isValidation) &&
                   <PinciteList
                     answerList={answerList}
@@ -163,7 +163,7 @@ export const SelectionControlQuestion = props => {
                     handleChangePincite={onChangePincite}
                   />}
                 </FlexGrid>
-                
+
                 {(isAnswered && !isValidation) &&
                 <PinciteTextField
                   style={{ paddingLeft: 32, paddingBottom: 5, marginTop: 10, width: 'unset', flex: '1 1 0%' }}
