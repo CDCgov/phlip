@@ -161,11 +161,11 @@ export class FileList extends Component {
     const columns = [
       'File Name',
       'Jurisdiction',
-      'Citation',
-      'Effective Date'
+      'Effective Date',
+      'Citation'
     ]
     
-    const columnSizing = `20px minmax(${300}px, 1fr) 210px 210px 230px 45px`
+    const columnSizing = `20px minmax(${300}px, 1fr) 210px 222px 215px 45px`
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
@@ -193,7 +193,7 @@ export class FileList extends Component {
             const bgColor = i % 2 === 0
               ? '#f9f9f9'
               : '#fff'
-  
+            
             const inputProps = {
               InputProps: {
                 style: { 'alignItems': 'center' },
@@ -267,6 +267,29 @@ export class FileList extends Component {
                     )
                   : <div style={colStyle}>{doc.jurisdictions.value.name}</div>
                 }
+                {doc.effectiveDate.editable
+                  ? doc.effectiveDate.inEditMode
+                    ? (
+                      <div style={colStyle}>
+                        <DatePicker
+                          name="effectiveDate"
+                          dateFormat="MM/DD/YYYY"
+                          onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
+                          onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                          value={doc.effectiveDate.value}
+                          autoOk={true}
+                          InputAdornmentProps={{ style: { marginLeft: 0 } }}
+                          style={{ marginTop: 0 }}
+                        />
+                      </div>
+                    )
+                    : (
+                      <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
+                        create
+                      </IconButton>
+                    )
+                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
+                }
                 {doc.citation.editable
                   ? doc.citation.inEditMode
                     ? <SimpleInput
@@ -282,26 +305,6 @@ export class FileList extends Component {
                       </IconButton>
                     )
                   : <div style={colStyle}>{doc.citation.value}</div>
-                }
-                {doc.effectiveDate.editable
-                  ? doc.effectiveDate.inEditMode
-                    ? (
-                      <div style={colStyle}>
-                        <DatePicker
-                          name="effectiveDate"
-                          dateFormat="MM/DD/YYYY"
-                          onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                          onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
-                          value={doc.effectiveDate.value}
-                          autoOk={true}
-                          style={{ marginTop: 0 }}
-                        />
-                      </div>
-                    ) : (
-                      <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
-                        create
-                      </IconButton>
-                    ) : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
                 }
                 <IconButton
                   style={{ justifySelf: 'flex-end', ...colStyle }}

@@ -211,7 +211,10 @@ export class DocumentList extends Component {
     const container = document.getElementById('viewContainer')
     const pageEl = el.offsetParent.offsetParent
     this.changeAnnotationIndex(position)
-    container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
+    container.scrollTo({
+      top: pageEl.offsetTop + el.offsetTop - 30,
+      behavior: 'smooth'
+    })
   }
 
   /**
@@ -222,7 +225,10 @@ export class DocumentList extends Component {
 
     if (annotations.length === 0) {
       const container = document.getElementById('viewContainer')
-      container.scrollTo({ top: 0, behavior: 'smooth' })
+      container.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     } else {
       this.handleScrollAnnotation(0)
     }
@@ -263,7 +269,11 @@ export class DocumentList extends Component {
 
     const pdfBlob = new Blob(
       [downloading.content],
-      { type: downloading.id === 'all' ? 'application/zip' : 'application/pdf' }
+      {
+        type: downloading.id === 'all'
+          ? 'application/zip'
+          : 'application/pdf'
+      }
     )
     this.url = URL.createObjectURL(pdfBlob)
     this.downloadRef.current.href = this.url
@@ -282,7 +292,10 @@ export class DocumentList extends Component {
       paddingRight: 5
     }
 
-    const bannerBold = { fontWeight: 500, color: theme.palette.secondary.pageHeader }
+    const bannerBold = {
+      fontWeight: 500,
+      color: theme.palette.secondary.pageHeader
+    }
     const bannerText = { color: '#434343' }
 
     const {
@@ -301,15 +314,29 @@ export class DocumentList extends Component {
           align="center"
           padding="0 15px"
           justify="space-between"
-          style={{ height: 55, minHeight: 55, maxHeight: 55 }}>
+          style={{
+            height: 55,
+            minHeight: 55,
+            maxHeight: 55
+          }}>
           <FlexGrid
             container
             type="row"
             align="center"
             flex
-            style={{ whiteSpace: 'nowrap', overflow: 'hidden', marginRight: 20 }}>
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              marginRight: 20
+            }}>
             {docSelected &&
-            <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
+            <Icon
+              color="black"
+              style={{
+                cursor: 'pointer',
+                paddingRight: 5
+              }}
+              onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
             <Typography
@@ -321,12 +348,14 @@ export class DocumentList extends Component {
                 textOverflow: 'ellipsis',
                 overflow: 'hidden'
               }}>
-              {docSelected ? openedDoc.name : 'Assigned Documents'}
+              {docSelected
+                ? openedDoc.name
+                : 'Assigned Documents'}
             </Typography>
           </FlexGrid>
           {!docSelected &&
           <FlexGrid>
-            {downloading.id !== 'all' && <IconButton
+            {(downloading.id !== 'all' && documents.length > 0) && <IconButton
               color="#757575"
               tooltipText="Download All Documents"
               placement="left-start"
@@ -341,11 +370,20 @@ export class DocumentList extends Component {
             current={currentAnnotationIndex}
             allEnabled={enabledUserId === 'All'}
             onScrollAnnotation={this.handleScrollAnnotation}
-            onClickAvatar={(isValidation && !annotationModeEnabled) ? this.handleToggleCoderAnnotations : null}
+            onClickAvatar={(isValidation && !annotationModeEnabled)
+              ? this.handleToggleCoderAnnotations
+              : null}
           />}
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+        <FlexGrid
+          container
+          flex
+          style={{
+            height: '100%',
+            overflow: 'auto',
+            position: 'relative'
+          }}>
           {(apiError.open && apiError.alertOrView === 'view') && <ApiErrorView error={apiError.text} />}
           {(apiError.open && apiError.alertOrView === 'alert') &&
           <ApiErrorAlert onCloseAlert={this.handleCloseApiAlert} content={apiError.text} open={apiError.open} />}
@@ -364,28 +402,35 @@ export class DocumentList extends Component {
             padding={20}
             container
             align="center"
-            style={{ backgroundColor: noTextContent === 0 ? '#ffcbd3' : '#e6f8ff' }}>
+            style={{
+              backgroundColor: noTextContent === 0
+                ? '#ffcbd3'
+                : '#e6f8ff'
+            }}>
             <Typography style={{ textAlign: 'center' }}>
               <i>
-                {noTextContent > 0 ? (
-                  <>
+                {noTextContent > 0
+                  ? (<>
                     <span style={bannerBold}>Annotation Mode: </span>
                     <span style={bannerText}>
                       {docSelected
                         ? 'Highlight the desired text and confirm.'
                         : 'Select a document to annotate.'}
                     </span>
-                  </>
-                ) : (
-                  <>
+                  </>)
+                  : (<>
                     <span style={bannerBold}>NOTE: </span>
                     <span style={bannerText}>You are unable to annotate this document. Text selection is not allowed.</span>
-                  </>
-                )}
+                  </>)
+                }
               </i>
             </Typography>
             {noTextContent === 1 &&
-            <Typography style={{ textAlign: 'center', marginTop: 8 }}>
+            <Typography
+              style={{
+                textAlign: 'center',
+                marginTop: 8
+              }}>
               <i>
                 {noTextContent === 1 &&
                 <>
@@ -422,15 +467,25 @@ export class DocumentList extends Component {
                     <Typography
                       style={{
                         ...docNameStyle,
-                        color: isRetrieving ? '#757575' : theme.palette.secondary.main
+                        color: isRetrieving
+                          ? '#757575'
+                          : theme.palette.secondary.main
                       }}>
-                      <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}&nbsp;&nbsp;<span style={{ fontSize: `0.8rem`, color: '#7b7b7b' }}>({(moment.utc(doc.effectiveDate).local().format('M/D/YYYY'))})</span></span>
+                      <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>
+                        {doc.name}&nbsp;&nbsp;
+                        <span
+                          style={{
+                            fontSize: `0.8rem`,
+                            color: '#7b7b7b'
+                          }}>
+                          {doc.effectiveDate && `(${moment.utc(doc.effectiveDate).local().format('M/D/YYYY')})`}
+                        </span>
+                      </span>
                     </Typography>
                     {isRetrieving && <CircularLoader color="primary" thickness={5} size={16} />}
-
                   </FlexGrid>
                   {annotatedDocs.includes(doc._id) &&
-                  <Icon color="error" size={20} style={{ paddingRight:10 }}>
+                  <Icon color="error" size={20} style={{ paddingRight: 10 }}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
                   {downloading.id !== doc._id &&
@@ -475,7 +530,10 @@ const mapStateToProps = state => {
     return diff === 0
       ? b.rects[0].pdfPoints.y - a.rects[0].pdfPoints.y
       : diff
-  }).map((anno, i) => ({ ...anno, sortPosition: i }))
+  }).map((anno, i) => ({
+    ...anno,
+    sortPosition: i
+  }))
 
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)

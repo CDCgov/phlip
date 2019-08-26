@@ -15,21 +15,21 @@ const documentPayload = [
     _id: '1234',
     uploadedDate: new Date('12/10/2010'),
     uploadedBy: { firstName: 'test', lastName: 'user' },
-    effectiveDate: new Date('12/10/2011')
+    effectiveDate: new Date('08/06/2019')
   },
   {
     name: 'document 2',
     _id: '5678',
     uploadedDate: new Date('12/09/2010'),
     uploadedBy: { firstName: 'test', lastName: 'user' },
-    effectiveDate: new Date('11/10/2012')
+    effectiveDate: new Date('08/08/2019')
   },
   {
     name: 'document 3.docx',
     _id: '9101',
     uploadedDate: new Date('02/10/2018'),
     uploadedBy: { firstName: 'test', lastName: 'user' },
-    effectiveDate: new Date('12/10/2018')
+    effectiveDate: null
   }
 ]
 
@@ -54,13 +54,13 @@ const users = [
 
 const documents = {
   byId: {
-    1234: { ...documentPayload[0], uploadedByName: 'test user' },
-    5678: { ...documentPayload[1], uploadedByName: 'test user' },
-    9101: { ...documentPayload[2], uploadedByName: 'test user' }
+    1234: { ...documentPayload[0], uploadedByName: 'test user', effectiveDate : new Date('08/06/2019') },
+    5678: { ...documentPayload[1], uploadedByName: 'test user', effectiveDate : new Date('08/08/2019') },
+    9101: { ...documentPayload[2], uploadedByName: 'test user', effectiveDate : null }
   },
   allIds: ['1234', '5678', '9101'],
   ordered: ['9101', '1234', '5678'],
-  orderedEff: ['9101','5678','1234']
+  orderedEff: ['5678','1234','9101']
 }
 
 describe('CodingValidation - DocumentList reducer', () => {

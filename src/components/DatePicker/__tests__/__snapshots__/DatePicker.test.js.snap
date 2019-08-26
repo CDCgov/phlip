@@ -31,7 +31,7 @@ exports[`DatePicker component should render correctly 1`] = `
           "readOnly": false,
         },
         "onChange": undefined,
-        "value": "01/19/1970",
+        "value": "01/18/1970",
       }
     }
     autoOk={true}

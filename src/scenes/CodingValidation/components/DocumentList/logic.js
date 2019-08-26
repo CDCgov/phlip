@@ -29,7 +29,28 @@ const getQuestions = (questionId, state, isValidation) => {
     userQuestion = codingState.userAnswers[questionId]
   }
   
-  return { userQuestion, coderQuestion }
+  return {
+    userQuestion,
+    coderQuestion
+  }
+}
+
+/**
+ * Gets all of the annotations for a question
+ */
+const getAnnotsForQAndDoc = (userAnswersQuestion, docId = null) => {
+  let annotations = []
+  if (Object.keys(userAnswersQuestion.answers).length > 0) {
+    for (let answer of Object.values(userAnswersQuestion.answers)) {
+      if (docId) {
+        annotations = [...annotations, ...answer.annotations.filter(annot => annot.docId === docId)]
+      } else {
+        annotations.push(answer.annotations)
+      }
+    }
+  }
+  
+  return annotations
 }
 
 /**
@@ -45,8 +66,13 @@ const getUserAnnotations = (question, answerId, state, isValidation, user) => {
   let annotations = [], users = []
   
   if (question.answers.hasOwnProperty(answerId)) {
-    let userId = isValidation ? (question.validatedBy.userId || user.id) : user.id
-    users.push({ userId, isValidator: isValidation })
+    let userId = isValidation
+      ? (question.validatedBy.userId || user.id)
+      : user.id
+    users.push({
+      userId,
+      isValidator: isValidation
+    })
     annotations = question.answers[answerId].annotations.map((anno, i) => {
       return {
         ...anno,
@@ -57,7 +83,10 @@ const getUserAnnotations = (question, answerId, state, isValidation, user) => {
     })
   }
   
-  return { annotations, users }
+  return {
+    annotations,
+    users
+  }
 }
 
 /**
@@ -70,15 +99,25 @@ const getCoderAnnotations = (question, answerId) => {
   question.answers.forEach(answer => {
     if (answer.schemeAnswerId === answerId) {
       answer.annotations.forEach(anno => {
-        annotations.push({ ...anno, userId: answer.userId, isValidatorAnswer: false })
+        annotations.push({
+          ...anno,
+          userId: answer.userId,
+          isValidatorAnswer: false
+        })
         if (users.findIndex(user => user.userId === answer.userId) === -1) {
-          users.push({ userId: answer.userId, isValidator: false })
+          users.push({
+            userId: answer.userId,
+            isValidator: false
+          })
         }
       })
     }
   })
   
-  return { annotations, users }
+  return {
+    annotations,
+    users
+  }
 }
 
 /*
@@ -107,9 +146,15 @@ const getApprovedDocumentsLogic = createLogic({
       const docs = await docApi.getDocumentsByProjectJurisdiction(
         {},
         {},
-        { projectId: action.projectId, jurisdictionId: action.jurisdictionId }
+        {
+          projectId: action.projectId,
+          jurisdictionId: action.jurisdictionId
+        }
       )
-      dispatch({ type: types.GET_APPROVED_DOCUMENTS_SUCCESS, payload: docs })
+      dispatch({
+        type: types.GET_APPROVED_DOCUMENTS_SUCCESS,
+        payload: docs
+      })
       done()
     } catch (err) {
       dispatch({ type: types.GET_APPROVED_DOCUMENTS_FAIL })
@@ -140,7 +185,10 @@ const toggleViewAnnotations = createLogic({
     const userAnnotations = getUserAnnotations(userQuestion, answerId, getState(), isValidation, user)
     const coderAnnotations = isValidation && coderQuestion !== null
       ? getCoderAnnotations(coderQuestion, answerId)
-      : { annotations: [], users: [] }
+      : {
+        annotations: [],
+        users: []
+      }
     
     annotations = [...userAnnotations.annotations, ...coderAnnotations.annotations]
     users = [...userAnnotations.users, ...coderAnnotations.users]
@@ -187,19 +235,41 @@ const toggleAnnoModeLogic = createLogic({
 const downloadLogic = createLogic({
   type: types.DOWNLOAD_DOCUMENTS_REQUEST,
   async process({ getState, action, docApi }, dispatch, done) {
+    const codingState = getState().scenes.codingValidation.coding
+    const isValidation = codingState.page === 'validation'
+    const { userQuestion } = getQuestions(codingState.question.id, getState(), isValidation)
+    
     try {
       let payload = ''
       if (action.docId === 'all') {
         // download a zip file
         const allIds = getState().scenes.codingValidation.documentList.documents.allIds
-        payload = await docApi.downloadZip({}, { responseType: 'arraybuffer' }, { docList: allIds })
+        let docs = []
+        for (const id of allIds) {
+          const annotations = getAnnotsForQAndDoc(userQuestion, id)
+          docs = [...docs, { _id: id, annotations }]
+        }
+        
+        payload = await docApi.downloadZipWithAnnotations({ docs }, { responseType: 'arraybuffer' }, {})
       } else {
+        const annotations = getAnnotsForQAndDoc(userQuestion, action.docId)
         // download just one file
-        payload = await docApi.download({}, { responseType: 'arraybuffer' }, { docId: action.docId })
+        payload = await docApi.downloadWithAnnotations(
+          { annotations },
+          { responseType: 'arraybuffer' },
+          { docId: action.docId }
+        )
       }
-      dispatch({ type: types.DOWNLOAD_DOCUMENTS_SUCCESS, payload })
+      dispatch({
+        type: types.DOWNLOAD_DOCUMENTS_SUCCESS,
+        payload
+      })
     } catch (err) {
-      dispatch({ type: types.DOWNLOAD_DOCUMENTS_FAIL, payload: 'We couldn\'t download the documents you selected.' })
+      console.log(err)
+      dispatch({
+        type: types.DOWNLOAD_DOCUMENTS_FAIL,
+        payload: 'We couldn\'t download the documents you selected.'
+      })
     }
     done()
   }

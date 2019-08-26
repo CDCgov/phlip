@@ -8,7 +8,9 @@ import JurisdictionList from './components/JurisdictionList'
 import actions from './actions'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import { FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button, withProjectLocked } from 'components'
+import {
+  FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button, withProjectLocked
+} from 'components'
 import theme from 'services/theme'
 
 /**
@@ -58,7 +60,7 @@ export class AddEditJurisdictions extends Component {
      * Content of error that needs to be shown
      */
     errorContent: PropTypes.string,
-    /*
+    /**
      * If the project is locked (finalized)
      */
     projectLocked: PropTypes.bool
@@ -125,7 +127,10 @@ export class AddEditJurisdictions extends Component {
   confirmDelete = (id, name) => {
     this.setState({
       confirmDeleteAlertOpen: true,
-      jurisdictionToDelete: { id, name }
+      jurisdictionToDelete: {
+        id,
+        name
+      }
     })
   }
 
@@ -166,36 +171,40 @@ export class AddEditJurisdictions extends Component {
    * @public
    */
   getButton = () => {
-    return (
-      <>
-        <div style={{ marginRight: 10 }}>
-          <Button
-            component={Link}
-            to={{
-              pathname: `/project/${this.props.project.id}/jurisdictions/add`,
-              state: { preset: true, modal: true }
-            }}
-            value="Load Preset"
-            color="accent"
-            aria-label="Load preset"
-          />
-        </div>
-        <div>
-          <Button
-            component={Link}
-            to={{
-              pathname: `/project/${this.props.project.id}/jurisdictions/add`,
-              state: { preset: false, modal: true }
-            }}
-            value="Add Jurisdiction"
-            color="accent"
-            aria-label="Add jurisdictions to project"
-          />
-        </div>
-      </>
-    )
+    return (<>
+      <div style={{ marginRight: 10 }}>
+        <Button
+          component={Link}
+          to={{
+            pathname: `/project/${this.props.project.id}/jurisdictions/add`,
+            state: {
+              preset: true,
+              modal: true
+            }
+          }}
+          value="Load Preset"
+          color="accent"
+          aria-label="Load preset"
+        />
+      </div>
+      <div>
+        <Button
+          component={Link}
+          to={{
+            pathname: `/project/${this.props.project.id}/jurisdictions/add`,
+            state: {
+              preset: false,
+              modal: true
+            }
+          }}
+          value="Add Jurisdiction"
+          color="accent"
+          aria-label="Add jurisdictions to project"
+        />
+      </div>
+    </>)
   }
-
+  
   render() {
     const alertActions = [
       {
@@ -215,13 +224,13 @@ export class AddEditJurisdictions extends Component {
     return (
       <Modal onClose={this.onCloseModal} open maxWidth="md" hideOverflow>
         <ModalTitle
-          title={
-            <Typography variant="title">
-              <span style={{ paddingRight: 10 }}>Jurisdictions</span>
-              <span style={{ color: theme.palette.secondary.main }}>{project.name}</span>
-            </Typography>
-          }
-          buttons={(error === true || projectLocked) ? [] : this.getButton()}
+          title={<Typography variant="title">
+            <span style={{ paddingRight: 10 }}>Jurisdictions</span>
+            <span style={{ color: theme.palette.secondary.main }}>{project.name}</span>
+          </Typography>}
+          buttons={(error === true || projectLocked)
+            ? []
+            : this.getButton()}
           search
           SearchBarProps={{
             searchValue,
@@ -231,10 +240,15 @@ export class AddEditJurisdictions extends Component {
           }}
         />
         <Divider />
-        <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
+        <ModalContent
+          style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
           <Alert actions={alertActions} onCloseAlert={this.cancelDelete} title="Warning" open={confirmDeleteAlertOpen}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              Are you sure you want to delete {jurisdictionToDelete.name}? All coded and validated questions related to this jurisdiction will be deleted.
+              Are you sure you want to delete {jurisdictionToDelete.name}? All coded and validated questions related to
+              this jurisdiction will be deleted.
             </Typography>
           </Alert>
           <ApiErrorAlert
