@@ -19,7 +19,7 @@ export class BulkValidate extends Component {
     users: PropTypes.array,
     validationInProgress: PropTypes.bool
   }
-  
+
   state = {
     activeStep: 0,
     selections: {
@@ -28,7 +28,7 @@ export class BulkValidate extends Component {
       confirm: false
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     const { open } = this.props
     if (prevProps.open && !open) {
@@ -42,14 +42,14 @@ export class BulkValidate extends Component {
       })
     }
   }
-  
+
   /**
    * Choose between question, jurisdiction, or project
    * @param scope
    */
   handleSelectScope = scope => () => {
     const { selections } = this.state
-    
+
     this.setState({
       selections: {
         ...selections,
@@ -58,7 +58,7 @@ export class BulkValidate extends Component {
       activeStep: selections.scope === null ? 1 : 0
     })
   }
-  
+
   /**
    * For when the user selects the coder to use as the answers
    * @param user
@@ -77,14 +77,14 @@ export class BulkValidate extends Component {
       activeStep: selections.user === null ? 2 : 1
     })
   }
-  
+
   /**
    * For when the user is on the last step of the modal and confirms the bulk validate
    */
   handleConfirmValidate = () => {
     const { onConfirmValidate, validationInProgress } = this.props
     const { selections } = this.state
-    
+
     if (!validationInProgress) {
       this.setState({
         selections: {
@@ -95,7 +95,7 @@ export class BulkValidate extends Component {
       onConfirmValidate(selections.scope, selections.user)
     }
   }
-  
+
   /**
    * goes back an active step
    */
@@ -105,7 +105,7 @@ export class BulkValidate extends Component {
       activeStep: activeStep - 1
     })
   }
-  
+
   /**
    * goes back an active step
    */
@@ -115,7 +115,7 @@ export class BulkValidate extends Component {
       activeStep: activeStep + 1
     })
   }
-  
+
   /**
    * Handles clearing information when closing
    */
@@ -131,17 +131,17 @@ export class BulkValidate extends Component {
       }
     })
   }
-  
+
   render() {
     const { open, users, validationInProgress } = this.props
     const { activeStep, selections } = this.state
-    
+
     const steps = [
       { label: 'Select Scope', completed: selections.scope !== null },
       { label: 'Select User', completed: selections.user !== null },
       { label: 'Confirm', completed: selections.confirm }
     ]
-    
+
     const scopes = [
       {
         text: [
@@ -165,7 +165,7 @@ export class BulkValidate extends Component {
         scope: 'project'
       }
     ]
-    
+
     return (
       <Modal open={open} onClose={this.handleClose} maxWidth="md" hideOverflow>
         <ModalTitle
@@ -327,6 +327,7 @@ export class BulkValidate extends Component {
                 </FlexGrid>
                 <FlexGrid justify="center" container type="row">
                   <Button
+                    id="bulkValidateConfirmBtn"
                     disabled={validationInProgress}
                     style={{ color: validationInProgress ? theme.palette.secondary.main : 'white', width: '25%' }}
                     color="secondary"
