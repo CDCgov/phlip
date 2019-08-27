@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
 import IdleTimer from 'react-idle-timer'
 import { bindActionCreators } from 'redux'
+import Typography from '@material-ui/core/Typography'
 import actions from './actions'
 import Home from './Home'
 import DocumentManagement from './DocumentManagement'
@@ -19,8 +20,8 @@ import CodingValidation from './CodingValidation'
 import Upload from './DocumentManagement/scenes/Upload'
 import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
 import AddEditUser from './Admin/scenes/AddEditUser'
-import { AppHeader, FlexGrid, ApiErrorAlert, Alert } from 'components'
-import Typography from '@material-ui/core/Typography'
+import { AppHeader, FlexGrid, ApiErrorAlert, Button } from 'components'
+import Modal, { ModalContent, ModalTitle } from 'components/Modal'
 
 const modalPaths = [
   '/project/add',
@@ -96,9 +97,9 @@ export class Main extends Component {
           id: 'doc-manage'
         }
       ],
-      idleTimeout: TEN_MINUTES,
       logoutIdleAlertOpen: false,
-      logoutAlertTime: ''
+      logoutAlertTime: '5:00',
+      lastFiveMinutes: false
     }
   }
   
@@ -136,6 +137,10 @@ export class Main extends Component {
       
       this.setState({ menuTabs: tabs })
     }
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.userLogoutTimer)
   }
   
   /**
@@ -248,6 +253,7 @@ export class Main extends Component {
   logoutUserOnIdle = () => {
     const { actions } = this.props
     actions.logoutUser(true)
+    clearInterval(this.userLogoutTimer)
   }
   
   /**
@@ -255,29 +261,21 @@ export class Main extends Component {
    * for 10 minutes
    */
   handleUserIdle = () => {
-    const { idleTimeout } = this.state
-    if (idleTimeout === TEN_MINUTES) {
-      this.previousTitle = document.title
-      // show an alert and set the timeout to 5 minutes
-      this.setState({ idleTimeout: FIVE_MINUTES }, this.startUserLogoutTimer)
-    } else {
-      // the user has been inactive for 15 minutes, so we log the user out.
-      clearInterval(this.userLogoutTimer)
-      this.logoutUserOnIdle()
-    }
+    // the user has been idle for ten minutes, show an alert and start counting down 5 minutes
+    this.previousTitle = document.title
+    this.startUserLogoutTimer()
   }
   
   /**
    * The user is no longer idle so we reset the timer to 10 minutes
    */
   handleUserActive = () => {
-    const { idleTimeout } = this.state
-  
-    if (idleTimeout === FIVE_MINUTES) {
+    const { lastFiveMinutes } = this.state
+    if (lastFiveMinutes) {
       this.setState({
-        idleTimeout: TEN_MINUTES,
+        lastFiveMinutes: false,
         logoutIdleAlertOpen: false,
-        logoutAlertTime: ''
+        logoutAlertTime: '5:00'
       }, () => this.idleRef.current.reset())
       document.title = this.previousTitle
       clearInterval(this.userLogoutTimer)
@@ -299,20 +297,17 @@ export class Main extends Component {
    * minutes of inactivity.
    */
   startUserLogoutTimer = () => {
+    this.setState({ lastFiveMinutes: true, logoutIdleAlertOpen: true })
     this.logoutCountdown = FIVE_MINUTES
-    this.idleRef.current.reset()
-    this.setState({ logoutIdleAlertOpen: true, logoutAlertTime: '5:00' })
     this.userLogoutTimer = setInterval(() => {
       let timeString = ''
       if (this.logoutCountdown <= ONE_MINUTE) {
         timeString = `${this.logoutCountdown / 1000} seconds`
       } else {
         const minutes = Math.floor(this.logoutCountdown / 60000)
-        const seconds = (this.logoutCountdown / 1000) % 60
-        timeString =
-          `${minutes}:${seconds}${seconds === 0
-            ? '0'
-            : ''}`
+        let seconds = (this.logoutCountdown / 1000) % 60
+        seconds = seconds === 0 ? '00' : seconds < 10 ? `0${seconds}` : seconds
+        timeString = `${minutes}:${seconds}`
       }
       this.setState({ logoutAlertTime: timeString })
       if (document.visibilityState !== 'visible') {
@@ -322,12 +317,16 @@ export class Main extends Component {
       }
       
       this.logoutCountdown -= 1000
+      if (this.logoutCountdown === -1000) {
+        // user has been inactive for the remaining 5 minutes, so we log them out.
+        this.logoutUserOnIdle()
+      }
     }, 1000)
   }
   
   render() {
     const { location, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
-    const { menuTabs, menuOpen, idleTimeout, logoutIdleAlertOpen, logoutAlertTime } = this.state
+    const { menuTabs, menuOpen, logoutIdleAlertOpen, logoutAlertTime } = this.state
     
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
     // screen, so we check if it's one of those routes and if it is set the location to /home
@@ -348,9 +347,10 @@ export class Main extends Component {
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
         <IdleTimer
           ref={this.idleRef}
-          timeout={idleTimeout}
+          timeout={TEN_MINUTES}
           onIdle={this.handleUserIdle} // this is called only after the user has been idle for the time set in timeout
           onActive={this.handleUserActive}
+          stopOnIdle
         />
         <AppHeader
           user={user}
@@ -362,15 +362,19 @@ export class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
-        <Alert
-          onCloseAlert={this.handleUserActive}
-          open={logoutIdleAlertOpen}
-          closeButton={{ value: 'Continue' }}
-          title="Session Expiring">
-          <Typography variant="body1">
-            You'll be logged out in {logoutAlertTime}.
-          </Typography>
-        </Alert>
+        <Modal open={logoutIdleAlertOpen} id="logout-idle-alert">
+          <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title="Session Expiring" />
+          <ModalContent style={{ minWidth: 350 }}>
+            <Typography variant="body1">
+              You'll be logged out in {logoutAlertTime}. Click the 'Continue' button below to stay logged in.
+            </Typography>
+          </ModalContent>
+          <FlexGrid container type="row" align="center" justify="flex-end" style={{ margin: 20 }}>
+            <Button raised={false} onClick={this.handleUserActive} color="secondary">
+              Continue
+            </Button>
+          </FlexGrid>
+        </Modal>
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={switchLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
