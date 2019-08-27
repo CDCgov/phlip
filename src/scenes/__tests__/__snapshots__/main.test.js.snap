@@ -18,6 +18,7 @@ exports[`Main scene should render correctly 1`] = `
 >
   <t
     capture={true}
+    debounce={0}
     element={
       Document {
         "createElement": [Function],
@@ -62,11 +63,14 @@ exports[`Main scene should render correctly 1`] = `
         "MSPointerMove",
       ]
     }
+    onAction={[Function]}
     onActive={[Function]}
     onIdle={[Function]}
     passive={true}
     startOnMount={true}
-    timeout={900000}
+    stopOnIdle={true}
+    throttle={0}
+    timeout={600000}
   />
   <AppHeader
     onDownloadPdf={[Function]}
@@ -95,6 +99,58 @@ exports[`Main scene should render correctly 1`] = `
     }
     user={Object {}}
   />
+  <WithStyles(Modal)
+    id="logout-idle-alert"
+    open={false}
+  >
+    <ModalTitle
+      style={
+        Object {
+          "alignItems": "center",
+          "display": "flex",
+        }
+      }
+      title="Session Expiring"
+    />
+    <ModalContent
+      style={
+        Object {
+          "minWidth": 350,
+        }
+      }
+    >
+      <WithStyles(Typography)
+        variant="body1"
+      >
+        You'll be logged out in 
+        5:00
+        . Click the 'Continue' button below to stay logged in.
+      </WithStyles(Typography)>
+    </ModalContent>
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="flex-end"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "margin": 20,
+        }
+      }
+      type="row"
+    >
+      <WithTheme(Button)
+        color="secondary"
+        onClick={[Function]}
+        raised={false}
+      >
+        Continue
+      </WithTheme(Button)>
+    </FlexGrid>
+  </WithStyles(Modal)>
   <FlexGrid
     align="stretch"
     circular={false}
