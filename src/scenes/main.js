@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
 import IdleTimer from 'react-idle-timer'
 import { bindActionCreators } from 'redux'
+import Typography from '@material-ui/core/Typography'
 import actions from './actions'
 import Home from './Home'
 import DocumentManagement from './DocumentManagement'
@@ -19,7 +20,8 @@ import CodingValidation from './CodingValidation'
 import Upload from './DocumentManagement/scenes/Upload'
 import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
 import AddEditUser from './Admin/scenes/AddEditUser'
-import { AppHeader, FlexGrid, ApiErrorAlert } from 'components'
+import { AppHeader, FlexGrid, ApiErrorAlert, Button } from 'components'
+import Modal, { ModalContent, ModalTitle } from 'components/Modal'
 
 const modalPaths = [
   '/project/add',
@@ -35,6 +37,11 @@ const modalPaths = [
   '/user/profile',
   '/user/profile/avatar'
 ]
+
+const FIVE_MINUTES = 300000
+const TEN_MINUTES = 600000
+const ONE_MINUTE = 60000
+const BELL = '\u{1F514}'
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -67,7 +74,10 @@ export class Main extends Component {
     
     this.helpPdfRef = React.createRef()
     this.idleRef = React.createRef()
-    this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
+    this.previousLocation =
+      props.previousLocation !== props.location
+        ? props.previousLocation
+        : props.location
     
     this.state = {
       menuOpen: false,
@@ -86,8 +96,16 @@ export class Main extends Component {
           icon: 'description',
           id: 'doc-manage'
         }
-      ]
+      ],
+      logoutIdleAlertOpen: false,
+      logoutAlertTime: '5:00',
+      lastFiveMinutes: false
     }
+  }
+  
+  componentDidMount() {
+    this.previousTitle = document.title
+    document.addEventListener('visibilitychange', this.handleTabVisibilityChange)
   }
   
   componentDidUpdate(prevProps) {
@@ -119,6 +137,10 @@ export class Main extends Component {
       
       this.setState({ menuTabs: tabs })
     }
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.userLogoutTimer)
   }
   
   /**
@@ -231,11 +253,80 @@ export class Main extends Component {
   logoutUserOnIdle = () => {
     const { actions } = this.props
     actions.logoutUser(true)
+    clearInterval(this.userLogoutTimer)
+  }
+  
+  /**
+   * Shows an alert to let the user know that they will be logged out in 5 minutes. Shows when the user has been idle
+   * for 10 minutes
+   */
+  handleUserIdle = () => {
+    // the user has been idle for ten minutes, show an alert and start counting down 5 minutes
+    this.previousTitle = document.title
+    this.startUserLogoutTimer()
+  }
+  
+  /**
+   * The user is no longer idle so we reset the timer to 10 minutes
+   */
+  handleUserActive = () => {
+    const { lastFiveMinutes } = this.state
+    if (lastFiveMinutes) {
+      this.setState({
+        lastFiveMinutes: false,
+        logoutIdleAlertOpen: false,
+        logoutAlertTime: '5:00'
+      }, () => this.idleRef.current.reset())
+      document.title = this.previousTitle
+      clearInterval(this.userLogoutTimer)
+    }
+  }
+  
+  /**
+   * Handles when the app tab becomes visible or not
+   */
+  handleTabVisibilityChange = () => {
+    const isVisible = document.visibilityState === 'visible'
+    document.title = isVisible
+      ? this.previousTitle
+      : document.title
+  }
+  
+  /**
+   * Updates the page title to show the user how log it will be until they are logged out. Starts showing after 10
+   * minutes of inactivity.
+   */
+  startUserLogoutTimer = () => {
+    this.setState({ lastFiveMinutes: true, logoutIdleAlertOpen: true })
+    this.logoutCountdown = FIVE_MINUTES
+    this.userLogoutTimer = setInterval(() => {
+      let timeString = ''
+      if (this.logoutCountdown <= ONE_MINUTE) {
+        timeString = `${this.logoutCountdown / 1000} seconds`
+      } else {
+        const minutes = Math.floor(this.logoutCountdown / 60000)
+        let seconds = (this.logoutCountdown / 1000) % 60
+        seconds = seconds === 0 ? '00' : seconds < 10 ? `0${seconds}` : seconds
+        timeString = `${minutes}:${seconds}`
+      }
+      this.setState({ logoutAlertTime: timeString })
+      if (document.visibilityState !== 'visible') {
+        document.title = document.title === '...'
+          ? `${BELL} Session Expiring`
+          : '...'
+      }
+      
+      this.logoutCountdown -= 1000
+      if (this.logoutCountdown === -1000) {
+        // user has been inactive for the remaining 5 minutes, so we log them out.
+        this.logoutUserOnIdle()
+      }
+    }, 1000)
   }
   
   render() {
     const { location, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
-    const { menuTabs, menuOpen } = this.state
+    const { menuTabs, menuOpen, logoutIdleAlertOpen, logoutAlertTime } = this.state
     
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
     // screen, so we check if it's one of those routes and if it is set the location to /home
@@ -248,11 +339,19 @@ export class Main extends Component {
       ? 'row'
       : 'column'
     
-    const switchLocation = isModal ? this.previousLocation : location
+    const switchLocation = isModal
+      ? this.previousLocation
+      : location
     
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
-        <IdleTimer ref={this.idleRef} onIdle={this.logoutUserOnIdle} timeout={900000} />
+        <IdleTimer
+          ref={this.idleRef}
+          timeout={TEN_MINUTES}
+          onIdle={this.handleUserIdle} // this is called only after the user has been idle for the time set in timeout
+          onActive={this.handleUserActive}
+          stopOnIdle
+        />
         <AppHeader
           user={user}
           tabs={menuTabs}
@@ -263,6 +362,19 @@ export class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
+        <Modal open={logoutIdleAlertOpen} id="logout-idle-alert">
+          <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title="Session Expiring" />
+          <ModalContent style={{ minWidth: 350 }}>
+            <Typography variant="body1">
+              You'll be logged out in {logoutAlertTime}. Click the 'Continue' button below to stay logged in.
+            </Typography>
+          </ModalContent>
+          <FlexGrid container type="row" align="center" justify="flex-end" style={{ margin: 20 }}>
+            <Button raised={false} onClick={this.handleUserActive} color="secondary">
+              Continue
+            </Button>
+          </FlexGrid>
+        </Modal>
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={switchLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />

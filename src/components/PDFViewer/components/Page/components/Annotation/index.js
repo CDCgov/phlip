@@ -4,6 +4,10 @@ import { IconButton, Avatar } from 'components'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
 import { connect } from 'react-redux'
 
+/**
+ * Used for the annotations in a PDF document.
+ * @component
+ */
 export class Annotation extends PureComponent {
   static defaultProps = {
     showAvatar: false

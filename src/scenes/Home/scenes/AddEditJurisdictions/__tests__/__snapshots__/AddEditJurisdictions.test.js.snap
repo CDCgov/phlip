@@ -45,7 +45,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         </div>
         <div>
           <WithTheme(Button)
-            aria-label="Add jurisidiction to project"
+            aria-label="Add jurisdictions to project"
             color="accent"
             component={[Function]}
             to={

@@ -2,6 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 
+/**
+ * Component class for the text nodes in a PDF. This is used for text selection. They text itself is actually invisible.
+ * @component
+ */
 export class TextNode extends PureComponent {
   static propTypes = {
     textItem: PropTypes.object,
