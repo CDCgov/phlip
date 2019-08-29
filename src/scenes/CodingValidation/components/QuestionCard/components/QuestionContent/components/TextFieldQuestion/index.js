@@ -14,7 +14,7 @@ export const TextFieldQuestion = props => {
     onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, user, onToggleViewAnnotations,
     onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
-  
+
   const isValidation = mergedUserQuestions !== null
   const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
   const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
@@ -25,17 +25,17 @@ export const TextFieldQuestion = props => {
       ? userAnswers.validatedBy.userId
       : user.id
     : user.id
-  
+
   const userHasAnnotations = !isAnswered ? false : userAnswers.answers[answerId].annotations.length > 0
-  
+
   return (
     <FlexGrid
       container
       flex
       type={isValidation ? 'column' : 'row'}
       style={{ minHeight: 'unset', paddingTop: isValidation ? 15 : 0 }}>
-      {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container type="row" padding="0 10px 15px 5px" key={answer.id}>
+      {isValidation && mergedUserQuestions.answers.map((answer,ix) =>
+        <FlexGrid container type="row" padding="0 10px 15px 5px" key={answer.id} id={`answer-${ix+1}`}>
           <FlexGrid container type="row" align="flex-start" padding="0 20px 0 0">
             <CodingValidationAvatar user={userImages[answer.userId]} enabled={false} />
           </FlexGrid>
@@ -64,7 +64,8 @@ export const TextFieldQuestion = props => {
               ? '#f5f5f5'
               : 'white',
           marginRight: 10
-        }}>
+        }}
+        id={`selected-text-answer`}>
         {(isAnswered && isValidation) &&
         <FlexGrid container type="row" align="flex-start" padding="0 20px 0 0">
           <CodingValidationAvatar enabled={false} isValidator user={userImages[userId]} />

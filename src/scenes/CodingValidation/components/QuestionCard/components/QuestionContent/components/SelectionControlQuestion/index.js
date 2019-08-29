@@ -117,7 +117,7 @@ export const SelectionControlQuestion = props => {
                     ? '#f5f5f5'
                     : 'white'
               }}>
-              <FlexGrid container flex id={`user-answer-${ix}`}>
+              <FlexGrid container flex id={`answer-${ix+1}`}>
                 <FormControlLabel
                   checked={isAnswered}
                   aria-checked={isAnswered}

@@ -29,7 +29,7 @@ export const QuestionContent = props => {
     areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations,
     onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
-  
+
   const commonQuestionProps = {
     userImages,
     question,
@@ -50,23 +50,23 @@ export const QuestionContent = props => {
     hoveredAnswerChoice,
     user
   }
-  
+
   const selectionFormProps = {
     choices: question.possibleAnswers,
     onChange,
     onChangePincite: onChangeTextAnswer,
     ...commonQuestionProps
   }
-  
+
   const textQuestionProps = {
     ...commonQuestionProps,
     onChange: onChangeTextAnswer,
     answerId: question.possibleAnswers[0].id
   }
-  
+
   return (
     <FlexGrid container flex justify="space-between" style={{ overflow: 'auto' }}>
-      <FlexGrid container type="row" style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }}>
+      <FlexGrid container type="row" style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }} id={`question-${question.number}`}>
         <FlexGrid container padding="20px 0 0 20px">
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
         </FlexGrid>
@@ -93,7 +93,7 @@ export const QuestionContent = props => {
           <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', width: '100%' }}>
             {question.questionType !== questionTypes.TEXT_FIELD && <SelectionControlQuestion {...selectionFormProps} />}
             {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
-            
+
             <FlexGrid container flex align="flex-start" padding="20px 10px 5px 1px" style={{ minHeight: 'unset' }}>
               {question.includeComment && <SimpleInput
                 onChange={onChangeTextAnswer(null, 'comment')}
