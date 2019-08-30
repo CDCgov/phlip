@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Heading from 'react-styleguidist/lib/rsg-components/Heading'
-import Styled from 'react-styleguidist/lib/rsg-components/Styled'
+import Heading from 'react-styleguidist/lib/client/rsg-components/Heading'
+import Styled from 'react-styleguidist/lib/client/rsg-components/Styled'
 
 function SectionHeadingRenderer({ classes, children, toolbar, id, href, depth, deprecated }) {
   let headingLevel = Math.min(6, depth)

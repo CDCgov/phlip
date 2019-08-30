@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Styled from 'react-styleguidist/lib/rsg-components/Styled'
+import Styled from 'react-styleguidist/lib/client/rsg-components/Styled'
 
 const colors = {
-  secondary: '#005757',
-  sidebar: '#3a4041'
+  secondary: '#04648a',
+  sidebar: '#3A4041'
 }
 
 const styles = ({ color, fontFamily, fontSize }) => ({

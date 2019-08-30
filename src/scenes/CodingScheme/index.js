@@ -27,6 +27,7 @@ import Divider from '@material-ui/core/Divider'
  * Coding Scheme screen main component, rendered when the user clicks 'Edit' under the Coding Scheme table header. This
  * is the parent component for all coding scheme related actions -- adding a question, deleting, reordering, etc. This
  * component has one scene: AddEditQuestion at ./scenes/AddEditQuestion.
+ * @component
  */
 export class CodingScheme extends Component {
   static propTypes = {

@@ -71,10 +71,6 @@ Avatar.propTypes = {
    */
   style: PropTypes.object,
   /**
-   * Theme of project provided by @material-ui/core
-   */
-  theme: PropTypes.object,
-  /**
    * If true, avatar will have a white border around it with box shadow (similar to Card)
    */
   cardAvatar: PropTypes.bool,
@@ -97,7 +93,6 @@ Avatar.defaultProps = {
   cardAvatar: false,
   initials: '',
   style: {},
-  theme: {},
   userName: '',
   alt: '',
   userId: 0

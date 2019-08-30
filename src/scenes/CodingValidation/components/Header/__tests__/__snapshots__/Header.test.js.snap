@@ -98,7 +98,7 @@ exports[`CodingValidation scene -- Header component should render correctly 1`] 
             }
           }
         >
-          2018-1-1
+          1/1/2018
         </span>
       </Typography>
       <Typography
@@ -121,7 +121,7 @@ exports[`CodingValidation scene -- Header component should render correctly 1`] 
             }
           }
         >
-          2018-1-18
+          1/18/2018
         </span>
       </Typography>
     </FlexGrid>
