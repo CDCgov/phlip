@@ -47,7 +47,7 @@ CircleIcon.propTypes = {
    * String name of the icon from https://material.io/tools/icons/?style=baseline to display, or Icon component from an
    * icon library like mdi-material-ui.
    */
-  children: PropTypes.any,
+  children: PropTypes.any
 }
 
 CircleIcon.defaultProps = {
