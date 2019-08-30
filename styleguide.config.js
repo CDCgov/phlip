@@ -7,37 +7,36 @@ const autoprefixer = require('autoprefixer')
 
 module.exports = {
   assetsDir: paths.appPublic,
+  compilerConfig: {
+    objectAssign: 'Object.assign',
+    transforms: {
+      modules: true,
+      dangerousTaggedTemplateString: true,
+      asyncAwait: true,
+      moduleImport: false
+    },
+    target: {
+      chrome: 60
+    }
+  },
+  components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover|withProjectLocked|withAutocompleteMethods)/*.js',
+  ignore: [
+    '**/__tests__/**',
+    '**/*.test.{js,jsx,ts,tsx}',
+    '**/*.spec.{js,jsx,ts,tsx}',
+    '**/*.d.ts',
+    '**/src/components/index.js'
+  ],
   webpackConfig: {
-    mode: 'development',
-    devtool: 'eval',
     resolve: {
-      extensions: [
-        '.web.mjs',
-        '.mjs',
-        '.web.js',
-        '.js',
-        '.web.ts',
-        '.ts',
-        '.web.tsx',
-        '.tsx',
-        '.json',
-        '.web.jsx',
-        '.jsx'
-      ],
       modules: [
         paths.appSrc,
-        'node_modules',
-        paths.appNodeModules
+        paths.appNodeModules,
+        'node_modules'
       ]
     },
     module: {
       rules: [
-        {
-          test: /\.(js|mjs|jsx|ts|tsx)$/,
-          enforce: 'pre',
-          loader: 'eslint-loader',
-          include: paths.appSrc
-        },
         {
           test: require.resolve('tinymce/tinymce'),
           loaders: [
@@ -54,20 +53,18 @@ module.exports = {
         {
           oneOf: [
             {
-              test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: [paths.appSrc, path.join(paths.config, 'styleguide')],
-              exclude: /node_modules/,
+              test: /\.(js|mjs|jsx|ts|tsx)$/i,
+              include: [/src/, path.join(paths.config, 'styleguide'), path.join(paths.appNodeModules, 'react-styleguidist/lib/client/rsg-components')],
               use: [
                 {
-                  loader: 'babel-loader',
+                  loader: require.resolve('babel-loader'),
                   options: {
                     presets: [
-                      ['@babel/preset-env', { modules: false }],
-                      '@babel/preset-react'
+                      ['@babel/env', { modules: false }],
+                      '@babel/react'
                     ],
                     cacheDirectory: true,
                     plugins: [
-                      'react-hot-loader/babel',
                       '@babel/plugin-transform-runtime',
                       '@babel/plugin-transform-object-assign',
                       '@babel/plugin-proposal-object-rest-spread',
@@ -76,14 +73,18 @@ module.exports = {
                     ]
                   }
                 }
-              ]
+              ],
+              exclude: paths.appNodeModules
             },
             {
               test: /\.css$/,
               use: [
                 { loader: 'style-loader' },
                 {
-                  loader: 'css-loader'
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: true
+                  }
                 },
                 {
                   loader: 'postcss-loader',
@@ -144,18 +145,17 @@ module.exports = {
       ]
     }
   },
+  // webpackConfig: webpack,
   styleguideDir: path.join(__dirname, 'docs'),
   logger: {
     warn: console.warn,
     info: console.info,
     debug: console.log
   },
-  context: {
-    theme: path.resolve(__dirname, 'src/services/theme')
-  },
   moduleAliases: {
     utils: path.resolve(__dirname, 'src/utils'),
-    services: path.resolve(__dirname, 'src/services')
+    services: path.resolve(__dirname, 'src/services'),
+    components: path.resolve(__dirname, 'src/components')
   },
   sections: [
     {
@@ -164,7 +164,7 @@ module.exports = {
       sections: [
         {
           name: 'User Management',
-          content: 'src/scenes/Admin/Readme.md',
+          content: 'src/scenes/docs/UserManagement.md',
           sections: [
             {
               components: 'src/scenes/Admin/index.js'
@@ -244,7 +244,7 @@ module.exports = {
             { components: 'src/scenes/Home/index.js' },
             {
               name: 'scenes',
-              components: 'src/scenes/Home/scenes/**/index.js'
+              components: 'src/scenes/Home/scenes/*/index.js'
             },
             {
               name: 'components',
@@ -253,13 +253,13 @@ module.exports = {
           ]
         },
         {
-          name: 'Logic',
+          name: 'Login',
           content: 'src/scenes/Login/Readme.md',
           sections: [
             { components: 'src/scenes/Login/index.js' },
             {
               name: 'components',
-              components: 'src/scenes/Login/components/*/index.js'
+              components: 'src/scenes/Login/components/(Prod|Dev)LoginForm.js'
             }
           ]
         },
@@ -286,16 +286,15 @@ module.exports = {
       name: 'ui components',
       content: 'src/components/Readme.md',
       components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover|withProjectLocked|withAutocompleteMethods)/*.js',
-      ignore: '**/src/components/@(Layout|RoutePages)/index.js'
+      ignore: ['**/src/components/@(Layout|RoutePages)/index.js', '**/src/components/index.js']
     },
     {
       name: 'higher order components (hocs)',
-      components: 'src/components/CodingValidation/rsgCodingValidation.js',
       sections: [
         { name: 'withFormAlert', content: 'src/components/withFormAlert/Readme.md' },
         { name: 'withTracking', content: 'src/components/withTracking/Readme.md' },
         { name: 'withAutocompleteMethods', content: 'src/components/withAutocompleteMethods/Readme.md' },
-        { name: 'withProjectLocked', content: 'src/components/withProjectLocked' }
+        { name: 'withProjectLocked', content: 'src/components/withProjectLocked/Readme.md' }
       ]
     },
     {
@@ -363,12 +362,12 @@ module.exports = {
   exampleMode: 'collapse',
   usageMode: 'expand',
   styleguideComponents: {
-    Wrapper: comps('ThemeWrapper'),
-    SectionsRenderer: comps('SectionsRenderer'),
-    StyleGuideRenderer: comps('StyleGuideRenderer'),
-    ExamplePlaceholderRenderer: comps('ExamplePlaceholderRenderer'),
-    HeadingRenderer: comps('HeadingRenderer'),
-    SectionHeadingRenderer: comps('SectionHeadingRenderer')
+    Wrapper: comps('ThemeWrapper.js'),
+    SectionsRenderer: comps('SectionsRenderer.js'),
+    StyleGuideRenderer: comps('StyleGuideRenderer.js'),
+    ExamplePlaceholderRenderer: comps('ExamplePlaceholderRenderer.js'),
+    HeadingRenderer: comps('HeadingRenderer.js'),
+    SectionHeadingRenderer: comps('SectionHeadingRenderer.js')
   },
   theme,
   styles,

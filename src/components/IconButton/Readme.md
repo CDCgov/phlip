@@ -1,11 +1,11 @@
 #### Basic IconButton example
 Click the ship wheel
 ```jsx
-const ShipWheel = require('mdi-material-ui').ShipWheel
-const Typography = require('@material-ui/core').Typography
-initialState = { clicked: 0 };
+import ShipWheel from 'mdi-material-ui/ShipWheel'
+import Typography from '@material-ui/core/Typography'
+initialState = { clicked: 0 }
 
-<div>
+;<div>
   <IconButton color="primary" onClick={() => setState({ clicked: state.clicked + 1 })}>
     <ShipWheel />
   </IconButton>

@@ -12,6 +12,7 @@ const styles = theme => ({
 
 /**
  * Simple checkbox input type and label
+ * @component
  */
 export const CheckboxLabel = ({ input, label, classes, disabled, style, labelStyle }) => {
   return (

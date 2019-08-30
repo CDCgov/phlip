@@ -15,6 +15,25 @@ import MenuDown from 'mdi-material-ui/MenuDown'
  * button icon is.
  */
 export class ExpansionTextPanel extends Component {
+  static propTypes = {
+    /**
+     * Text content of the popover
+     */
+    text: PropTypes.string,
+    /**
+     * Props for the Typography component
+     */
+    textProps: PropTypes.object,
+    /**
+     * Props for the IconButton component for the dropdown arrow
+     */
+    dropdownIconProps: PropTypes.object
+  }
+  
+  static defaultProps = {
+    dropdownIconProps: {}
+  }
+  
   constructor(props, context) {
     super(props, context)
 
@@ -98,21 +117,6 @@ export class ExpansionTextPanel extends Component {
       </Row>
     )
   }
-}
-
-ExpansionTextPanel.propTypes = {
-  /**
-   * Text content of the popover
-   */
-  text: PropTypes.string,
-  /**
-   * Props for the Typography component
-   */
-  textProps: PropTypes.object,
-  /**
-   * Props for the IconButton component for the dropdown arrow
-   */
-  dropdownIconProps: PropTypes.object
 }
 
 export default ExpansionTextPanel

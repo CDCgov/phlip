@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Markdown from 'react-styleguidist/lib/rsg-components/Markdown'
-import Styled from 'react-styleguidist/lib/rsg-components/Styled'
+import Markdown from 'react-styleguidist/lib/client/rsg-components/Markdown'
+import Styled from 'react-styleguidist/lib/client/rsg-components/Styled'
 import cx from 'classnames'
 import Typography from '@material-ui/core/Typography'
 

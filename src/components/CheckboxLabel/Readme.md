@@ -1,9 +1,10 @@
 #### CheckboxLabel example
 
 ```jsx
-initialState = { checked: false };
+import CheckboxLabel from 'components/CheckboxLabel'
+initialState = { checked: false }
 
-<CheckboxLabel
+;<CheckboxLabel
   input={{
     value: state.checked,
     onChange: () => setState({ checked: !state.checked })
@@ -14,9 +15,10 @@ initialState = { checked: false };
 
 #### Disabled CheckboxLabel example
 ```jsx
-initialState = { checked: true };
+import CheckboxLabel from 'components/CheckboxLabel'
+initialState = { checked: true }
 
-<CheckboxLabel
+;<CheckboxLabel
   input={{
     value: state.checked
   }}

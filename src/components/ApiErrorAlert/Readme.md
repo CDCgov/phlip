@@ -3,9 +3,9 @@ Click the button to see what the alert would look like.
 
 ```jsx
 import Button from '../Button'
-initialState = { open: false };
+initialState = { open: false }
 
-<div>
+;<div>
   <Button onClick={() => setState({ open: true })}>Open Alert</Button>
   <ApiErrorAlert
     open={state.open}
