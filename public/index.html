@@ -26,16 +26,20 @@
   </head>
   <body>
     <div id="root" style="display: flex; flex: 1;"></div>
+    <!-- show an alert if the user tries to open in ie -->
+    <script type="text/javascript" src="/ie.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-      crossorigin="anonymous"></script>
+      crossorigin="anonymous">
+    </script>
 
     <!-- Begin Google DAP inclusion -->
     <script
       type="text/javascript"
       id="_fed_an_ua_tag"
-      src="https://www.cdc.gov/JScript/metrics/google/Universal-Federated-Analytics-Min.js?agency=HHS&amp;subagency=CDC"></script>
+      src="https://www.cdc.gov/JScript/metrics/google/Universal-Federated-Analytics-Min.js?agency=HHS&amp;subagency=CDC">
+    </script>
     <!-- End Google DAP inclusion -->
 
     <!-- Begin Template Package Custom Interactions -->
@@ -68,11 +72,13 @@
       }
     </script>
     <noscript>
-      <a href="https://cdc.112.2o7.net"><img
-        src="https://cdc.112.2o7.net/b/ss/cdcgov/1/H.21--NS/01/H.21--NS/0"
-        height="1"
-        width="1"
-        alt="Web Analytics" /></a>
+      <a href="https://cdc.112.2o7.net">
+        <img
+          src="https://cdc.112.2o7.net/b/ss/cdcgov/1/H.21--NS/01/H.21--NS/0"
+          height="1"
+          width="1"
+          alt="Web Analytics" />
+      </a>
     </noscript><!--/DO NOT REMOVE/-->
     <!-- End SiteCatalyst code version: H.21. -->
   </body>
