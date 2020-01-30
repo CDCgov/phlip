@@ -60,9 +60,10 @@ for (let i = 0; i < serviceFiles.length; i++) {
 }
 
 Promise.all(promises).then(data => {
-  // If the command was build, then build statis docs
+  // if the command was build, then build static docs
   if (IS_BUILD) {
     styleguidist.build((err, config) => {
+      //console.log(config)
       if (err) {
         console.log(`Error: ${err} building docs`)
         process.exit(1)

@@ -1,10 +1,13 @@
 #### Default Button example
-
 ```jsx
-<Button value="I am a button" />
+import theme from '../../services/theme';
+<Button theme={theme}>I am a button</Button>
 ```
 
 #### Flat Button example
-```js
-<Button style={{ backgroundColor: 'green', color: 'white' }} raised={false} value="I am a flat button" />
+```jsx
+import theme from '../../services/theme';
+<Button theme={theme} raised={false}>
+I am a flat button
+</Button>
 ```

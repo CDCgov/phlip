@@ -4,9 +4,7 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const paths = require('./paths')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = env => {
   return {

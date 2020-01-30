@@ -42,7 +42,6 @@ export const withProjectLocked = WrappedComponent => {
     
     render() {
       const { open, isLocked, project } = this.state
-      
       const title = `${project.name} is Locked`
       
       return (

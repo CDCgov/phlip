@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Styled from 'react-styleguidist/lib/rsg-components/Styled'
-import DefaultSections from 'react-styleguidist/lib/rsg-components/Sections/SectionsRenderer'
+import Styled from 'react-styleguidist/lib/client/rsg-components/Styled'
+import DefaultSections from 'react-styleguidist/lib/client/rsg-components/Sections/SectionsRenderer'
 
 const styles = ({ fontFamily, color, space }) => ({
   headingSpacer: {
