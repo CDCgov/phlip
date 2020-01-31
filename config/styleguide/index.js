@@ -1,9 +1,6 @@
 const styleguideTheme = {
   fontFamily: {
-    base: [
-      'Roboto',
-      'sans-serif'
-    ],
+    base: 'Roboto, sans-serif',
     monospace: 'Consolas, "Liberation Mono", Menlo, monospace'
   },
   fontSize: {
@@ -66,9 +63,7 @@ const stylguideStyles = {
   Table: {
     cell: {
       color: 'black',
-      paddingRight: 16,
-      paddingTop: 8,
-      paddingBottom: 8,
+      padding: 10,
       verticalAlign: 'top',
       fontFamily: styleguideTheme.fontFamily.base,
       fontSize: styleguideTheme.fontSize.small,
@@ -84,7 +79,22 @@ const stylguideStyles = {
         isolate: false,
         marginBottom: 0
       }
-    }
+    },
+    cellHeading: {
+      padding: 10,
+      fontFamily: 'Roboto, sans-serif',
+      fontSize: 13,
+      fontStyle: 'bold',
+      '&:last-child': {
+        isolate: false,
+        width: '99%',
+        paddingRight: 0,
+      },
+      '& p:last-child': {
+        isolate: false,
+        marginBottom: 0,
+      },
+    },
   },
   /**
    * This is for each parent section like Scenes, Utility, UI Component, and HOC
@@ -120,7 +130,8 @@ const stylguideStyles = {
   },
   TabButton: {
     button: {
-      width: '100%'
+      width: '100%',
+      padding: '10px 0'
     },
     isActive: {
       border: 0

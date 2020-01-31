@@ -146,7 +146,7 @@ module.exports = {
     }
   },
   // webpackConfig: webpack,
-  styleguideDir: path.join(__dirname, 'docs'),
+  styleguideDir: path.join(__dirname, 'styleguide'),
   logger: {
     warn: console.warn,
     info: console.info,
