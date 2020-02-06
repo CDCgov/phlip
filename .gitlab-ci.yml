@@ -106,6 +106,7 @@ build dev azure:
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
     - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package-lock.json ~iiu-deploy/esquire-frontend-deploy/
     - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
     - az-phlip2dev-fe
@@ -146,6 +147,7 @@ build test azure:
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
     - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package-lock.json ~iiu-deploy/esquire-frontend-deploy/
     - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
     - az-phliptest-fe
@@ -185,6 +187,7 @@ build master azure:
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
     - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package-lock.json ~iiu-deploy/esquire-frontend-deploy/
     - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
     - az-phlip-fe
