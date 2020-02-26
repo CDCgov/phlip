@@ -29,31 +29,6 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
-if (IS_HTTPS) {
-  httpsOptions = {
-    key: fs.readFileSync(process.env.KEY_PATH),
-    cert: fs.readFileSync(process.env.CERT_PATH),
-    ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    requestCert: true,
-    rejectUnauthorized: false,
-    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
-  }
-  
-  /**
-   * Add additional certs to trust (like cdc certs)
-   * @type {string[]}
-   */
-  const trustedCa = [
-    '/etc/pki/tls/certs/ca-bundle.crt',
-    process.env.NODE_EXTRA_CA_CERTS
-  ]
-  
-  https.globalAgent.options.ca = []
-  for (const ca of trustedCa) {
-    https.globalAgent.options.ca.push(fs.readFileSync(ca))
-  }
-}
-
 app.use(compression())
 app.use(helmet())
 app.use(helmet.hsts({
@@ -92,7 +67,6 @@ app.use(helmet.contentSecurityPolicy({
 app.use(helmet.noCache())
 
 // Proxy all requests to /api to the backend API URL
-
 app.use('/api', proxy({
   target: APP_API_URL,
   ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
@@ -157,13 +131,27 @@ app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
 
 if (IS_HTTPS) {
+  /**
+   * Add additional certs to trust (like cdc certs)
+   * @type {string[]}
+   */
+  const trustedCa = [
+    '/etc/pki/tls/certs/ca-bundle.crt',
+    process.env.NODE_EXTRA_CA_CERTS
+  ]
+  
+  https.globalAgent.options.ca = []
+  for (const ca of trustedCa) {
+    https.globalAgent.options.ca.push(fs.readFileSync(ca))
+  }
+
   const httpsHost = APP_HOST
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    requestCert: true,
-    rejectUnauthorized: false,
+    //requestCert: true,
+    //rejectUnauthorized: false,
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
   }
   
