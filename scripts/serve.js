@@ -150,9 +150,37 @@ if (IS_HTTPS) {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    //requestCert: true,
-    //rejectUnauthorized: false,
-    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
+    ciphers: [
+      'TLS_AES_256_GCM_SHA384',
+      'TLS_CHACHA20_POLY1305_SHA256',
+      'TLS_AES_128_GCM_SHA256',
+      'ECDHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-ECDSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'ECDHE-ECDSA-AES256-GCM-SHA384',
+      'DHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES128-SHA256',
+      'DHE-RSA-AES128-SHA256',
+      'ECDHE-RSA-AES256-SHA384',
+      'DHE-RSA-AES256-SHA384',
+      'ECDHE-RSA-AES256-SHA256',
+      'DHE-RSA-AES256-SHA256',
+      'HIGH',
+      '!ECDHE-RSA-AES256-SHA',
+      '!ECDHE-RSA-AES128-SHA',
+      '!AES128-SHA',
+      '!AES256-SHA',
+      '!aNULL',
+      '!eNULL',
+      '!EXPORT',
+      '!DES',
+      '!RC4',
+      '!MD5',
+      '!PSK',
+      '!SRP',
+      '!CAMELLIA'
+    ].join(':')
   }
   
   // Start and HTTPS server
