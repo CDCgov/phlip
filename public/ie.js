@@ -1,3 +1,5 @@
+/* eslint-disable semi */
+/* eslint-disable no-var */
 var ua = window.navigator.userAgent;
 var msie = ua.indexOf('MSIE ');
 var trident = ua.indexOf('Trident/');

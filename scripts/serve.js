@@ -52,17 +52,16 @@ if (docConnectSrc.endsWith('/api')) {
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ['\'self\'', 'https:'],
-    styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
+    styleSrc: ['\'self\'', '\'unsafe-inline\'', 'fonts.googleapis.com'],
     scriptSrc: [
-      '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
-      '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
+      '\'self\'', 'www.cdc.gov', 'cdc.gov', '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
     ],
     objectSrc: ['\'self\''],
     connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, 'www.google-analytics.com'],
     imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
     fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
   },
-  setAllHeaders: true
+  setAllHeaders: false
 }))
 app.use(helmet.noCache())
 
@@ -169,8 +168,11 @@ if (IS_HTTPS) {
       'HIGH',
       '!ECDHE-RSA-AES256-SHA',
       '!ECDHE-RSA-AES128-SHA',
+      '!AES128-SHA256', // vulnerable to ROBOT
+      '!AES256-SHA256', // vulnerable to ROBOT
       '!AES128-SHA',
       '!AES256-SHA',
+      '!AES256-GCM-SHA385',
       '!aNULL',
       '!eNULL',
       '!EXPORT',
