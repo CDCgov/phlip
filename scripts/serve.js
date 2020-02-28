@@ -166,13 +166,18 @@ if (IS_HTTPS) {
       'ECDHE-RSA-AES256-SHA256',
       'DHE-RSA-AES256-SHA256',
       'HIGH',
-      '!ECDHE-RSA-AES256-SHA',
-      '!ECDHE-RSA-AES128-SHA',
-      '!AES128-SHA256', // vulnerable to ROBOT
-      '!AES256-SHA256', // vulnerable to ROBOT
-      '!AES128-SHA',
-      '!AES256-SHA',
-      '!AES256-GCM-SHA385',
+      '!ECDHE-RSA-AES256-SHA', // not allowed
+      '!ECDHE-RSA-AES128-SHA', // not allowed
+      '!AES128-SHA', // not allowed, does not support PFS
+      '!AES256-SHA', // not allowed, does not support PFS
+      '!AES256-SHA256', // not allowed, does not support PFS
+      '!AES128-SHA256', // not allowed, does not support PFS
+      '!AES256-GCM-SHA384', // not allowed, does not support PFS
+      '!AES128-GCM-SHA256', // not allowed, does not support PFS
+      '!AES256-CCM8', // not allowed, does not support PFS
+      '!AES256-CCM', // not allowed, does not support PFS
+      '!AES128-CCM8', // not allowed, does not support PFS
+      '!AES128-CCM', // not allowed, does not support PFS
       '!aNULL',
       '!eNULL',
       '!EXPORT',
