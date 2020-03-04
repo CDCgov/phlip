@@ -14,3 +14,6 @@ stats.json
 .prettierrc
 *.png
 coverage-copy
+Fortifyesquire-*
+PHLIP-SCA.fpr
+scan-fortify-*

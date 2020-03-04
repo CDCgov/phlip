@@ -576,9 +576,9 @@ export class CodingValidation extends Component {
                   : (isSchemeEmpty || areJurisdictionsEmpty)
                     ? (
                       <FlexGrid container flex align="center" justify="center" padding={30}>
-                        <Typography
-                          variant="display1"
-                          style={{ marginBottom: '20px' }}>{gettingStartedText}</Typography>
+                        <Typography variant="display1" style={{ marginBottom: '20px', textAlign: 'center' }}>
+                          {gettingStartedText}
+                        </Typography>
                         {!projectLocked &&
                         <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
                           {(isSchemeEmpty && user.role !== 'Coder') &&

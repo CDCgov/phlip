@@ -29,31 +29,6 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
-if (IS_HTTPS) {
-  httpsOptions = {
-    key: fs.readFileSync(process.env.KEY_PATH),
-    cert: fs.readFileSync(process.env.CERT_PATH),
-    ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    requestCert: true,
-    rejectUnauthorized: false,
-    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
-  }
-  
-  /**
-   * Add additional certs to trust (like cdc certs)
-   * @type {string[]}
-   */
-  const trustedCa = [
-    '/etc/pki/tls/certs/ca-bundle.crt',
-    process.env.NODE_EXTRA_CA_CERTS
-  ]
-  
-  https.globalAgent.options.ca = []
-  for (const ca of trustedCa) {
-    https.globalAgent.options.ca.push(fs.readFileSync(ca))
-  }
-}
-
 app.use(compression())
 app.use(helmet())
 app.use(helmet.hsts({
@@ -77,22 +52,20 @@ if (docConnectSrc.endsWith('/api')) {
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ['\'self\'', 'https:'],
-    styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
+    styleSrc: ['\'self\'', '\'unsafe-inline\'', 'fonts.googleapis.com'],
     scriptSrc: [
-      '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
-      '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
+      '\'self\'', 'www.cdc.gov', 'cdc.gov', '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
     ],
     objectSrc: ['\'self\''],
     connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, 'www.google-analytics.com'],
     imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
     fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
   },
-  setAllHeaders: true
+  setAllHeaders: false
 }))
 app.use(helmet.noCache())
 
 // Proxy all requests to /api to the backend API URL
-
 app.use('/api', proxy({
   target: APP_API_URL,
   ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
@@ -157,14 +130,64 @@ app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
 
 if (IS_HTTPS) {
+  /**
+   * Add additional certs to trust (like cdc certs)
+   * @type {string[]}
+   */
+  const trustedCa = [
+    '/etc/pki/tls/certs/ca-bundle.crt',
+    process.env.NODE_EXTRA_CA_CERTS
+  ]
+  
+  https.globalAgent.options.ca = []
+  for (const ca of trustedCa) {
+    https.globalAgent.options.ca.push(fs.readFileSync(ca))
+  }
+
   const httpsHost = APP_HOST
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    requestCert: true,
-    rejectUnauthorized: false,
-    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
+    ciphers: [
+      'TLS_AES_256_GCM_SHA384',
+      'TLS_CHACHA20_POLY1305_SHA256',
+      'TLS_AES_128_GCM_SHA256',
+      'ECDHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-ECDSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'ECDHE-ECDSA-AES256-GCM-SHA384',
+      'DHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES128-SHA256',
+      'DHE-RSA-AES128-SHA256',
+      'ECDHE-RSA-AES256-SHA384',
+      'DHE-RSA-AES256-SHA384',
+      'ECDHE-RSA-AES256-SHA256',
+      'DHE-RSA-AES256-SHA256',
+      'HIGH',
+      '!ECDHE-RSA-AES256-SHA', // not allowed
+      '!ECDHE-RSA-AES128-SHA', // not allowed
+      '!AES128-SHA', // not allowed, does not support PFS
+      '!AES256-SHA', // not allowed, does not support PFS
+      '!AES256-SHA256', // not allowed, does not support PFS
+      '!AES128-SHA256', // not allowed, does not support PFS
+      '!AES256-GCM-SHA384', // not allowed, does not support PFS
+      '!AES128-GCM-SHA256', // not allowed, does not support PFS
+      '!AES256-CCM8', // not allowed, does not support PFS
+      '!AES256-CCM', // not allowed, does not support PFS
+      '!AES128-CCM8', // not allowed, does not support PFS
+      '!AES128-CCM', // not allowed, does not support PFS
+      '!aNULL',
+      '!eNULL',
+      '!EXPORT',
+      '!DES',
+      '!RC4',
+      '!MD5',
+      '!PSK',
+      '!SRP',
+      '!CAMELLIA'
+    ].join(':')
   }
   
   // Start and HTTPS server
