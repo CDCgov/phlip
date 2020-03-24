@@ -30,7 +30,7 @@ describe('Admin Logic', () => {
   test('should get user list and dispatch GET_USERS_SUCCESS when successful', done => {
     mock.onGet('/users').reply(200, [
       { id: 1, firstName: 'Test' },
-      { id: 2, firstName: 'Michael' }
+      { id: 2, firstName: 'Tester' }
     ])
 
     const store = setupStore()
@@ -41,7 +41,7 @@ describe('Admin Logic', () => {
         { type: types.GET_USERS_REQUEST },
         {
           type: types.GET_USERS_SUCCESS,
-          payload: [{ id: 1, firstName: 'Test' }, { id: 2, firstName: 'Michael' }]
+          payload: [{ id: 1, firstName: 'Test' }, { id: 2, firstName: 'Tester' }]
         }
       ])
       done()

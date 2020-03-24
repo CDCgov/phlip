@@ -6,7 +6,7 @@ const props = {
   document: {
     content: {},
     name: 'Test file',
-    uploadedByName: 'Trung',
+    uploadedByName: 'Tester',
     projects: [1, 2],
     jurisdictions: [25332, 2932],
     uploadedDate: new Date('2/11/2019')

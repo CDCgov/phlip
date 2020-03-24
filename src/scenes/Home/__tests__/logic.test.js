@@ -174,9 +174,9 @@ describe('Home logic', () => {
           store.dispatch(action)
         })
         
-        test('should set visible projects to [4, 5, 1, 2, 3]', done => {
+        test('should set visible projects to [2, 1, 4, 3, 5]', done => {
           store.whenComplete(() => {
-            expect(store.actions[0].payload.projects.visible).toEqual([4, 5, 1, 2, 3])
+            expect(store.actions[0].payload.projects.visible).toEqual([2, 1, 4, 3, 5])
             done()
           })
         })
@@ -204,9 +204,9 @@ describe('Home logic', () => {
           store.dispatch(action)
         })
         
-        test('should set visible projects to [3, 2, 1, 5, 4]', done => {
+        test('should set visible projects to [5, 3, 4, 1, 2]', done => {
           store.whenComplete(() => {
-            expect(store.actions[0].payload.projects.visible).toEqual([3, 2, 1, 5, 4])
+            expect(store.actions[0].payload.projects.visible).toEqual([5, 3, 4, 1, 2])
             done()
           })
         })
@@ -374,7 +374,7 @@ describe('Home logic', () => {
         let store
         beforeEach(() => {
           store = setupStore({}, true)
-          const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'Led' } }
+          const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: '33' } }
           store.dispatch(action)
         })
         
@@ -401,7 +401,7 @@ describe('Home logic', () => {
         
         test('should update searchValue to action.payload.searchValue', done => {
           store.whenComplete(() => {
-            expect(store.actions[0].payload.searchValue).toEqual('Led')
+            expect(store.actions[0].payload.searchValue).toEqual('33')
             done()
           })
         })
@@ -450,7 +450,7 @@ describe('Home logic', () => {
           store = setupStore(
             {},
             true,
-            { projects: { visible: [4], matches: [4] }, searchValue: 'Led', projectCount: 1 }
+            { projects: { visible: [4], matches: [4] }, searchValue: '33', projectCount: 1 }
           )
           const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: '' } }
           store.dispatch(action)

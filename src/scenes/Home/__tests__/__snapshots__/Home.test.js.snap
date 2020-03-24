@@ -116,10 +116,10 @@ exports[`Home scene should render correctly 1`] = `
     rowsPerPage="10"
     user={
       Object {
-        "email": "kmuterspaw@cdc.gov",
-        "firstName": "Kristin",
+        "email": "tester@test.com",
+        "firstName": "Test",
         "id": 2,
-        "lastName": "Muterspaw",
+        "lastName": "User",
         "password": "test",
         "role": "Coordinator",
       }

@@ -66,10 +66,8 @@ export const docView = () => {
       // // wait for excel file
       // await page.waitForSelector('form:nth-child(3) > div > div > input[type="file"]')
       // const excelEle = await page.$('form:nth-child(3) > div > div > input[type="file"]')
-      // const files = ['/Users/trungnguyen/Downloads/demo/OAC 3701-52-04 eff. 5-3-07.pdf'];
       // await fileEle.uploadFile(...files)
       // await page.waitFor(3000)
-      // await excelEle.uploadFile('/Users/trungnguyen/Downloads/demo/demo.xlsx')
       // await page.waitFor(3000)
       // await page.waitForSelector('#project-name')
       // await page.click('#project-name')

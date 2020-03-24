@@ -18,9 +18,9 @@ const props = {
   },
   user: {
     id: 2,
-    firstName: 'Kristin',
-    lastName: 'Muterspaw',
-    email: 'kmuterspaw@cdc.gov',
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'tester@test.com',
     password: 'test',
     role: 'Coordinator'
   },

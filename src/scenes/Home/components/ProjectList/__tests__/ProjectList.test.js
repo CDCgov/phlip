@@ -9,9 +9,9 @@ const props = {
   projectCount: 2,
   user: {
     id: 2,
-    firstName: 'Kristin',
-    lastName: 'Muterspaw',
-    email: 'kmusterspaw@cdc.gov',
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'tester@test.com',
     password: 'test',
     role: 'Coordinator'
   },

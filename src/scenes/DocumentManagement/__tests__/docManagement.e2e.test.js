@@ -13,7 +13,6 @@
 //   return process.env.NODE_ENV === "debug" ? debugging_mode : false;
 // };
 const filepath = '/home/gitlab-runner/sample-data-phlip'
-//const filepath = '/Users/kristinmuterspaw/Downloads/demo'
 const jasmineTimeout = 600000
 // const admin = {
 //   email: 'admin@cdc.gov'
