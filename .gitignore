@@ -17,3 +17,4 @@ coverage-copy
 Fortifyesquire-*
 PHLIP-SCA.fpr
 scan-fortify-*
+.env.docker
