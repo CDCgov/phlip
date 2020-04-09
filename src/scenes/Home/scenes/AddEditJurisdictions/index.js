@@ -9,7 +9,7 @@ import actions from './actions'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import {
-  FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button, withProjectLocked
+  FlexGrid, ApiErrorView, ApiErrorAlert, PageLoader, Alert, Button, withProjectLocked
 } from 'components'
 import theme from 'services/theme'
 
@@ -306,4 +306,4 @@ const mapDispatchToProps = dispatch => ({
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(withProjectLocked(withTracking(AddEditJurisdictions, 'Jurisdictions'))))
+)(withProjectLocked(AddEditJurisdictions)))

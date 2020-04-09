@@ -10,7 +10,7 @@ import DocumentList from './components/DocumentList'
 import BulkValidate from './components/BulkValidate'
 import actions from './actions'
 import {
-  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid, withProjectLocked
+  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, FlexGrid, withProjectLocked
 } from 'components'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import Resizable from 're-resizable'
@@ -697,4 +697,4 @@ const mapStateToProps = (state, ownProps) => {
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
-export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(withTracking(CodingValidation)))
+export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(CodingValidation))

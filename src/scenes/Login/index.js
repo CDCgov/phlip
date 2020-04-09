@@ -13,7 +13,7 @@ import DevLoginForm from './components/DevLoginForm'
 import ProdLoginForm from './components/ProdLoginForm'
 import moment from 'moment'
 import theme from 'services/theme'
-import { FlexGrid, Logo, withTracking } from 'components'
+import { FlexGrid, Logo } from 'components'
 
 /**
  * Login screen component. Renders the login form.
@@ -182,4 +182,4 @@ const mapStateToProps = state => ({
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)((withTracking(Login, 'Login'))))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

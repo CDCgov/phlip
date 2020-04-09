@@ -1,5 +1,7 @@
 # PHLIP Frontend
-Frontend for the Public Health Law Progam project.
+This repository holds the code for the UI the PHLIP project. There are other repositories that make up this project, they can be found here:
+- Projects Backend API - [phlip-backend](https://github.com/CDCgov/phlip-backend)
+- Document Management API - [phlip-doc-management](https://github.com/CDCgov/phlip-doc-management)
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine.
@@ -30,7 +32,7 @@ $ cp .env.template .env
 ```
 
 ### Running the application
-Use the command below to run the application in development mode. The application will start on http://localhost:5200.
+Use the command below to run the application in development mode. The application will start on http://localhost:5200. You can use the default user tester1@test.gov to log in.
 ```bash
 $ npm run start
 ```

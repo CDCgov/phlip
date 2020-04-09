@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import UserList from './components/UserList/index'
-import { FlexGrid, PageHeader, withTracking, CardError } from 'components'
+import { FlexGrid, PageHeader, CardError } from 'components'
 import actions from './actions'
 import { bindActionCreators } from 'redux'
 
@@ -92,4 +92,4 @@ const mapStateToProps = (state) => ({
 /* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management'))
+export default connect(mapStateToProps, mapDispatchToProps)(Admin, 'User Management')

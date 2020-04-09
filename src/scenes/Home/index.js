@@ -7,7 +7,6 @@ import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import actions from './actions'
 import ExportDialog from './components/ExportDialog'
-import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
 import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
 
@@ -332,4 +331,4 @@ const mapStateToProps = state => ({
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home'))
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

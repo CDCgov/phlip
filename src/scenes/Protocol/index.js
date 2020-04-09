@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import actions from './actions'
 import Typography from '@material-ui/core/Typography'
-import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert, withProjectLocked } from 'components'
+import { FlexGrid, Icon, Alert, PageHeader, CardError, ApiErrorAlert, withProjectLocked } from 'components'
 
 /* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
@@ -348,4 +348,4 @@ const mapStateToProps = (state, ownProps) => ({
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(withTracking(Protocol, 'Protocol')))
+export default connect(mapStateToProps, mapDispatchToProps)(withProjectLocked(Protocol))

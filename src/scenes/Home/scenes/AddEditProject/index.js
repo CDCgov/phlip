@@ -11,7 +11,6 @@ import {
   TextInput,
   Dropdown,
   withFormAlert,
-  withTracking,
   CircularLoader,
   Button,
   Alert,
@@ -621,8 +620,6 @@ const mapDispatchToProps = dispatch => ({
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(
-    withFormAlert(
-      withTracking(AddEditProject, 'Project Form')
-    )
+    withFormAlert(AddEditProject)
   )
 )

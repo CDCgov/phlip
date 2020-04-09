@@ -13,7 +13,6 @@ import {
   FlexGrid,
   Icon,
   Alert,
-  withTracking,
   PageHeader,
   Button,
   withProjectLocked,
@@ -553,8 +552,6 @@ const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, d
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withAutocompleteMethods('project', 'scheme')(
-    withProjectLocked(
-      withTracking(CodingScheme, 'Coding Scheme')
-    )
+    withProjectLocked(CodingScheme)
   )
 )
