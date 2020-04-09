@@ -5,7 +5,7 @@ const user = {
   lastName: 'User',
   role: 'Admin',
   avatar: '',
-  email: 'test@cdc.gov'
+  email: 'test@test.test'
 }
 
 describe('Admin - AddEditUser action creators', () => {

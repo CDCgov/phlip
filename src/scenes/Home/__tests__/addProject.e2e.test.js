@@ -1,4 +1,4 @@
-const admin = { email: 'admin@cdc.gov' }
+const admin = { email: 'test@test.test' }
 const email_selector = '#email'
 const host = 'http://localhost:5200'
 //const errorMsg = 'body > div > div > form > div > div > div:nth-child(1) > div > p'

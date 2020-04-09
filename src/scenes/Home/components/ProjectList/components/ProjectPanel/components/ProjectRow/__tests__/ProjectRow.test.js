@@ -5,7 +5,7 @@ import { shallow } from 'enzyme'
 const props = {
   project: {
     createdBy: 'Admin',
-    createdByEmail: 'admin@cdc.gov',
+    createdByEmail: 'test@test.test',
     createdById: 1,
     dateCreated: '2019-04-08T11:43:46.3034169',
     dateLastEdited: '2019-04-18T13:27:51.454041',

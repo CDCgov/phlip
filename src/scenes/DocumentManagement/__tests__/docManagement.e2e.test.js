@@ -1,32 +1,11 @@
-//const puppeteer = require('puppeteer')
-//import { isDebugging } from "./src/testingInit"
-
-// const isDebugging = () => {
-//   // let debugging_mode = {
-//   //   puppeteer: {
-//   //     headless: true,
-//   //     slowMo: 80,
-//   //     args: [`--window-size=1920,1080`]
-//   //   },
-//   //  jasmine: 60000
-//   };
-//   return process.env.NODE_ENV === "debug" ? debugging_mode : false;
-// };
-const filepath = '/home/gitlab-runner/sample-data-phlip'
+const filepath = ''
 const jasmineTimeout = 600000
-// const admin = {
-//   email: 'admin@cdc.gov'
-// }
-//const email_selector = '#email'
-//const login_button_selector = '#root > form > button'
 const host = 'http://localhost:5200'
 const uploadNewButton = '#uploadNewBtn'
 const uploadGoButton = '#uploadFilesBtn'
 const uploadAlertMessage = '#uploadAlert > div> div:nth-child(1) > div > div > h2 > div'
 const uploadAlertCloseButton = '#uploadAlert > div > div > button'
 const documentManagementBtn = '#root > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
-//const uploadCloseButton = '#uploadCloseBtn'
-//const uploadCloseConfirm = '#uploadCloseContBtn'
 const documentTable = '#documentTable'
 const bulkDropdown = '#action > div'
 const bulkDelete = '#menu- > div > ul > li:nth-child(2)'
@@ -45,20 +24,9 @@ const testProject2 = 'Delete'
 const testProject3 = 'firstDoc'
 const testJurisdiction = 'Yauco Municipio, Puerto Rico'
 const testJurisdiction2 = 'Hapeville, Fulton County, Georgia (city)'
-//const uploadFileList = '#uploadFileList > div'
 
 let data = null
-// let fileList = []
-// let page
-// let browser
 
-// beforeAll(async () => {
-//   browser = await puppeteer.launch(
-//     // isDebugging().puppeteer
-//     { headless: false }
-//   )
-//   page = await browser.newPage()
-// })
 export const docManage = () => {
   describe('doc management', () => {
     test('check upload with excel', async () => {
@@ -107,14 +75,6 @@ export const docManage = () => {
           })
           allText.push(textList.join('|'))
         })
-        // fileList.forEach(function (row) {
-        //   const cells = row.childNodes
-        //   let textList = [];
-        //   [...cells].forEach(function (cell) {
-        //     textList.push(cell.textContent)
-        //   })
-        //   allText.push(textList.join('|'))
-        // })
         return allText.join('^')
       })
       try {
@@ -123,10 +83,6 @@ export const docManage = () => {
         await page.waitForSelector(uploadGoButton)
         await page.click(uploadGoButton)
         await page.waitFor(60000)
-        // await page.waitForSelector(uploadCloseButton)
-        // await page.click(uploadCloseButton)
-        // await page.waitForSelector(uploadCloseConfirm)
-        // await page.click(uploadCloseConfirm)
         await page.screenshot({ path:'exceluploadsuccess.png' })
       } catch (e) {
         console.log(e)
@@ -186,7 +142,6 @@ export const docManage = () => {
       console.log('check duplicate upload started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/home`)
       await page.waitFor(1000)
-      // await page.waitForNavigation()
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
       await page.click(documentManagementBtn)

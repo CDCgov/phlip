@@ -44,7 +44,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
         project={
           Object {
             "createdBy": "Admin",
-            "createdByEmail": "admin@cdc.gov",
+            "createdByEmail": "test@test.test",
             "createdById": 1,
             "dateCreated": "2019-04-08T11:43:46.3034169",
             "dateLastEdited": "2019-04-18T13:27:51.454041",
@@ -255,7 +255,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                       "state": Object {
                         "project": Object {
                           "createdBy": "Admin",
-                          "createdByEmail": "admin@cdc.gov",
+                          "createdByEmail": "test@test.test",
                           "createdById": 1,
                           "dateCreated": "2019-04-08T11:43:46.3034169",
                           "dateLastEdited": "2019-04-18T13:27:51.454041",
@@ -825,7 +825,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                       "state": Object {
                         "project": Object {
                           "createdBy": "Admin",
-                          "createdByEmail": "admin@cdc.gov",
+                          "createdByEmail": "test@test.test",
                           "createdById": 1,
                           "dateCreated": "2019-04-08T11:43:46.3034169",
                           "dateLastEdited": "2019-04-18T13:27:51.454041",

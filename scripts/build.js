@@ -3,7 +3,6 @@
  */
 const chalk = require('chalk')
 const webpack = require('webpack')
-const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
 const dotenv = require('dotenv')
 const fs = require('fs')
@@ -19,9 +18,6 @@ console.log(chalk.cyan(
 If you want to serve these files on a web server, then run yarn serve after the build has finished.`))
 
 console.log(chalk.cyan('Webpack is bundling files...'))
-//let spinner = new Spinner(chalk.cyan('%s Webpack is bundling the files...'))
-//spinner.setSpinnerString(18)
-//spinner.start()
 
 // Compile the webpack bundle
 const compiler = webpack(webpackProdConfig)
