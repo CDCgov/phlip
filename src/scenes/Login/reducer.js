@@ -1,7 +1,7 @@
 import { types } from './actions'
 
 const INITIAL_STATE = {
-  session: !!sessionStorage.esquire_token,
+  session: !!sessionStorage.phlip_token,
   pivError: null,
   formMessage: null,
   backendInfo: {
@@ -24,7 +24,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.CHECK_PIV_USER_SUCCESS:
       return {
         ...state,
-        session: !!sessionStorage.esquire_token,
+        session: !!sessionStorage.phlip_token,
         formMessage: null
       }
     

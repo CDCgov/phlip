@@ -1,7 +1,7 @@
 import memoize from 'lodash/memoize'
 import jwtDecode from 'jwt-decode'
 
-const TOKEN_KEY = 'esquire_token'
+const TOKEN_KEY = 'phlip_token'
 const SAML_KEY = 'saml_token'
 
 const getItem = key => () => window.sessionStorage.getItem(key)
