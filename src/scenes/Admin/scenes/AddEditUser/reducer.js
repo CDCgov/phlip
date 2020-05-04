@@ -60,7 +60,8 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
     case types.DELETE_USER_IMAGE_REQUEST:
       return {
         ...state,
-        submitting: true
+        submitting: true,
+        goBack: false
       }
       
     case types.ON_CLOSE_ADD_EDIT_USER:

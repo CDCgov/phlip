@@ -36,6 +36,7 @@ export class AvatarForm extends Component {
     if (location.state.userId === currentUser.id) {
       actions.updateCurrentUser({ ...currentUser, avatar: base64Image })
     }
+    
     history.goBack()
   }
   
@@ -47,6 +48,7 @@ export class AvatarForm extends Component {
     if (location.state.userId === currentUser.id) {
       actions.updateCurrentUser({ ...currentUser, avatar: '' })
     }
+    
     history.goBack()
   }
   

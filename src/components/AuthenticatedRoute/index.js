@@ -13,7 +13,6 @@ const coderPaths = [
   '/home',
   '/project/:id/protocol',
   '/project/:id/code',
-  '/project/edit/:id',
   '/docs',
   '/docs/:id/view',
   '/user/profile',
@@ -21,7 +20,12 @@ const coderPaths = [
 ]
 
 const coordinatorPaths = [
-  ...coderPaths, '/project/add', '/project/:id/jurisdictions', '/project/:id/coding-scheme', '/project/:id/validate'
+  ...coderPaths,
+  '/project/add',
+  '/project/:id/jurisdictions',
+  '/project/:id/coding-scheme',
+  '/project/:id/validate',
+  '/project/edit/:id'
 ]
 
 const adminPaths = [...coderPaths, ...coordinatorPaths, '/admin']

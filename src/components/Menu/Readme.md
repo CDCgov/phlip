@@ -1,5 +1,6 @@
 #### Basic Menu example
 ```jsx
+import Button from '../Button';
 initialState = { open: false, anchorEl: null };
 
 <div>

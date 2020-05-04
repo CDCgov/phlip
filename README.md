@@ -9,10 +9,10 @@ development and testing purposes.
 Below are a list of items that are required and optional for the development environment. Each item is linked to a page about installing it. Really, you only need Docker, the Node/Yarn/NPM are if you want to run the commands from the package.json file. You're welcome to just look at the package.json file and run the Docker commands instead. All of the code running is done in a Docker container, so the Node and NPM are taken care of there.
  
 * [Docker](https://docs.docker.com/engine/installation/ "Installing Docker")- latest stable version
-* [Node.js](https://nodejs.org/en/download/current/ "Installing Node")- v8.4.0 
+* [Node.js](https://nodejs.org/en/download/current/ "Installing Node")- v12.14.1
   (or, via [package manager](https://nodejs.org/en/download/package-manager/ "Installing Node via Package Manager"))
-* NPM - v5.4.1 (installs when Node.js is installed)
-* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- v1.0.1, if you choose to use it instead of npm
+* NPM - (latest that installs when Node.js is installed)
+* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- latest version
 
 ### Getting the code
 ```

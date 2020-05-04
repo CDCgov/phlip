@@ -1,7 +1,7 @@
 #### CircleIcon example
 
 ```jsx
-const Reddit = require('mdi-material-ui').Reddit;
+const Reddit = require('mdi-material-ui').Reddit
 
-<CircleIcon><Reddit /></CircleIcon>
+;<CircleIcon><Reddit /></CircleIcon>
 ```

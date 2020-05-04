@@ -34,7 +34,7 @@ import AvatarForm from './components/AvatarForm'
 export class AddEditUser extends Component {
   static propTypes = {
     /**
-     * redux-form objet
+     * redux-form object
      */
     form: PropTypes.object,
     /**

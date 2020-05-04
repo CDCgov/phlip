@@ -5,6 +5,7 @@ import { withTheme } from '@material-ui/core/styles'
 
 /**
  * Basic button based on @material-ui/core
+ * @component
  */
 export class Button extends React.Component {
   static propTypes = {
