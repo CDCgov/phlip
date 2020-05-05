@@ -22,8 +22,8 @@ lint:
       - node_modules/
     expire_in: 1 week
   environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+    name: Internal Node Gitlab Runner
+    url: http://lisglrun1.lab.local
 
 test:
   stage: unit test
@@ -38,8 +38,8 @@ test:
   dependencies:
     - lint
   environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+    name: Internal Node Gitlab Runner
+    url: http://lisglrun1.lab.local
 
 build and deploy on staging:
   stage: staging
@@ -77,8 +77,8 @@ build and deploy on staging:
       - node_modules/
     expire_in: 1 hour
   environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+    name: Internal Node Gitlab Runner
+    url: http://lisglrun1.lab.local
 
 run e2e tests staging:
   stage: e2e test
@@ -91,8 +91,8 @@ run e2e tests staging:
   dependencies:
     - build and deploy on staging
   environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+    name: Internal Node Gitlab Runner
+    url: http://lisglrun1.lab.local
 
 build dev azure:
   stage: build
@@ -158,6 +158,7 @@ build test azure:
   environment:
     name: Azure PHLIP Test
     url: https://phliptest.phiresearchlab.org
+  dependencies: []
 
 deploy test azure:
   stage: deploy
