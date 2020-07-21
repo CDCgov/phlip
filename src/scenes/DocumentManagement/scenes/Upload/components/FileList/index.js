@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest'
 import Grid from 'components/Grid'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { withStyles } from '@material-ui/core/styles'
+import moment from 'moment'
 
 /* istanbul ignore next */
 const styles = () => ({
@@ -101,8 +102,16 @@ export class FileList extends Component {
    * @param value
    */
   onDocPropertyChange = (index, propName, value) => {
+    let property = propName, val = value
+    if (propName === 'effectiveDateText') {
+      property = 'effectiveDate'
+      if (moment(value).isValid()) {
+        val = moment(value)
+      }
+    }
+
     const { handleDocPropertyChange } = this.props
-    handleDocPropertyChange(index, propName, value)
+    handleDocPropertyChange(index, property, val)
   }
   
   /**
@@ -275,7 +284,7 @@ export class FileList extends Component {
                           name="effectiveDate"
                           dateFormat="MM/DD/YYYY"
                           onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                          onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                          onInputChange={e => this.onDocPropertyChange(i, 'effectiveDateText', e.target.value)}
                           value={doc.effectiveDate.value}
                           autoOk={true}
                           InputAdornmentProps={{ style: { marginLeft: 0 } }}
@@ -288,7 +297,7 @@ export class FileList extends Component {
                         create
                       </IconButton>
                     )
-                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
+                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value)}</div>
                 }
                 {doc.citation.editable
                   ? doc.citation.inEditMode

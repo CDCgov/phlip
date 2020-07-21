@@ -10,6 +10,7 @@ import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader, ApiErrorAlert,
 import { FormatQuoteClose } from 'mdi-material-ui'
 import AnnotationFinder from './components/AnnotationFinder'
 import moment from 'moment'
+import { convertToLocalDate } from 'utils/normalize'
 
 export class DocumentList extends Component {
   static propTypes = {
@@ -459,6 +460,7 @@ export class DocumentList extends Component {
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
+            
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding="10px 15px">
@@ -478,7 +480,7 @@ export class DocumentList extends Component {
                             fontSize: `0.8rem`,
                             color: '#7b7b7b'
                           }}>
-                          {doc.effectiveDate && `(${moment.utc(doc.effectiveDate).local().format('M/D/YYYY')})`}
+                          {doc.effectiveDate && `(${convertToLocalDate(doc.effectiveDate)})`}
                         </span>
                       </span>
                     </Typography>
