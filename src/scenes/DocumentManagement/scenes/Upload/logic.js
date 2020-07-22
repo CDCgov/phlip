@@ -3,6 +3,7 @@ import { types } from './actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 import { removeExtension } from 'utils/commonHelpers'
+import moment from 'moment'
 
 const stateLookup = {
   'AL': 'Alabama',
@@ -96,12 +97,21 @@ const upload = (docApi, action, dispatch, state, user) => {
   return new Promise(async (resolve, reject) => {
     for (const [index, doc] of action.selectedDocs.entries()) {
       const { file, ...otherProps } = doc
+      const metadata = {
+        ...otherProps,
+        effectiveDate: doc.effectiveDate 
+          ? doc.effectiveDate instanceof moment
+            ? doc.effectiveDate.utc().format()
+            : moment(doc.effectiveDate).utc().format()
+          : ''
+      }
+
       const formData = new FormData()
       formData.append('userId', user.id)
       formData.append('userFirstName', user.firstName)
       formData.append('userLastName', user.lastName)
       formData.append('files', file, doc.name)
-      formData.append('metadata', JSON.stringify({ [doc.name]: otherProps }))
+      formData.append('metadata', JSON.stringify({ [doc.name]: metadata }))
       
       let docProps = {}, uploadFail = false
       
@@ -170,7 +180,13 @@ export const mergeInfoWithDocs = (info, docs, api) => {
             ...d[key],
             editable: docInfo[key] === null,
             inEditMode: false,
-            value: docInfo[key] === null ? valueDefaults[key] : docInfo[key],
+            value: docInfo[key] === null 
+              ? valueDefaults[key] 
+              : key === 'effectiveDate' 
+                ? docInfo[key].includes('T')
+                  ? docInfo[key].split('T')[0] 
+                  : docInfo[key]
+                : docInfo[key],
             error: '',
             fromMetaFile: docInfo[key] !== null
           }

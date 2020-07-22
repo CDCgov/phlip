@@ -4,6 +4,7 @@ import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 import { types as codingTypes } from 'scenes/CodingValidation/components/DocumentList/actions'
 import { types as docManageTypes } from 'scenes/DocumentManagement/actions'
+import moment from 'moment'
 
 /**
  * Retrieves the actual document contents
@@ -63,8 +64,10 @@ const updateDocLogic = createLogic({
       } else {
         updatedDoc = await docApi.updateDoc({
           status: selectedDoc.status,
-          effectiveDate: selectedDoc.effectiveDate !== undefined
-            ? selectedDoc.effectiveDate
+          effectiveDate: selectedDoc.effectiveDate
+            ? selectedDoc.effectiveDate instanceof moment
+              ? selectedDoc.effectiveDate.utc().format()
+              : moment(selectedDoc.effectiveDate).utc().format()
             : '',
           citation: selectedDoc.citation
         }, {}, { docId: selectedDoc._id })

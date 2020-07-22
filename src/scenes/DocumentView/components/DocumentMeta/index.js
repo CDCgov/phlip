@@ -20,6 +20,7 @@ import {
   ApiErrorAlert,
   withAutocompleteMethods
 } from 'components'
+import moment from 'moment'
 
 export class DocumentMeta extends Component {
   static propTypes = {
@@ -134,7 +135,15 @@ export class DocumentMeta extends Component {
    * @param value
    */
   handleDocPropertyChange = (propName, value) => {
-    this.props.actions.updateDocumentProperty(propName, value)
+    let property = propName, val = value
+    if (propName === 'effectiveDateText') {
+      property = 'effectiveDate'
+      if (moment(value).isValid()) {
+        val = moment(value)
+      }
+    }
+
+    this.props.actions.updateDocumentProperty(property, val)
   }
   
   /**
@@ -433,8 +442,16 @@ export class DocumentMeta extends Component {
                 ? (<DatePicker
                   name="effectiveDate"
                   dateFormat="MM/DD/YYYY"
-                  onChange={date => this.handleDocPropertyChange('effectiveDate', date.toISOString())}
-                  value={document.effectiveDate}
+                  onChange={date => this.handleDocPropertyChange('effectiveDate', date)}
+                  onInputChange={e => this.handleDocPropertyChange('effectiveDateText', e.target.value)}
+                  value={document.effectiveDate 
+                    ? document.effectiveDate instanceof moment 
+                      ? document.effectiveDate 
+                      : document.effectiveDate.includes('T')
+                        ? moment(document.effectiveDate.split('T')[0])
+                        : document.effectiveDate
+                    : ''
+                  }
                   autoOk={true}
                   InputAdornmentProps={{
                     disableTypography: true,
@@ -455,7 +472,10 @@ export class DocumentMeta extends Component {
                   <Typography>
                     {!document.effectiveDate
                       ? ''
-                      : convertToLocalDate(document.effectiveDate.split('T')[0])}
+                      : document.effectiveDate instanceof moment 
+                        ? document.effectiveDate.utc().format('M/DD/YYYY') 
+                        : convertToLocalDate(document.effectiveDate)
+                    }
                   </Typography>
                 )}
             </FlexGrid>

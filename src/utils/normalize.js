@@ -88,7 +88,7 @@ export const convertToLocalDateTime = dateTime => {
  * @returns {string}
  */
 export const convertToLocalDate = date => {
-  return moment(date).format('M/D/YYYY')
+  return moment(date).utc().format('M/D/YYYY')
 }
 
 /**

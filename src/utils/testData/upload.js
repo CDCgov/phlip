@@ -223,7 +223,7 @@ export const fullMerged = [
     },
     effectiveDate: {
       editable: false,
-      value: '2012-12-12T00:00:00.000Z',
+      value: '2012-12-12',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -255,7 +255,7 @@ export const fullMerged = [
     },
     effectiveDate: {
       editable: false,
-      value: '2002-04-10T00:00:00.000Z',
+      value: '2002-04-10',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -287,7 +287,7 @@ export const fullMerged = [
     },
     effectiveDate: {
       editable: false,
-      value: '2002-10-01T00:00:00.000Z',
+      value: '2002-10-01',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -319,7 +319,7 @@ export const fullMerged = [
     },
     effectiveDate: {
       editable: false,
-      value: '2015-04-11T00:00:00.000Z',
+      value: '2015-04-11',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -389,7 +389,7 @@ export const mergedWithMissing = [
     },
     effectiveDate: {
       editable: false,
-      value: '2012-12-12T00:00:00.000Z',
+      value: '2012-12-12',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -453,7 +453,7 @@ export const mergedWithMissing = [
     },
     effectiveDate: {
       editable: false,
-      value: '2002-10-01T00:00:00.000Z',
+      value: '2002-10-01',
       error: '',
       inEditMode: false,
       fromMetaFile: true
@@ -484,7 +484,7 @@ export const mergedWithMissing = [
     },
     effectiveDate: {
       editable: false,
-      value: '2015-04-11T00:00:00.000Z',
+      value: '2015-04-11',
       error: '',
       inEditMode: false,
       fromMetaFile: true
