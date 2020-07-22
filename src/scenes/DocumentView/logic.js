@@ -64,7 +64,7 @@ const updateDocLogic = createLogic({
       } else {
         updatedDoc = await docApi.updateDoc({
           status: selectedDoc.status,
-          effectiveDate: selectedDoc.effectiveDate !== undefined
+          effectiveDate: selectedDoc.effectiveDate
             ? selectedDoc.effectiveDate instanceof moment
               ? selectedDoc.effectiveDate.utc().format()
               : moment(selectedDoc.effectiveDate).utc().format()

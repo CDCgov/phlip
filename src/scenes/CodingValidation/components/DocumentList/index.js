@@ -9,7 +9,6 @@ import theme from 'services/theme'
 import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader, ApiErrorAlert, IconButton } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 import AnnotationFinder from './components/AnnotationFinder'
-import moment from 'moment'
 import { convertToLocalDate } from 'utils/normalize'
 
 export class DocumentList extends Component {

@@ -99,7 +99,7 @@ const upload = (docApi, action, dispatch, state, user) => {
       const { file, ...otherProps } = doc
       const metadata = {
         ...otherProps,
-        effectiveDate: doc.effectiveDate !== '' 
+        effectiveDate: doc.effectiveDate 
           ? doc.effectiveDate instanceof moment
             ? doc.effectiveDate.utc().format()
             : moment(doc.effectiveDate).utc().format()
@@ -180,7 +180,13 @@ export const mergeInfoWithDocs = (info, docs, api) => {
             ...d[key],
             editable: docInfo[key] === null,
             inEditMode: false,
-            value: docInfo[key] === null ? valueDefaults[key] : key === 'effectiveDate' ? docInfo[key].split('T')[0] : docInfo[key],
+            value: docInfo[key] === null 
+              ? valueDefaults[key] 
+              : key === 'effectiveDate' 
+                ? docInfo[key].includes('T')
+                  ? docInfo[key].split('T')[0] 
+                  : docInfo[key]
+                : docInfo[key],
             error: '',
             fromMetaFile: docInfo[key] !== null
           }

@@ -444,7 +444,14 @@ export class DocumentMeta extends Component {
                   dateFormat="MM/DD/YYYY"
                   onChange={date => this.handleDocPropertyChange('effectiveDate', date)}
                   onInputChange={e => this.handleDocPropertyChange('effectiveDateText', e.target.value)}
-                  value={document.effectiveDate}
+                  value={document.effectiveDate 
+                    ? document.effectiveDate instanceof moment 
+                      ? document.effectiveDate 
+                      : document.effectiveDate.includes('T')
+                        ? moment(document.effectiveDate.split('T')[0])
+                        : document.effectiveDate
+                    : ''
+                  }
                   autoOk={true}
                   InputAdornmentProps={{
                     disableTypography: true,
