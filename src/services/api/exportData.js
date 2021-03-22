@@ -11,7 +11,7 @@ export const exportLargeData = async (projectId, params, fileName) => {
 		"Authorization": `Bearer ${bearer}`
 	})
 	const fileStream = streamsaver.createWriteStream(fileName);
-	fetch(url, { headers })
+	return fetch(url, { headers })
 		.then(res => {
 			const readableStream = res.body
 			if (window.WritableStream && readableStream.pipeTo) {
@@ -20,13 +20,14 @@ export const exportLargeData = async (projectId, params, fileName) => {
 					.then(() => console.log('done writing'))
 			}
 
-			window.writer = fileStream.getWriter()
+			const writer = fileStream.getWriter()
 
 			const reader = res.body.getReader()
+			console.log('made it here')
 			const pump = () => reader.read()
 				.then(res => res.done
 					? writer.close()
-					: writer.write(res.value).then(pump))
+					: writer.write(res.value).then(() => pump()))
 			return pump().then(() => {
 				console.log('finished writing')
 			})
