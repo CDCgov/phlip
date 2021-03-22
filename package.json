@@ -57,6 +57,7 @@
     "passport-saml": "0.35.0",
     "pdfjs-dist": "2.0.943",
     "prop-types": "15.6.2",
+    "query-string": "^7.0.0",
     "re-resizable": "4.11.0",
     "react": "16.8.6",
     "react-autosuggest": "9.4.0",
@@ -77,6 +78,7 @@
     "redux-form": "7.4.2",
     "redux-logic": "2.0.0",
     "sane-email-validation": "1.1.0",
+    "streamsaver": "^2.0.5",
     "tinymce": "4.8.2"
   },
   "devDependencies": {
