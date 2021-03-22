@@ -326,7 +326,7 @@ export const exportDataLogic = createLogic({
   async process({ action, api, getState }, dispatch, done) {
     const project = getState().scenes.home.main.projectToExport
     const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
-    const filename = action.user.id === null || action.user.id === 'val'
+    const filename = !action.user || (action.user.id === null || action.user.id === 'val')
       ? `${project.name}-${project.exportType}-export.csv`
       : `${project.name}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
     try {
