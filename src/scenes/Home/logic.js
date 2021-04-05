@@ -325,8 +325,8 @@ export const exportDataLogic = createLogic({
   async process({ action, api, getState }, dispatch, done) {
     const project = getState().scenes.home.main.projectToExport
     const filename = project.user.id === null || project.user.id === 'val'
-      ? `${project.replace(' ', '-')}-${project.exportType}-export.csv`
-      : `${project.replace(' ', '-')}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
+      ? `${project.name.replace(' ', '-')}-${project.exportType}-export.csv`
+      : `${project.name.replace(' ', '-')}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
     const url =`${APP_API_URL}/projects/${project.name.replace(' ', '-')}/${filename}`
     url.link(url)
     try {
