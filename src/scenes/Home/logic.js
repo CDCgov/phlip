@@ -328,7 +328,7 @@ export const exportDataLogic = createLogic({
       .then((response) => {
         if (!window.navigator.msSaveOrOpenBlob){
           // BLOB NAVIGATOR
-          const url = window.URL.createObjectURL(new Blob([response.data],{ type: 'text/csv' }));
+          const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
           link.setAttribute(`download`, `${project.name}-${action.exportType}-export.csv`);
@@ -336,7 +336,7 @@ export const exportDataLogic = createLogic({
           link.click();
         }else{
           // BLOB FOR EXPLORER 11
-          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data],{ type: 'text/csv' }),`${project.name}-${action.exportType}-export.csv`);
+          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]),`${project.name}-${action.exportType}-export.csv`);
         }
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: null })
       done()
