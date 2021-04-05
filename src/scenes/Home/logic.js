@@ -331,21 +331,27 @@ export const exportDataLogic = createLogic({
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute(`download`, `${project.name}-${action.exportType}-export.csv`);
+          link.setAttribute(`${project.name}-${action.exportType}`, `${project.name}-${action.exportType}`);
           document.body.appendChild(link);
           link.click();
         }else{
           // BLOB FOR EXPLORER 11
-          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]),`${project.name}-${action.exportType}-export.csv`);
+          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]),`${project.name}-${action.exportType}`);
         }
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: null })
       done()
       })
       .catch(err => {
-        console.error(err, 'error');
+        console.log(err, 'error');
         dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
         done()
       })
+    try {
+
+
+    } catch (err) {
+
+    }
   }
 })
 
