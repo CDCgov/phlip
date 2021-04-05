@@ -8,6 +8,7 @@ import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 import { types as projectTypes } from 'data/projects/actions'
 import { commonHelpers, normalize, searchUtils } from 'utils'
 import { arrayToObject, mapArray } from 'utils/normalize'
+/* global APP_IS_SAML_ENABLED, APP_API_URL, APP_IS_PRODUCTION */
 
 /**
  * Sorts the list of projects by bookmarked. Bookmarked projects are sorted first, and then non-bookmark projects are
@@ -322,21 +323,25 @@ export const toggleBookmarkLogic = createLogic({
 export const exportDataLogic = createLogic({
   type: types.EXPORT_DATA_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
+    const project = getState().scenes.home.main.projectToExport
+    const filename = project.user.id === null || project.user.id === 'val'
+      ? `${project.replace(' ', '-')}-${project.exportType}-export.csv`
+      : `${project.replace(' ', '-')}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
+    const url =`${APP_API_URL}/projects/${project.name.replace(' ', '-')}/${filename}`
+    url.link(url)
     try {
-      const project = getState().scenes.home.main.projectToExport
       const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
-      const response = await api.exportData({}, { params }, { projectId: project.id });
-      const urlArr = response.split('/')
-      const exportURL = `${APP_API_URL}/projects/${urlArr[urlArr.length - 2]}/${urlArr[urlArr.length - 1]}`
-      console.log(`Export url : ${exportURL}`)
-      window.open(exportURL, '_blank')
+      await api.exportData({}, { params }, { projectId: project.id })
+
+      console.log(`Export url : ${url}`)
+
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: {} })
-      done()
     } catch (err) {
-      console.log(err);
-      dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
-      done()
+      console.log(err)
+      dispatch({ type: types.EXPORT_DATA_FAIL, payload: `Large Project. Manual Download was triggered. Please visit this url ${url} to directly download. If still having issues, Please contact the ETDAB team.` })
     }
+    window.open(url, '_blank')
+    done()
   }
 })
 
