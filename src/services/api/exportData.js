@@ -1,8 +1,7 @@
 import streamsaver from 'streamsaver'
 const queryString = require('query-string')
 import { isLoggedIn, getToken, logout } from 'services/authToken'
-
-
+import { fetchTimeout } from "./fetchTimeout";
 
 export const exportLargeData = async (projectId, params, fileName) => {
 	const url = `https://phlip2dev.philab.cdc.gov/api/exports/project/${projectId}/data?${queryString.stringify(params)}`
@@ -11,7 +10,9 @@ export const exportLargeData = async (projectId, params, fileName) => {
 		"Authorization": `Bearer ${bearer}`
 	})
 	const fileStream = streamsaver.createWriteStream(fileName);
-	return fetch(url, { headers })
+	const controller = new AbortController();
+
+	return fetchTimeout(url,1000000, { signal: controller.signal, headers })
 		.then(res => {
 			const readableStream = res.body
 			if (window.WritableStream && readableStream.pipeTo) {
