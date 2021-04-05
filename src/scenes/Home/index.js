@@ -84,28 +84,28 @@ export class Home extends Component {
      */
     exporting: PropTypes.bool
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.exportRef = React.createRef()
   }
-
+  
   componentDidMount() {
     document.title = 'PHLIP - Home'
     this.props.actions.getProjectsRequest()
   }
-
+  
   componentDidUpdate(prevProps) {
     const { exporting, apiErrorAlert } = this.props
     if (prevProps.exporting && !exporting) {
       if (!apiErrorAlert.open) {
-        // this.prepareExport()
+        this.prepareExport()
       }
     }
   }
-
+  
   url = null
-
+  
   /**
    * Opens the export dialog after the user clicks the 'Export' download button.
    * @public
@@ -115,7 +115,7 @@ export class Home extends Component {
     const { actions } = this.props
     actions.setProjectToExport(project)
   }
-
+  
   /**
    * Closes the export dialog
    * @public
@@ -127,14 +127,14 @@ export class Home extends Component {
     }
     actions.clearProjectToExport()
   }
-
+  
   /**
    * Prepares the export CSV file by creating a Blob and ObjectURL from the text parameter. Downloads the file
    * @public
    */
   prepareExport = () => {
     const { projectToExport } = this.props
-
+    
     const csvBlob = new Blob([projectToExport.text], { type: 'text/csv' })
     this.url = URL.createObjectURL(csvBlob)
     this.exportRef.current.href = this.url
@@ -143,7 +143,7 @@ export class Home extends Component {
       : `${projectToExport.name}-${projectToExport.user.firstName}-${projectToExport.user.lastName}-${projectToExport.exportType}-export.csv`
     this.exportRef.current.click()
   }
-
+  
   /**
    * Invoked after the user chooses an export type from the export dialog. Sends a request for that export data
    * @public
@@ -158,7 +158,7 @@ export class Home extends Component {
     }
     actions.exportDataRequest(type, user)
   }
-
+  
   /**
    * Renders a card error based on this.props.errorContent
    * @public
@@ -169,7 +169,7 @@ export class Home extends Component {
       {`Uh-oh! Something went wrong. ${this.props.errorContent}`}
     </CardError>
   )
-
+  
   /**
    * Calls a redux action to close any alert error
    * @public
@@ -177,21 +177,21 @@ export class Home extends Component {
   onCloseApiError = () => {
     this.props.actions.dismissApiError()
   }
-
+  
   /**
    * Handles which sort type to use
    * @param selectedOption
    */
   handleSortParamChange = selectedOption => {
     const { actions, sortBookmarked } = this.props
-
+    
     if (selectedOption !== 'sortBookmarked') {
       actions.sortProjects(selectedOption)
     } else {
       actions.sortBookmarked(!sortBookmarked)
     }
   }
-
+  
   /**
    * Returns the sort label depending on current selected sort and direction
    * @param label
@@ -206,7 +206,7 @@ export class Home extends Component {
       </>
     )
   }
-
+  
   /**
    * Handles search value change
    */
@@ -214,13 +214,13 @@ export class Home extends Component {
     const { actions } = this.props
     actions.updateSearchValue(event.target.value)
   }
-
+  
   render() {
     const {
       user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
       searchValue, error, openProject, apiErrorAlert, projectToExport, exporting
     } = this.props
-
+    
     const options = Array.from([
       { value: 'dateLastEdited', label: 'Date Last Edited' },
       { value: 'name', label: 'Name' },
@@ -234,7 +234,7 @@ export class Home extends Component {
           ? this.sortLabel(option.label, direction)
           : option.label
     }))
-
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert content={apiErrorAlert.text} open={apiErrorAlert.open} onCloseAlert={this.onCloseApiError} />
@@ -280,7 +280,7 @@ export class Home extends Component {
             placeholder="Search"
           />
         </PageHeader>
-
+        
         {error && this.renderErrorMessage()}
         {!error &&
         <ProjectList
