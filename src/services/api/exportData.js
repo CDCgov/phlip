@@ -15,7 +15,6 @@ export const exportLargeData = async (projectId, params, fileName) => {
 		.then(res => {
 			const readableStream = res.body
 			if (window.WritableStream && readableStream.pipeTo) {
-				console.log('writable stream it is');
 				return readableStream.pipeTo(fileStream)
 					.then(() => console.log('done writing'))
 			}
@@ -27,9 +26,7 @@ export const exportLargeData = async (projectId, params, fileName) => {
 				.then(res => res.done
 					? writer.close()
 					: writer.write(res.value).then(pump))
-			return pump().then(() => {
-				console.log('finished writing')
-			})
+			pump()
 		})
 
 }
