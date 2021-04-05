@@ -42,7 +42,7 @@ const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => 
  */
 const sortArray = (arr, state) => {
   const { bookmarkList, sortBy, direction, sortBookmarked } = state
-
+  
   return sortBookmarked
     ? arr.some(x => bookmarkList.includes(x.id))
       ? sortProjectsByBookmarked(arr, bookmarkList, sortBy, direction)
@@ -75,14 +75,14 @@ const getProjectArrays = (projects, projectState) => {
   let matches = searchUtils.searchForMatches(projects, searchValue, [
     'name', 'dateLastEdited', 'lastEditedBy'
   ])
-
+  
   let curPage = page
   const updatedProjects = sortArray(projects, projectState)
-
+  
   if (rowsPerPage === 'All') curPage = 0
-
+  
   if (projects.length === 0) return { projects: { visible: [], matches: [] }, projectCount: 0, ...projectState }
-
+  
   if (searchValue !== undefined && searchValue.length > 0) {
     if (matches.length === 0) {
       return {
@@ -119,7 +119,7 @@ const getProjectArrays = (projects, projectState) => {
 
 const getUpdatedState = (action, homeState) => {
   const isSort = action.type === types.SORT_PROJECTS
-
+  
   return {
     page: action.payload.page !== undefined ? action.payload.page : homeState.page,
     rowsPerPage: action.payload.rowsPerPage || homeState.rowsPerPage,
@@ -153,7 +153,7 @@ export const updateVisibleProjects = createLogic({
     const projects = Object.values(getState().data.projects.byId)
     const update = getUpdatedState(action, getState().scenes.home.main)
     const projectArrays = getProjectArrays(projects, update)
-
+    
     next({
       ...action,
       payload: action.type === types.GET_PROJECTS_REQUEST ? update : projectArrays
@@ -172,7 +172,7 @@ export const removeProjectLogic = createLogic({
     const update = getUpdatedState(action, getState().scenes.home.main)
     const { [action.projectId]: deleteProject, ...updatedById } = projectState.byId
     const projectArrays = getProjectArrays(Object.values(updatedById), update)
-
+    
     next({
       ...action,
       payload: projectArrays
@@ -201,7 +201,7 @@ export const getProjectLogic = createLogic({
         }
         return proj
       })
-
+      
       dispatch({ type: types.GET_PROJECTS_SUCCESS })
       dispatch({
         type: projectTypes.SET_PROJECTS,
@@ -217,7 +217,7 @@ export const getProjectLogic = createLogic({
           bookmarkList: [...getState().data.user.currentUser.bookmarks]
         }
       })
-
+      
     } catch (err) {
       dispatch({ type: types.GET_PROJECTS_FAIL })
     }
@@ -243,7 +243,7 @@ export const getProjectUsersLogic = createLogic({
     const p = getState().data.projects.byId[action.projectId]
     const pUsers = p.projectUsers
     const allUserObjs = getState().data.user.byId
-
+    
     try {
       if (action.sendRequest) {
         await commonHelpers.handleUserImages(pUsers, allUserObjs, dispatch, api)
@@ -255,7 +255,7 @@ export const getProjectUsersLogic = createLogic({
           newCheck: action.sendRequest
         }
       })
-
+      
       dispatch({
         type: projectTypes.UPDATE_PROJECT,
         payload: {
@@ -281,32 +281,32 @@ export const toggleBookmarkLogic = createLogic({
       const currentUser = getState().data.user.currentUser
       let add = true
       let bookmarkList = [...currentUser.bookmarks]
-
+      
       if (bookmarkList.includes(action.project.id)) {
         bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
         add = false
       } else {
         bookmarkList.push(action.project.id)
       }
-
+      
       const apiObj = {
         userId: currentUser.id,
         projectId: action.project.id
       }
-
+      
       if (add) {
         await api.addUserBookmark({}, {}, apiObj)
       } else {
         await api.removeUserBookmark({}, {}, apiObj)
       }
-
+      
       dispatch({
         type: types.TOGGLE_BOOKMARK_SUCCESS,
         payload: {
           bookmarkList, user: { ...currentUser, bookmarks: bookmarkList }
         }
       })
-
+      
       dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: { bookmarkList } })
       done()
     } catch (err) {
@@ -322,35 +322,15 @@ export const toggleBookmarkLogic = createLogic({
 export const exportDataLogic = createLogic({
   type: types.EXPORT_DATA_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
-    const project = getState().scenes.home.main.projectToExport
-    const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
-    return api.exportData({}, { responseType: 'blob', params }, { projectId: project.id })
-      .then((response) => {
-        if (!window.navigator.msSaveOrOpenBlob){
-          // BLOB NAVIGATOR
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute(`${project.name}-${action.exportType}`, `${project.name}-${action.exportType}`);
-          document.body.appendChild(link);
-          link.click();
-        }else{
-          // BLOB FOR EXPLORER 11
-          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]),`${project.name}-${action.exportType}`);
-        }
-      dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: null })
-      done()
-      })
-      .catch(err => {
-        console.log(err, 'error');
-        dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
-        done()
-      })
     try {
-
-
+      const project = getState().scenes.home.main.projectToExport
+      const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
+      const response = await api.exportData({}, { params }, { projectId: project.id })
+      dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: response })
+      done()
     } catch (err) {
-
+      dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
+      done()
     }
   }
 })
