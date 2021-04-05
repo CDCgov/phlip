@@ -327,7 +327,7 @@ export const exportDataLogic = createLogic({
       const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
       const response = await api.exportData({}, { params }, { projectId: project.id });
       const urlArr = response.split('/')
-      const exportURL = `${process.env.APP_API_URL}/projects/${urlArr[urlArr.length - 2]}/${urlArr[urlArr.length - 1]}`
+      const exportURL = `${APP_API_URL}/projects/${urlArr[urlArr.length - 2]}/${urlArr[urlArr.length - 1]}`
       console.log(`Export url : ${exportURL}`)
       window.open(exportURL, '_blank')
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: {} })
