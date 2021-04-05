@@ -325,15 +325,16 @@ export const exportDataLogic = createLogic({
   async process({ action, api, getState }, dispatch, done) {
     const project = getState().scenes.home.main.projectToExport
     const filename = project.user.id === null || project.user.id === 'val'
-      ? `${project.name.replace(' ', '-')}-${project.exportType}-export.csv`
-      : `${project.name.replace(' ', '-')}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
-    const url =`${APP_API_URL}/projects/${project.name.replace(' ', '-')}/${filename}`
-    url.link(url)
+      ? `${project.name.replaceAll(' ', '-')}-${project.exportType}-export.csv`
+      : `${project.name.replaceAll(' ', '-')}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
+    const url =`${APP_API_URL}/projects/${project.name.replaceAll(' ', '-')}/${filename}`
+    url.link(url);
+    console.log(`Export url : ${url}`)
     try {
       const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
       await api.exportData({}, { params }, { projectId: project.id })
 
-      console.log(`Export url : ${url}`)
+
 
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: {} })
     } catch (err) {
