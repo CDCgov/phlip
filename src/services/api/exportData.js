@@ -5,7 +5,7 @@ import { isLoggedIn, getToken, logout } from 'services/authToken'
 
 
 export const exportLargeData = async (projectId, params, fileName) => {
-	const url = `${process.env.APP_API_URL}/exports/project/${projectId}/data?${queryString.stringify(params)}`
+	const url = `https://phlip2dev.philab.cdc.gov/api/exports/project/${projectId}/data?${queryString.stringify(params)}`
 	const bearer = getToken();
 	const headers = new Headers({
 		"Authorization": `Bearer ${bearer}`
@@ -25,12 +25,16 @@ export const exportLargeData = async (projectId, params, fileName) => {
 			const reader = res.body.getReader()
 			console.log('made it here')
 			const pump = () => reader.read()
-				.then(res => res.done
-					? writer.close()
-					: writer.write(res.value).then(() => pump()))
+				.then(res => {
+					if(res.done) {
+						return writer.close()
+					} else {
+						return writer.write(res.value).then(() => pump())
+					}
+				})
 			return pump().then(() => {
 				console.log('finished writing')
-			})
+			});
 		})
 
 }
