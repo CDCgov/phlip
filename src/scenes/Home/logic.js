@@ -2,14 +2,12 @@
  * This is all of the redux-logic for the Home ("Project List") scene.
  */
 import { createLogic } from 'redux-logic'
-import streamsaver from 'streamsaver'
 import { types } from './actions'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 import { types as projectTypes } from 'data/projects/actions'
 import { commonHelpers, normalize, searchUtils } from 'utils'
 import { arrayToObject, mapArray } from 'utils/normalize'
-import {exportLargeData} from "services/api/exportData";
 
 /**
  * Sorts the list of projects by bookmarked. Bookmarked projects are sorted first, and then non-bookmark projects are
@@ -326,18 +324,28 @@ export const exportDataLogic = createLogic({
   async process({ action, api, getState }, dispatch, done) {
     const project = getState().scenes.home.main.projectToExport
     const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
-    const filename = action.user.id === null || action.user.id === 'val'
-      ? `${project.name}-${project.exportType}-export.csv`
-      : `${project.name}-${project.user.firstName}-${project.user.lastName}-${project.exportType}-export.csv`
-    try {
-      await exportLargeData(project.id, params, filename);
+    return api.exportData({}, { responseType: 'blob', params }, { projectId: project.id })
+      .then((response) => {
+        if (!window.navigator.msSaveOrOpenBlob){
+          // BLOB NAVIGATOR
+          const url = window.URL.createObjectURL(new Blob([response.data],{ type: 'text/csv' }));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute(`download`, `${project.name}-${action.exportType}-export.csv`);
+          document.body.appendChild(link);
+          link.click();
+        }else{
+          // BLOB FOR EXPLORER 11
+          const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data],{ type: 'text/csv' }),`${project.name}-${action.exportType}-export.csv`);
+        }
       dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: null })
       done()
-    } catch (err){
-      console.error(err, 'error');
-      dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
-      done()
-    }
+      })
+      .catch(err => {
+        console.error(err, 'error');
+        dispatch({ type: types.EXPORT_DATA_FAIL, payload: 'We couldn\'t export the project.' })
+        done()
+      })
   }
 })
 
