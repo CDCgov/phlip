@@ -14,7 +14,6 @@ lint:
   tags:
     - phlip2-dev
   only:
-    - development
     - test
     - master
   artifacts:
@@ -32,7 +31,6 @@ test:
   tags:
     - phlip2-dev
   only:
-    - development
     - test
     - master
   dependencies:
