@@ -247,6 +247,11 @@ export class Home extends Component {
       searchValue, error, openProject, apiErrorAlert, projectToExport, exporting, largeExportURL
     } = this.props
 
+    console.log(largeExportURL, 'LEU');
+    const largeExportActions = [
+      { value: 'Manual Download', type: 'button', onClick: () => window.open(this.props.largeExportURL, '_blank') }
+    ]
+
     const options = Array.from([
       { value: 'dateLastEdited', label: 'Date Last Edited' },
       { value: 'name', label: 'Name' },
@@ -308,7 +313,9 @@ export class Home extends Component {
         </PageHeader>
 
         {error && this.renderErrorMessage()}
-        {!!largeExportURL && this.renderLargeExportAlert()}
+        {!!largeExportURL && <Alert style={{ zIndex: 3000 }} id={'Large Export Dialog'} actions={largeExportActions} open title={'Large Export Detected'} onCloseAlert={() => this.props.actions.largeExportFinish()} >
+          <Typography>Large Export detected. Check the file that was downloaded. If it is missing data. Use the manual download button every 60 seconds until all data is present. </Typography>
+        </Alert>}
         {!error &&
         <ProjectList
           user={user}
