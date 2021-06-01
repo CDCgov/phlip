@@ -10,6 +10,7 @@ export const INITIAL_STATE = {
     visible: [],
     matches: []
   },
+  largeExportURL: undefined,
   bookmarkList: [],
   searchValue: '',
   rowsPerPage: '10',
@@ -49,7 +50,7 @@ export const INITIAL_STATE = {
  */
 export const mainReducer = (state = INITIAL_STATE, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
-  
+
   switch (action.type) {
     case projectTypes.SET_PROJECTS:
       return {
@@ -57,10 +58,10 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         projects: action.payload.projects,
         searchValue: ''
       }
-    
+
     case types.TOGGLE_BOOKMARK_SUCCESS:
       return updateHomeState(['bookmarkList'])
-    
+
     case types.SORT_PROJECTS:
     case types.SORT_BOOKMARKED:
     case types.UPDATE_ROWS:
@@ -72,14 +73,14 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         ...state,
         ...action.payload
       }
-    
+
     case types.GET_PROJECTS_FAIL:
       return {
         ...state,
         errorContent: 'We couldn\'t retrieve the project list. Please try again later.',
         error: true
       }
-    
+
     case types.SET_PROJECT_TO_EXPORT:
       return {
         ...state,
@@ -91,7 +92,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
           text: ''
         }
       }
-    
+
     case types.CLEAR_PROJECT_TO_EXPORT:
       return {
         ...state,
@@ -99,7 +100,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
           ...INITIAL_STATE.projectToExport
         }
       }
-    
+
     case types.EXPORT_DATA_REQUEST:
       return {
         ...state,
@@ -117,7 +118,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         },
         exporting: true
       }
-    
+
     case types.EXPORT_DATA_SUCCESS:
       return {
         ...state,
@@ -127,7 +128,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         },
         exporting: false
       }
-    
+
     case types.TOGGLE_BOOKMARK_FAIL:
     case types.GET_PROJECT_USERS_FAIL:
     case types.EXPORT_DATA_FAIL:
@@ -139,7 +140,17 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
         },
         exporting: false
       }
-    
+    case types.LARGE_PROJECT_EXPORT:
+      return {
+        ...state,
+        largeExportURL: action.payload
+      }
+    case types.LARGE_PROJECT_EXPORT_FINISH:
+      return {
+        ...state,
+        largeExportURL: undefined,
+        exporting: false
+      }
     case types.DISMISS_API_ERROR:
       return {
         ...state,
@@ -148,20 +159,20 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
           open: false
         }
       }
-    
+
     case types.TOGGLE_PROJECT:
       return {
         ...state,
         openProject: action.projectId === state.openProject ? 0 : action.projectId
       }
-    
+
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage,
         openProject: action.isLogout ? 0 : state.openProject
       }
-    
+
     case types.GET_PROJECTS_SUCCESS:
     case types.GET_PROJECTS_REQUEST:
     default:

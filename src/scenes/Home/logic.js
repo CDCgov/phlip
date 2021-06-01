@@ -336,12 +336,15 @@ export const exportDataLogic = createLogic({
     try {
       const params = action.user ? { type: action.exportType, userId: action.user.userId } : { type: action.exportType }
       await api.exportData({}, { params }, { projectId: project.id })
+      dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: {} })
+      window.open(url, '_blank')
     } catch (err) {
       console.log(err)
+      dispatch({ type: types.LARGE_PROJECT_EXPORT, payload: url })
+      window.open(url, '_blank')
       // dispatch({ type: types.EXPORT_DATA_FAIL, payload: `Large Project. Manual Download was triggered. Please visit this url ${url} to directly download. If still having issues, Please contact the ETDAB team.` })
     }
-    dispatch({ type: types.EXPORT_DATA_SUCCESS, payload: {} })
-    window.open(url, '_blank')
+
     done()
   }
 })

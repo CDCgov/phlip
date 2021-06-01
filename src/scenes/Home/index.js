@@ -10,6 +10,8 @@ import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
 import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
+import Alert from 'components/Alert';
+import Typography from 'components/Typography';
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is
@@ -82,7 +84,12 @@ export class Home extends Component {
     /**
      * Whether an export request is in progress
      */
-    exporting: PropTypes.bool
+    exporting: PropTypes.bool,
+    /**
+     *
+     * URL for large exports that encounter browser timeout
+     * */
+    largeExportURL: PropTypes.string
   }
 
   constructor(props, context) {
@@ -171,6 +178,23 @@ export class Home extends Component {
   )
 
   /**
+   * Renders Large Export Alert
+   * @public
+   * @returns {*}
+   *
+   * */
+  renderLargeExportAlert() {
+    const actions = [
+      { value: 'Manual Download', type: 'button', onClick: () => window.open(this.props.largeExportURL, '_blank') }
+    ]
+    return (
+      <Alert actions={actions} open title={'Large Export Detected'} onCloseAlert={() => this.props.actions.largeExportFinish()} >
+        <Typography>Large Export detected. Check the file that was downloaded. If it is missing data. Use the manual download button every 60 seconds until all data is present. </Typography>
+      </Alert>
+    )
+  }
+
+  /**
    * Calls a redux action to close any alert error
    * @public
    */
@@ -218,7 +242,7 @@ export class Home extends Component {
   render() {
     const {
       user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
-      searchValue, error, openProject, apiErrorAlert, projectToExport, exporting
+      searchValue, error, openProject, apiErrorAlert, projectToExport, exporting, largeExportURL
     } = this.props
 
     const options = Array.from([
@@ -282,6 +306,7 @@ export class Home extends Component {
         </PageHeader>
 
         {error && this.renderErrorMessage()}
+        {!!largeExportURL && this.renderLargeExportAlert()}
         {!error &&
         <ProjectList
           user={user}
