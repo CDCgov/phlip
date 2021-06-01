@@ -360,7 +360,8 @@ const mapStateToProps = state => ({
   projectToExport: state.scenes.home.main.projectToExport,
   openProject: state.scenes.home.main.openProject,
   apiErrorAlert: state.scenes.home.main.apiErrorAlert,
-  exporting: state.scenes.home.main.exporting
+  exporting: state.scenes.home.main.exporting,
+  largeExportURL: state.scenes.home.main.largeExportURL
 })
 
 /* istanbul ignore next */
