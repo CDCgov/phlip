@@ -10,8 +10,8 @@ import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
 import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
-import Alert from 'components/Alert';
-import Typography from 'components/Typography';
+import Alert from 'components/Alert'
+import Typography from 'components/Typography'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is
@@ -184,7 +184,6 @@ export class Home extends Component {
    *
    * */
   renderLargeExportAlert() {
-    console.log('rendered alert')
     const actions = [
       { value: 'Manual Download', type: 'button', onClick: () => window.open(this.props.largeExportURL, '_blank') }
     ]
@@ -247,11 +246,6 @@ export class Home extends Component {
       searchValue, error, openProject, apiErrorAlert, projectToExport, exporting, largeExportURL
     } = this.props
 
-    console.log(largeExportURL, 'LEU');
-    const largeExportActions = [
-      { value: 'Manual Download', type: 'button', onClick: () => window.open(this.props.largeExportURL, '_blank') }
-    ]
-
     const options = Array.from([
       { value: 'dateLastEdited', label: 'Date Last Edited' },
       { value: 'name', label: 'Name' },
@@ -313,9 +307,7 @@ export class Home extends Component {
         </PageHeader>
 
         {error && this.renderErrorMessage()}
-        {!!largeExportURL && <Alert style={{ zIndex: 3000 }} id={'Large Export Dialog'} actions={largeExportActions} open title={'Large Export Detected'} onCloseAlert={() => this.props.actions.largeExportFinish()} >
-          <Typography>Large Export detected. Check the file that was downloaded. If it is missing data. Use the manual download button every 60 seconds until all data is present. </Typography>
-        </Alert>}
+        {!!largeExportURL && this.renderLargeExportAlert()}
         {!error &&
         <ProjectList
           user={user}
