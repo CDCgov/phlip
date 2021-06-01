@@ -184,11 +184,13 @@ export class Home extends Component {
    *
    * */
   renderLargeExportAlert() {
+    console.log('rendered alert')
     const actions = [
       { value: 'Manual Download', type: 'button', onClick: () => window.open(this.props.largeExportURL, '_blank') }
     ]
+
     return (
-      <Alert actions={actions} open title={'Large Export Detected'} onCloseAlert={() => this.props.actions.largeExportFinish()} >
+      <Alert style={{ zIndex: 3000 }} id={'Large Export Dialog'} actions={actions} open title={'Large Export Detected'} onCloseAlert={() => this.props.actions.largeExportFinish()} >
         <Typography>Large Export detected. Check the file that was downloaded. If it is missing data. Use the manual download button every 60 seconds until all data is present. </Typography>
       </Alert>
     )
