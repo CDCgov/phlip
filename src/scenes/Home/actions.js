@@ -32,6 +32,8 @@ export const types = {
   REMOVE_PROJECT: 'REMOVE_PROJECT',
   TOGGLE_PROJECT: 'TOGGLE_PROJECT',
   SET_PROJECT_TO_EXPORT: 'SET_PROJECT_TO_EXPORT',
+  LARGE_PROJECT_EXPORT: 'LARGE_PROJECT_EXPORT',
+  LARGE_PROJECT_EXPORT_FINISH: 'LARGE_PROJECT_EXPORT_FINISH',
   ...addEditTypes
 }
 
@@ -52,5 +54,6 @@ export default {
   dismissApiError: makeActionCreator(types.DISMISS_API_ERROR),
   getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
   toggleProject: makeActionCreator(types.TOGGLE_PROJECT, 'projectId'),
-  setProjectToExport: makeActionCreator(types.SET_PROJECT_TO_EXPORT, 'project')
+  setProjectToExport: makeActionCreator(types.SET_PROJECT_TO_EXPORT, 'project'),
+  largeExportFinish: makeActionCreator(types.LARGE_PROJECT_EXPORT_FINISH)
 }
