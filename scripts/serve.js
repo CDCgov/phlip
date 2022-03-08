@@ -8,6 +8,8 @@ const app = express()
 const dotenv = require('dotenv')
 const paths = require('../config/paths')
 const compression = require('compression')
+const jwtAuth = require('express-jwt')
+
 const fs = require('fs')
 const https = require('https')
 const http = require('http')
@@ -70,7 +72,7 @@ app.use('/api', proxy({
   target: APP_API_URL,
   ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
 }))
-app.use('/docsApi', proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
+app.use('/docsApi',jwtAuth({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
 if (IS_SAML_ENABLED) {
   app.use(bodyParser.json())
