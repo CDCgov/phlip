@@ -78,7 +78,7 @@ app.use('/docsApi', jwtAuth({ secret: process.env.JWT_SECRET, algorithms: ['HS25
   } else {
     next()
   }
-}, proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
+})
 
 if (IS_SAML_ENABLED) {
   app.use(bodyParser.json())
