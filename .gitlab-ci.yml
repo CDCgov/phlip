@@ -163,8 +163,8 @@ deploy test azure:
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
-    - pm2 start scripts/serve.js --name phlip-fe --log-date-format "YYYY-MM-DD HH:mm:ss"
+    - if sudo pm2 list | grep phlip-fe; then sudo pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - sudo pm2 start scripts/serve.js --name phlip-fe --log-date-format "YYYY-MM-DD HH:mm:ss"
   tags:
     - az-phliptest-fe
   only:
