@@ -72,13 +72,7 @@ app.use('/api', proxy({
   target: APP_API_URL,
   ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
 }))
-app.use('/docsApi', jwtAuth({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }),function (req,res, next) {
-  if(!req.user) {
-    res.sendStatus(401)
-  } else {
-    next()
-  }
-})
+app.use('/docsApi', jwtAuth({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
 if (IS_SAML_ENABLED) {
   app.use(bodyParser.json())
