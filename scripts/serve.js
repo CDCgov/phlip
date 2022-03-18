@@ -168,6 +168,9 @@ if (IS_HTTPS) {
       'ECDHE-RSA-AES256-SHA256',
       'DHE-RSA-AES256-SHA256',
       'HIGH',
+      'ECDH+AESGCM',
+      '!ADH',
+      '!AECDH',
       '!ECDHE-RSA-AES256-SHA', // not allowed
       '!ECDHE-RSA-AES128-SHA', // not allowed
       '!AES128-SHA', // not allowed, does not support PFS
