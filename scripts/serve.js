@@ -175,6 +175,8 @@ if (IS_HTTPS) {
       '!TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384',
       '!TLS_RSA_WITH_ARIA_256_GCM_SHA384',
       '!TLS_RSA_WITH_ARIA_128_GCM_SHA256',
+      '!ECDHE-RSA-WITH-AES-128-CBC',
+      '!ECDHE-RSA-WITH-AES-256-CBC',
       '!ECDHE-RSA-AES256-SHA', // not allowed
       '!ECDHE-RSA-AES128-SHA', // not allowed
       '!AES128-SHA', // not allowed, does not support PFS
