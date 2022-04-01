@@ -151,54 +151,7 @@ if (IS_HTTPS) {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    secureOptions: constants.SSL_OP_NO_SSLv3,
-    ciphers: [
-      'TLS_AES_256_GCM_SHA384',
-      'TLS_CHACHA20_POLY1305_SHA256',
-      'TLS_AES_128_GCM_SHA256',
-      'ECDHE-RSA-AES128-GCM-SHA256',
-      'ECDHE-ECDSA-AES128-GCM-SHA256',
-      'ECDHE-RSA-AES256-GCM-SHA384',
-      'ECDHE-ECDSA-AES256-GCM-SHA384',
-      'DHE-RSA-AES128-GCM-SHA256',
-      'ECDHE-RSA-AES128-SHA256',
-      'DHE-RSA-AES128-SHA256',
-      'ECDHE-RSA-AES256-SHA384',
-      'DHE-RSA-AES256-SHA384',
-      'ECDHE-RSA-AES256-SHA256',
-      'DHE-RSA-AES256-SHA256',
-      'HIGH',
-      'ECDH+AESGCM',
-      '!ADH',
-      '!AECDH',
-      '!TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256',
-      '!TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384',
-      '!TLS_RSA_WITH_ARIA_256_GCM_SHA384',
-      '!TLS_RSA_WITH_ARIA_128_GCM_SHA256',
-      '!ECDHE-RSA-WITH-AES-128-CBC',
-      '!ECDHE-RSA-WITH-AES-256-CBC',
-      '!ECDHE-RSA-AES256-SHA', // not allowed
-      '!ECDHE-RSA-AES128-SHA', // not allowed
-      '!AES128-SHA', // not allowed, does not support PFS
-      '!AES256-SHA', // not allowed, does not support PFS
-      '!AES256-SHA256', // not allowed, does not support PFS
-      '!AES128-SHA256', // not allowed, does not support PFS
-      '!AES256-GCM-SHA384', // not allowed, does not support PFS
-      '!AES128-GCM-SHA256', // not allowed, does not support PFS
-      '!AES256-CCM8', // not allowed, does not support PFS
-      '!AES256-CCM', // not allowed, does not support PFS
-      '!AES128-CCM8', // not allowed, does not support PFS
-      '!AES128-CCM', // not allowed, does not support PFS
-      '!aNULL',
-      '!eNULL',
-      '!EXPORT',
-      '!DES',
-      '!RC4',
-      '!MD5',
-      '!PSK',
-      '!SRP',
-      '!CAMELLIA'
-    ].join(':')
+    minVersion:'TLSv1.3'
   }
   
   // Start and HTTPS server
