@@ -151,7 +151,7 @@ if (IS_HTTPS) {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    minVersion:'TLSv1.3'
+    minVersion:'TLSv1.2'
   }
   
   // Start and HTTPS server
