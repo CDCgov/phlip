@@ -151,7 +151,7 @@ if (IS_HTTPS) {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    secureOptions: constants.SSL_OP_NO_SSLv3,
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
     ciphers: [
       'TLS_AES_256_GCM_SHA384',
       'TLS_CHACHA20_POLY1305_SHA256',
