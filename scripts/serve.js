@@ -152,6 +152,7 @@ if (IS_HTTPS) {
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
+    honorCipherOrder: true,
     ciphers: [
       'TLS_AES_256_GCM_SHA384',
       'TLS_CHACHA20_POLY1305_SHA256',
@@ -161,7 +162,6 @@ if (IS_HTTPS) {
       'ECDHE-RSA-AES256-GCM-SHA384',
       'ECDHE-ECDSA-AES256-GCM-SHA384',
       'DHE-RSA-AES128-GCM-SHA256',
-      'ECDHE-RSA-AES128-SHA256',
       'DHE-RSA-AES128-SHA256',
       'ECDHE-RSA-AES256-SHA384',
       'DHE-RSA-AES256-SHA384',
@@ -174,6 +174,7 @@ if (IS_HTTPS) {
       '!TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384',
       '!TLS_RSA_WITH_ARIA_256_GCM_SHA384',
       '!TLS_RSA_WITH_ARIA_128_GCM_SHA256',
+      '!ECDHE-RSA-AES128-SHA256',
       '!ECDHE-RSA-WITH-AES-128-CBC',
       '!ECDHE-RSA-WITH-AES-256-CBC',
       '!ECDHE-RSA-AES256-SHA', // not allowed
