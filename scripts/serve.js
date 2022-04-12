@@ -167,7 +167,6 @@ if (IS_HTTPS) {
       'DHE-RSA-AES256-SHA384',
       'ECDHE-RSA-AES256-SHA256',
       'DHE-RSA-AES256-SHA256',
-      'HIGH',
       'ECDH+AESGCM',
       '!ADH',
       '!AECDH',
