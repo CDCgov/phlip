@@ -8,6 +8,8 @@ const app = express()
 const dotenv = require('dotenv')
 const paths = require('../config/paths')
 const compression = require('compression')
+const jwtAuth = require('express-jwt')
+
 const fs = require('fs')
 const https = require('https')
 const http = require('http')
@@ -70,7 +72,7 @@ app.use('/api', proxy({
   target: APP_API_URL,
   ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
 }))
-app.use('/docsApi', proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
+app.use('/docsApi', jwtAuth({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
 if (IS_SAML_ENABLED) {
   app.use(bodyParser.json())
@@ -150,6 +152,7 @@ if (IS_HTTPS) {
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
+    honorCipherOrder: false,
     ciphers: [
       'TLS_AES_256_GCM_SHA384',
       'TLS_CHACHA20_POLY1305_SHA256',
@@ -159,13 +162,22 @@ if (IS_HTTPS) {
       'ECDHE-RSA-AES256-GCM-SHA384',
       'ECDHE-ECDSA-AES256-GCM-SHA384',
       'DHE-RSA-AES128-GCM-SHA256',
-      'ECDHE-RSA-AES128-SHA256',
       'DHE-RSA-AES128-SHA256',
       'ECDHE-RSA-AES256-SHA384',
       'DHE-RSA-AES256-SHA384',
       'ECDHE-RSA-AES256-SHA256',
       'DHE-RSA-AES256-SHA256',
-      'HIGH',
+      'ECDH+AESGCM',
+      '!ADH',
+      '!AECDH',
+      '!TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256',
+      '!TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384',
+      '!TLS_RSA_WITH_ARIA_256_GCM_SHA384',
+      '!TLS_RSA_WITH_ARIA_128_GCM_SHA256',
+      '!ECDHE-RSA-AES128-SHA256',
+      '!ECDHE-RSA-AES256-SHA384',
+      '!ECDHE-RSA-WITH-AES-128-CBC',
+      '!ECDHE-RSA-WITH-AES-256-CBC',
       '!ECDHE-RSA-AES256-SHA', // not allowed
       '!ECDHE-RSA-AES128-SHA', // not allowed
       '!AES128-SHA', // not allowed, does not support PFS
