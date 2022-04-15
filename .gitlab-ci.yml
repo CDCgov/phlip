@@ -12,7 +12,7 @@ lint:
     - npm install
     - npm run lint
   tags:
-    - phlip2-dev
+    - az-phlip2dev-fe
   only:
     - test
     - master
@@ -29,7 +29,7 @@ test:
   script:
     - npm run test:local
   tags:
-    - phlip2-dev
+    - az-phlip2dev-fe
   only:
     - test
     - master
