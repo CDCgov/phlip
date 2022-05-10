@@ -9,7 +9,7 @@ import docViewLogic from './DocumentView/logic'
 
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
-import { getToken, decodeToken, login, isLoggedIn, isTokenExpired } from 'services/authToken'
+import { getToken, decodeToken, login, isLoggedIn } from 'services/authToken'
 
 /**
  * Handles sending a request to download the 'User Guide' PDF
@@ -35,8 +35,6 @@ export const refreshJwtLogic = createLogic({
   cancelType: [types.CANCEL_REFRESH_JWT, types.LOGOUT_USER],
   process({ cancelled$, api }) {
     const interval = setInterval(async () => {
-      const token = getToken()
-      console.log('refreshing token', isLoggedIn(), isTokenExpired(),token, decodeToken(token))
       if (isLoggedIn()) {
         const currentToken = getToken()
         const newToken = await api.checkPivUser(
@@ -46,7 +44,7 @@ export const refreshJwtLogic = createLogic({
         )
         await login(newToken.token.value)
       }
-    }, 10000)
+    }, 900000)
     
     cancelled$.subscribe(() => {
       clearInterval(interval)
