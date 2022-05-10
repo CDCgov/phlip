@@ -135,7 +135,7 @@ app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
     res.status(401).send('Your token has expired. Please logout and log back in.')
   } else {
-    res.status(500).send('There was an internal server error')
+    res.status(500).send('Something broke!')
   }
 })
 

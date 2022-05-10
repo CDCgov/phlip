@@ -34,7 +34,6 @@ export const refreshJwtLogic = createLogic({
   warnTimeout: 0,
   cancelType: [types.CANCEL_REFRESH_JWT, types.LOGOUT_USER],
   process({ cancelled$, api }) {
-    console.log('CALLING REFRESH JWT TOKEN')
     const interval = setInterval(async () => {
       const token = getToken()
       console.log('refreshing token', isLoggedIn(), isTokenExpired(),token, decodeToken(token))
