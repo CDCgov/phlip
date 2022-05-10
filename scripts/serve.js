@@ -131,6 +131,14 @@ app.use(express.static('./dist/'))
 app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
 
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('Your token has expired. Please logout and log back in.')
+  } else {
+    res.status(500).send('Internal Server Error. Please try again.')
+  }
+})
+
 if (IS_HTTPS) {
   /**
    * Add additional certs to trust (like cdc certs)
