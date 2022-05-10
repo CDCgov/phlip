@@ -100,7 +100,7 @@ if (IS_SAML_ENABLED) {
       const token = jwt.sign({
         sub: 'Esquire',
         jti: '1d3ffc00-f6b1-4339-88ff-fe9045f19684',
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        exp: Math.floor(Date.now() / 1000) + (60),
         userEmail: req.user.email,
         Id: 8,
         iss: 'iiu.phiresearchlab.org',
@@ -130,6 +130,14 @@ if (IS_SAML_ENABLED) {
 app.use(express.static('./dist/'))
 app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
+
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('Your token has expired. Please logout and log back in.')
+  } else {
+    res.status(500).send('Something broke!')
+  }
+})
 
 if (IS_HTTPS) {
   /**

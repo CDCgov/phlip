@@ -73,7 +73,9 @@ export const getSamlToken = () => memoizedGetSamlAuthToken(SAML_KEY)
  * @returns {Object}
  */
 export const decodeToken = token => {
-  return jwtDecode(token)
+  const decoded = jwtDecode(token)
+  console.log(decoded, 'decoded token')
+  return decoded
 }
 
 /**
