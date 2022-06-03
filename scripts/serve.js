@@ -19,6 +19,7 @@ const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const helmet = require('helmet')
 const constants = require('constants')
+const pino = require('express-pino-logger')
 
 dotenv.config({ path: paths.appDotEnv })
 
@@ -31,6 +32,7 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
+app.use(pino)
 app.use(compression())
 app.use(helmet())
 app.use(helmet.hsts({
