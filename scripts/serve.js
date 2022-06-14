@@ -32,7 +32,6 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
-app.use(pino)
 app.use(compression())
 app.use(helmet())
 app.use(helmet.hsts({
@@ -68,6 +67,7 @@ app.use(helmet.contentSecurityPolicy({
   setAllHeaders: false
 }))
 app.use(helmet.noCache())
+app.use(pino)
 
 // Proxy all requests to /api to the backend API URL
 app.use('/api', proxy({
