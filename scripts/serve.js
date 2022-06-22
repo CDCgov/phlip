@@ -108,7 +108,7 @@ if (IS_SAML_ENABLED) {
       const token = jwt.sign({
         sub: 'Esquire',
         jti: '1d3ffc00-f6b1-4339-88ff-fe9045f19684',
-        exp: Math.floor(Date.now() / 1000) + (60 * 60) * 12,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60) * 24,
         userEmail: req.user.email,
         Id: 8,
         iss: 'iiu.phiresearchlab.org',
