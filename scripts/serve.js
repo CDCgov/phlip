@@ -32,7 +32,6 @@ const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 let httpsOptions = {}
 
-app.use(pino)
 app.use(compression())
 app.use(helmet())
 app.use(helmet.hsts({
@@ -68,6 +67,7 @@ app.use(helmet.contentSecurityPolicy({
   setAllHeaders: false
 }))
 app.use(helmet.noCache())
+app.use(pino())
 
 // Proxy all requests to /api to the backend API URL
 app.use('/api', proxy({
@@ -108,7 +108,7 @@ if (IS_SAML_ENABLED) {
       const token = jwt.sign({
         sub: 'Esquire',
         jti: '1d3ffc00-f6b1-4339-88ff-fe9045f19684',
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        exp: Math.floor(Date.now() / 1000) + (60 * 60) * 24,
         userEmail: req.user.email,
         Id: 8,
         iss: 'iiu.phiresearchlab.org',
