@@ -160,8 +160,8 @@ export class Login extends Component {
               <Typography variant="caption" style={{ color: 'black' }}>
                 BE Build: {beVersion}
               </Typography>
-              <div style={{paddingTop: 10}}>
-                <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html" target="_blank">
+              <div style={{ paddingTop: 10 }}>
+                <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html" target="_blank" rel="noopener noreferrer">
                   Vulnerability Disclosure Policy | HHS.gov
                 </a>
               </div>
