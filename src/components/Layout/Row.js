@@ -10,6 +10,8 @@ export const Row = ({ flex, displayFlex, children, reverse, component, style, ..
     flex: flex ? '1' : '0 0 auto',
     display: displayFlex ? 'flex' : 'block',
     flexDirection: reverse ? 'row-reverse' : 'row',
+    minHeight: 0,
+    flexWrap: 'nowrap',
     ...style
   }
 

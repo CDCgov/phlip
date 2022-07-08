@@ -344,7 +344,6 @@ export const exportDataLogic = createLogic({
       window.open(url, '_blank')
       // dispatch({ type: types.EXPORT_DATA_FAIL, payload: `Large Project. Manual Download was triggered. Please visit this url ${url} to directly download. If still having issues, Please contact the ETDAB team.` })
     }
-
     done()
   }
 })
