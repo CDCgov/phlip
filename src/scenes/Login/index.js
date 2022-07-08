@@ -160,6 +160,11 @@ export class Login extends Component {
               <Typography variant="caption" style={{ color: 'black' }}>
                 BE Build: {beVersion}
               </Typography>
+              <div style={{paddingTop: 10}}>
+                <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html" target="_blank">
+                  Vulnerability Disclosure Policy | HHS.gov
+                </a>
+              </div>
               {/*<Typography variant="caption" style={{ color: 'black' }}>
                {this.props.backendInfo.databaseName || ''}
                </Typography>*/}
